@@ -1,0 +1,10 @@
+{
+  "app.containers.LanguageToggle.english": "Anglais",
+  "app.containers.LanguageToggle.french": "Français",
+  "app.containers.LanguageToggle.title": "Langue",
+  "app.containers.SideBar.login": "Connexion",
+  "app.containers.SideBar.logout": "Se déconnecter",
+  "app.containers.SideBar.notFound": "Page introuvable",
+  "app.containers.SideBar.overview": "Vue générale",
+  "app.containers.SideBar.unauthorized": "Non autorisé"
+}
