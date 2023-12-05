@@ -1,12 +1,49 @@
 export const accessControlRules = {
-  overview: {
-    path: '/overview',
+  myRequests: {
+    path: '/my-requests',
     accessLevel: [
-      'admin',
-      'minimal-access',
-      'leader',
-      'technicien-technique',
-      'technicien',
+      'normal-requester',
+      'department-manager',
+      'human-resources',
+      'finance-department',
+      'general-director',
+      'treasury',
     ],
+    ordreMission: {
+      path: '/my-requests/ordre-mission',
+      accessLevel: [
+        'normal-requester',
+        'department-manager',
+        'human-resources',
+        'finance-department',
+        'general-director',
+        'treasury',
+      ],
+    },
   },
+
+  // liquidation: {
+  //   path: '/liquidation',
+  //   accessLevel: [
+  //     'normal-requester',
+  //     'department-manager',
+  //     'human-resources',
+  //     'finance-department',
+  //     'general-director',
+  //     'treasury',
+  //   ],
+  // },
+
+  // decide: {
+  //   path: '/decide',
+  //   accessLevel: [
+  //     'department-manager',
+  //     'human-resources',
+  //     'finance-department',
+  //     'general-director',
+  //     'treasury',
+  //   ],
+  // },
+
+
 };

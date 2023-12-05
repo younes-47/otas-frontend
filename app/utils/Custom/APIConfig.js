@@ -1,7 +1,7 @@
 const DevConfig = {
   BACKEND_SERVER_PROTOCOL: 'http',
-  BACKEND_SERVER_IP: 'DIPC10EJQB',
-  BACKEND_SERVER_PORT: '3791',
+  BACKEND_SERVER_IP: 'localhost',
+  BACKEND_SERVER_PORT: '5030',
 };
 const ProdConfig = {
   BACKEND_SERVER_PROTOCOL: 'https',
@@ -16,7 +16,7 @@ const TestConfig = {
 /// //////////////////////////// ///
 /// /////Change value below///// ///
 /// //////////////////////////// ///
-const environement = 'TEST';
+const environement = 'DEV';
 /// //////////////////////////// ///
 /// /////Change value above///// ///
 /// //////////////////////////// ///

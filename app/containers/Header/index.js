@@ -61,9 +61,9 @@ export function Header() {
   };
 
   const hideHeader = () => location.pathname === '/login';
-  useEffect(() => {
-    AccessController(history, location.pathname);
-  }, [location.pathname]);
+  // useEffect(() => {
+  //   AccessController(history, location.pathname);
+  // }, [location.pathname]);
 
   return (
     <>

@@ -19,6 +19,8 @@ import NotFound from 'pages/NotFound/Loadable';
 import SideBar from 'containers/SideBar';
 import Header from 'containers/Header';
 import GlobalStyle from '../../global-styles';
+import MyRequests from 'pages/MyRequests/Loadable';
+import OrdreMission from 'pages/OrdreMission/Loadable';
 export default function App() {
   return (
     <>
@@ -27,6 +29,8 @@ export default function App() {
         <SideBar />
         <Switch>
           <Route exact path="/login" component={LoginPage} />
+          <Route exact path="/my-requests" component={MyRequests} />
+          <Route exact path="/my-requests/ordre-mission" component={OrdreMission} />
           <Route exact path="/overview" component={Overview} />
           <Route exact path="/unauthorized" component={Unauthorized} />
           <Route exact path="/not-found" component={NotFound} />

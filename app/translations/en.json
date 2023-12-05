@@ -1,10 +1,15 @@
 {
+  "app.containers.Azerty.header": "This is the Azerty container!",
   "app.containers.LanguageToggle.english": "English",
   "app.containers.LanguageToggle.french": "French",
   "app.containers.LanguageToggle.title": "Language",
+  "app.containers.MyRequests.header": "This is the MyRequests container!",
+  "app.containers.OrdreMission.header": "This is the OrdreMission container!",
   "app.containers.SideBar.login": "Log in",
   "app.containers.SideBar.logout": "Log out",
+  "app.containers.SideBar.myRequests": "-myRequests",
   "app.containers.SideBar.notFound": "Not found",
+  "app.containers.SideBar.ordreMission": "-ordreMission",
   "app.containers.SideBar.overview": "Overview",
   "app.containers.SideBar.unauthorized": "Unauthorized"
 }

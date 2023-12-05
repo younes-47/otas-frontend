@@ -9,32 +9,50 @@ import PropTypes from 'prop-types';
 // import styled from 'styled-components';
 import { DataGrid } from '@mui/x-data-grid';
 
-function Tables({ array }) {
+function Tables({
+  // array,
+  loading,
+  rows,
+  columns,
+  initialState,
+  getRowId,
+  onRowSelectionChange,
+  disableRowSelectionOnClick,
+}) {
   return (
-    <>
-      <div style={{ height: '85%', width: '100%' }}>
-        <DataGrid
-          sx
-          // eslint-disable-next-line react/jsx-props-no-spreading
-          {...array}
-          initialState={{
-            ...array.initialState,
-            pagination: {
-              ...array.initialState?.pagination,
-              paginationModel: {
-                pageSize: 100,
-                /* page: 0 // default value will be used if not passed */
-              },
-            },
-          }}
-        />
-      </div>
-    </>
+    <DataGrid
+      sx={{
+        '& .MuiCircularProgress-root': { color: 'black' },
+        // '& .MuiDataGrid-booleanCell[data-value="true"]': {
+        //   color: 'blue',
+        // },
+        // '& .MuiDataGrid-booleanCell[data-value="false"]': {
+        //   color: 'red',
+        // },
+        '& .MuiDataGrid-columnHeaderTitle': {
+          fontWeight: 'bold',
+        },
+      }}
+      loading={loading}
+      rows={rows}
+      columns={columns}
+      onRowSelectionModelChange={onRowSelectionChange}
+      getRowId={getRowId}
+      initialState={initialState}
+      disableRowSelectionOnClick={disableRowSelectionOnClick}
+    />
   );
 }
 
 Tables.propTypes = {
-  array: PropTypes.object.isRequired,
+  // array: PropTypes.object.isRequired,
+  getRowId: PropTypes.func,
+  rows: PropTypes.array,
+  columns: PropTypes.array,
+  initialState: PropTypes.object,
+  onRowSelectionChange: PropTypes.func,
+  disableRowSelectionOnClick: PropTypes.bool,
+  loading: PropTypes.bool,
 };
 
 export default Tables;

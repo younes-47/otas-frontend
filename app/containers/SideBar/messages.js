@@ -13,6 +13,14 @@ export default defineMessages({
     id: `${scope}.overview`,
     defaultMessage: '-Overview',
   },
+  myRequests: {
+    id: `${scope}.myRequests`,
+    defaultMessage: 'My Requests',
+  },
+  ordreMission: {
+    id: `${scope}.ordreMission`,
+    defaultMessage: 'Mission Orders',
+  },
   notFound: {
     id: `${scope}.notFound`,
     defaultMessage: '-Not found',
