@@ -15,19 +15,19 @@ export function defaultAction() {
 export function loadOrdreMissionAction(){
   return {
     type: LOAD_ORDRE_MISSIONS,
-  }
+  };
 }
 
 export function loadOrdreMissionSuccessAction(data){
   return {
     type: LOAD_ORDRE_MISSIONS_SUCCESS,
     data,
-  }
+  };
 }
 
 export function loadOrdreMissionErrorAction(error){
   return {
     type: LOAD_ORDRE_MISSIONS_ERROR,
     error,
-  }
+  };
 }

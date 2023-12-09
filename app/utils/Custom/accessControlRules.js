@@ -20,30 +20,38 @@ export const accessControlRules = {
         'treasury',
       ],
     },
+    avanceVoyage: {
+      path: '/my-requests/avance-voyage',
+      accessLevel: [
+        'normal-requester',
+        'department-manager',
+        'human-resources',
+        'finance-department',
+        'general-director',
+        'treasury',
+      ],
+    },
+    avanceCaisse: {
+      path: '/my-requests/avance-caisse',
+      accessLevel: [
+        'normal-requester',
+        'department-manager',
+        'human-resources',
+        'finance-department',
+        'general-director',
+        'treasury',
+      ],
+    },
+    depenseCaisse: {
+      path: '/my-requests/depense-caisse',
+      accessLevel: [
+        'normal-requester',
+        'department-manager',
+        'human-resources',
+        'finance-department',
+        'general-director',
+        'treasury',
+      ],
+    },
   },
-
-  // liquidation: {
-  //   path: '/liquidation',
-  //   accessLevel: [
-  //     'normal-requester',
-  //     'department-manager',
-  //     'human-resources',
-  //     'finance-department',
-  //     'general-director',
-  //     'treasury',
-  //   ],
-  // },
-
-  // decide: {
-  //   path: '/decide',
-  //   accessLevel: [
-  //     'department-manager',
-  //     'human-resources',
-  //     'finance-department',
-  //     'general-director',
-  //     'treasury',
-  //   ],
-  // },
-
-
 };

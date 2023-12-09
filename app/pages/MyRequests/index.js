@@ -40,9 +40,9 @@ export default function MyRequests() {
     >
       <Box display="flex" justifyContent="center" textAlign="center">
         <Stack>
-          <h1 style={{ fontSize: '72px', marginBottom: '10px' }}>My Requests Section</h1>
+          <h1 style={{ fontSize: '72px', marginBottom: '10px' }}>Welcome "User"</h1>
           <p style={{ fontSize: '24px', marginBottom: '30px' }}>
-            In this section you can access and place a request.
+            This is my Requests section, where you can place a request.
           </p>
           {/* <Link
             to="/overview"

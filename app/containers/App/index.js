@@ -21,6 +21,9 @@ import Header from 'containers/Header';
 import GlobalStyle from '../../global-styles';
 import MyRequests from 'pages/MyRequests/Loadable';
 import OrdreMission from 'pages/OrdreMission/Loadable';
+import AvanceCaisse from 'pages/AvanceCaisse/Loadable';
+import DepenseCaisse from 'pages/DepenseCaisse/Loadable';
+import AvanceVoyage from 'pages/AvanceVoyage/Loadable';
 export default function App() {
   return (
     <>
@@ -31,6 +34,9 @@ export default function App() {
           <Route exact path="/login" component={LoginPage} />
           <Route exact path="/my-requests" component={MyRequests} />
           <Route exact path="/my-requests/ordre-mission" component={OrdreMission} />
+          <Route exact path="/my-requests/avance-voyage" component={AvanceVoyage} />
+          <Route exact path="/my-requests/avance-caisse" component={AvanceCaisse} />
+          <Route exact path="/my-requests/depense-caisse" component={DepenseCaisse} />
           <Route exact path="/overview" component={Overview} />
           <Route exact path="/unauthorized" component={Unauthorized} />
           <Route exact path="/not-found" component={NotFound} />

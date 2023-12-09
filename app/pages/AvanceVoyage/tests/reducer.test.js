@@ -1,9 +1,9 @@
 // import produce from 'immer';
-import ordreMissionFormReducer from '../reducer';
+import avanceVoyageReducer from '../reducer';
 // import { someAction } from '../actions';
 
 /* eslint-disable default-case, no-param-reassign */
-describe('ordreMissionFormReducer', () => {
+describe('avanceVoyageReducer', () => {
   let state;
   beforeEach(() => {
     state = {
@@ -13,7 +13,7 @@ describe('ordreMissionFormReducer', () => {
 
   it('returns the initial state', () => {
     const expectedResult = state;
-    expect(ordreMissionFormReducer(undefined, {})).toEqual(expectedResult);
+    expect(avanceVoyageReducer(undefined, {})).toEqual(expectedResult);
   });
 
   /**

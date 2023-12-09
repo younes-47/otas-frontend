@@ -1,6 +1,6 @@
 /**
  *
- * Tests for OrdreMissionForm
+ * Tests for AvanceCaisse
  *
  * @see https://github.com/react-boilerplate/react-boilerplate/tree/master/docs/testing
  *
@@ -8,15 +8,21 @@
 
 import React from 'react';
 import { render } from 'react-testing-library';
+import { IntlProvider } from 'react-intl';
 // import 'jest-dom/extend-expect'; // add some helpful assertions
 
-import { OrdreMissionForm } from '../index';
+import { AvanceCaisse } from '../index';
+import { DEFAULT_LOCALE } from '../../../i18n';
 
-describe('<OrdreMissionForm />', () => {
+describe('<AvanceCaisse />', () => {
   it('Expect to not log errors in console', () => {
     const spy = jest.spyOn(global.console, 'error');
     const dispatch = jest.fn();
-    render(<OrdreMissionForm dispatch={dispatch} />);
+    render(
+      <IntlProvider locale={DEFAULT_LOCALE}>
+        <AvanceCaisse dispatch={dispatch} />
+      </IntlProvider>,
+    );
     expect(spy).not.toHaveBeenCalled();
   });
 
@@ -32,7 +38,11 @@ describe('<OrdreMissionForm />', () => {
   it.skip('Should render and match the snapshot', () => {
     const {
       container: { firstChild },
-    } = render(<OrdreMissionForm />);
+    } = render(
+      <IntlProvider locale={DEFAULT_LOCALE}>
+        <AvanceCaisse />
+      </IntlProvider>,
+    );
     expect(firstChild).toMatchSnapshot();
   });
 });

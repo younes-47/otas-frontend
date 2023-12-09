@@ -15,11 +15,23 @@ export default defineMessages({
   },
   myRequests: {
     id: `${scope}.myRequests`,
-    defaultMessage: 'My Requests',
+    defaultMessage: '-myRequests',
   },
   ordreMission: {
     id: `${scope}.ordreMission`,
-    defaultMessage: 'Mission Orders',
+    defaultMessage: '-ordreMission',
+  },
+  avanceVoyage: {
+    id: `${scope}.avanceVoyage`,
+    defaultMessage: '-avanceVoyage',
+  },
+  avanceCaisse: {
+    id: `${scope}.avanceCaisse`,
+    defaultMessage: '-avanceCaisse',
+  },
+  depenseCaisse: {
+    id: `${scope}.depenseCaisse`,
+    defaultMessage: '-depenseCaisse',
   },
   notFound: {
     id: `${scope}.notFound`,

@@ -1,50 +1,55 @@
 /**
  *
- * OrdreMission
+ * DepenseCaisse
  *
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { FormattedMessage } from 'react-intl';
 import { createStructuredSelector } from 'reselect';
+import { compose } from 'redux';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
-import { makeSelectErrorLoadingOrdreMissions, makeSelectLoadingOrdreMissions, makeSelectOrdreMissions } from './selectors';
+import { makeSelectDepenseCaisses, makeSelectErrorLoadingDepenseCaisses, makeSelectLoadingDepenseCaisses } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
-
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-
-import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
+import messages from './messages';
 import { useDispatch, useSelector } from 'react-redux';
 import Box from '@mui/material/Box';
 import { IconButton } from '@mui/material';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import Tables from 'components/Tables';
 import { useEffect } from 'react';
-import { loadOrdreMissionAction } from './actions';
+import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import { DateTimeFormater } from 'utils/Custom/stringManipulation';
+import { loadDepenseCaisseAction } from './actions';
 
 const mapStateToProps = createStructuredSelector({
-  loadingOrdreMissions: makeSelectLoadingOrdreMissions(),
-  errorLoadingOrdreMissions: makeSelectErrorLoadingOrdreMissions(),
-  ordreMissions: makeSelectOrdreMissions(),
+  depenseCaisses: makeSelectDepenseCaisses(),
+  loadingDepenseCaisses: makeSelectLoadingDepenseCaisses(),
+  errorLoadingDepenseCaisses: makeSelectErrorLoadingDepenseCaisses(),
   isSideBarVisible: makeSelectIsSideBarVisible(),
 });
 
-export function OrdreMission() {
-  useInjectReducer({ key: 'ordreMission', reducer });
-  useInjectSaga({ key: 'ordreMission', saga });
+
+export function DepenseCaisse() {
+  useInjectReducer({ key: 'depenseCaisse', reducer });
+  useInjectSaga({ key: 'depenseCaisse', saga });
+
   const history = useHistory()
   const dispatch = useDispatch()
   const {
-    ordreMissions,
-    loadingOrdreMissions,
-    errorLoadingOrdreMissions,
+    depenseCaisses,
+    loadingDepenseCaisses,
+    errorLoadingDepenseCaisses,
     isSideBarVisible,
-  } = useSelector(mapStateToProps)
-
-  const ordreMissionColumns = [
+  } = useSelector(mapStateToProps);
+  
+  const depenseCaisseColumns = [
     {
       field: 'id',
       hide: false,
@@ -55,6 +60,18 @@ export function OrdreMission() {
       field: 'description',
       hide: false,
       headerName: 'Description',
+      flex: 1,
+    },
+    {
+      field: 'total',
+      hide: false,
+      headerName: 'Total',
+      flex: 1,
+    },
+    {
+      field: 'currency',
+      hide: false,
+      headerName: 'Currency',
       flex: 1,
     },
     {
@@ -71,50 +88,40 @@ export function OrdreMission() {
       flex: 1,
     },
     {
-      field: 'abroad',
+      field: 'receiptsFilePath',
       hide: false,
-      type: 'boolean',
-      headerName: 'Abroad',
+      headerName: 'Receipts File',
       flex: 1,
-    },
-    {
-      field: 'departureDate',
-      hide: false,
-      headerName: 'Departure Date',
-      flex: 1,
-    },
-    {
-      field: 'returnDate',
-      hide: false,
-      headerName: 'Return Date',
-      flex: 1,
-      valueFormatter: ({ value }) => DateTimeFormater(value)
     },
     {
       field: 'createDate',
       hide: false,
       headerName: 'Created On',
       flex: 1,
+      valueFormatter: ({ value }) => DateTimeFormater(value),
     },
   ]
-
-  const ordreMissionInitialState = {
+  
+  const depenseCaisseInitialState = {
     columns: {
       columnVisibilityModel: {
         Id: true
       }
     }
   }
-
+  
   const handleOnCreateButtonClick = () => {
     history.push('/my-requests');
   }
-
+  
   useEffect(() => {
-    if (errorLoadingOrdreMissions === null) {
-      dispatch(loadOrdreMissionAction());
+    if (errorLoadingDepenseCaisses === null) {
+      dispatch(loadDepenseCaisseAction());
     }
-  }, [ordreMissions]);
+  }, [depenseCaisses]);
+  
+
+
   return (
     <Box
       position="fixed"
@@ -140,7 +147,7 @@ export function OrdreMission() {
           <p style={{ color: 'green' }}>Request</p>
         </IconButton>
       </Box>
-      {!errorLoadingOrdreMissions ? (
+      {!errorLoadingDepenseCaisses ? (
         <div style={{ height: '85%', width: '100%' }}>
           <Tables
             getRowId={(row) => row.id}
@@ -149,10 +156,10 @@ export function OrdreMission() {
             bottom={10}
             left={0}
             right={0}
-            loading={loadingOrdreMissions}
-            rows={ordreMissions}
-            columns={ordreMissionColumns}
-            initialState={ordreMissionInitialState}
+            loading={loadingDepenseCaisses}
+            rows={depenseCaisses}
+            columns={depenseCaisseColumns}
+            initialState={depenseCaisseInitialState}
           />
         </div>
       ) : (
@@ -162,8 +169,8 @@ export function OrdreMission() {
   );
 }
 
-OrdreMission.propTypes = {
+DepenseCaisse.propTypes = {
   // dispatch: PropTypes.func.isRequired,
 };
 
-export default OrdreMission;
+export default DepenseCaisse;
