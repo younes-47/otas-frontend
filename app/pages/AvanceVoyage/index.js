@@ -47,7 +47,7 @@ export function AvanceVoyage() {
       headerName: '#',
     },
     {
-      field: 'EstimatedTotal',
+      field: 'estimatedTotal',
       hide: false,
       headerName: 'Estimated Total',
       flex: 1,

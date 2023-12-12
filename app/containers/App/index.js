@@ -24,6 +24,7 @@ import OrdreMission from 'pages/OrdreMission/Loadable';
 import AvanceCaisse from 'pages/AvanceCaisse/Loadable';
 import DepenseCaisse from 'pages/DepenseCaisse/Loadable';
 import AvanceVoyage from 'pages/AvanceVoyage/Loadable';
+import OrdreMissionForm from 'pages/OrdreMissionForm';
 export default function App() {
   return (
     <>
@@ -37,6 +38,7 @@ export default function App() {
           <Route exact path="/my-requests/avance-voyage" component={AvanceVoyage} />
           <Route exact path="/my-requests/avance-caisse" component={AvanceCaisse} />
           <Route exact path="/my-requests/depense-caisse" component={DepenseCaisse} />
+          <Route exact path="/my-requests/ordre-mission/add" component={OrdreMissionForm} />
           <Route exact path="/overview" component={Overview} />
           <Route exact path="/unauthorized" component={Unauthorized} />
           <Route exact path="/not-found" component={NotFound} />

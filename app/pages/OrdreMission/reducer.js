@@ -4,12 +4,17 @@
  *
  */
 import produce from 'immer';
-import { DEFAULT_ACTION, LOAD_ORDRE_MISSIONS, LOAD_ORDRE_MISSIONS_ERROR, LOAD_ORDRE_MISSIONS_SUCCESS } from './constants';
+import {
+  DEFAULT_ACTION,
+  LOAD_ORDRE_MISSIONS,
+  LOAD_ORDRE_MISSIONS_ERROR,
+  LOAD_ORDRE_MISSIONS_SUCCESS,
+} from './constants';
 
 export const initialState = {
   loadingOrdreMissions: false,
   errorLoadingOrdreMissions: null,
-  ordreMissions: [] 
+  ordreMissions: [],
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -19,17 +24,17 @@ const ordreMissionReducer = (state = initialState, action) =>
       case DEFAULT_ACTION:
         break;
       case LOAD_ORDRE_MISSIONS:
-        draft.loadingOrdreMissions = true
-        draft.errorLoadingOrdreMissions = false
+        draft.loadingOrdreMissions = true;
+        draft.errorLoadingOrdreMissions = false;
         break;
       case LOAD_ORDRE_MISSIONS_ERROR:
-        draft.loadingOrdreMissions = false
-        draft.errorLoadingOrdreMissions = action.error
+        draft.loadingOrdreMissions = false;
+        draft.errorLoadingOrdreMissions = action.error;
         break;
       case LOAD_ORDRE_MISSIONS_SUCCESS:
-        draft.loadingOrdreMissions = false
-        draft.errorLoadingOrdreMissions = false
-        draft.ordreMissions = action.data
+        draft.loadingOrdreMissions = false;
+        draft.errorLoadingOrdreMissions = false;
+        draft.ordreMissions = action.data;
         break;
     }
   });

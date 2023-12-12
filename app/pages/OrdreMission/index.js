@@ -4,14 +4,11 @@
  *
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createStructuredSelector } from 'reselect';
 
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
-import { makeSelectErrorLoadingOrdreMissions, makeSelectLoadingOrdreMissions, makeSelectOrdreMissions } from './selectors';
-import reducer from './reducer';
-import saga from './saga';
 
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 
@@ -21,9 +18,15 @@ import Box from '@mui/material/Box';
 import { IconButton } from '@mui/material';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import Tables from 'components/Tables';
-import { useEffect } from 'react';
-import { loadOrdreMissionAction } from './actions';
 import { DateTimeFormater } from 'utils/Custom/stringManipulation';
+import saga from './saga';
+import reducer from './reducer';
+import {
+  makeSelectErrorLoadingOrdreMissions,
+  makeSelectLoadingOrdreMissions,
+  makeSelectOrdreMissions,
+} from './selectors';
+import { loadOrdreMissionAction } from './actions';
 
 const mapStateToProps = createStructuredSelector({
   loadingOrdreMissions: makeSelectLoadingOrdreMissions(),
@@ -35,14 +38,14 @@ const mapStateToProps = createStructuredSelector({
 export function OrdreMission() {
   useInjectReducer({ key: 'ordreMission', reducer });
   useInjectSaga({ key: 'ordreMission', saga });
-  const history = useHistory()
-  const dispatch = useDispatch()
+  const history = useHistory();
+  const dispatch = useDispatch();
   const {
     ordreMissions,
     loadingOrdreMissions,
     errorLoadingOrdreMissions,
     isSideBarVisible,
-  } = useSelector(mapStateToProps)
+  } = useSelector(mapStateToProps);
 
   const ordreMissionColumns = [
     {
@@ -77,38 +80,45 @@ export function OrdreMission() {
       headerName: 'Abroad',
       flex: 1,
     },
-    {
-      field: 'departureDate',
-      hide: false,
-      headerName: 'Departure Date',
-      flex: 1,
-    },
-    {
-      field: 'returnDate',
-      hide: false,
-      headerName: 'Return Date',
-      flex: 1,
-      valueFormatter: ({ value }) => DateTimeFormater(value)
-    },
+    // {
+    //   field: 'departureDate',
+    //   hide: false,
+    //   headerName: 'Departure Date',
+    //   flex: 1,
+    // },
+    // {
+    //   field: 'returnDate',
+    //   hide: false,
+    //   headerName: 'Return Date',
+    //   flex: 1,
+    //   valueFormatter: ({ value }) => DateTimeFormater(value)
+    // },
     {
       field: 'createDate',
       hide: false,
       headerName: 'Created On',
       flex: 1,
+      valueFormatter: ({ value }) => DateTimeFormater(value),
     },
-  ]
+    {
+      field: '',
+      hide: false,
+      headerName: 'Action',
+      flex: 1,
+    },
+  ];
 
   const ordreMissionInitialState = {
     columns: {
       columnVisibilityModel: {
-        Id: true
-      }
-    }
-  }
+        Id: true,
+      },
+    },
+  };
 
   const handleOnCreateButtonClick = () => {
-    history.push('/my-requests');
-  }
+    history.push('/my-requests/ordre-mission/add');
+  };
 
   useEffect(() => {
     if (errorLoadingOrdreMissions === null) {
@@ -132,7 +142,11 @@ export function OrdreMission() {
       }}
     >
       <Box height={70}>
-        <IconButton style={{ marginBottom: '100px' }} size="small" onClick={handleOnCreateButtonClick}>
+        <IconButton
+          style={{ marginBottom: '100px' }}
+          size="small"
+          onClick={handleOnCreateButtonClick}
+        >
           <AddCircleIcon
             fontSize="large"
             sx={{ color: 'green' }}

@@ -12,9 +12,7 @@ const camelToTitle = (str) =>
 const DateTimeFormater = (DT) => {
   // Changes date time format from (yyyy-mm-ddThh:mm:ssz) to yyyy/mm/dd hh:mm
   const date = new Date(DT);
-  const formattedDate = `${date.getFullYear()}/${(date.getMonth() + 1)
-    .toString()
-    .padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}`;
+  const formattedDate = `${date.getFullYear()}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}`;
   const formattedTime = `${date.getHours().toString().padStart(2, '0')}:${date
     .getMinutes()
     .toString()

@@ -19,6 +19,17 @@ export const accessControlRules = {
         'general-director',
         'treasury',
       ],
+      addOrdreMission: {
+        path: '/my-requests/ordre-mission/add',
+        accessLevel: [
+          'normal-requester',
+          'department-manager',
+          'human-resources',
+          'finance-department',
+          'general-director',
+          'treasury',
+        ],
+      },
     },
     avanceVoyage: {
       path: '/my-requests/avance-voyage',
@@ -54,4 +65,6 @@ export const accessControlRules = {
       ],
     },
   },
+
+
 };

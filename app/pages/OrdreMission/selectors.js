@@ -19,13 +19,27 @@ const makeSelectOrdreMission = () =>
   createSelector(selectOrdreMissionDomain, (substate) => substate);
 
 const makeSelectLoadingOrdreMissions = () =>
-  createSelector(selectOrdreMissionDomain, (substate) => substate.loadingOrdreMissions);
+  createSelector(
+    selectOrdreMissionDomain,
+    (substate) => substate.loadingOrdreMissions,
+  );
 
 const makeSelectErrorLoadingOrdreMissions = () =>
-  createSelector(selectOrdreMissionDomain, (substate) => substate.errorLoadingOrdreMissions);
+  createSelector(
+    selectOrdreMissionDomain,
+    (substate) => substate.errorLoadingOrdreMissions,
+  );
 
 const makeSelectOrdreMissions = () =>
-  createSelector(selectOrdreMissionDomain, (substate) => substate.ordreMissions);
+  createSelector(
+    selectOrdreMissionDomain,
+    (substate) => substate.ordreMissions,
+  );
 
 export default makeSelectOrdreMission;
-export { selectOrdreMissionDomain, makeSelectLoadingOrdreMissions, makeSelectErrorLoadingOrdreMissions, makeSelectOrdreMissions };
+export {
+  selectOrdreMissionDomain,
+  makeSelectLoadingOrdreMissions,
+  makeSelectErrorLoadingOrdreMissions,
+  makeSelectOrdreMissions,
+};

@@ -8,14 +8,15 @@
   "app.containers.LanguageToggle.title": "Language",
   "app.containers.MyRequests.header": "This is the MyRequests container!",
   "app.containers.OrdreMission.header": "This is the OrdreMission container!",
-  "app.containers.SideBar.avanceCaisse": "-avanceCaisse",
-  "app.containers.SideBar.avanceVoyage": "-avanceVoyage",
-  "app.containers.SideBar.depenseCaisse": "-depenseCaisse",
+  "app.containers.SideBar.avanceCaisse": "Avance Caisse",
+  "app.containers.SideBar.avanceVoyage": "Avance Voyage",
+  "app.containers.SideBar.depenseCaisse": "Depense Caisse",
   "app.containers.SideBar.login": "Log in",
   "app.containers.SideBar.logout": "Log out",
-  "app.containers.SideBar.myRequests": "-myRequests",
+  "app.containers.SideBar.myRequests": "My Requests",
   "app.containers.SideBar.notFound": "Not found",
-  "app.containers.SideBar.ordreMission": "-ordreMission",
+  "app.containers.SideBar.ordreMission": "Ordre Mission",
   "app.containers.SideBar.overview": "Overview",
-  "app.containers.SideBar.unauthorized": "Unauthorized"
+  "app.containers.SideBar.unauthorized": "Unauthorized",
+  "app.containers.OrdreMissionForm.header": "OrdreMissionForm"
 }
