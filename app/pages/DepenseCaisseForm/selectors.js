@@ -8,16 +8,14 @@ import { initialState } from './reducer';
 const selectDepenseCaisseFormDomain = (state) =>
   state.depenseCaisseForm || initialState;
 
-/**
- * Other specific selectors
- */
-
-/**
- * Default selector used by DepenseCaisseForm
- */
+const makeSelectOnBehalf = () =>
+  createSelector(
+    selectDepenseCaisseFormDomain,
+    (substate) => substate.onBehalfSelection,
+  );
 
 const makeSelectDepenseCaisseForm = () =>
   createSelector(selectDepenseCaisseFormDomain, (substate) => substate);
 
 export default makeSelectDepenseCaisseForm;
-export { selectDepenseCaisseFormDomain };
+export { selectDepenseCaisseFormDomain, makeSelectOnBehalf };

@@ -5,7 +5,7 @@
  */
 
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { Box, Stack } from '@mui/system';
 import { v4 as uuidv4 } from 'uuid';
@@ -33,20 +33,23 @@ import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import { Label } from '@mui/icons-material';
 import dayjs from 'dayjs';
 import Expenses from './Expenses';
-import makeSelectDepenseCaisseForm from './selectors';
+import makeSelectDepenseCaisseForm, { makeSelectOnBehalf } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
+import { SelectOnBehalfAction } from './actions';
 
 const mapStateToProps = createStructuredSelector({
   depenseCaisseForm: makeSelectDepenseCaisseForm(),
   isSideBarVisible: makeSelectIsSideBarVisible(),
+  onBehalfSelection: makeSelectOnBehalf(),
 });
 
 export function DepenseCaisseForm() {
   useInjectReducer({ key: 'depenseCaisseForm', reducer });
   useInjectSaga({ key: 'depenseCaisseForm', saga });
+  const dispatch = useDispatch();
 
-  const { isSideBarVisible } = useSelector(mapStateToProps);
+  const { isSideBarVisible, onBehalfSelection } = useSelector(mapStateToProps);
   const [expenses, setExpenses] = useState([
     {
       id: 0,
@@ -62,6 +65,12 @@ export function DepenseCaisseForm() {
   //   const file = e.target.files[0];
   //   setSelectedFile(file);
   // };
+
+  const handleOnBehalfSelectionChange = (event) => {
+    if (event.target.value !== onBehalfSelection.toString()) {
+      dispatch(SelectOnBehalfAction(event.target.value.toString()));
+    }
+  };
 
   const addExpense = () => {
     const expenseId = uuidv4();
@@ -210,10 +219,105 @@ export function DepenseCaisseForm() {
           justifyContent: 'center',
           marginBottom: '20px',
         }}
+        value={onBehalfSelection.toString()} // Convert the boolean to a string
+        onChange={handleOnBehalfSelectionChange}
       >
         <FormControlLabel value="true" control={<Radio />} label="Yes" />
         <FormControlLabel value="false" control={<Radio />} label="No" />
       </RadioGroup>
+
+      {onBehalfSelection.toString() === 'true' ? (
+        <>
+          <Box
+            display="flex"
+            justifyContent="center"
+            textAlign="center"
+            marginBottom={2}
+          >
+            <h1 style={{ fontSize: '18px' }}>
+              Please fill the actual requester information*
+            </h1>
+          </Box>
+
+          <Box justifyContent="center" textAlign="center" marginBottom={3}>
+            <Box
+              display="flex"
+              justifyContent="center"
+              gap={2}
+              marginBottom={2}
+            >
+              <TextField
+                id="outlined-basic"
+                label="First Name"
+                variant="outlined"
+                required
+              />
+              <TextField
+                id="outlined-basic"
+                label="Last Name"
+                variant="outlined"
+                required
+              />
+              <TextField
+                id="outlined-basic"
+                label="Registration Number"
+                variant="outlined"
+                required
+              />
+            </Box>
+            <Box
+              display="flex"
+              justifyContent="center"
+              gap={2}
+              marginBottom={2}
+            >
+              <TextField
+                id="outlined-basic"
+                label="Job Title"
+                variant="outlined"
+                required
+              />
+              {/* <TextField
+                id="outlined-basic"
+                label="Hiring Date"
+                variant="outlined"
+                required
+              /> */}
+              <LocalizationProvider reuired dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  sx={{ maxWidth: 210 }}
+                  required
+                  label="Expense Date"
+                />
+              </LocalizationProvider>
+              <TextField
+                id="outlined-basic"
+                label="Department"
+                variant="outlined"
+                required
+              />
+            </Box>
+            <TextField
+              id="outlined-basic"
+              label="Manager"
+              variant="outlined"
+              required
+            />
+          </Box>
+        </>
+      ) : (
+        <></>
+      )}
+
+      {/* DIVIDER */}
+      <Box
+        display="flex"
+        justifyContent="center"
+        textAlign="center"
+        marginBottom={3}
+      >
+        <Divider style={{ width: '60%', opacity: 0.7 }} />
+      </Box>
 
       <Box
         textAlign="center"
@@ -225,12 +329,12 @@ export function DepenseCaisseForm() {
           Please choose the currency
         </FormLabel>
       </Box>
-      <Stack direction="column" alignItems="center" justifyContent="center">
+      {/* <Stack direction="column" alignItems="center" justifyContent="center">
         <Alert severity="info" width="50px">
           If your request consists of multiple currencies, you may fill another
           form.
         </Alert>
-      </Stack>
+      </Stack> */}
       <RadioGroup
         row
         aria-labelledby="demo-row-radio-buttons-group-label"
@@ -245,16 +349,6 @@ export function DepenseCaisseForm() {
         <FormControlLabel value="MAD" control={<Radio />} label="MAD" />
         <FormControlLabel value="EUR" control={<Radio />} label="EUR" />
       </RadioGroup>
-
-      {/* DIVIDER */}
-      <Box
-        display="flex"
-        justifyContent="center"
-        textAlign="center"
-        marginBottom={3}
-      >
-        <Divider style={{ width: '60%', opacity: 0.7 }} />
-      </Box>
 
       <Box
         display="flex"

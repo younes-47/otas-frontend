@@ -36,7 +36,7 @@ import reducer from './reducer';
 import makeSelectOrdreMissionForm, { makeSelectOnBehalf } from './selectors';
 import Trips from './Trips';
 import Expenses from './Expenses';
-import { selectOnBehalf } from './actions';
+import { SelectOnBehalfAction } from './actions';
 
 const mapStateToProps = createStructuredSelector({
   ordreMissionForm: makeSelectOrdreMissionForm(),
@@ -52,9 +52,9 @@ export function OrdreMissionForm() {
   const dispatch = useDispatch();
   const { isSideBarVisible, onBehalfSelection } = useSelector(mapStateToProps);
 
-  const handleRadioChange = (event) => {
+  const handleOnBehalfSelectionChange = (event) => {
     if (event.target.value !== onBehalfSelection.toString()) {
-      dispatch(selectOnBehalf(event.target.value.toString()));
+      dispatch(SelectOnBehalfAction(event.target.value.toString()));
     }
   };
 
@@ -250,11 +250,12 @@ export function OrdreMissionForm() {
           marginBottom: '20px',
         }}
         value={onBehalfSelection.toString()} // Convert the boolean to a string
-        onChange={handleRadioChange}
+        onChange={handleOnBehalfSelectionChange}
       >
         <FormControlLabel value="true" control={<Radio />} label="Yes" />
         <FormControlLabel value="false" control={<Radio />} label="No" />
       </RadioGroup>
+
       {onBehalfSelection.toString() === 'true' ? (
         <>
           <Box
@@ -337,6 +338,7 @@ export function OrdreMissionForm() {
       ) : (
         <></>
       )}
+
       {/* DIVIDER */}
       <Box
         display="flex"

@@ -5,7 +5,7 @@
  */
 
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { Box, Stack } from '@mui/system';
 import { v4 as uuidv4 } from 'uuid';
@@ -30,20 +30,30 @@ import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import dayjs from 'dayjs';
-import makeSelectAvanceCaisseForm from './selectors';
+import makeSelectAvanceCaisseForm, { makeSelectOnBehalf } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
 import Expenses from './Expenses';
+import { SelectOnBehalfAction } from './actions';
 
 const mapStateToProps = createStructuredSelector({
   avanceCaisseForm: makeSelectAvanceCaisseForm(),
   isSideBarVisible: makeSelectIsSideBarVisible(),
+  onBehalfSelection: makeSelectOnBehalf(),
 });
 
 export function AvanceCaisseForm() {
   useInjectReducer({ key: 'avanceCaisseForm', reducer });
   useInjectSaga({ key: 'avanceCaisseForm', saga });
-  const { isSideBarVisible } = useSelector(mapStateToProps);
+  const dispatch = useDispatch();
+  const { isSideBarVisible, onBehalfSelection } = useSelector(mapStateToProps);
+
+  const handleOnBehalfSelectionChange = (event) => {
+    if (event.target.value !== onBehalfSelection.toString()) {
+      dispatch(SelectOnBehalfAction(event.target.value.toString()));
+    }
+  };
+
   const [expenses, setExpenses] = useState([
     {
       id: 0,
@@ -200,10 +210,105 @@ export function AvanceCaisseForm() {
           justifyContent: 'center',
           marginBottom: '20px',
         }}
+        value={onBehalfSelection.toString()} // Convert the boolean to a string
+        onChange={handleOnBehalfSelectionChange}
       >
         <FormControlLabel value="true" control={<Radio />} label="Yes" />
         <FormControlLabel value="false" control={<Radio />} label="No" />
       </RadioGroup>
+
+      {onBehalfSelection.toString() === 'true' ? (
+        <>
+          <Box
+            display="flex"
+            justifyContent="center"
+            textAlign="center"
+            marginBottom={2}
+          >
+            <h1 style={{ fontSize: '18px' }}>
+              Please fill the actual requester information*
+            </h1>
+          </Box>
+
+          <Box justifyContent="center" textAlign="center" marginBottom={3}>
+            <Box
+              display="flex"
+              justifyContent="center"
+              gap={2}
+              marginBottom={2}
+            >
+              <TextField
+                id="outlined-basic"
+                label="First Name"
+                variant="outlined"
+                required
+              />
+              <TextField
+                id="outlined-basic"
+                label="Last Name"
+                variant="outlined"
+                required
+              />
+              <TextField
+                id="outlined-basic"
+                label="Registration Number"
+                variant="outlined"
+                required
+              />
+            </Box>
+            <Box
+              display="flex"
+              justifyContent="center"
+              gap={2}
+              marginBottom={2}
+            >
+              <TextField
+                id="outlined-basic"
+                label="Job Title"
+                variant="outlined"
+                required
+              />
+              {/* <TextField
+                id="outlined-basic"
+                label="Hiring Date"
+                variant="outlined"
+                required
+              /> */}
+              <LocalizationProvider reuired dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  sx={{ maxWidth: 210 }}
+                  required
+                  label="Expense Date"
+                />
+              </LocalizationProvider>
+              <TextField
+                id="outlined-basic"
+                label="Department"
+                variant="outlined"
+                required
+              />
+            </Box>
+            <TextField
+              id="outlined-basic"
+              label="Manager"
+              variant="outlined"
+              required
+            />
+          </Box>
+        </>
+      ) : (
+        <></>
+      )}
+
+      {/* DIVIDER */}
+      <Box
+        display="flex"
+        justifyContent="center"
+        textAlign="center"
+        marginBottom={3}
+      >
+        <Divider style={{ width: '60%', opacity: 0.7 }} />
+      </Box>
 
       <Box
         textAlign="center"
@@ -215,12 +320,12 @@ export function AvanceCaisseForm() {
           Please choose the currency
         </FormLabel>
       </Box>
-      <Stack direction="column" alignItems="center" justifyContent="center">
+      {/* <Stack direction="column" alignItems="center" justifyContent="center">
         <Alert severity="info" width="50px">
           If your request consists of multiple currencies, you may to fill
           another form.
         </Alert>
-      </Stack>
+      </Stack> */}
       <RadioGroup
         row
         aria-labelledby="demo-row-radio-buttons-group-label"
@@ -235,16 +340,6 @@ export function AvanceCaisseForm() {
         <FormControlLabel value="MAD" control={<Radio />} label="MAD" />
         <FormControlLabel value="EUR" control={<Radio />} label="EUR" />
       </RadioGroup>
-
-      {/* DIVIDER */}
-      <Box
-        display="flex"
-        justifyContent="center"
-        textAlign="center"
-        marginBottom={3}
-      >
-        <Divider style={{ width: '60%', opacity: 0.7 }} />
-      </Box>
 
       <Box
         display="flex"

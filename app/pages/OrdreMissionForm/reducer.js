@@ -9,11 +9,10 @@ import {
   ADD_ORDRE_MISSION,
   UPDATE_ORDRE_MISSION,
   VIEW_ORDRE_MISSION,
-  ON_BEHALF_SELECTION,
+  CHANGE_ONBEHALF_SELECTION_ACTION,
 } from './constants';
 
 export const initialState = {
-  CHANGE_ABROAD_ACTION: false,
   onBehalfSelection: 'false',
 };
 
@@ -38,7 +37,7 @@ const ordreMissionFormReducer = (state = initialState, action) =>
         draft.UpdateOrdreMission = false;
         draft.ViewOrdreMission = true;
         break;
-      case ON_BEHALF_SELECTION:
+      case CHANGE_ONBEHALF_SELECTION_ACTION:
         draft.onBehalfSelection = action.selection;
         break;
     }
