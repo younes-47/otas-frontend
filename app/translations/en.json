@@ -1,13 +1,16 @@
 {
   "app.containers.AvanceCaisse.header": "This is the AvanceCaisse container!",
+  "app.containers.AvanceCaisseForm.header": "This is the AvanceCaisseForm container!",
   "app.containers.AvanceVoyage.header": "This is the AvanceVoyage container!",
   "app.containers.Azerty.header": "This is the Azerty container!",
   "app.containers.DepenseCaisse.header": "This is the DepenseCaisse container!",
+  "app.containers.DepenseCaisseForm.header": "This is the DepenseCaisseForm container!",
   "app.containers.LanguageToggle.english": "English",
   "app.containers.LanguageToggle.french": "French",
   "app.containers.LanguageToggle.title": "Language",
   "app.containers.MyRequests.header": "This is the MyRequests container!",
   "app.containers.OrdreMission.header": "This is the OrdreMission container!",
+  "app.containers.OrdreMissionForm.header": "OrdreMissionForm",
   "app.containers.SideBar.avanceCaisse": "Avance Caisse",
   "app.containers.SideBar.avanceVoyage": "Avance Voyage",
   "app.containers.SideBar.depenseCaisse": "Depense Caisse",
@@ -16,7 +19,5 @@
   "app.containers.SideBar.myRequests": "My Requests",
   "app.containers.SideBar.notFound": "Not found",
   "app.containers.SideBar.ordreMission": "Ordre Mission",
-  "app.containers.SideBar.overview": "Overview",
-  "app.containers.SideBar.unauthorized": "Unauthorized",
-  "app.containers.OrdreMissionForm.header": "OrdreMissionForm"
+  "app.containers.SideBar.unauthorized": "Unauthorized"
 }
