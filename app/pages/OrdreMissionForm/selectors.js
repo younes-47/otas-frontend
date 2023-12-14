@@ -36,6 +36,11 @@ const makeSelectViewOrdreMission = () =>
     selectOrdreMissionFormDomain,
     (substate) => substate.ViewOrdreMission,
   );
+const makeSelectOnBehalf = () =>
+  createSelector(
+    selectOrdreMissionFormDomain,
+    (substate) => substate.onBehalfSelection,
+  );
 
 export default makeSelectOrdreMissionForm;
 export {
@@ -43,4 +48,5 @@ export {
   makeSelectAddOrdreMission,
   makeSelectUpdateOrdreMission,
   makeSelectViewOrdreMission,
+  makeSelectOnBehalf,
 };

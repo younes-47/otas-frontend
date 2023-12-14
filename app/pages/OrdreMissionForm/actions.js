@@ -9,6 +9,7 @@ import {
   ADD_ORDRE_MISSION_ERROR,
   ADD_ORDRE_MISSION_SUCCESS,
   DEFAULT_ACTION,
+  ON_BEHALF_SELECTION,
   UPDATE_ORDRE_MISSION,
   UPDATE_ORDRE_MISSION_ERROR,
   UPDATE_ORDRE_MISSION_SUCCESS,
@@ -57,5 +58,11 @@ export function UpdateOrdreMisisonErrorAction() {
 export function ViewOrdreMissionAction() {
   return {
     type: VIEW_ORDRE_MISSION,
+  };
+}
+export function selectOnBehalf(selection) {
+  return {
+    type: ON_BEHALF_SELECTION,
+    selection,
   };
 }

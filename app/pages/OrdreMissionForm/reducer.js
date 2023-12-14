@@ -9,9 +9,13 @@ import {
   ADD_ORDRE_MISSION,
   UPDATE_ORDRE_MISSION,
   VIEW_ORDRE_MISSION,
+  ON_BEHALF_SELECTION,
 } from './constants';
 
-export const initialState = {};
+export const initialState = {
+  CHANGE_ABROAD_ACTION: false,
+  onBehalfSelection: 'false',
+};
 
 /* eslint-disable default-case, no-param-reassign */
 const ordreMissionFormReducer = (state = initialState, action) =>
@@ -33,6 +37,9 @@ const ordreMissionFormReducer = (state = initialState, action) =>
         draft.AddOrdreMission = false;
         draft.UpdateOrdreMission = false;
         draft.ViewOrdreMission = true;
+        break;
+      case ON_BEHALF_SELECTION:
+        draft.onBehalfSelection = action.selection;
         break;
     }
   });
