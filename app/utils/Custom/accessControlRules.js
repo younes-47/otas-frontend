@@ -52,6 +52,17 @@ export const accessControlRules = {
         'general-director',
         'treasury',
       ],
+      addAvanceCaisse: {
+        path: '/my-requests/avance-caisse/add',
+        accessLevel: [
+          'normal-requester',
+          'department-manager',
+          'human-resources',
+          'finance-department',
+          'general-director',
+          'treasury',
+        ],
+      },
     },
     depenseCaisse: {
       path: '/my-requests/depense-caisse',
@@ -63,8 +74,17 @@ export const accessControlRules = {
         'general-director',
         'treasury',
       ],
+      addDepenseCaisse: {
+        path: '/my-requests/depense-caisse/add',
+        accessLevel: [
+          'normal-requester',
+          'department-manager',
+          'human-resources',
+          'finance-department',
+          'general-director',
+          'treasury',
+        ],
+      },
     },
   },
-
-
 };
