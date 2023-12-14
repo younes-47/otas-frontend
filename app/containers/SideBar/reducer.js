@@ -11,7 +11,7 @@ import {
 } from './constants';
 
 export const initialState = {
-  selectedMenu: 'overview',
+  selectedMenu: 'myRequests',
   isSideBarVisible: true,
 };
 

@@ -9,10 +9,6 @@ import { defineMessages } from 'react-intl';
 export const scope = 'app.containers.SideBar';
 
 export default defineMessages({
-  overview: {
-    id: `${scope}.overview`,
-    defaultMessage: '-Overview',
-  },
   myRequests: {
     id: `${scope}.myRequests`,
     defaultMessage: '-myRequests',
