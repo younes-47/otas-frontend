@@ -151,7 +151,7 @@ export function OrdreMission() {
             fontSize="large"
             sx={{ color: 'green' }}
           ></AddCircleIcon>
-          <p style={{ color: 'green' }}>Request</p>
+          <h1 style={{ color: 'green', fontSize: '20px' }}>Request</h1>
         </IconButton>
       </Box>
       {!errorLoadingOrdreMissions ? (
