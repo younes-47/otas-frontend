@@ -4,28 +4,25 @@
  *
  */
 
-import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
+import React, { useEffect } from 'react';
 import { createStructuredSelector } from 'reselect';
-import { compose } from 'redux';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-
+import { useDispatch, useSelector } from 'react-redux';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
-import { makeSelectDepenseCaisses, makeSelectErrorLoadingDepenseCaisses, makeSelectLoadingDepenseCaisses } from './selectors';
-import reducer from './reducer';
-import saga from './saga';
-import messages from './messages';
-import { useDispatch, useSelector } from 'react-redux';
 import Box from '@mui/material/Box';
 import { IconButton } from '@mui/material';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import Tables from 'components/Tables';
-import { useEffect } from 'react';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import { DateTimeFormater } from 'utils/Custom/stringManipulation';
+import saga from './saga';
+import reducer from './reducer';
+import {
+  makeSelectDepenseCaisses,
+  makeSelectErrorLoadingDepenseCaisses,
+  makeSelectLoadingDepenseCaisses,
+} from './selectors';
 import { loadDepenseCaisseAction } from './actions';
 
 const mapStateToProps = createStructuredSelector({
@@ -35,20 +32,19 @@ const mapStateToProps = createStructuredSelector({
   isSideBarVisible: makeSelectIsSideBarVisible(),
 });
 
-
 export function DepenseCaisse() {
   useInjectReducer({ key: 'depenseCaisse', reducer });
   useInjectSaga({ key: 'depenseCaisse', saga });
 
-  const history = useHistory()
-  const dispatch = useDispatch()
+  const history = useHistory();
+  const dispatch = useDispatch();
   const {
     depenseCaisses,
     loadingDepenseCaisses,
     errorLoadingDepenseCaisses,
     isSideBarVisible,
   } = useSelector(mapStateToProps);
-  
+
   const depenseCaisseColumns = [
     {
       field: 'id',
@@ -100,27 +96,25 @@ export function DepenseCaisse() {
       flex: 1,
       valueFormatter: ({ value }) => DateTimeFormater(value),
     },
-  ]
-  
+  ];
+
   const depenseCaisseInitialState = {
     columns: {
       columnVisibilityModel: {
-        Id: true
-      }
-    }
-  }
-  
+        Id: true,
+      },
+    },
+  };
+
   const handleOnCreateButtonClick = () => {
-    history.push('/my-requests');
-  }
-  
+    history.push('/my-requests/depense-caisse/add');
+  };
+
   useEffect(() => {
     if (errorLoadingDepenseCaisses === null) {
       dispatch(loadDepenseCaisseAction());
     }
   }, [depenseCaisses]);
-  
-
 
   return (
     <Box
@@ -139,12 +133,16 @@ export function DepenseCaisse() {
       }}
     >
       <Box height={70}>
-        <IconButton style={{ marginBottom: '100px' }} size="small" onClick={handleOnCreateButtonClick}>
+        <IconButton
+          style={{ marginBottom: '100px' }}
+          size="small"
+          onClick={handleOnCreateButtonClick}
+        >
           <AddCircleIcon
             fontSize="large"
             sx={{ color: 'green' }}
           ></AddCircleIcon>
-          <p style={{ color: 'green' }}>Request</p>
+          <h1 style={{ color: 'green', fontSize: '20px' }}>Request</h1>
         </IconButton>
       </Box>
       {!errorLoadingDepenseCaisses ? (
