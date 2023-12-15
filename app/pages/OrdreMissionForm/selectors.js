@@ -42,6 +42,18 @@ const makeSelectOnBehalf = () =>
     (substate) => substate.onBehalfSelection,
   );
 
+const makeSelectAbroad = () =>
+  createSelector(
+    selectOrdreMissionFormDomain,
+    (substate) => substate.abroadSelection,
+  );
+
+const makeSelectTransportationMethodSelector = () =>
+  createSelector(
+    selectOrdreMissionFormDomain,
+    (substate) => substate.transportationMethodSelector,
+  );
+
 export default makeSelectOrdreMissionForm;
 export {
   selectOrdreMissionFormDomain,
@@ -49,4 +61,6 @@ export {
   makeSelectUpdateOrdreMission,
   makeSelectViewOrdreMission,
   makeSelectOnBehalf,
+  makeSelectAbroad,
+  makeSelectTransportationMethodSelector,
 };

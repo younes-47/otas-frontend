@@ -27,5 +27,5 @@ export const CHANGE_ONBEHALF_SELECTION_ACTION =
   'app/OrdreMission/ON_BEHALF_SELECTION';
 
 export const webService = {
-  ADD_ORDRE_MISSION: '/OrdreMission/Requests/Create',
+  ADD_ORDRE_MISSION: '/OrdreMission/Create',
 };

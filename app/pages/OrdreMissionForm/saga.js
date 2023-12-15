@@ -1,17 +1,22 @@
-import { call, takeLatest } from 'redux-saga/effects';
+import { call, put, takeLatest } from 'redux-saga/effects';
 import request from 'utils/request';
 import { ADD_ORDRE_MISSION, webService } from './constants';
+import {
+  AddOrdreMissionErrorAction,
+  AddOrdreMissionSuccessAction,
+  AddOrdreMissionAction,
+} from './actions';
 
-export function* AddOrdreMission(data) {
+export function* AddOrdreMission({ data }) {
   try {
-    yield call(request.post, webService.ADD_ORDRE_MISSION, {
+    yield call(request.post, webService.ADD_ORDRE_MISSION, data, {
       headers: {
         'Content-Type': 'application/json',
       },
-      data,
     });
+    yield put(AddOrdreMissionSuccessAction());
   } catch (error) {
-    console.log(error);
+    yield put(AddOrdreMissionErrorAction(error));
   }
 }
 

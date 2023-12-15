@@ -67,7 +67,7 @@ export function DepenseCaisseForm() {
   // };
 
   const handleOnBehalfSelectionChange = (event) => {
-    if (event.target.value !== onBehalfSelection.toString()) {
+    if (event.target.value !== String(onBehalfSelection)) {
       dispatch(SelectOnBehalfAction(event.target.value.toString()));
     }
   };
@@ -102,7 +102,7 @@ export function DepenseCaisseForm() {
   const handleOnReturnButtonClick = () => {
     history.push('/my-requests/depense-caisse');
   };
-
+  console.log(onBehalfSelection);
   return (
     <Box
       position="fixed"
@@ -219,14 +219,15 @@ export function DepenseCaisseForm() {
           justifyContent: 'center',
           marginBottom: '20px',
         }}
-        value={onBehalfSelection.toString()} // Convert the boolean to a string
+        required
+        value={onBehalfSelection ? onBehalfSelection.toString() : ''} // Convert the boolean to a string
         onChange={handleOnBehalfSelectionChange}
       >
         <FormControlLabel value="true" control={<Radio />} label="Yes" />
         <FormControlLabel value="false" control={<Radio />} label="No" />
       </RadioGroup>
 
-      {onBehalfSelection.toString() === 'true' ? (
+      {onBehalfSelection && onBehalfSelection.toString() === 'true' ? (
         <>
           <Box
             display="flex"
@@ -277,17 +278,11 @@ export function DepenseCaisseForm() {
                 variant="outlined"
                 required
               />
-              {/* <TextField
-                id="outlined-basic"
-                label="Hiring Date"
-                variant="outlined"
-                required
-              /> */}
               <LocalizationProvider reuired dateAdapter={AdapterDayjs}>
                 <DatePicker
                   sx={{ maxWidth: 210 }}
                   required
-                  label="Expense Date"
+                  label="Hiring Date"
                 />
               </LocalizationProvider>
               <TextField

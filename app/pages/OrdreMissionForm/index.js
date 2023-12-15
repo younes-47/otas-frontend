@@ -31,59 +31,114 @@ import { v4 as uuidv4 } from 'uuid';
 import { Stack } from '@mui/system';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import dayjs from 'dayjs';
+import { date } from 'yup';
 import saga from './saga';
 import reducer from './reducer';
-import makeSelectOrdreMissionForm, { makeSelectOnBehalf } from './selectors';
+import makeSelectOrdreMissionForm, {
+  makeSelectAbroad,
+  makeSelectOnBehalf,
+} from './selectors';
 import Trips from './Trips';
 import Expenses from './Expenses';
-import { SelectOnBehalfAction } from './actions';
+import {
+  AddOrdreMissionAction,
+  SelectAbroadAction,
+  SelectOnBehalfAction,
+} from './actions';
 
 const mapStateToProps = createStructuredSelector({
   ordreMissionForm: makeSelectOrdreMissionForm(),
   isSideBarVisible: makeSelectIsSideBarVisible(),
   onBehalfSelection: makeSelectOnBehalf(),
+  abroadSelection: makeSelectAbroad(),
 });
 
 export function OrdreMissionForm() {
   useInjectReducer({ key: 'ordreMissionForm', reducer });
   useInjectSaga({ key: 'ordreMissionForm', saga });
-
-  const history = useHistory();
-  const dispatch = useDispatch();
-  const { isSideBarVisible, onBehalfSelection } = useSelector(mapStateToProps);
-
-  const handleOnBehalfSelectionChange = (event) => {
-    if (event.target.value !== onBehalfSelection.toString()) {
-      dispatch(SelectOnBehalfAction(event.target.value.toString()));
-    }
-  };
-
+  const { isSideBarVisible, onBehalfSelection, abroadSelection } =
+    useSelector(mapStateToProps);
   const [trips, setTrips] = useState([
     {
       id: 0,
-      departure: '',
+      departurePlace: '',
       destination: '',
       departureDate: dayjs(Date()),
       transportationMethod: '',
       unit: '',
-      value: '',
-      highwayFee: '',
-      estimatedTripFee: '',
+      value: 0,
+      highwayFee: 0,
     },
   ]);
+  const [actualRequester, setActualRequester] = useState({
+    firstName: '',
+    lastName: '',
+    registrationNumber: 0,
+    jobTitle: '',
+    hiringDate: dayjs(Date()),
+    department: '',
+    manager: '',
+  });
   const [expenses, setExpenses] = useState([]);
+  const [description, setDescription] = useState('');
+  const [departureDate, setDepartureDate] = useState('');
+  const [returnDate, setReturnDate] = useState('');
+  const [tripsCounter, setTripsCounter] = useState(1); // This counter is being used for the uniqueness of trips ids
+  const [expensesCounter, setExpensesCounter] = useState(0); // This counter is being used for the uniqueness of expenses ids
+  const data = {
+    UserId: '4',
+    description,
+    Abroad: abroadSelection === 'true',
+    departureDate,
+    returnDate,
+    onBehalf: onBehalfSelection === 'true',
+    trips,
+    expenses,
+    actualRequester,
+  };
+  const history = useHistory();
+  const dispatch = useDispatch();
+
+  const handleOnBehalfSelectionChange = (event) => {
+    if (event.target.value !== String(onBehalfSelection)) {
+      dispatch(SelectOnBehalfAction(event.target.value.toString()));
+    }
+  };
+  const handleAbroadSelectionChange = (event) => {
+    if (event.target.value !== String(abroadSelection)) {
+      dispatch(SelectAbroadAction(event.target.value.toString()));
+    }
+  };
+
+  const updateDescriptionData = (value) => {
+    setDescription(value);
+  };
+
+  const updateReturnDateData = (value) => {
+    const stringifiedValue = value.toISOString();
+    setReturnDate(stringifiedValue);
+  };
+
+  const updateActualRequesterData = (fieldName, value) => {
+    const updatedValue =
+      fieldName === 'hiringDate' ? value.toISOString() : value;
+
+    const updatedRequester = { ...actualRequester, [fieldName]: updatedValue };
+
+    setActualRequester(updatedRequester);
+  };
+
   const addTrip = () => {
-    const tripId = uuidv4(); // generate random ID for each trip
+    setTripsCounter(tripsCounter + 1); // generate random ID for each trip by increment the counter
     const newTrip = {
-      id: tripId,
-      departure: '',
+      id: tripsCounter,
+      departurePlace: '',
       destination: '',
       departureDate: dayjs(Date()),
       transportationMethod: '',
       unit: '',
-      value: '',
-      highwayFee: '',
-      estimatedTripFee: '',
+      value: 0,
+      highwayFee: 0,
     };
     setTrips((prevTrips) => [...prevTrips, newTrip]);
   };
@@ -94,6 +149,21 @@ export function OrdreMissionForm() {
         trip.id === tripId ? { ...trip, [field]: value } : trip,
       ),
     );
+
+    const tripWithSmallestDepartureDate = trips.reduce(
+      (initTrip, currentTrip) => {
+        if (currentTrip.departureDate < initTrip.departureDate) {
+          return currentTrip;
+        }
+        return initTrip;
+      },
+      trips[0],
+    );
+    const smallestDepartureDate = new Date(
+      tripWithSmallestDepartureDate.departureDate,
+    );
+    const smallestDate = smallestDepartureDate.toISOString();
+    setDepartureDate(smallestDate);
   };
 
   const removeTrip = (tripId) => {
@@ -102,11 +172,11 @@ export function OrdreMissionForm() {
   };
 
   const addExpense = () => {
-    const expenseId = uuidv4();
+    setExpensesCounter(expensesCounter + 1);
     const newExpense = {
-      id: expenseId,
+      id: expensesCounter,
       description: '',
-      expenseDate: dayjs(Date()),
+      expenseDate: '',
       currency: '',
       estimatedExpenseFee: '',
     };
@@ -130,6 +200,11 @@ export function OrdreMissionForm() {
 
   // Handle on buttons click
   const handleOnReturnButtonClick = () => {
+    history.push('/my-requests/ordre-mission');
+  };
+
+  const handleOnSaveAsDraftClick = () => {
+    dispatch(AddOrdreMissionAction(data));
     history.push('/my-requests/ordre-mission');
   };
 
@@ -249,14 +324,14 @@ export function OrdreMissionForm() {
           justifyContent: 'center',
           marginBottom: '20px',
         }}
-        value={onBehalfSelection.toString()} // Convert the boolean to a string
+        value={onBehalfSelection ? onBehalfSelection.toString() : ''} // Convert the boolean to a string
         onChange={handleOnBehalfSelectionChange}
       >
         <FormControlLabel value="true" control={<Radio />} label="Yes" />
         <FormControlLabel value="false" control={<Radio />} label="No" />
       </RadioGroup>
 
-      {onBehalfSelection.toString() === 'true' ? (
+      {onBehalfSelection && onBehalfSelection.toString() === 'true' ? (
         <>
           <Box
             display="flex"
@@ -280,18 +355,33 @@ export function OrdreMissionForm() {
                 id="outlined-basic"
                 label="First Name"
                 variant="outlined"
+                value={actualRequester.firstName}
+                onChange={(e) =>
+                  updateActualRequesterData('firstName', e.target.value)
+                }
                 required
               />
               <TextField
                 id="outlined-basic"
                 label="Last Name"
                 variant="outlined"
+                value={actualRequester.lastName}
+                onChange={(e) =>
+                  updateActualRequesterData('lastName', e.target.value)
+                }
                 required
               />
               <TextField
                 id="outlined-basic"
                 label="Registration Number"
                 variant="outlined"
+                value={actualRequester.registrationNumber}
+                onChange={(e) =>
+                  updateActualRequesterData(
+                    'registrationNumber',
+                    e.target.value,
+                  )
+                }
                 required
               />
             </Box>
@@ -305,25 +395,31 @@ export function OrdreMissionForm() {
                 id="outlined-basic"
                 label="Job Title"
                 variant="outlined"
+                value={actualRequester.jobTitle}
+                onChange={(e) =>
+                  updateActualRequesterData('jobTitle', e.target.value)
+                }
                 required
               />
-              {/* <TextField
-                id="outlined-basic"
-                label="Hiring Date"
-                variant="outlined"
-                required
-              /> */}
               <LocalizationProvider reuired dateAdapter={AdapterDayjs}>
                 <DatePicker
                   sx={{ maxWidth: 210 }}
                   required
-                  label="Expense Date"
+                  label="Hiring Date"
+                  value={actualRequester.hiringDate}
+                  onChange={(e) =>
+                    updateActualRequesterData('hiringDate', e.$d)
+                  }
                 />
               </LocalizationProvider>
               <TextField
                 id="outlined-basic"
                 label="Department"
                 variant="outlined"
+                value={actualRequester.department}
+                onChange={(e) =>
+                  updateActualRequesterData('department', e.target.value)
+                }
                 required
               />
             </Box>
@@ -331,6 +427,10 @@ export function OrdreMissionForm() {
               id="outlined-basic"
               label="Manager"
               variant="outlined"
+              value={actualRequester.manager}
+              onChange={(e) =>
+                updateActualRequesterData('manager', e.target.value)
+              }
               required
             />
           </Box>
@@ -364,11 +464,51 @@ export function OrdreMissionForm() {
           justifyContent: 'center',
           marginBottom: '20px',
         }}
+        value={abroadSelection ? abroadSelection.toString() : ''} // Convert the boolean to a string
+        onChange={handleAbroadSelectionChange}
       >
         <FormControlLabel value="true" control={<Radio />} label="Yes" />
         <FormControlLabel value="false" control={<Radio />} label="No" />
       </RadioGroup>
 
+      {/* DIVIDER */}
+      <Box
+        display="flex"
+        justifyContent="center"
+        textAlign="center"
+        marginBottom={3}
+      >
+        <Divider style={{ width: '60%', opacity: 0.7 }} />
+      </Box>
+
+      <Box textAlign="center" marginBottom={2}>
+        <FormLabel id="demo-row-radio-buttons-group-label">
+          When are you planning to return from this mission?
+        </FormLabel>
+      </Box>
+      <Box display="flex" justifyContent="center" gap={2} marginBottom={2}>
+        <LocalizationProvider reuired dateAdapter={AdapterDayjs}>
+          <DatePicker
+            sx={{ maxWidth: 210 }}
+            required
+            label="Return Date"
+            value={returnDate}
+            onChange={updateReturnDateData}
+          />
+        </LocalizationProvider>
+      </Box>
+
+      {/* DIVIDER */}
+      <Box
+        display="flex"
+        justifyContent="center"
+        textAlign="center"
+        marginBottom={3}
+      >
+        <Divider style={{ width: '60%', opacity: 0.7 }} />
+      </Box>
+
+      {/* DESCRIPTION */}
       <Box
         display="flex"
         justifyContent="center"
@@ -380,6 +520,8 @@ export function OrdreMissionForm() {
           multiline
           minRows={3}
           label="Mission description"
+          value={description}
+          onChange={(e) => updateDescriptionData(e.target.value)}
           required
           sx={{ width: '50%' }}
         />
@@ -456,7 +598,12 @@ export function OrdreMissionForm() {
         </Box>
       </Box>
       {expenses.map((expense) => (
-        <Box display="flex" justifyContent="center" flexDirection="row">
+        <Box
+          display="flex"
+          justifyContent="center"
+          flexDirection="row"
+          key={expense.id}
+        >
           <div key={expense.id}>
             <Expenses
               key={expense.id}
@@ -517,8 +664,12 @@ export function OrdreMissionForm() {
         >
           Return
         </Button>
-        <Button variant="contained" color="warning">
-          Save as Draf
+        <Button
+          variant="contained"
+          color="warning"
+          onClick={handleOnSaveAsDraftClick}
+        >
+          Save as Draft
         </Button>
         <Button variant="contained" color="success">
           Confirm

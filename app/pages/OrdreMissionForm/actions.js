@@ -14,6 +14,8 @@ import {
   UPDATE_ORDRE_MISSION_ERROR,
   UPDATE_ORDRE_MISSION_SUCCESS,
   VIEW_ORDRE_MISSION,
+  CHANGE_ABROAD_ACTION,
+  CHANGE_TRANSPORTATION_METHOD_ACTION,
 } from './constants';
 
 export function defaultAction() {
@@ -22,9 +24,10 @@ export function defaultAction() {
   };
 }
 
-export function AddOrdreMissionAction() {
+export function AddOrdreMissionAction(data) {
   return {
     type: ADD_ORDRE_MISSION,
+    data,
   };
 }
 
@@ -60,9 +63,23 @@ export function ViewOrdreMissionAction() {
     type: VIEW_ORDRE_MISSION,
   };
 }
-export function SelectOnBehalfAction(selection) {
+export function SelectOnBehalfAction(onBehalfSelection) {
   return {
     type: CHANGE_ONBEHALF_SELECTION_ACTION,
-    selection,
+    onBehalfSelection,
+  };
+}
+export function SelectAbroadAction(abroadSelection) {
+  return {
+    type: CHANGE_ABROAD_ACTION,
+    abroadSelection,
+  };
+}
+export function SelectTransportationMethodAction(
+  transportationMethodSelection,
+) {
+  return {
+    type: CHANGE_TRANSPORTATION_METHOD_ACTION,
+    transportationMethodSelection,
   };
 }

@@ -10,10 +10,16 @@ import {
   UPDATE_ORDRE_MISSION,
   VIEW_ORDRE_MISSION,
   CHANGE_ONBEHALF_SELECTION_ACTION,
+  CHANGE_ABROAD_ACTION,
+  CHANGE_TRANSPORTATION_METHOD_ACTION,
 } from './constants';
 
 export const initialState = {
   onBehalfSelection: 'false',
+  abroadSelection: 'false',
+  transportationMethodSelection: '',
+  addOrdreMissionData: null,
+  errorAddingOrdreMission: null,
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -23,23 +29,18 @@ const ordreMissionFormReducer = (state = initialState, action) =>
       case DEFAULT_ACTION:
         break;
       case ADD_ORDRE_MISSION:
-        draft.AddOrdreMission = true;
-        draft.UpdateOrdreMission = false;
-        draft.ViewOrdreMission = false;
-        break;
-      case UPDATE_ORDRE_MISSION:
-        draft.AddOrdreMission = false;
-        draft.UpdateOrdreMission = true;
-        draft.ViewOrdreMission = false;
-        break;
-      case VIEW_ORDRE_MISSION:
-        draft.AddOrdreMission = false;
-        draft.UpdateOrdreMission = false;
-        draft.ViewOrdreMission = true;
+        draft.addOrdreMissionData = action.data;
+        draft.errorAddingOrdreMission = false;
         break;
       case CHANGE_ONBEHALF_SELECTION_ACTION:
-        draft.onBehalfSelection = action.selection;
+        draft.onBehalfSelection = action.onBehalfSelection;
         break;
+      case CHANGE_ABROAD_ACTION:
+        draft.abroadSelection = action.abroadSelection;
+        break;
+      case CHANGE_TRANSPORTATION_METHOD_ACTION:
+        draft.transportationMethodSelection =
+          action.transportationMethodSelection;
     }
   });
 

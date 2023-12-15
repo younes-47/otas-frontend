@@ -1,10 +1,11 @@
 // Trips.js
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import {
   Divider,
   FormControl,
+  FormHelperText,
   // IconButton,
   InputAdornment,
   InputLabel,
@@ -15,21 +16,66 @@ import {
 import { Box } from '@mui/system';
 import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { createStructuredSelector } from 'reselect';
+import { useDispatch, useSelector } from 'react-redux';
+import { makeSelectAbroad } from './selectors';
+import { SelectTransportationMethodAction } from './actions';
 // import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+
+const mapStateToProps = createStructuredSelector({
+  abroadSelection: makeSelectAbroad(),
+});
 
 const Trips = ({ tripData, updateTripData }) => {
   const {
     id,
-    departure,
+    departurePlace,
     destination,
     departureDate,
     transportationMethod,
     unit,
     value,
     highwayFee,
-    estimatedTripFee,
   } = tripData;
+  const TransportationMethods = [
+    'Train',
+    'Plane',
+    'Taxi',
+    'Bus',
+    'Tram/Metro',
+    'Personal Vehicule',
+    "Company's Vehicule",
+  ];
+  const [calculatedTripFee, setCalculatedTripFee] = useState(
+    parseFloat(value) + parseFloat(highwayFee),
+  );
+  const { abroadSelection } = useSelector(mapStateToProps);
+  const handleOnTransportationMethodChange = (e) => {
+    updateTripData(id, 'transportationMethod', e.target.value);
+    // update data
+  };
+  const handleOnValueChange = (e) => {
+    updateTripData(id, 'value', e.target.value);
+    // setCalculatedTripFee((prevCalculatedTripFee) =>
+    //   unit === 'KM'
+    //     ? prevCalculatedTripFee + parseFloat(value) * 2.5
+    //     : prevCalculatedTripFee + parseFloat(value),
+    // );
+    //   unit === 'KM'
+    //     ? setCalculatedTripFee(parseFloat(value) * 2.5 + parseFloat(highwayFee))
+    //     : setCalculatedTripFee(parseFloat(value) + parseFloat(highwayFee));
+  };
+  useEffect(() => {
+    if (unit === 'KM') {
+      setCalculatedTripFee(parseFloat(value) * 2.5 + parseFloat(highwayFee));
+    } else {
+      setCalculatedTripFee(parseFloat(value) + parseFloat(highwayFee));
+    }
+  }, [unit, value, highwayFee]);
 
+  const handleOnHighwayFeeChange = (e) => {
+    updateTripData(id, 'highwayFee', e.target.value);
+  };
   return (
     <Box key={id}>
       {/* DIVIDER */}
@@ -55,8 +101,8 @@ const Trips = ({ tripData, updateTripData }) => {
         <TextField
           id="input-with-icon-textfield"
           label="Departure"
-          value={departure}
-          onChange={(e) => updateTripData(id, 'departure', e.target.value)}
+          value={departurePlace}
+          onChange={(e) => updateTripData(id, 'departurePlace', e.target.value)}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -90,7 +136,6 @@ const Trips = ({ tripData, updateTripData }) => {
             label="Departure Date"
             value={departureDate}
             onChange={(e) => {
-              console.log(e);
               updateTripData(id, 'departureDate', e.$d);
             }}
           />
@@ -106,12 +151,15 @@ const Trips = ({ tripData, updateTripData }) => {
               id="demo-simple-select"
               label="Transportation Method"
               value={transportationMethod}
-              onChange={(e) =>
-                updateTripData(id, 'transportationMethod', e.target.value)
-              }
+              onChange={handleOnTransportationMethodChange}
               required
             >
-              <MenuItem value="Train">Train</MenuItem>
+              {TransportationMethods.map((method) => (
+                <MenuItem key={method} value={method}>
+                  {method}
+                </MenuItem>
+              ))}
+              {/* <MenuItem value="Train">Train</MenuItem>
               <MenuItem value="Plane">Plane</MenuItem>
               <MenuItem value="Taxi">Taxi</MenuItem>
               <MenuItem value="Bus">Bus</MenuItem>
@@ -119,7 +167,7 @@ const Trips = ({ tripData, updateTripData }) => {
               <MenuItem value="Personal Vehicule">Personal Vehicule</MenuItem>
               <MenuItem value="Company's Vehicule">
                 Company&#39;s Vehicule
-              </MenuItem>
+              </MenuItem> */}
             </Select>
           </FormControl>
         </Box>
@@ -138,38 +186,56 @@ const Trips = ({ tripData, updateTripData }) => {
               onChange={(e) => updateTripData(id, 'unit', e.target.value)}
               required
             >
-              <MenuItem value="MAD">MAD</MenuItem>
-              <MenuItem value="EUR">EUR</MenuItem>
-              <MenuItem value="KM">KM</MenuItem>
+              {transportationMethod === TransportationMethods[5] ||
+              transportationMethod === TransportationMethods[6] ? (
+                <MenuItem value="KM">KM</MenuItem>
+              ) : (
+                <MenuItem value="MAD">MAD</MenuItem>
+              )}
+              {/* <MenuItem value="MAD">MAD</MenuItem> */}
+              {String(abroadSelection) === 'true' &&
+                transportationMethod !== TransportationMethods[5] &&
+                transportationMethod !== TransportationMethods[6] && (
+                  <MenuItem value="EUR">EUR</MenuItem>
+                )}
             </Select>
           </FormControl>
         </Box>
-        <TextField
-          required
-          id="outlined-required"
-          type="number"
-          label="Value"
-          value={value}
-          onChange={(e) => updateTripData(id, 'value', e.target.value)}
-        />
+        <FormControl>
+          <TextField
+            required
+            id="outlined-required"
+            type="number"
+            label="Value"
+            value={value}
+            onChange={handleOnValueChange}
+          />
+          <FormHelperText>Number of KM or Fee amount</FormHelperText>
+        </FormControl>
       </Box>
       <Box display="flex" justifyContent="center" gap={2} marginBottom={5}>
         <TextField
           required
           type="number"
-          id="outlined-required"
+          // id={
+          //   transportationMethod !== transportationMethod[5] ||
+          //   transportationMethod !== transportationMethod[6]
+          //     ? 'filled-disabled'
+          //     : 'outlined-required'
+          // }
+          id="outlined-disabled"
           label="Highway Fee"
           value={highwayFee}
-          onChange={(e) => updateTripData(id, 'highwayFee', e.target.value)}
+          onChange={handleOnHighwayFeeChange}
         />
         <TextField
           id="filled-read-only-input"
           label="Estimated Trip Fee"
-          value={estimatedTripFee}
-          onChange={(e) =>
-            updateTripData(id, 'estimatedTripFee', e.target.value)
+          value={
+            unit === 'EUR'
+              ? `EUR ${calculatedTripFee}`
+              : `MAD ${calculatedTripFee}`
           }
-          // defaultValue="0.00 $"
           InputProps={{
             readOnly: true,
           }}
