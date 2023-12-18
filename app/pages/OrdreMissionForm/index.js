@@ -4,7 +4,7 @@
  *
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { useInjectSaga } from 'utils/injectSaga';
@@ -31,7 +31,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { Stack } from '@mui/system';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import dayjs from 'dayjs';
-import { date } from 'yup';
 import saga from './saga';
 import reducer from './reducer';
 import makeSelectOrdreMissionForm, {
@@ -79,12 +78,50 @@ export function OrdreMissionForm() {
     department: '',
     manager: '',
   });
+  const [totalMAD, setTotalMAD] = useState(0);
+  const [totalEUR, setTotalEUR] = useState(0);
   const [expenses, setExpenses] = useState([]);
   const [description, setDescription] = useState('');
   const [departureDate, setDepartureDate] = useState('');
   const [returnDate, setReturnDate] = useState('');
   const [tripsCounter, setTripsCounter] = useState(1); // This counter is being used for the uniqueness of trips ids
   const [expensesCounter, setExpensesCounter] = useState(0); // This counter is being used for the uniqueness of expenses ids
+
+  useEffect(() => {
+    let totalTripsMAD = 0.0;
+    let totalTripsEUR = 0.0;
+    let totalExpensesMAD = 0.0;
+    let totalExpensesEUR = 0.0;
+    trips.forEach((trip) => {
+      if (trip.unit === 'KM' || trip.unit === 'MAD') {
+        if (trip.unit === 'KM') {
+          totalTripsMAD =
+            totalTripsMAD +
+            parseFloat(trip.value) * 2.5 +
+            parseFloat(trip.highwayFee);
+        } else {
+          totalTripsMAD =
+            totalTripsMAD +
+            parseFloat(trip.value) +
+            parseFloat(trip.highwayFee);
+        }
+      } else {
+        totalTripsEUR =
+          totalTripsEUR + parseFloat(trip.value) + parseFloat(trip.highwayFee);
+      }
+    });
+    expenses.forEach((expense) => {
+      if (expense.currency === 'MAD') {
+        totalExpensesMAD += parseFloat(expense.estimatedExpenseFee);
+      } else {
+        totalExpensesEUR += parseFloat(expense.estimatedExpenseFee);
+      }
+    });
+    const TOTAL_MAD = totalExpensesMAD + totalTripsMAD;
+    const TOTAL_EUR = totalExpensesEUR + totalTripsEUR;
+    setTotalMAD(TOTAL_MAD);
+    setTotalEUR(TOTAL_EUR);
+  }, [trips, expenses]);
   const data = {
     UserId: '4',
     description,
@@ -178,7 +215,7 @@ export function OrdreMissionForm() {
       description: '',
       expenseDate: '',
       currency: '',
-      estimatedExpenseFee: '',
+      estimatedExpenseFee: 0.0,
     };
     setExpenses((prevExpenses) => [...prevExpenses, newExpense]);
   };
@@ -207,7 +244,6 @@ export function OrdreMissionForm() {
     dispatch(AddOrdreMissionAction(data));
     history.push('/my-requests/ordre-mission');
   };
-
   return (
     <Box
       position="fixed"
@@ -627,19 +663,24 @@ export function OrdreMissionForm() {
       </Box>
 
       {/* Calculated Total */}
-      <Box display="flex" justifyContent="flex-end" width="60rem">
-        <Box display="flex" flexDirection="column">
-          <Box display="flex" justifyContent="space-between" gap={5}>
-            <h1 style={{ fontSize: '1.3rem' }}>Estimated Total in MAD:</h1>
-            <h1 style={{ fontSize: '1.3rem' }}>N/A</h1>
-          </Box>
-          <Box display="flex" justifyContent="space-between" gap={5}>
-            <h1 style={{ fontSize: '1.3rem' }}>Estimated Total in EUR:</h1>
-            <h1 style={{ fontSize: '1.3rem' }}>N/A</h1>
+      <Box display="flex" justifyContent="center">
+        <Box display="flex" justifyContent="flex-end" width="60%">
+          <Box display="flex" flexDirection="column">
+            <Box display="flex" justifyContent="space-between" gap={5}>
+              <h1 style={{ fontSize: '1.1rem' }}>Estimated Total in MAD:</h1>
+              <h1 style={{ fontSize: '1.1rem', color: 'green' }}>{totalMAD}</h1>
+            </Box>
+            {abroadSelection === 'true' && (
+              <Box display="flex" justifyContent="space-between" gap={5}>
+                <h1 style={{ fontSize: '1.1rem' }}>Estimated Total in EUR:</h1>
+                <h1 style={{ fontSize: '1.1rem', color: 'green' }}>
+                  {totalEUR}
+                </h1>
+              </Box>
+            )}
           </Box>
         </Box>
       </Box>
-
       {/* DIVIDER */}
       <Box
         display="flex"

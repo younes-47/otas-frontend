@@ -21,11 +21,20 @@ import {
   LocalizationProvider,
 } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { createStructuredSelector } from 'reselect';
+import { useSelector } from 'react-redux';
+import { makeSelectAbroad } from './selectors';
 // import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+
+const mapStateToProps = createStructuredSelector({
+  abroadSelection: makeSelectAbroad(),
+});
 
 const Expenses = ({ expenseData, updateExpenseData, removeExpense }) => {
   const { id, description, expenseDate, currency, estimatedExpenseFee } =
     expenseData;
+
+  const { abroadSelection } = useSelector(mapStateToProps);
 
   return (
     <Box key={id}>
@@ -69,12 +78,15 @@ const Expenses = ({ expenseData, updateExpenseData, removeExpense }) => {
               required
             >
               <MenuItem value="MAD">MAD</MenuItem>
-              <MenuItem value="EUR">EUR</MenuItem>
+              {String(abroadSelection) === 'true' && (
+                <MenuItem value="EUR">EUR</MenuItem>
+              )}
             </Select>
           </FormControl>
         </Box>
         <TextField
           required
+          type="number"
           id="outlined-basic"
           label="Fee"
           value={estimatedExpenseFee}

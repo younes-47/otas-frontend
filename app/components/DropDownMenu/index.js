@@ -24,18 +24,18 @@ function DropDownMenu({
   }
   return (
     <Box alignItems="center" justifyContent="center" display="flex" right={0}>
-      <StyledFormControl disabled={disable} sx={{ m: 2, minWidth: 170 }}>
+      <StyledFormControl disabled={disable} sx={{ minWidth: 210 }}>
         <StyledInputLabel id={label}>{label}</StyledInputLabel>
         <StyledSelect
           labelId={label}
           id={label}
           value={selectedMenuItem}
           label={label}
-          onChange={(event) => onSelectedMenuItemChange(event.target.value)}
+          onChange={onSelectedMenuItemChange}
         >
           {Object.values(dataArray).map((value) => (
-            <StyledMenuItem key={value.id} value={value.id}>
-              {value.label}
+            <StyledMenuItem key={value} value={value}>
+              {value}
             </StyledMenuItem>
           ))}
         </StyledSelect>
