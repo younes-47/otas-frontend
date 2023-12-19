@@ -63,6 +63,18 @@ export function OrdreMissionForm() {
       departurePlace: '',
       destination: '',
       departureDate: dayjs(Date()),
+      arrivalDate: dayjs(Date()),
+      transportationMethod: '',
+      unit: '',
+      value: 0,
+      highwayFee: 0,
+    },
+    {
+      id: 1,
+      departurePlace: '',
+      destination: '',
+      departureDate: dayjs(Date()),
+      arrivalDate: dayjs(Date()),
       transportationMethod: '',
       unit: '',
       value: 0,
@@ -82,9 +94,7 @@ export function OrdreMissionForm() {
   const [totalEUR, setTotalEUR] = useState(0);
   const [expenses, setExpenses] = useState([]);
   const [description, setDescription] = useState('');
-  const [departureDate, setDepartureDate] = useState('');
-  const [returnDate, setReturnDate] = useState('');
-  const [tripsCounter, setTripsCounter] = useState(1); // This counter is being used for the uniqueness of trips ids
+  const [tripsCounter, setTripsCounter] = useState(2); // This counter is being used for the uniqueness of trips ids
   const [expensesCounter, setExpensesCounter] = useState(0); // This counter is being used for the uniqueness of expenses ids
 
   useEffect(() => {
@@ -122,17 +132,7 @@ export function OrdreMissionForm() {
     setTotalMAD(TOTAL_MAD);
     setTotalEUR(TOTAL_EUR);
   }, [trips, expenses]);
-  const data = {
-    UserId: '4',
-    description,
-    Abroad: abroadSelection === 'true',
-    departureDate,
-    returnDate,
-    onBehalf: onBehalfSelection === 'true',
-    trips,
-    expenses,
-    actualRequester,
-  };
+
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -151,15 +151,12 @@ export function OrdreMissionForm() {
     setDescription(value);
   };
 
-  const updateReturnDateData = (value) => {
-    const stringifiedValue = value.toISOString();
-    setReturnDate(stringifiedValue);
-  };
-
   const updateActualRequesterData = (fieldName, value) => {
-    const updatedValue =
-      fieldName === 'hiringDate' ? value.toISOString() : value;
-
+    let updatedValue = value;
+    if (fieldName === 'hiringDate') {
+      const tzoffset = new Date().getTimezoneOffset() * 60000; // offset in milliseconds
+      updatedValue = new Date(value - tzoffset).toISOString().slice(0, -1);
+    }
     const updatedRequester = { ...actualRequester, [fieldName]: updatedValue };
 
     setActualRequester(updatedRequester);
@@ -172,6 +169,7 @@ export function OrdreMissionForm() {
       departurePlace: '',
       destination: '',
       departureDate: dayjs(Date()),
+      arrivalDate: dayjs(Date()),
       transportationMethod: '',
       unit: '',
       value: 0,
@@ -186,21 +184,6 @@ export function OrdreMissionForm() {
         trip.id === tripId ? { ...trip, [field]: value } : trip,
       ),
     );
-
-    const tripWithSmallestDepartureDate = trips.reduce(
-      (initTrip, currentTrip) => {
-        if (currentTrip.departureDate < initTrip.departureDate) {
-          return currentTrip;
-        }
-        return initTrip;
-      },
-      trips[0],
-    );
-    const smallestDepartureDate = new Date(
-      tripWithSmallestDepartureDate.departureDate,
-    );
-    const smallestDate = smallestDepartureDate.toISOString();
-    setDepartureDate(smallestDate);
   };
 
   const removeTrip = (tripId) => {
@@ -213,7 +196,7 @@ export function OrdreMissionForm() {
     const newExpense = {
       id: expensesCounter,
       description: '',
-      expenseDate: '',
+      expenseDate: dayjs(Date()),
       currency: '',
       estimatedExpenseFee: 0.0,
     };
@@ -244,6 +227,16 @@ export function OrdreMissionForm() {
     dispatch(AddOrdreMissionAction(data));
     history.push('/my-requests/ordre-mission');
   };
+  const data = {
+    UserId: '4',
+    description,
+    Abroad: abroadSelection === 'true',
+    onBehalf: onBehalfSelection === 'true',
+    trips,
+    expenses,
+    actualRequester,
+  };
+
   return (
     <Box
       position="fixed"
@@ -446,6 +439,7 @@ export function OrdreMissionForm() {
                   onChange={(e) =>
                     updateActualRequesterData('hiringDate', e.$d)
                   }
+                  format="DD/MM/YYYY"
                 />
               </LocalizationProvider>
               <TextField
@@ -517,33 +511,6 @@ export function OrdreMissionForm() {
         <Divider style={{ width: '60%', opacity: 0.7 }} />
       </Box>
 
-      <Box textAlign="center" marginBottom={2}>
-        <FormLabel id="demo-row-radio-buttons-group-label">
-          When are you planning to return from this mission?
-        </FormLabel>
-      </Box>
-      <Box display="flex" justifyContent="center" gap={2} marginBottom={2}>
-        <LocalizationProvider reuired dateAdapter={AdapterDayjs}>
-          <DatePicker
-            sx={{ maxWidth: 210 }}
-            required
-            label="Return Date"
-            value={returnDate}
-            onChange={updateReturnDateData}
-          />
-        </LocalizationProvider>
-      </Box>
-
-      {/* DIVIDER */}
-      <Box
-        display="flex"
-        justifyContent="center"
-        textAlign="center"
-        marginBottom={3}
-      >
-        <Divider style={{ width: '60%', opacity: 0.7 }} />
-      </Box>
-
       {/* DESCRIPTION */}
       <Box
         display="flex"
@@ -563,45 +530,53 @@ export function OrdreMissionForm() {
         />
       </Box>
 
+      {/* DIVIDER */}
+      <Box
+        display="flex"
+        justifyContent="center"
+        textAlign="center"
+        marginBottom={1}
+      >
+        <Divider style={{ width: '60%', opacity: 0.7 }} />
+      </Box>
+
+      {/* Trip Header */}
+      <Box
+        display="flex"
+        justifyContent="center"
+        textAlign="center"
+        marginBottom={2}
+      >
+        <h1 style={{ fontSize: '25px' }}>Trajectories</h1>
+        <IconButton onClick={addTrip}>
+          <AddCircleIcon
+            sx={{ color: 'green', fontSize: '30px' }}
+          ></AddCircleIcon>
+        </IconButton>
+      </Box>
       {trips.map((trip) => {
-        if (trip.id === 0) {
+        if (trip.id === 0 || trip.id === 1) {
           return (
             <div key={trip.id}>
               <Trips
                 key={trip.id}
                 tripData={trip}
                 updateTripData={updateTripData}
+                isTripRequired
+                removeTrip={removeTrip}
               />
-              <Box display="flex" justifyContent="center" flexDirection="row">
-                <IconButton
-                  style={{ marginBottom: '40px' }}
-                  size="small"
-                  onClick={addTrip}
-                >
-                  <AddBoxIcon
-                    sx={{ color: 'green', fontSize: '50px' }}
-                  ></AddBoxIcon>
-                  <h4>Add Trip</h4>
-                </IconButton>
-              </Box>
             </div>
           );
         }
         return (
           <div key={trip.id}>
-            <Trips tripData={trip} updateTripData={updateTripData} />
-            <Box display="flex" justifyContent="center" flexDirection="row">
-              <IconButton
-                style={{ marginBottom: '40px' }}
-                size="small"
-                onClick={() => removeTrip(trip.id)}
-              >
-                <DeleteForeverIcon
-                  sx={{ color: 'red', fontSize: '40px' }}
-                ></DeleteForeverIcon>
-                <h4>Remove Trip</h4>
-              </IconButton>
-            </Box>
+            <Trips
+              key={trip.id}
+              tripData={trip}
+              updateTripData={updateTripData}
+              isTripRequired={false}
+              removeTrip={removeTrip}
+            />
           </div>
         );
       })}

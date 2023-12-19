@@ -2,10 +2,13 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import {
   Divider,
   FormControl,
   FormHelperText,
+  IconButton,
   // IconButton,
   InputAdornment,
   InputLabel,
@@ -18,6 +21,7 @@ import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { createStructuredSelector } from 'reselect';
 import { useDispatch, useSelector } from 'react-redux';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import DropDownMenu from 'components/DropDownMenu';
 import { makeSelectAbroad } from './selectors';
 // import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
@@ -26,12 +30,13 @@ const mapStateToProps = createStructuredSelector({
   abroadSelection: makeSelectAbroad(),
 });
 
-const Trips = ({ tripData, updateTripData }) => {
+const Trips = ({ tripData, updateTripData, isTripRequired, removeTrip }) => {
   const {
     id,
     departurePlace,
     destination,
     departureDate,
+    arrivalDate,
     transportationMethod,
     unit,
     value,
@@ -51,6 +56,13 @@ const Trips = ({ tripData, updateTripData }) => {
     parseFloat(value) + parseFloat(highwayFee),
   );
   const { abroadSelection } = useSelector(mapStateToProps);
+
+  const handleTripDates = (tripId, type, e) => {
+    const tzoffset = new Date().getTimezoneOffset() * 60000; // offset in milliseconds
+    const noOffsetDate = new Date(e.$d - tzoffset).toISOString().slice(0, -1);
+    updateTripData(tripId, type, noOffsetDate);
+  };
+
   useEffect(() => {
     if (unit === 'KM') {
       setCalculatedTripFee(parseFloat(value) * 2.5 + parseFloat(highwayFee));
@@ -58,29 +70,9 @@ const Trips = ({ tripData, updateTripData }) => {
       setCalculatedTripFee(parseFloat(value) + parseFloat(highwayFee));
     }
   }, [unit, value, highwayFee]);
-
   return (
-    <Box key={id}>
-      {/* DIVIDER */}
-      <Box
-        display="flex"
-        justifyContent="center"
-        textAlign="center"
-        marginBottom={1}
-      >
-        <Divider style={{ width: '60%', opacity: 0.7 }} />
-      </Box>
-
-      {/* Trip Header */}
-      <Box
-        display="flex"
-        justifyContent="center"
-        textAlign="center"
-        marginBottom={2}
-      >
-        <h1 style={{ fontSize: '25px' }}>Trip</h1>
-      </Box>
-      <Box display="flex" justifyContent="center" gap={2} marginBottom={3}>
+    <Box key={id} marginRight={3} marginLeft={3} marginBottom={2}>
+      <Box display="flex" justifyContent="center" gap={0.8}>
         <TextField
           id="input-with-icon-textfield"
           label="Departure"
@@ -93,7 +85,8 @@ const Trips = ({ tripData, updateTripData }) => {
               </InputAdornment>
             ),
           }}
-          variant="standard"
+          sx={{ minWidth: 160, maxWidth: 160 }}
+          variant="outlined"
           required
         />
         <TextField
@@ -108,32 +101,73 @@ const Trips = ({ tripData, updateTripData }) => {
               </InputAdornment>
             ),
           }}
-          variant="standard"
+          sx={{ minWidth: 160, maxWidth: 160 }}
+          variant="outlined"
           required
         />
-      </Box>
-      <Box display="flex" justifyContent="center" gap={2} marginBottom={3}>
+
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DateTimePicker
-            sx={{ maxWidth: 210 }}
-            label="Departure Date"
+            sx={{ minWidth: 160, maxWidth: 160 }}
+            label="Departure"
             value={departureDate}
             onChange={(e) => {
-              updateTripData(id, 'departureDate', e.$d);
+              handleTripDates(id, 'departureDate', e);
             }}
+            disablePast
+            format="DD/MM/YYYY"
           />
         </LocalizationProvider>
-        <DropDownMenu
-          label="Transportation Method"
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DateTimePicker
+            sx={{ minWidth: 160, maxWidth: 160 }}
+            label="Arrival"
+            value={arrivalDate}
+            onChange={(e) => {
+              handleTripDates(id, 'arrivalDate', e);
+            }}
+            disablePast
+            format="DD/MM/YYYY"
+          />
+        </LocalizationProvider>
+        <Box sx={{ minWidth: 160, maxWidth: 160 }}>
+          <FormControl fullWidth>
+            <InputLabel required id="demo-simple-select-label">
+              Transportation
+            </InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              label="Transportation"
+              value={transportationMethod}
+              onChange={(e) =>
+                updateTripData(id, 'transportationMethod', e.target.value)
+              }
+              required
+            >
+              {Object.values(transportationMethodOptions).map(
+                (transportationMethodOption) => (
+                  <MenuItem
+                    key={transportationMethodOption}
+                    value={transportationMethodOption}
+                  >
+                    {transportationMethodOption}
+                  </MenuItem>
+                ),
+              )}
+            </Select>
+          </FormControl>
+        </Box>
+        {/* <DropDownMenu
+          sx={{ width: 80 }}
+          label="Transportation"
           dataArray={transportationMethodOptions}
           selectedMenuItem={transportationMethod}
           onSelectedMenuItemChange={(e) =>
             updateTripData(id, 'transportationMethod', e.target.value)
           }
-        />
-      </Box>
-      <Box display="flex" justifyContent="center" gap={2} marginBottom={3}>
-        <Box sx={{ minWidth: 210 }}>
+        /> */}
+        <Box sx={{ maxWidth: 90, minWidth: 90 }}>
           <FormControl fullWidth>
             <InputLabel required id="demo-simple-select-label">
               Unit
@@ -145,6 +179,14 @@ const Trips = ({ tripData, updateTripData }) => {
               value={unit}
               onChange={(e) => updateTripData(id, 'unit', e.target.value)}
               required
+              disabled={
+                transportationMethodOptions.indexOf(transportationMethod) === -1
+              }
+              variant={
+                transportationMethodOptions.indexOf(transportationMethod) === -1
+                  ? 'filled'
+                  : 'outlined'
+              }
             >
               {transportationMethod === transportationMethodOptions[6] ||
               transportationMethod === transportationMethodOptions[7] ? (
@@ -152,7 +194,6 @@ const Trips = ({ tripData, updateTripData }) => {
               ) : (
                 <MenuItem value="MAD">MAD</MenuItem>
               )}
-              {/* <MenuItem value="MAD">MAD</MenuItem> */}
               {String(abroadSelection) === 'true' &&
                 transportationMethod !== transportationMethodOptions[6] &&
                 transportationMethod !== transportationMethodOptions[7] && (
@@ -161,28 +202,55 @@ const Trips = ({ tripData, updateTripData }) => {
             </Select>
           </FormControl>
         </Box>
-        <FormControl>
+
+        {unit === 'KM' ? (
           <TextField
             required
             id="outlined-required"
             type="number"
-            label="Value"
+            label="Mileage"
             value={value}
             onChange={(e) => updateTripData(id, 'value', e.target.value)}
+            disabled={unit !== 'KM' && unit !== 'MAD' && unit !== 'EUR'}
+            variant={
+              unit !== 'KM' && unit !== 'MAD' && unit !== 'EUR'
+                ? 'filled'
+                : 'outlined'
+            }
+            sx={{ maxWidth: 90, minWidth: 90 }}
           />
-          <FormHelperText>Number of KM or Fee amount</FormHelperText>
-        </FormControl>
-      </Box>
-      <Box display="flex" justifyContent="center" gap={2} marginBottom={5}>
+        ) : (
+          <TextField
+            required
+            id="outlined-required"
+            type="number"
+            label="Fee"
+            value={value}
+            onChange={(e) => updateTripData(id, 'value', e.target.value)}
+            disabled={unit !== 'KM' && unit !== 'MAD' && unit !== 'EUR'}
+            variant={
+              unit !== 'KM' && unit !== 'MAD' && unit !== 'EUR'
+                ? 'filled'
+                : 'outlined'
+            }
+            sx={{ maxWidth: 90, minWidth: 90 }}
+          />
+        )}
         {transportationMethod === transportationMethodOptions[6] ||
         transportationMethod === transportationMethodOptions[7] ? (
           <TextField
             required
             type="number"
-            id="outlined-required"
-            label="Highway Fee"
+            id={
+              transportationMethod === transportationMethodOptions[6] ||
+              transportationMethod === transportationMethodOptions[7]
+                ? 'outlined-required'
+                : 'filled-disabled'
+            }
+            label="Highway"
             value={highwayFee}
             onChange={(e) => updateTripData(id, 'highwayFee', e.target.value)}
+            sx={{ maxWidth: 90, minWidth: 90 }}
           />
         ) : (
           <TextField
@@ -190,15 +258,18 @@ const Trips = ({ tripData, updateTripData }) => {
             disabled
             type="number"
             id="filled-disabled"
-            label="Highway Fee"
+            label="Highway"
             value={highwayFee}
             onChange={(e) => updateTripData(id, 'highwayFee', e.target.value)}
             variant="filled"
+            sx={{ maxWidth: 90, minWidth: 90 }}
           />
         )}
+
         <TextField
+          sx={{ maxWidth: 90, minWidth: 90 }}
           id="filled-read-only-input"
-          label="Estimated Trip Fee"
+          label="Total"
           value={
             unit === 'EUR'
               ? `EUR ${calculatedTripFee}`
@@ -208,7 +279,20 @@ const Trips = ({ tripData, updateTripData }) => {
             readOnly: true,
           }}
           variant="filled"
+          color="success"
+          focused
         />
+        {isTripRequired === false ? (
+          <IconButton onClick={() => removeTrip(id)}>
+            <HighlightOffIcon
+              sx={{ color: 'red', fontSize: '25px' }}
+            ></HighlightOffIcon>
+          </IconButton>
+        ) : (
+          <IconButton sx={{ fontSize: '10px' }} disableRipple>
+            <PriorityHighIcon></PriorityHighIcon>
+          </IconButton>
+        )}
       </Box>
     </Box>
   );
@@ -217,6 +301,8 @@ const Trips = ({ tripData, updateTripData }) => {
 Trips.propTypes = {
   tripData: PropTypes.object.isRequired,
   updateTripData: PropTypes.func.isRequired,
+  isTripRequired: PropTypes.bool.isRequired,
+  removeTrip: PropTypes.func.isRequired,
   // removeTrip: PropTypes.func.isRequired,
   // dispatch: PropTypes.func.isRequired,
 };
