@@ -4,7 +4,7 @@
  *
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { Box, Stack } from '@mui/system';
@@ -47,6 +47,26 @@ export function AvanceCaisseForm() {
   useInjectSaga({ key: 'avanceCaisseForm', saga });
   const dispatch = useDispatch();
   const { isSideBarVisible, onBehalfSelection } = useSelector(mapStateToProps);
+  const [currency, setCurrency] = useState('MAD');
+  const [total, setTotal] = useState(0.0);
+  const [description, setDescription] = useState('');
+  const [actualRequester, setActualRequester] = useState({
+    firstName: '',
+    lastName: '',
+    registrationNumber: 0,
+    jobTitle: '',
+    hiringDate: dayjs(Date()),
+    department: '',
+    manager: '',
+  });
+  const [expenses, setExpenses] = useState([
+    {
+      id: 0,
+      description: '',
+      expenseDate: dayjs(Date()),
+      estimatedExpenseFee: 0.0,
+    },
+  ]);
 
   const handleOnBehalfSelectionChange = (event) => {
     if (event.target.value !== String(onBehalfSelection)) {
@@ -54,14 +74,14 @@ export function AvanceCaisseForm() {
     }
   };
 
-  const [expenses, setExpenses] = useState([
-    {
-      id: 0,
-      description: '',
-      expenseDate: dayjs(Date()),
-      estimatedExpenseFee: '',
-    },
-  ]);
+  useEffect(() => {
+    let totalExpenses = 0.0;
+    expenses.forEach((expense) => {
+      totalExpenses += parseFloat(expense.estimatedExpenseFee);
+    });
+    setTotal(totalExpenses);
+  }, [expenses]);
+
   const history = useHistory();
 
   const addExpense = () => {
@@ -70,7 +90,7 @@ export function AvanceCaisseForm() {
       id: expenseId,
       description: '',
       expenseDate: dayjs(Date()),
-      estimatedExpenseFee: '',
+      estimatedExpenseFee: 0.0,
     };
     setExpenses((prevExpenses) => [...prevExpenses, newExpense]);
   };
@@ -81,6 +101,21 @@ export function AvanceCaisseForm() {
         expense.id === expenseId ? { ...expense, [field]: value } : expense,
       ),
     );
+  };
+
+  const updateActualRequesterData = (fieldName, value) => {
+    let updatedValue = value;
+    if (fieldName === 'hiringDate') {
+      const tzoffset = new Date().getTimezoneOffset() * 60000; // offset in milliseconds
+      updatedValue = new Date(value - tzoffset).toISOString().slice(0, -1);
+    }
+    const updatedRequester = { ...actualRequester, [fieldName]: updatedValue };
+
+    setActualRequester(updatedRequester);
+  };
+
+  const handlecurrencyChange = (event) => {
+    setCurrency(event.target.value);
   };
 
   const removeExpense = (expenseId) => {
@@ -94,6 +129,16 @@ export function AvanceCaisseForm() {
   const handleOnReturnButtonClick = () => {
     history.push('/my-requests/avance-caisse');
   };
+
+  const data = {
+    userId: '4',
+    onBehalf: onBehalfSelection === 'true',
+    description,
+    currency,
+    actualRequester,
+    expenses,
+  };
+
   return (
     <Box
       position="fixed"
@@ -210,14 +255,15 @@ export function AvanceCaisseForm() {
           justifyContent: 'center',
           marginBottom: '20px',
         }}
-        value={String(onBehalfSelection)} // Convert the boolean to a string
+        required
+        value={onBehalfSelection ? onBehalfSelection.toString() : ''} // Convert the boolean to a string
         onChange={handleOnBehalfSelectionChange}
       >
         <FormControlLabel value="true" control={<Radio />} label="Yes" />
         <FormControlLabel value="false" control={<Radio />} label="No" />
       </RadioGroup>
 
-      {String(onBehalfSelection) === 'true' ? (
+      {onBehalfSelection && onBehalfSelection.toString() === 'true' ? (
         <>
           <Box
             display="flex"
@@ -241,18 +287,33 @@ export function AvanceCaisseForm() {
                 id="outlined-basic"
                 label="First Name"
                 variant="outlined"
+                value={actualRequester.firstName}
+                onChange={(e) =>
+                  updateActualRequesterData('firstName', e.target.value)
+                }
                 required
               />
               <TextField
                 id="outlined-basic"
                 label="Last Name"
                 variant="outlined"
+                value={actualRequester.lastName}
+                onChange={(e) =>
+                  updateActualRequesterData('lastName', e.target.value)
+                }
                 required
               />
               <TextField
                 id="outlined-basic"
                 label="Registration Number"
                 variant="outlined"
+                value={actualRequester.registrationNumber}
+                onChange={(e) =>
+                  updateActualRequesterData(
+                    'registrationNumber',
+                    e.target.value,
+                  )
+                }
                 required
               />
             </Box>
@@ -266,6 +327,10 @@ export function AvanceCaisseForm() {
                 id="outlined-basic"
                 label="Job Title"
                 variant="outlined"
+                value={actualRequester.jobTitle}
+                onChange={(e) =>
+                  updateActualRequesterData('jobTitle', e.target.value)
+                }
                 required
               />
               <LocalizationProvider reuired dateAdapter={AdapterDayjs}>
@@ -273,6 +338,11 @@ export function AvanceCaisseForm() {
                   sx={{ maxWidth: 210 }}
                   required
                   label="Hiring Date"
+                  value={actualRequester.hiringDate}
+                  onChange={(e) =>
+                    updateActualRequesterData('hiringDate', e.$d)
+                  }
+                  format="DD/MM/YYYY"
                 />
               </LocalizationProvider>
               <TextField
@@ -280,12 +350,20 @@ export function AvanceCaisseForm() {
                 label="Department"
                 variant="outlined"
                 required
+                value={actualRequester.department}
+                onChange={(e) =>
+                  updateActualRequesterData('department', e.target.value)
+                }
               />
             </Box>
             <TextField
               id="outlined-basic"
               label="Manager"
               variant="outlined"
+              value={actualRequester.manager}
+              onChange={(e) =>
+                updateActualRequesterData('manager', e.target.value)
+              }
               required
             />
           </Box>
@@ -330,6 +408,8 @@ export function AvanceCaisseForm() {
           justifyContent: 'center',
           marginBottom: '20px',
         }}
+        value={currency}
+        onChange={handlecurrencyChange}
       >
         <FormControlLabel value="MAD" control={<Radio />} label="MAD" />
         <FormControlLabel value="EUR" control={<Radio />} label="EUR" />
@@ -348,6 +428,8 @@ export function AvanceCaisseForm() {
           label="Description"
           required
           sx={{ width: '50%' }}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
         />
       </Box>
 
@@ -380,13 +462,20 @@ export function AvanceCaisseForm() {
       {expenses.map((expense) => {
         if (expense.id === 0) {
           return (
-            <div key={expense.id}>
+            <Box
+              key={expense.id}
+              display="flex"
+              justifyContent="center"
+              flexDirection="row"
+            >
+              <div style={{ padding: '21px' }}></div>
+
               <Expenses
                 removeExpense={removeExpense}
                 updateExpenseData={updateExpenseData}
                 expenseData={expense}
               />
-            </div>
+            </Box>
           );
         }
         return (
@@ -422,11 +511,15 @@ export function AvanceCaisseForm() {
       </Box>
 
       {/* Calculated Total */}
-      <Box display="flex" justifyContent="flex-end" width="60rem">
-        <Box display="flex" flexDirection="column">
-          <Box display="flex" justifyContent="space-between" gap={5}>
-            <h1 style={{ fontSize: '1.3rem' }}>Estimated Total:</h1>
-            <h1 style={{ fontSize: '1.3rem' }}>N/A</h1>
+      <Box display="flex" justifyContent="center">
+        <Box display="flex" justifyContent="flex-end" width="60%">
+          <Box display="flex" flexDirection="column">
+            <Box display="flex" justifyContent="space-between" gap={5}>
+              <h1 style={{ fontSize: '1.1rem' }}>
+                Estimated Total in {currency === 'MAD' ? 'MAD' : 'EUR'}
+              </h1>
+              <h1 style={{ fontSize: '1.1rem', color: 'green' }}>{total}</h1>
+            </Box>
           </Box>
         </Box>
       </Box>

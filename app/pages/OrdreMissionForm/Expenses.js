@@ -36,6 +36,12 @@ const Expenses = ({ expenseData, updateExpenseData, removeExpense }) => {
 
   const { abroadSelection } = useSelector(mapStateToProps);
 
+  const handleExpenseDate = (e, expenseId) => {
+    const tzoffset = new Date().getTimezoneOffset() * 60000; // offset in milliseconds
+    const noOffsetDate = new Date(e.$d - tzoffset).toISOString().slice(0, -1);
+    updateExpenseData(expenseId, 'expenseDate', noOffsetDate);
+  };
+
   return (
     <Box key={id}>
       <Box display="flex" gap={2} marginBottom="1rem">
@@ -56,10 +62,12 @@ const Expenses = ({ expenseData, updateExpenseData, removeExpense }) => {
         <LocalizationProvider reuired dateAdapter={AdapterDayjs}>
           <DatePicker
             value={expenseDate}
-            onChange={(e) => updateExpenseData(id, 'expenseDate', e.$d)}
+            onChange={(e) => handleExpenseDate(e, id)}
             sx={{ maxWidth: 170 }}
             required
             label="Expense Date"
+            disablePast
+            format="DD/MM/YYYY"
           />
         </LocalizationProvider>
         <Box sx={{ minWidth: 120 }}>
@@ -93,8 +101,11 @@ const Expenses = ({ expenseData, updateExpenseData, removeExpense }) => {
           onChange={(e) =>
             updateExpenseData(id, 'estimatedExpenseFee', e.target.value)
           }
-          variant="outlined"
           sx={{ maxWidth: 120 }}
+          disabled={currency !== 'MAD' && currency !== 'EUR'}
+          variant={
+            currency !== 'MAD' && currency !== 'EUR' ? 'filled' : 'outlined'
+          }
         />
       </Box>
     </Box>

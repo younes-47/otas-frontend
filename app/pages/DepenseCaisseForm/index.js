@@ -4,7 +4,7 @@
  *
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { Box, Stack } from '@mui/system';
@@ -30,7 +30,6 @@ import {
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
-import { Label } from '@mui/icons-material';
 import dayjs from 'dayjs';
 import Expenses from './Expenses';
 import makeSelectDepenseCaisseForm, { makeSelectOnBehalf } from './selectors';
@@ -49,16 +48,30 @@ export function DepenseCaisseForm() {
   useInjectSaga({ key: 'depenseCaisseForm', saga });
   const dispatch = useDispatch();
 
+  const [currency, setCurrency] = useState('MAD');
+  const [total, setTotal] = useState(0.0);
+  const [description, setDescription] = useState('');
+  const [receiptsFile, setReceiptsFile] = useState('');
+  const [receiptsFileName, setReceiptsFileName] = useState('');
   const { isSideBarVisible, onBehalfSelection } = useSelector(mapStateToProps);
   const [expenses, setExpenses] = useState([
     {
       id: 0,
       description: '',
       expenseDate: dayjs(Date()),
-      estimatedExpenseFee: '',
+      estimatedExpenseFee: 0.0,
     },
   ]);
-  // const [selectedFile, setSelectedFile] = useState(null);
+  const [actualRequester, setActualRequester] = useState({
+    firstName: '',
+    lastName: '',
+    registrationNumber: 0,
+    jobTitle: '',
+    hiringDate: dayjs(Date()),
+    department: '',
+    manager: '',
+  });
+
   const history = useHistory();
 
   // const handleFileChange = (e) => {
@@ -72,13 +85,21 @@ export function DepenseCaisseForm() {
     }
   };
 
+  useEffect(() => {
+    let totalExpenses = 0.0;
+    expenses.forEach((expense) => {
+      totalExpenses += parseFloat(expense.estimatedExpenseFee);
+    });
+    setTotal(totalExpenses);
+  }, [expenses]);
+
   const addExpense = () => {
     const expenseId = uuidv4();
     const newExpense = {
       id: expenseId,
       description: '',
       expenseDate: dayjs(Date()),
-      estimatedExpenseFee: '',
+      estimatedExpenseFee: 0.0,
     };
     setExpenses((prevExpenses) => [...prevExpenses, newExpense]);
   };
@@ -98,11 +119,47 @@ export function DepenseCaisseForm() {
     );
   };
 
+  const updateActualRequesterData = (fieldName, value) => {
+    let updatedValue = value;
+    if (fieldName === 'hiringDate') {
+      const tzoffset = new Date().getTimezoneOffset() * 60000; // offset in milliseconds
+      updatedValue = new Date(value - tzoffset).toISOString().slice(0, -1);
+    }
+    const updatedRequester = { ...actualRequester, [fieldName]: updatedValue };
+
+    setActualRequester(updatedRequester);
+  };
+
+  const updateReceiptsFileData = async (e) => {
+    const file = e.currentTarget.files[0];
+    setReceiptsFileName(file.name);
+    const buffer = await file.arrayBuffer();
+    const byteArray = new Int8Array(buffer);
+    let binaryData = '';
+    for (let i = 0; i < byteArray.length; i += 1) {
+      binaryData += String(byteArray[i]);
+    }
+    setReceiptsFile(binaryData);
+  };
+
+  const handlecurrencyChange = (event) => {
+    setCurrency(event.target.value);
+  };
   // Handle on buttons click
   const handleOnReturnButtonClick = () => {
     history.push('/my-requests/depense-caisse');
   };
-  console.log(onBehalfSelection);
+
+  const data = {
+    userId: '4',
+    onBehalf: onBehalfSelection === 'true',
+    description,
+    receiptsFile,
+    currency,
+    actualRequester,
+    expenses,
+  };
+
   return (
     <Box
       position="fixed"
@@ -251,18 +308,33 @@ export function DepenseCaisseForm() {
                 id="outlined-basic"
                 label="First Name"
                 variant="outlined"
+                value={actualRequester.firstName}
+                onChange={(e) =>
+                  updateActualRequesterData('firstName', e.target.value)
+                }
                 required
               />
               <TextField
                 id="outlined-basic"
                 label="Last Name"
                 variant="outlined"
+                value={actualRequester.lastName}
+                onChange={(e) =>
+                  updateActualRequesterData('lastName', e.target.value)
+                }
                 required
               />
               <TextField
                 id="outlined-basic"
                 label="Registration Number"
                 variant="outlined"
+                value={actualRequester.registrationNumber}
+                onChange={(e) =>
+                  updateActualRequesterData(
+                    'registrationNumber',
+                    e.target.value,
+                  )
+                }
                 required
               />
             </Box>
@@ -276,6 +348,10 @@ export function DepenseCaisseForm() {
                 id="outlined-basic"
                 label="Job Title"
                 variant="outlined"
+                value={actualRequester.jobTitle}
+                onChange={(e) =>
+                  updateActualRequesterData('jobTitle', e.target.value)
+                }
                 required
               />
               <LocalizationProvider reuired dateAdapter={AdapterDayjs}>
@@ -283,6 +359,11 @@ export function DepenseCaisseForm() {
                   sx={{ maxWidth: 210 }}
                   required
                   label="Hiring Date"
+                  value={actualRequester.hiringDate}
+                  onChange={(e) =>
+                    updateActualRequesterData('hiringDate', e.$d)
+                  }
+                  format="DD/MM/YYYY"
                 />
               </LocalizationProvider>
               <TextField
@@ -290,12 +371,20 @@ export function DepenseCaisseForm() {
                 label="Department"
                 variant="outlined"
                 required
+                value={actualRequester.department}
+                onChange={(e) =>
+                  updateActualRequesterData('department', e.target.value)
+                }
               />
             </Box>
             <TextField
               id="outlined-basic"
               label="Manager"
               variant="outlined"
+              value={actualRequester.manager}
+              onChange={(e) =>
+                updateActualRequesterData('manager', e.target.value)
+              }
               required
             />
           </Box>
@@ -324,12 +413,6 @@ export function DepenseCaisseForm() {
           Please choose the currency
         </FormLabel>
       </Box>
-      {/* <Stack direction="column" alignItems="center" justifyContent="center">
-        <Alert severity="info" width="50px">
-          If your request consists of multiple currencies, you may fill another
-          form.
-        </Alert>
-      </Stack> */}
       <RadioGroup
         row
         aria-labelledby="demo-row-radio-buttons-group-label"
@@ -340,6 +423,8 @@ export function DepenseCaisseForm() {
           justifyContent: 'center',
           marginBottom: '20px',
         }}
+        value={currency}
+        onChange={handlecurrencyChange}
       >
         <FormControlLabel value="MAD" control={<Radio />} label="MAD" />
         <FormControlLabel value="EUR" control={<Radio />} label="EUR" />
@@ -358,6 +443,8 @@ export function DepenseCaisseForm() {
           label="Description"
           required
           sx={{ width: '50%' }}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
         />
       </Box>
 
@@ -390,13 +477,19 @@ export function DepenseCaisseForm() {
       {expenses.map((expense) => {
         if (expense.id === 0) {
           return (
-            <div key={expense.id}>
+            <Box
+              key={expense.id}
+              display="flex"
+              justifyContent="center"
+              flexDirection="row"
+            >
+              <div style={{ padding: '21px' }}></div>
               <Expenses
                 removeExpense={removeExpense}
                 updateExpenseData={updateExpenseData}
                 expenseData={expense}
               />
-            </div>
+            </Box>
           );
         }
         return (
@@ -449,14 +542,18 @@ export function DepenseCaisseForm() {
           </em>
 
           {/* The dropzonearea component sill has some side effects */}
-          <DropzoneArea
+          {/* https://yuvaleros.github.io/material-ui-dropzone/ */}
+          {/* <DropzoneArea
             acceptedFiles={['application/pdf']}
             dropzoneText="Drag and drop a PDF file here, or click to select"
             maxFileSize={3145728} // 3MB
             showFileNames
             filesLimit={1}
-          />
-          {/* <Button
+            fileObjects={receiptsFile}
+            onChange={(e) => updateReceiptsFileData(e)}
+          /> */}
+
+          <Button
             component="label"
             variant="outlined"
             color="warning"
@@ -468,14 +565,14 @@ export function DepenseCaisseForm() {
               type="file"
               accept="application/pdf"
               hidden
-              onChange={handleFileChange}
+              onChange={(e) => updateReceiptsFileData(e)}
             ></input>
           </Button>
-          {selectedFile && (
+          {receiptsFileName && (
             <em style={{ fontSize: '15px' }}>
-              Selected file: {selectedFile.name}
+              Selected file: {receiptsFileName}
             </em>
-          )} */}
+          )}
         </Box>
       </Box>
       {/* DIVIDER */}
@@ -489,11 +586,15 @@ export function DepenseCaisseForm() {
       </Box>
 
       {/* Calculated Total */}
-      <Box display="flex" justifyContent="flex-end" width="60rem">
-        <Box display="flex" flexDirection="column">
-          <Box display="flex" justifyContent="space-between" gap={5}>
-            <h1 style={{ fontSize: '1.3rem' }}>Estimated Total:</h1>
-            <h1 style={{ fontSize: '1.3rem' }}>N/A</h1>
+      <Box display="flex" justifyContent="center">
+        <Box display="flex" justifyContent="flex-end" width="60%">
+          <Box display="flex" flexDirection="column">
+            <Box display="flex" justifyContent="space-between" gap={5}>
+              <h1 style={{ fontSize: '1.1rem' }}>
+                Estimated Total in {currency === 'MAD' ? 'MAD' : 'EUR'}
+              </h1>
+              <h1 style={{ fontSize: '1.1rem', color: 'green' }}>{total}</h1>
+            </Box>
           </Box>
         </Box>
       </Box>

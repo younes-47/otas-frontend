@@ -4,7 +4,6 @@ import { ADD_ORDRE_MISSION, webService } from './constants';
 import {
   AddOrdreMissionErrorAction,
   AddOrdreMissionSuccessAction,
-  AddOrdreMissionAction,
 } from './actions';
 
 export function* AddOrdreMission({ data }) {

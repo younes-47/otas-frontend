@@ -10,6 +10,12 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 const Expenses = ({ expenseData, updateExpenseData }) => {
   const { id, description, expenseDate, estimatedExpenseFee } = expenseData;
 
+  const handleExpenseDate = (e, expenseId) => {
+    const tzoffset = new Date().getTimezoneOffset() * 60000; // offset in milliseconds
+    const noOffsetDate = new Date(e.$d - tzoffset).toISOString().slice(0, -1);
+    updateExpenseData(expenseId, 'expenseDate', noOffsetDate);
+  };
+
   return (
     <div key={id}>
       <Box display="flex" justifyContent="center" flexDirection="row">
@@ -29,14 +35,17 @@ const Expenses = ({ expenseData, updateExpenseData }) => {
             <DatePicker
               sx={{ maxWidth: 180 }}
               value={expenseDate}
-              onChange={(e) => updateExpenseData(id, 'expenseDate', e.$d)}
+              onChange={(e) => handleExpenseDate(e, id)}
               required
               label="Expense Date"
+              disablePast
+              format="DD/MM/YYYY"
             />
           </LocalizationProvider>
           <TextField
             required
             id="outlined-basic"
+            type="number"
             label="Fee"
             value={estimatedExpenseFee}
             onChange={(e) =>
