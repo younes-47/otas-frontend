@@ -16,11 +16,26 @@ import TextField from '@mui/material/TextField';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import { TransitionProps } from '@mui/material/transitions';
 import FormLabel from '@mui/material/FormLabel';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import { Button, FormControl, IconButton } from '@mui/material';
+import {
+  Alert,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  FormControl,
+  IconButton,
+  Modal,
+  ModalContent,
+  Slide,
+  Typography,
+} from '@mui/material';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -96,7 +111,8 @@ export function OrdreMissionForm() {
   const [description, setDescription] = useState('');
   const [tripsCounter, setTripsCounter] = useState(2); // This counter is being used for the uniqueness of trips ids
   const [expensesCounter, setExpensesCounter] = useState(0); // This counter is being used for the uniqueness of expenses ids
-
+  const [error, setError] = useState('');
+  const [modalVisibility, setModalVisibility] = useState(false);
   useEffect(() => {
     let totalTripsMAD = 0.0;
     let totalTripsEUR = 0.0;
@@ -218,15 +234,6 @@ export function OrdreMissionForm() {
     );
   };
 
-  // Handle on buttons click
-  const handleOnReturnButtonClick = () => {
-    history.push('/my-requests/ordre-mission');
-  };
-
-  const handleOnSaveAsDraftClick = () => {
-    dispatch(AddOrdreMissionAction(data));
-    history.push('/my-requests/ordre-mission');
-  };
   const data = {
     UserId: '4',
     description,
@@ -237,6 +244,28 @@ export function OrdreMissionForm() {
     actualRequester,
   };
 
+  // Handle on buttons click
+  const handleOnReturnButtonClick = () => {
+    history.push('/my-requests/ordre-mission');
+  };
+  const handleOnSaveAsDraftClick = () => {
+    // on behalf of someone + missing actual requester info
+    if (
+      data.onBehalf === true &&
+      (actualRequester.firstName === '' ||
+        actualRequester.lastName === '' ||
+        actualRequester.registrationNumber === 0 ||
+        actualRequester.jobTitle === '' ||
+        actualRequester.department === '' ||
+        actualRequester.manager === '')
+    ) {
+      setError('Invalid actual requester information!');
+      setModalVisibility(true);
+      return;
+    }
+    dispatch(AddOrdreMissionAction(data));
+    history.push('/my-requests/ordre-mission');
+  };
   return (
     <Box
       position="fixed"
@@ -691,6 +720,32 @@ export function OrdreMissionForm() {
           Confirm
         </Button>
       </Stack>
+      {/* <Modal open={modalVisibility} onClose={() => setModalVisibility(false)}>
+        <Box>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Text in a modal
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+          </Typography>
+        </Box>
+      </Modal> */}
+      <Dialog
+        open={modalVisibility}
+        keepMounted
+        onClose={() => setModalVisibility(false)}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle>Input error!</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            <Alert severity="error">{error}</Alert>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setModalVisibility(false)}>Close</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
