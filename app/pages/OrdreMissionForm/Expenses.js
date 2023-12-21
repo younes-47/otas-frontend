@@ -59,17 +59,17 @@ const Expenses = ({ expenseData, updateExpenseData, removeExpense }) => {
           onChange={(e) => updateExpenseData(id, 'description', e.target.value)}
           variant="outlined"
         />
-        <LocalizationProvider reuired dateAdapter={AdapterDayjs}>
-          <DatePicker
-            value={expenseDate}
-            onChange={(e) => handleExpenseDate(e, id)}
-            sx={{ maxWidth: 170 }}
-            required
-            label="Expense Date"
-            disablePast
-            format="DD/MM/YYYY"
-          />
-        </LocalizationProvider>
+
+        <DatePicker
+          value={expenseDate}
+          onChange={(e) => handleExpenseDate(e, id)}
+          sx={{ maxWidth: 170 }}
+          required
+          label="Expense Date"
+          disablePast
+          format="DD/MM/YYYY"
+        />
+
         <Box sx={{ minWidth: 120 }}>
           <FormControl fullWidth>
             <InputLabel required id="demo-simple-select-label">

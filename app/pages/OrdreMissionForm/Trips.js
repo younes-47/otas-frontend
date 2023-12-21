@@ -106,30 +106,29 @@ const Trips = ({ tripData, updateTripData, isTripRequired, removeTrip }) => {
           required
         />
 
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DateTimePicker
-            sx={{ minWidth: 160, maxWidth: 160 }}
-            label="Departure"
-            value={departureDate}
-            onChange={(e) => {
-              handleTripDates(id, 'departureDate', e);
-            }}
-            disablePast
-            format="DD/MM/YYYY"
-          />
-        </LocalizationProvider>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DateTimePicker
-            sx={{ minWidth: 160, maxWidth: 160 }}
-            label="Arrival"
-            value={arrivalDate}
-            onChange={(e) => {
-              handleTripDates(id, 'arrivalDate', e);
-            }}
-            disablePast
-            format="DD/MM/YYYY"
-          />
-        </LocalizationProvider>
+        <DateTimePicker
+          sx={{ minWidth: 160, maxWidth: 160 }}
+          label="Departure"
+          value={departureDate}
+          onChange={(e) => {
+            handleTripDates(id, 'departureDate', e);
+          }}
+          disablePast
+          format="DD/MM/YYYY HH:mm"
+          fontSize={2}
+        />
+
+        <DateTimePicker
+          sx={{ minWidth: 160, maxWidth: 160 }}
+          label="Arrival"
+          value={arrivalDate}
+          onChange={(e) => {
+            handleTripDates(id, 'arrivalDate', e);
+          }}
+          disablePast
+          format="DD/MM/YYYY"
+        />
+
         <Box sx={{ minWidth: 160, maxWidth: 160 }}>
           <FormControl fullWidth>
             <InputLabel required id="demo-simple-select-label">
