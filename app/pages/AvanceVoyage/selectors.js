@@ -18,15 +18,15 @@ const selectAvanceVoyageDomain = (state) => state.avanceVoyage || initialState;
 const makeSelectAvanceVoyage = () =>
   createSelector(selectAvanceVoyageDomain, (substate) => substate);
 
-const makeSelectLoadingAvanceVoyages = () =>
-  createSelector(selectAvanceVoyageDomain, (substate) => substate.loadingAvanceVoyages);
+const makeSelectChangePageContent = () =>
+  createSelector(selectAvanceVoyageDomain, (substate) => substate.pageContent);
 
-const makeSelectErrorLoadingAvanceVoyages = () =>
-  createSelector(selectAvanceVoyageDomain, (substate) => substate.errorLoadingAvanceVoyages);
-
-const makeSelectAvanceVoyages = () =>
-  createSelector(selectAvanceVoyageDomain, (substate) => substate.avanceVoyages);
-
+const makeSelectCleanupStore = () =>
+  createSelector(selectAvanceVoyageDomain, (substate) => substate.storeCleanup);
 
 export default makeSelectAvanceVoyage;
-export { selectAvanceVoyageDomain, makeSelectLoadingAvanceVoyages, makeSelectErrorLoadingAvanceVoyages, makeSelectAvanceVoyages };
+export {
+  selectAvanceVoyageDomain,
+  makeSelectChangePageContent,
+  makeSelectCleanupStore,
+};

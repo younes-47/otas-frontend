@@ -1,22 +1,12 @@
-/**
- *
- * OrdreMissionTable
- *
- */
-
 import React, { useEffect } from 'react';
 import { createStructuredSelector } from 'reselect';
-
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
-
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import Box from '@mui/material/Box';
 import { IconButton } from '@mui/material';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import Tables from 'components/Tables';
 import { DateTimeFormater } from 'utils/Custom/stringManipulation';
 import { ChangePageContentAction } from 'pages/OrdreMission/actions';
@@ -39,7 +29,8 @@ const mapStateToProps = createStructuredSelector({
 });
 
 export function OrdreMissionTable() {
-  const history = useHistory();
+  useInjectReducer({ key: 'ordreMissionTable', reducer });
+  useInjectSaga({ key: 'ordreMissionTable', saga });
   const dispatch = useDispatch();
   const {
     ordreMissions,

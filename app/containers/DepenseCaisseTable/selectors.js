@@ -2,11 +2,11 @@ import { createSelector } from 'reselect';
 import { initialState } from './reducer';
 
 /**
- * Direct selector to the depenseCaisseTable state domain
+ * Direct selector to the depenseCaisse state domain
  */
 
 const selectDepenseCaisseTableDomain = (state) =>
-  state.depenseCaisseTable || initialState;
+  state.depenseCaisse || initialState;
 
 /**
  * Other specific selectors
@@ -19,5 +19,28 @@ const selectDepenseCaisseTableDomain = (state) =>
 const makeSelectDepenseCaisseTable = () =>
   createSelector(selectDepenseCaisseTableDomain, (substate) => substate);
 
+const makeSelectLoadingDepenseCaisses = () =>
+  createSelector(
+    selectDepenseCaisseTableDomain,
+    (substate) => substate.loadingDepenseCaisses,
+  );
+
+const makeSelectErrorLoadingDepenseCaisses = () =>
+  createSelector(
+    selectDepenseCaisseTableDomain,
+    (substate) => substate.errorLoadingDepenseCaisses,
+  );
+
+const makeSelectDepenseCaisses = () =>
+  createSelector(
+    selectDepenseCaisseTableDomain,
+    (substate) => substate.depenseCaisses,
+  );
+
 export default makeSelectDepenseCaisseTable;
-export { selectDepenseCaisseTableDomain };
+export {
+  selectDepenseCaisseTableDomain,
+  makeSelectLoadingDepenseCaisses,
+  makeSelectErrorLoadingDepenseCaisses,
+  makeSelectDepenseCaisses,
+};

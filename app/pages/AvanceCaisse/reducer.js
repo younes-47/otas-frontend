@@ -8,9 +8,6 @@ import {
   CHANGE_PAGE_CONTENT_ACTION,
   CLEANUP_STORE_ACTION,
   DEFAULT_ACTION,
-  LOAD_AVANCE_CAISSES,
-  LOAD_AVANCE_CAISSES_ERROR,
-  LOAD_AVANCE_CAISSES_SUCCESS,
 } from './constants';
 
 export const initialState = {
@@ -33,19 +30,6 @@ const avanceCaisseReducer = (state = initialState, action) =>
         draft.errorLoadingAvanceCaisses = null;
         draft.avanceCaisses = [];
         draft.pageContent = 'TABLE';
-        break;
-      case LOAD_AVANCE_CAISSES:
-        draft.loadingAvanceCaisses = true;
-        draft.errorLoadingAvanceCaisses = false;
-        break;
-      case LOAD_AVANCE_CAISSES_ERROR:
-        draft.loadingAvanceCaisses = false;
-        draft.errorLoadingAvanceCaisses = action.error;
-        break;
-      case LOAD_AVANCE_CAISSES_SUCCESS:
-        draft.loadingAvanceCaisses = false;
-        draft.errorLoadingAvanceCaisses = false;
-        draft.avanceCaisses = action.data;
         break;
     }
   });

@@ -9,12 +9,9 @@
 
 import React from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-
 import LoginPage from 'pages/LoginPage/Loadable';
-
 import Unauthorized from 'pages/Unauthorized/Loadable';
 import NotFound from 'pages/NotFound/Loadable';
-
 import SideBar from 'containers/SideBar';
 import Header from 'containers/Header';
 import MyRequests from 'pages/MyRequests/Loadable';

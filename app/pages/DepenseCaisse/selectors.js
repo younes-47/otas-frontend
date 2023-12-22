@@ -19,14 +19,18 @@ const selectDepenseCaisseDomain = (state) =>
 const makeSelectDepenseCaisse = () =>
   createSelector(selectDepenseCaisseDomain, (substate) => substate);
 
-const makeSelectLoadingDepenseCaisses = () =>
-  createSelector(selectDepenseCaisseDomain, (substate) => substate.loadingDepenseCaisses);
+const makeSelectChangePageContent = () =>
+  createSelector(selectDepenseCaisseDomain, (substate) => substate.pageContent);
 
-const makeSelectErrorLoadingDepenseCaisses = () =>
-  createSelector(selectDepenseCaisseDomain, (substate) => substate.errorLoadingDepenseCaisses);
-
-const makeSelectDepenseCaisses = () =>
-  createSelector(selectDepenseCaisseDomain, (substate) => substate.depenseCaisses);
+const makeSelectCleanupStore = () =>
+  createSelector(
+    selectDepenseCaisseDomain,
+    (substate) => substate.storeCleanup,
+  );
 
 export default makeSelectDepenseCaisse;
-export { selectDepenseCaisseDomain, makeSelectLoadingDepenseCaisses, makeSelectErrorLoadingDepenseCaisses, makeSelectDepenseCaisses };
+export {
+  selectDepenseCaisseDomain,
+  makeSelectChangePageContent,
+  makeSelectCleanupStore,
+};

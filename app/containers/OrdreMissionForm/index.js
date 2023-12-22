@@ -389,7 +389,7 @@ export function OrdreMissionForm() {
       return;
     }
     dispatch(AddOrdreMissionAction(data));
-    history.push('/my-requests/ordre-mission');
+    dispatch(ChangePageContentAction('TABLE'));
   };
 
   return (

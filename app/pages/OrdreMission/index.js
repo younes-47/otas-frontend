@@ -1,40 +1,24 @@
-/**
- *
- * OrdreMission
- *
- */
-
 import React, { useEffect } from 'react';
 import { createStructuredSelector } from 'reselect';
-
-import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
-
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import OrdreMissionTable from 'containers/OrdreMissionTable';
 import OrdreMissionForm from 'containers/OrdreMissionForm';
-import saga from './saga';
+import { useInjectSaga } from 'utils/injectSaga';
 import reducer from './reducer';
-import {
-  makeSelectErrorLoadingOrdreMissions,
-  makeSelectLoadingOrdreMissions,
-  makeSelectOrdreMissions,
-  makeSelectPageContent,
-} from './selectors';
+
+import saga from './saga';
+import { makeSelectPageContent } from './selectors';
 import { cleanupStoreAction } from './actions';
 
 const mapStateToProps = createStructuredSelector({
-  loadingOrdreMissions: makeSelectLoadingOrdreMissions(),
-  errorLoadingOrdreMissions: makeSelectErrorLoadingOrdreMissions(),
-  ordreMissions: makeSelectOrdreMissions(),
   isSideBarVisible: makeSelectIsSideBarVisible(),
   pageContent: makeSelectPageContent(),
 });
 
 export function OrdreMission() {
   useInjectReducer({ key: 'ordreMission', reducer });
-  useInjectSaga({ key: 'ordreMission', saga });
   const { pageContent } = useSelector(mapStateToProps);
   const dispatch = useDispatch();
   useEffect(

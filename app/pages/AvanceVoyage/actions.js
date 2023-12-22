@@ -4,7 +4,11 @@
  *
  */
 
-import { DEFAULT_ACTION, LOAD_AVANCE_VOYAGES, LOAD_AVANCE_VOYAGES_ERROR, LOAD_AVANCE_VOYAGES_SUCCESS } from './constants';
+import {
+  CHANGE_PAGE_CONTENT_ACTION,
+  CLEANUP_STORE_ACTION,
+  DEFAULT_ACTION,
+} from './constants';
 
 export function defaultAction() {
   return {
@@ -12,22 +16,15 @@ export function defaultAction() {
   };
 }
 
-export function loadAvanceVoyageAction(){
+export function changePageContentAction(pageContent) {
   return {
-    type: LOAD_AVANCE_VOYAGES,
-  }
+    type: CHANGE_PAGE_CONTENT_ACTION,
+    pageContent,
+  };
 }
 
-export function loadAvanceVoyageSuccessAction(data){
+export function cleanupStoreAction() {
   return {
-    type: LOAD_AVANCE_VOYAGES_SUCCESS,
-    data,
-  }
-}
-
-export function loadAvanceVoyageErrorAction(error){
-  return {
-    type: LOAD_AVANCE_VOYAGES_ERROR,
-    error,
-  }
+    type: CLEANUP_STORE_ACTION,
+  };
 }

@@ -4,7 +4,11 @@
  *
  */
 
-import { DEFAULT_ACTION, LOAD_DEPENSE_CAISSES, LOAD_DEPENSE_CAISSES_ERROR, LOAD_DEPENSE_CAISSES_SUCCESS } from './constants';
+import {
+  CHANGE_PAGE_CONTENT_ACTION,
+  CLEANUP_STORE_ACTION,
+  DEFAULT_ACTION,
+} from './constants';
 
 export function defaultAction() {
   return {
@@ -12,22 +16,15 @@ export function defaultAction() {
   };
 }
 
-export function loadDepenseCaisseAction(){
+export function changePageContentAction(pageContent) {
   return {
-    type: LOAD_DEPENSE_CAISSES,
-  }
+    type: CHANGE_PAGE_CONTENT_ACTION,
+    pageContent,
+  };
 }
 
-export function loadDepenseCaisseSuccessAction(data){
+export function cleanupStoreAction() {
   return {
-    type: LOAD_DEPENSE_CAISSES_SUCCESS,
-    data,
-  }
-}
-
-export function loadDepenseCaisseErrorAction(error){
-  return {
-    type: LOAD_DEPENSE_CAISSES_ERROR,
-    error,
-  }
+    type: CLEANUP_STORE_ACTION,
+  };
 }

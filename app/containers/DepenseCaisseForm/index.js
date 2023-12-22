@@ -31,6 +31,7 @@ import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import dayjs from 'dayjs';
+import { changePageContentAction } from 'pages/DepenseCaisse/actions';
 import Expenses from './Expenses';
 import makeSelectDepenseCaisseForm, { makeSelectOnBehalf } from './selectors';
 import reducer from './reducer';
@@ -147,7 +148,7 @@ export function DepenseCaisseForm() {
   };
   // Handle on buttons click
   const handleOnReturnButtonClick = () => {
-    history.push('/my-requests/depense-caisse');
+    dispatch(changePageContentAction('TABLE'));
   };
 
   const data = {

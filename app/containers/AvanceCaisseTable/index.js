@@ -27,6 +27,8 @@ const mapStateToProps = createStructuredSelector({
 });
 
 export function AvanceCaisseTable() {
+  useInjectReducer({ key: 'avanceCaisseTable', reducer });
+  useInjectSaga({ key: 'avanceCaisseTable', saga });
   const dispatch = useDispatch();
   const {
     avanceCaisses,

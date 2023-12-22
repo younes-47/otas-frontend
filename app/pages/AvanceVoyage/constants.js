@@ -6,10 +6,7 @@
 
 export const DEFAULT_ACTION = 'app/AvanceVoyage/DEFAULT_ACTION';
 
-export const LOAD_AVANCE_VOYAGES = 'app/AvanceVoyage/LOAD_AVANCE_VOYAGES';
-export const LOAD_AVANCE_VOYAGES_SUCCESS = 'app/AvanceVoyage/LOAD_AVANCE_VOYAGES_SUCCESS';
-export const LOAD_AVANCE_VOYAGES_ERROR = 'app/AvanceVoyage/LOAD_AVANCE_VOYAGES_ERROR';
+export const CHANGE_PAGE_CONTENT_ACTION =
+  'app/DepenseCaisse/CHANGE_PAGE_CONTENT_ACTION';
 
-export const webService = {
-    LOAD_AVANCE_VOYAGE: '/AvanceVoyage/Requests/Table',
-}
+export const CLEANUP_STORE_ACTION = 'app/DepenseCaisse/CLEANUP_STORE_ACTION';

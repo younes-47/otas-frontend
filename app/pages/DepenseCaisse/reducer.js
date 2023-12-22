@@ -4,12 +4,17 @@
  *
  */
 import produce from 'immer';
-import { DEFAULT_ACTION, LOAD_DEPENSE_CAISSES, LOAD_DEPENSE_CAISSES_ERROR, LOAD_DEPENSE_CAISSES_SUCCESS } from './constants';
+import {
+  CHANGE_PAGE_CONTENT_ACTION,
+  CLEANUP_STORE_ACTION,
+  DEFAULT_ACTION,
+} from './constants';
 
 export const initialState = {
   loadingDepenseCaisses: false,
   errorLoadingDepenseCaisses: null,
   depenseCaisses: [],
+  pageContent: 'TABLE',
 };
 /* eslint-disable default-case, no-param-reassign */
 const depenseCaisseReducer = (state = initialState, action) =>
@@ -17,18 +22,14 @@ const depenseCaisseReducer = (state = initialState, action) =>
     switch (action.type) {
       case DEFAULT_ACTION:
         break;
-      case LOAD_DEPENSE_CAISSES:
-        draft.loadingDepenseCaisses = true
-        draft.errorLoadingDepenseCaisses = false
+      case CHANGE_PAGE_CONTENT_ACTION:
+        draft.pageContent = action.pageContent;
         break;
-      case LOAD_DEPENSE_CAISSES_ERROR:
-        draft.loadingDepenseCaisses = false
-        draft.errorLoadingDepenseCaisses = action.error
-        break;
-      case LOAD_DEPENSE_CAISSES_SUCCESS:
-        draft.loadingDepenseCaisses = false
-        draft.errorLoadingDepenseCaisses = false
-        draft.depenseCaisses = action.data
+      case CLEANUP_STORE_ACTION:
+        draft.loadingDepenseCaisses = false;
+        draft.errorLoadingDepenseCaisses = null;
+        draft.depenseCaisses = [];
+        draft.pageContent = 'TABLE';
         break;
     }
   });

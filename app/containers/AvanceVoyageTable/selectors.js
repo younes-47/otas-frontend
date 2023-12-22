@@ -19,5 +19,28 @@ const selectAvanceVoyageTableDomain = (state) =>
 const makeSelectAvanceVoyageTable = () =>
   createSelector(selectAvanceVoyageTableDomain, (substate) => substate);
 
+const makeSelectLoadingAvanceVoyages = () =>
+  createSelector(
+    selectAvanceVoyageTableDomain,
+    (substate) => substate.loadingAvanceVoyages,
+  );
+
+const makeSelectErrorLoadingAvanceVoyages = () =>
+  createSelector(
+    selectAvanceVoyageTableDomain,
+    (substate) => substate.errorLoadingAvanceVoyages,
+  );
+
+const makeSelectAvanceVoyages = () =>
+  createSelector(
+    selectAvanceVoyageTableDomain,
+    (substate) => substate.avanceVoyages,
+  );
+
 export default makeSelectAvanceVoyageTable;
-export { selectAvanceVoyageTableDomain };
+export {
+  selectAvanceVoyageTableDomain,
+  makeSelectAvanceVoyages,
+  makeSelectLoadingAvanceVoyages,
+  makeSelectErrorLoadingAvanceVoyages,
+};
