@@ -22,9 +22,6 @@ import OrdreMission from 'pages/OrdreMission/Loadable';
 import AvanceCaisse from 'pages/AvanceCaisse/Loadable';
 import DepenseCaisse from 'pages/DepenseCaisse/Loadable';
 import AvanceVoyage from 'pages/AvanceVoyage/Loadable';
-import OrdreMissionForm from 'pages/OrdreMissionForm';
-import { DepenseCaisseForm } from 'pages/DepenseCaisseForm';
-import AvanceCaisseForm from 'pages/AvanceCaisseForm';
 import GlobalStyle from '../../global-styles';
 export default function App() {
   return (
@@ -54,21 +51,6 @@ export default function App() {
             exact
             path="/my-requests/depense-caisse"
             component={DepenseCaisse}
-          />
-          <Route
-            exact
-            path="/my-requests/ordre-mission/add"
-            component={OrdreMissionForm}
-          />
-          <Route
-            exact
-            path="/my-requests/depense-caisse/add"
-            component={DepenseCaisseForm}
-          />
-          <Route
-            exact
-            path="/my-requests/avance-caisse/add"
-            component={AvanceCaisseForm}
           />
           <Route exact path="/unauthorized" component={Unauthorized} />
           <Route exact path="/not-found" component={NotFound} />

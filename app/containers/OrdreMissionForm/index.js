@@ -16,11 +16,7 @@ import TextField from '@mui/material/TextField';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import { TransitionProps } from '@mui/material/transitions';
 import FormLabel from '@mui/material/FormLabel';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
 import {
   Alert,
   Button,
@@ -29,24 +25,15 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  FormControl,
   IconButton,
-  Modal,
-  ModalContent,
-  Slide,
-  Typography,
 } from '@mui/material';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import AddBoxIcon from '@mui/icons-material/AddBox';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import { v4 as uuidv4 } from 'uuid';
 import { Stack } from '@mui/system';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import dayjs from 'dayjs';
-import { id } from 'date-fns/locale';
+import { ChangePageContentAction } from 'pages/OrdreMission/actions';
 import saga from './saga';
 import reducer from './reducer';
 import makeSelectOrdreMissionForm, {
@@ -247,7 +234,7 @@ export function OrdreMissionForm() {
 
   // Handle on buttons click
   const handleOnReturnButtonClick = () => {
-    history.push('/my-requests/ordre-mission');
+    dispatch(ChangePageContentAction('TABLE'));
   };
   const handleOnSaveAsDraftClick = () => {
     // Invalid on behalf selection

@@ -3,15 +3,8 @@ import request from 'utils/request';
 import {
   loadOrdreMissionSuccessAction,
   loadOrdreMissionErrorAction,
-  AddOrdreMissionSuccessAction,
-  AddOrdreMissionErrorAction,
 } from './actions';
-import {
-  ADD_ORDRE_MISSION,
-  LOAD_ORDRE_MISSIONS,
-  webService,
-} from './constants';
-// Individual exports for testing
+import { LOAD_ORDRE_MISSIONS, webService } from './constants';
 
 export function* loadOrdreMission() {
   try {
@@ -30,20 +23,6 @@ export function* loadOrdreMission() {
   }
 }
 
-export function* AddOrdreMission({ data }) {
-  try {
-    yield call(request.post, webService.ADD_ORDRE_MISSION, data, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    yield put(AddOrdreMissionSuccessAction());
-  } catch (error) {
-    yield put(AddOrdreMissionErrorAction(error));
-  }
-}
-
 export default function* ordreMissionSaga() {
   yield takeLatest(LOAD_ORDRE_MISSIONS, loadOrdreMission);
-  yield takeLatest(ADD_ORDRE_MISSION, AddOrdreMission);
 }

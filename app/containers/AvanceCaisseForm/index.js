@@ -11,11 +11,9 @@ import { Box, Stack } from '@mui/system';
 import { v4 as uuidv4 } from 'uuid';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import {
-  Alert,
   Button,
   Divider,
   FormControlLabel,
@@ -30,6 +28,7 @@ import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import dayjs from 'dayjs';
+import { changePageContentAction } from 'pages/AvanceCaisse/actions';
 import makeSelectAvanceCaisseForm, { makeSelectOnBehalf } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
@@ -82,8 +81,6 @@ export function AvanceCaisseForm() {
     setTotal(totalExpenses);
   }, [expenses]);
 
-  const history = useHistory();
-
   const addExpense = () => {
     const expenseId = uuidv4();
     const newExpense = {
@@ -127,7 +124,7 @@ export function AvanceCaisseForm() {
 
   // Handle on buttons click
   const handleOnReturnButtonClick = () => {
-    history.push('/my-requests/avance-caisse');
+    dispatch(changePageContentAction('TABLE'));
   };
 
   const data = {

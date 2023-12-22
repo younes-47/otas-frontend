@@ -1,12 +1,10 @@
 /*
  *
- * AvanceCaisse reducer
+ * AvanceCaisseTable reducer
  *
  */
 import produce from 'immer';
 import {
-  CHANGE_PAGE_CONTENT_ACTION,
-  CLEANUP_STORE_ACTION,
   DEFAULT_ACTION,
   LOAD_AVANCE_CAISSES,
   LOAD_AVANCE_CAISSES_ERROR,
@@ -17,22 +15,13 @@ export const initialState = {
   loadingAvanceCaisses: false,
   errorLoadingAvanceCaisses: null,
   avanceCaisses: [],
-  pageContent: 'TABLE',
 };
+
 /* eslint-disable default-case, no-param-reassign */
-const avanceCaisseReducer = (state = initialState, action) =>
+const avanceCaisseTableReducer = (state = initialState, action) =>
   produce(state, (draft) => {
     switch (action.type) {
       case DEFAULT_ACTION:
-        break;
-      case CHANGE_PAGE_CONTENT_ACTION:
-        draft.pageContent = action.pageContent;
-        break;
-      case CLEANUP_STORE_ACTION:
-        draft.loadingAvanceCaisses = false;
-        draft.errorLoadingAvanceCaisses = null;
-        draft.avanceCaisses = [];
-        draft.pageContent = 'TABLE';
         break;
       case LOAD_AVANCE_CAISSES:
         draft.loadingAvanceCaisses = true;
@@ -50,4 +39,4 @@ const avanceCaisseReducer = (state = initialState, action) =>
     }
   });
 
-export default avanceCaisseReducer;
+export default avanceCaisseTableReducer;

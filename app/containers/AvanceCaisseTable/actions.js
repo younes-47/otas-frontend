@@ -1,12 +1,10 @@
 /*
  *
- * AvanceCaisse actions
+ * AvanceCaisseTable actions
  *
  */
 
 import {
-  CHANGE_PAGE_CONTENT_ACTION,
-  CLEANUP_STORE_ACTION,
   DEFAULT_ACTION,
   LOAD_AVANCE_CAISSES,
   LOAD_AVANCE_CAISSES_ERROR,
@@ -36,18 +34,5 @@ export function loadAvanceCaisseErrorAction(error) {
   return {
     type: LOAD_AVANCE_CAISSES_ERROR,
     error,
-  };
-}
-
-export function changePageContentAction(pageContent) {
-  return {
-    type: CHANGE_PAGE_CONTENT_ACTION,
-    pageContent,
-  };
-}
-
-export function cleanupStoreAction() {
-  return {
-    type: CLEANUP_STORE_ACTION,
   };
 }
