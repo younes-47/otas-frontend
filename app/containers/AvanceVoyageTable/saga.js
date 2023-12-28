@@ -11,7 +11,7 @@ export function* loadAvanceVoyages() {
   try {
     const { data } = yield call(
       request.get,
-      `${webService.LOAD_AVANCE_VOYAGE}?userId=4`,
+      `${webService.LOAD_AVANCE_VOYAGE}`,
       {
         headers: {
           'Content-Type': 'application/json',

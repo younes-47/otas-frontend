@@ -11,7 +11,7 @@ export function* loadAvanceCaisse() {
   try {
     const { data } = yield call(
       request.get,
-      `${webService.LOAD_AVANCE_CAISSES}?userId=4`,
+      `${webService.LOAD_AVANCE_CAISSES}`,
       {
         headers: {
           'Content-Type': 'application/json',

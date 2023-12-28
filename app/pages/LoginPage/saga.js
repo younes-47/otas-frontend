@@ -8,7 +8,7 @@ export function* loginUser({ username, password }) {
     const { data } = yield call(
       request.post,
       WebService.AUTH_REQUEST,
-      { name: username, password },
+      { username, password },
       {
         headers: {
           'Content-Type': 'application/json',

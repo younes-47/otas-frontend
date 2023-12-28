@@ -475,45 +475,24 @@ export function DepenseCaisseForm() {
         </Box>
       </Box>
 
-      {expenses.map((expense) => {
-        if (expense.id === 0) {
-          return (
-            <Box
-              key={expense.id}
-              display="flex"
-              justifyContent="center"
-              flexDirection="row"
-            >
-              <div style={{ padding: '21px' }}></div>
-              <Expenses
-                removeExpense={removeExpense}
-                updateExpenseData={updateExpenseData}
-                expenseData={expense}
-              />
-            </Box>
-          );
-        }
-        return (
-          <Box
-            key={expense.id}
-            display="flex"
-            justifyContent="center"
-            flexDirection="row"
-          >
-            <IconButton onClick={() => removeExpense(expense.id)}>
-              <HighlightOffIcon
-                sx={{ color: 'red', fontSize: '25px' }}
-              ></HighlightOffIcon>
-            </IconButton>
-
+      {expenses.map((expense) => (
+        <Box
+          key={expense.id}
+          display="flex"
+          justifyContent="center"
+          flexDirection="row"
+        >
+          <div key={expense.id}>
             <Expenses
+              key={expense.id}
               removeExpense={removeExpense}
               updateExpenseData={updateExpenseData}
               expenseData={expense}
+              isExpenseRequired={expense.id === 0}
             />
-          </Box>
-        );
-      })}
+          </div>
+        </Box>
+      ))}
 
       {/* DIVIDER */}
       <Box

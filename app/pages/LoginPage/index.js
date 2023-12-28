@@ -71,10 +71,18 @@ export function LoginPage() {
       localStorage.setItem('token', token);
       localStorage.setItem('role', role);
       localStorage.setItem('username', username);
-      history.push('/overview');
+      if (role === 'minimal-access') {
+        history.push('/access-denied');
+      } else {
+        history.push('/my-requests');
+      }
     }
     if (localStorage.getItem('token')) {
-      history.push('/overview');
+      if (localStorage.getItem('role') === 'minimal-access') {
+        history.push('/access-denied');
+      } else {
+        history.push('/my-requests');
+      }
     }
   }, [token]);
   useEffect(

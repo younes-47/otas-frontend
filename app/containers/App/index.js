@@ -19,6 +19,7 @@ import OrdreMission from 'pages/OrdreMission/Loadable';
 import AvanceCaisse from 'pages/AvanceCaisse/Loadable';
 import DepenseCaisse from 'pages/DepenseCaisse/Loadable';
 import AvanceVoyage from 'pages/AvanceVoyage/Loadable';
+import MinimalAccess from 'pages/MinimalAccess/Loadable';
 import GlobalStyle from '../../global-styles';
 export default function App() {
   return (
@@ -50,6 +51,9 @@ export default function App() {
             component={DepenseCaisse}
           />
           <Route exact path="/unauthorized" component={Unauthorized} />
+
+          <Route exact path="/access-denied" component={MinimalAccess} />
+          {/* <Route component={MinimalAccess} /> */}
           <Route exact path="/not-found" component={NotFound} />
           <Route component={NotFound} />
         </Switch>

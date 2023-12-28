@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import {
   FormControl,
   IconButton,
@@ -284,7 +285,7 @@ const Trips = ({ tripData, updateTripData, isTripRequired, removeTrip }) => {
           </IconButton>
         ) : (
           <IconButton sx={{ fontSize: '10px' }} disableRipple>
-            <PriorityHighIcon></PriorityHighIcon>
+            <KeyboardArrowLeftIcon></KeyboardArrowLeftIcon>
           </IconButton>
         )}
       </Box>

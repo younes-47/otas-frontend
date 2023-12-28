@@ -10,8 +10,8 @@ request.interceptors.request.use(
   async (config) => {
     // Do something before request is sent
     const requestConfig = { ...config };
-    // const token = await getToken(); // getting the token from local storage
-    const token = null; // getting the token from local storage
+    const token = localStorage.getItem('token'); // getting the token from local storage
+    // const token = null; // getting the token from local storage
 
     if (token != null) {
       requestConfig.headers.Authorization = `Bearer ${token}`;
@@ -25,6 +25,12 @@ request.interceptors.response.use(
   (res) => res,
   (err) => {
     const error = { ...err };
+    if (error.response?.status === 401) {
+      if (error.response?.data === 'TOKEN-EXPIRED') {
+        localStorage.clear();
+        window.location.herf = '/login';
+      }
+    }
     if (error.response?.status !== 200) {
       // error handling
     }

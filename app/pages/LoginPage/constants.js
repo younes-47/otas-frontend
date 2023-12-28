@@ -12,5 +12,5 @@ export const CHANGE_USERNAME = 'app/LoginPage/CHANGE_USERNAME';
 export const CHANGE_PASSWORD = 'app/LoginPage/CHANGE_PASSWORD';
 export const LOGINPAGE_STORE_CLEANUP = 'app/LoginPage/LOGINPAGE_STORE_CLEANUP';
 export const WebService = {
-  AUTH_REQUEST: '/users/authenticate',
+  AUTH_REQUEST: '/auth/authenticate',
 };

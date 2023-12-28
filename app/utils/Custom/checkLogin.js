@@ -64,6 +64,7 @@ const getAdminPaths = () => {
   paths.push('/login');
   paths.push('/unauthorized');
   paths.push('/not-found');
+  paths.push('/access-denied');
   return paths;
 };
 const getAccessiblePaths = () => {
@@ -72,6 +73,8 @@ const getAccessiblePaths = () => {
   paths.push('/login');
   paths.push('/unauthorized');
   paths.push('/not-found');
+  paths.push('/access-denied');
+
   return paths;
 };
 

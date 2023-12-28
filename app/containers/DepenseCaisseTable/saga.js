@@ -12,7 +12,7 @@ export function* loadDepenseCaisse() {
   try {
     const { data } = yield call(
       request.get,
-      `${webService.LOAD_DEPENSE_CAISSES}?userId=4`,
+      `${webService.LOAD_DEPENSE_CAISSES}`,
       {
         headers: {
           'Content-Type': 'application/json',

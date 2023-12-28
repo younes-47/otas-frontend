@@ -137,7 +137,6 @@ export function OrdreMissionForm() {
     setTotalEUR(TOTAL_EUR);
   }, [trips, expenses]);
 
-  const history = useHistory();
   const dispatch = useDispatch();
 
   const handleOnBehalfSelectionChange = (event) => {
@@ -710,32 +709,17 @@ export function OrdreMissionForm() {
             ></AddCircleIcon>
           </IconButton>
         </Box>
-        {trips.map((trip) => {
-          if (trip.id === 0 || trip.id === 1) {
-            return (
-              <div key={trip.id}>
-                <Trips
-                  key={trip.id}
-                  tripData={trip}
-                  updateTripData={updateTripData}
-                  isTripRequired
-                  removeTrip={removeTrip}
-                />
-              </div>
-            );
-          }
-          return (
-            <div key={trip.id}>
-              <Trips
-                key={trip.id}
-                tripData={trip}
-                updateTripData={updateTripData}
-                isTripRequired={false}
-                removeTrip={removeTrip}
-              />
-            </div>
-          );
-        })}
+        {trips.map((trip) => (
+          <div key={trip.id}>
+            <Trips
+              key={trip.id}
+              tripData={trip}
+              updateTripData={updateTripData}
+              isTripRequired={trip.id === 0 || trip.id === 1}
+              removeTrip={removeTrip}
+            />
+          </div>
+        ))}
 
         {/* DIVIDER */}
         <Box

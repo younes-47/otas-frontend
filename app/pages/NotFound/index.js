@@ -55,12 +55,12 @@ export function NotFound() {
           <p style={{ fontSize: '24px', marginBottom: '40px' }}>
             We can&apos;t seem to find the page you&apos;re looking for.
           </p>
-          <Link
+          {/* <Link
             to="/overview"
             style={{ fontSize: '24px', marginBottom: '40px' }}
           >
             Go to Overview
-          </Link>
+          </Link> */}
         </Stack>
       </Box>
     </Box>

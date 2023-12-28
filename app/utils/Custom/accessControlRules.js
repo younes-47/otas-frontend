@@ -1,90 +1,22 @@
 export const accessControlRules = {
   myRequests: {
     path: '/my-requests',
-    accessLevel: [
-      'normal-requester',
-      'department-manager',
-      'human-resources',
-      'finance-department',
-      'general-director',
-      'treasury',
-    ],
+    accessLevel: ['requester', 'decider'],
     ordreMission: {
       path: '/my-requests/ordre-mission',
-      accessLevel: [
-        'normal-requester',
-        'department-manager',
-        'human-resources',
-        'finance-department',
-        'general-director',
-        'treasury',
-      ],
-      addOrdreMission: {
-        path: '/my-requests/ordre-mission/add',
-        accessLevel: [
-          'normal-requester',
-          'department-manager',
-          'human-resources',
-          'finance-department',
-          'general-director',
-          'treasury',
-        ],
-      },
+      accessLevel: ['requester', 'decider'],
     },
     avanceVoyage: {
       path: '/my-requests/avance-voyage',
-      accessLevel: [
-        'normal-requester',
-        'department-manager',
-        'human-resources',
-        'finance-department',
-        'general-director',
-        'treasury',
-      ],
+      accessLevel: ['requester', 'decider'],
     },
     avanceCaisse: {
       path: '/my-requests/avance-caisse',
-      accessLevel: [
-        'normal-requester',
-        'department-manager',
-        'human-resources',
-        'finance-department',
-        'general-director',
-        'treasury',
-      ],
-      addAvanceCaisse: {
-        path: '/my-requests/avance-caisse/add',
-        accessLevel: [
-          'normal-requester',
-          'department-manager',
-          'human-resources',
-          'finance-department',
-          'general-director',
-          'treasury',
-        ],
-      },
+      accessLevel: ['requester', 'decider'],
     },
     depenseCaisse: {
       path: '/my-requests/depense-caisse',
-      accessLevel: [
-        'normal-requester',
-        'department-manager',
-        'human-resources',
-        'finance-department',
-        'general-director',
-        'treasury',
-      ],
-      addDepenseCaisse: {
-        path: '/my-requests/depense-caisse/add',
-        accessLevel: [
-          'normal-requester',
-          'department-manager',
-          'human-resources',
-          'finance-department',
-          'general-director',
-          'treasury',
-        ],
-      },
+      accessLevel: ['requester', 'decider'],
     },
   },
 };

@@ -456,46 +456,24 @@ export function AvanceCaisseForm() {
         </Box>
       </Box>
 
-      {expenses.map((expense) => {
-        if (expense.id === 0) {
-          return (
-            <Box
-              key={expense.id}
-              display="flex"
-              justifyContent="center"
-              flexDirection="row"
-            >
-              <div style={{ padding: '21px' }}></div>
-
-              <Expenses
-                removeExpense={removeExpense}
-                updateExpenseData={updateExpenseData}
-                expenseData={expense}
-              />
-            </Box>
-          );
-        }
-        return (
-          <Box
-            key={expense.id}
-            display="flex"
-            justifyContent="center"
-            flexDirection="row"
-          >
-            <IconButton onClick={() => removeExpense(expense.id)}>
-              <HighlightOffIcon
-                sx={{ color: 'red', fontSize: '25px' }}
-              ></HighlightOffIcon>
-            </IconButton>
-
+      {expenses.map((expense) => (
+        <Box
+          display="flex"
+          justifyContent="center"
+          flexDirection="row"
+          key={expense.id}
+        >
+          <div key={expense.id}>
             <Expenses
-              removeExpense={removeExpense}
-              updateExpenseData={updateExpenseData}
+              key={expense.id}
               expenseData={expense}
+              updateExpenseData={updateExpenseData}
+              removeExpense={removeExpense}
+              isExpenseRequired={expense.id === 0}
             />
-          </Box>
-        );
-      })}
+          </div>
+        </Box>
+      ))}
 
       {/* DIVIDER */}
       <Box

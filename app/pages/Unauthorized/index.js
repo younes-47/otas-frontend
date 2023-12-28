@@ -47,10 +47,10 @@ export function Unauthorized() {
             You do not have permission to access this Page.
           </p>
           <Link
-            to="/overview"
+            to="/my-requests"
             style={{ fontSize: '24px', marginBottom: '40px' }}
           >
-            Go to Overview
+            Go to MyRequests
           </Link>
         </Stack>
       </Box>

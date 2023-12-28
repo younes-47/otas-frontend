@@ -11,6 +11,7 @@
   "app.containers.LanguageToggle.english": "Anglais",
   "app.containers.LanguageToggle.french": "Français",
   "app.containers.LanguageToggle.title": "Langue",
+  "app.containers.MinimalAccess.header": "",
   "app.containers.MyRequests.header": "",
   "app.containers.OrdreMission.header": "",
   "app.containers.OrdreMissionForm.header": "",

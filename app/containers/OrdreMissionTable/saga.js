@@ -10,7 +10,7 @@ export function* loadOrdreMission() {
   try {
     const { data } = yield call(
       request.get,
-      `${webService.LOAD_ORDRE_MISSION}?userId=4`,
+      `${webService.LOAD_ORDRE_MISSION}`,
       {
         headers: {
           'Content-Type': 'application/json',

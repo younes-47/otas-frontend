@@ -11,6 +11,7 @@
   "app.containers.LanguageToggle.english": "English",
   "app.containers.LanguageToggle.french": "French",
   "app.containers.LanguageToggle.title": "Language",
+  "app.containers.MinimalAccess.header": "This is the MinimalAccess container!",
   "app.containers.MyRequests.header": "This is the MyRequests container!",
   "app.containers.OrdreMission.header": "This is the OrdreMission container!",
   "app.containers.OrdreMissionForm.header": "OrdreMissionForm",
