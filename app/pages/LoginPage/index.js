@@ -38,7 +38,7 @@ import PasswordInput from './PasswordInput';
 import TextInput from './TextInput';
 // import logo from '/app/images/logo-512x512.png';
 // eslint-disable-next-line import/no-unresolved
-import tmaLoginImage from '/app/images/APP_login_image-634×360.png';
+import otasLoginImage from '/app/images/OTAS_login_image-634×360.png';
 
 const mapStateToProps = createStructuredSelector({
   loginPage: makeSelectLoginPage(),
@@ -125,7 +125,7 @@ export function LoginPage() {
             marginBottom: '24px',
           }}
           alt="Dicastal Logo"
-          src={tmaLoginImage}
+          src={otasLoginImage}
         />
         <StyledBox
           display="flex"
