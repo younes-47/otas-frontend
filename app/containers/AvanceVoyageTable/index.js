@@ -48,6 +48,18 @@ export function AvanceVoyageTable() {
       headerName: '#',
     },
     {
+      field: 'ordreMissionId',
+      hide: false,
+      width: 120,
+      headerName: '#Mission Order',
+    },
+    {
+      field: 'ordreMissionDescription',
+      hide: false,
+      width: 250,
+      headerName: 'Description',
+    },
+    {
       field: 'estimatedTotal',
       hide: false,
       headerName: 'Estimated Total',

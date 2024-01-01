@@ -6,6 +6,9 @@
 import produce from 'immer';
 import {
   DEFAULT_ACTION,
+  DELETE_ORDRE_MISSION,
+  DELETE_ORDRE_MISSION_ERROR,
+  DELETE_ORDRE_MISSION_SUCCESS,
   LOAD_ORDRE_MISSIONS,
   LOAD_ORDRE_MISSIONS_ERROR,
   LOAD_ORDRE_MISSIONS_SUCCESS,
@@ -15,6 +18,8 @@ export const initialState = {
   loadingOrdreMissions: false,
   errorLoadingOrdreMissions: null,
   ordreMissions: [],
+  deletingOrdreMission: false,
+  errorDeletingOrdreMission: false,
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -35,6 +40,18 @@ const ordreMissionTableReducer = (state = initialState, action) =>
         draft.loadingOrdreMissions = false;
         draft.errorLoadingOrdreMissions = false;
         draft.ordreMissions = action.data;
+        break;
+      case DELETE_ORDRE_MISSION:
+        draft.deletingOrdreMission = true;
+        draft.errorDeletingOrdreMission = false;
+        break;
+      case DELETE_ORDRE_MISSION_ERROR:
+        draft.deletingOrdreMission = false;
+        draft.errorDeletingOrdreMission = action.error;
+        break;
+      case DELETE_ORDRE_MISSION_SUCCESS:
+        draft.deletingOrdreMission = false;
+        draft.errorDeletingOrdreMission = false;
         break;
     }
   });

@@ -19,6 +19,17 @@ const makeSelectErrorLoadingOrdreMissions = () =>
     selectOrdreMissionTableDomain,
     (substate) => substate.errorLoadingOrdreMissions,
   );
+const makeSelectDeletingOrdreMission = () =>
+  createSelector(
+    selectOrdreMissionTableDomain,
+    (substate) => substate.deletingOrdreMission,
+  );
+
+const makeSelectErrorDeletingOrdreMission = () =>
+  createSelector(
+    selectOrdreMissionTableDomain,
+    (substate) => substate.errorDeletingOrdreMission,
+  );
 
 const makeSelectOrdreMissions = () =>
   createSelector(
@@ -35,4 +46,6 @@ export {
   makeSelectOrdreMissions,
   makeSelectLoadingOrdreMissions,
   makeSelectErrorLoadingOrdreMissions,
+  makeSelectErrorDeletingOrdreMission,
+  makeSelectDeletingOrdreMission,
 };
