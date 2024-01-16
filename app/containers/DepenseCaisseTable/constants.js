@@ -14,5 +14,5 @@ export const LOAD_DEPENSE_CAISSES_ERROR =
   'app/DepenseCaisseTable/LOAD_DEPENSE_CAISSES_ERROR';
 
 export const webService = {
-  LOAD_DEPENSE_CAISSES: '/DepenseCaisseTable/Requests/Table',
+  LOAD_DEPENSE_CAISSES: '/DepenseCaisse/Requests/Table',
 };

@@ -76,7 +76,7 @@ export function DepenseCaisseTable() {
       flex: 1,
     },
     {
-      field: 'receiptsFilePath',
+      field: 'receiptsFileName',
       hide: false,
       headerName: 'Receipts File',
       flex: 1,

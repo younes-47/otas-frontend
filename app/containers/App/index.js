@@ -20,6 +20,13 @@ import AvanceCaisse from 'pages/AvanceCaisse/Loadable';
 import DepenseCaisse from 'pages/DepenseCaisse/Loadable';
 import AvanceVoyage from 'pages/AvanceVoyage/Loadable';
 import MinimalAccess from 'pages/MinimalAccess/Loadable';
+import Liquidation from 'pages/Liquidation/Loadable';
+import DecideOnRequests from 'pages/DecideOnRequests/Loadable';
+import DecideOnOrdreMission from 'pages/DecideOnOrdreMission/Loadable';
+import DecideOnAvanceVoyage from 'pages/DecideOnAvanceVoyage/Loadable';
+import DecideOnAvanceCaisse from 'pages/DecideOnAvanceCaisse/Loadable';
+import DecideOnDepenseCaisse from 'pages/DecideOnDepenseCaisse/Loadable';
+import DecideOnLiquidation from 'pages/DecideOnLiquidation/Loadable';
 import GlobalStyle from '../../global-styles';
 export default function App() {
   return (
@@ -49,6 +56,41 @@ export default function App() {
             exact
             path="/my-requests/depense-caisse"
             component={DepenseCaisse}
+          />
+          <Route
+            exact
+            path="/my-requests/liquidation"
+            component={Liquidation}
+          />
+          <Route
+            exact
+            path="/decide-on-requests"
+            component={DecideOnRequests}
+          />
+          <Route
+            exact
+            path="/decide-on-requests/decide-on-ordre-mission"
+            component={DecideOnOrdreMission}
+          />
+          <Route
+            exact
+            path="/decide-on-requests/decide-on-avance-voyage"
+            component={DecideOnAvanceVoyage}
+          />
+          <Route
+            exact
+            path="/decide-on-requests/decide-on-avance-caisse"
+            component={DecideOnAvanceCaisse}
+          />
+          <Route
+            exact
+            path="/decide-on-requests/decide-on-depense-caisse"
+            component={DecideOnDepenseCaisse}
+          />
+          <Route
+            exact
+            path="/decide-on-requests/decide-on-liquidation"
+            component={DecideOnLiquidation}
           />
           <Route exact path="/unauthorized" component={Unauthorized} />
 

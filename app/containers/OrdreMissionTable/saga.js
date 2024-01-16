@@ -32,7 +32,7 @@ export function* loadOrdreMission() {
 export function* deleteOrdreMission({ id }) {
   console.log(id);
   try {
-    yield call(request.delete, webService.DELETE_ORDRE_MISSION, id, {
+    yield call(request.delete, `${webService.DELETE_ORDRE_MISSION}?Id=${id}`, {
       headers: {
         'Content-Type': 'application/json',
       },

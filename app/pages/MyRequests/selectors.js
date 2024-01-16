@@ -17,20 +17,8 @@ const selectMyRequestsDomain = (state) => state.myRequests || initialState;
 
 const makeSelectOverview = () =>
   createSelector(selectMyRequestsDomain, (substate) => substate);
-const makeSelectLoadingFullName = () =>
-  createSelector(
-    selectMyRequestsDomain,
-    (substate) => substate.loadingFullName,
-  );
-const makeSelectErrorFullName = () =>
-  createSelector(selectMyRequestsDomain, (substate) => substate.errorFullName);
 const makeSelectUserInfo = () =>
   createSelector(selectMyRequestsDomain, (substate) => substate.userInfo);
 
 export default makeSelectOverview;
-export {
-  selectMyRequestsDomain,
-  makeSelectLoadingFullName,
-  makeSelectErrorFullName,
-  makeSelectUserInfo,
-};
+export { selectMyRequestsDomain, makeSelectUserInfo };

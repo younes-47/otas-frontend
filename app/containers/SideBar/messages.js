@@ -29,6 +29,36 @@ export default defineMessages({
     id: `${scope}.depenseCaisse`,
     defaultMessage: '-depenseCaisse',
   },
+  liquidation: {
+    id: `${scope}.liquidation`,
+    defaultMessage: '-liquidation',
+  },
+
+  decideOnRequests: {
+    id: `${scope}.decideOnRequests`,
+    defaultMessage: '-decideOnRequests',
+  },
+  decideOnOrdreMission: {
+    id: `${scope}.decideOnOrdreMission`,
+    defaultMessage: '-decideOnOrdreMission',
+  },
+  decideOnAvanceVoyage: {
+    id: `${scope}.decideOnAvanceVoyage`,
+    defaultMessage: '-decideOnAvanceVoyage',
+  },
+  decideOnAvanceCaisse: {
+    id: `${scope}.decideOnAvanceCaisse`,
+    defaultMessage: '-decideOnAvanceCaisse',
+  },
+  decideOnDepenseCaisse: {
+    id: `${scope}.decideOnDepenseCaisse`,
+    defaultMessage: '-decideOnDepenseCaisse',
+  },
+  decideOnLiquidation: {
+    id: `${scope}.decideOnLiquidation`,
+    defaultMessage: '-decideOnLiquidation',
+  },
+
   notFound: {
     id: `${scope}.notFound`,
     defaultMessage: '-Not found',

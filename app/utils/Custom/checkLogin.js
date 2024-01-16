@@ -59,7 +59,7 @@ const generatePaths = (obj, parentPath = '', paths = []) => {
 // };
 
 const getAdminPaths = () => {
-  const pages = filterAccessControlRules(accessControlRules, 'admin');
+  const pages = filterAccessControlRules(accessControlRules, 'decider');
   const paths = generatePaths(pages);
   paths.push('/login');
   paths.push('/unauthorized');
@@ -83,7 +83,6 @@ const AccessController = (history, path) => {
     // if logged in Check accessLevel
     const adminPaths = getAdminPaths();
     const accessiblePaths = getAccessiblePaths();
-
     if (!accessiblePaths.includes(path)) {
       if (!adminPaths.includes(path)) {
         history.push('/not-found');

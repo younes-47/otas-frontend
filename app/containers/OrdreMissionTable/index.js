@@ -71,6 +71,44 @@ export function OrdreMissionTable() {
       hide: false,
       headerName: 'Latest Status',
       flex: 1,
+      renderCell: (params) => {
+        const { latestStatus } = params.row;
+        if (
+          latestStatus === 'Draft' ||
+          latestStatus === 'Returned' ||
+          latestStatus === 'Returned for missing evidences' ||
+          latestStatus === 'Funds Prepared'
+        ) {
+          return (
+            <Alert icon={false} severity="warning" variant="outlined">
+              {latestStatus}
+            </Alert>
+          );
+        }
+        if (latestStatus === 'Rejected') {
+          return (
+            <Alert icon={false} severity="error" variant="outlined">
+              {latestStatus}
+            </Alert>
+          );
+        }
+        if (
+          latestStatus === 'Approved' ||
+          latestStatus === 'Finalized' ||
+          latestStatus === 'Funds Collected'
+        ) {
+          return (
+            <Alert icon={false} severity="success" variant="outlined">
+              {latestStatus}
+            </Alert>
+          );
+        }
+        return (
+          <Alert icon={false} severity="info">
+            {latestStatus}
+          </Alert>
+        );
+      },
     },
     {
       field: 'onBehalf',

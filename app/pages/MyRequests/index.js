@@ -33,12 +33,14 @@ export default function MyRequests() {
   const { isSideBarVisible, userInfo } = useSelector(mapStateToProps);
 
   useEffect(() => {
-    if (userInfo.firstName === '') {
-      dispatch(loadUserInfoAction());
-    }
+    dispatch(loadUserInfoAction());
   }, [userInfo]);
-
-  console.log('userinfo', userInfo);
+  useEffect(
+    () => () => {
+      dispatch(cleanupStoreAction());
+    },
+    [],
+  );
   return (
     <Box
       position="fixed"

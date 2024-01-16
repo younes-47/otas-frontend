@@ -18,6 +18,7 @@ export const initialState = {
   userInfo: {
     firstName: '',
     lastName: '',
+    level: '',
   },
 };
 
@@ -36,6 +37,7 @@ const overviewReducer = (state = initialState, action) =>
         draft.errorUserInfo = false;
         draft.userInfo.firstName = action.data.firstName;
         draft.userInfo.lastName = action.data.lastName;
+        draft.userInfo.level = action.data.level;
         break;
       case LOAD_USER_INFO_ERROR:
         draft.loadingUserInfo = false;
@@ -47,6 +49,8 @@ const overviewReducer = (state = initialState, action) =>
         draft.errorUserInfo = true;
         draft.userInfo.firstName = '';
         draft.userInfo.lastName = '';
+        draft.userInfo.level = '';
+        break;
     }
   });
 
