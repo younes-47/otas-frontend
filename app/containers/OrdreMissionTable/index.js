@@ -80,14 +80,32 @@ export function OrdreMissionTable() {
           latestStatus === 'Funds Prepared'
         ) {
           return (
-            <Alert icon={false} severity="warning" variant="outlined">
+            <Alert
+              icon={false}
+              severity="warning"
+              variant="outlined"
+              style={{
+                paddingBottom: '0.3px',
+                paddingTop: '0.3px',
+                borderRadius: '40px',
+              }}
+            >
               {latestStatus}
             </Alert>
           );
         }
         if (latestStatus === 'Rejected') {
           return (
-            <Alert icon={false} severity="error" variant="outlined">
+            <Alert
+              icon={false}
+              severity="error"
+              variant="outlined"
+              style={{
+                paddingBottom: '0.3px',
+                paddingTop: '0.3px',
+                borderRadius: '40px',
+              }}
+            >
               {latestStatus}
             </Alert>
           );
@@ -98,13 +116,30 @@ export function OrdreMissionTable() {
           latestStatus === 'Funds Collected'
         ) {
           return (
-            <Alert icon={false} severity="success" variant="outlined">
+            <Alert
+              icon={false}
+              severity="success"
+              variant="outlined"
+              style={{
+                paddingBottom: '0.3px',
+                paddingTop: '0.3px',
+                borderRadius: '40px',
+              }}
+            >
               {latestStatus}
             </Alert>
           );
         }
         return (
-          <Alert icon={false} severity="info">
+          <Alert
+            icon={false}
+            severity="info"
+            style={{
+              paddingBottom: '0.3px',
+              paddingTop: '0.3px',
+              borderRadius: '40px',
+            }}
+          >
             {latestStatus}
           </Alert>
         );

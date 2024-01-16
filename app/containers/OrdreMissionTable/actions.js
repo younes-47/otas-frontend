@@ -47,9 +47,10 @@ export function deleteOrdreMissionAction(id) {
   };
 }
 
-export function deleteOrdreMissionSuccessAction() {
+export function deleteOrdreMissionSuccessAction(data) {
   return {
     type: DELETE_ORDRE_MISSION_SUCCESS,
+    data,
   };
 }
 

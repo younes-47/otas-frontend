@@ -3,8 +3,8 @@ import request from 'utils/request';
 import {
   loadOrdreMissionSuccessAction,
   loadOrdreMissionErrorAction,
-  deleteOrdreMissionAction,
   deleteOrdreMissionErrorAction,
+  deleteOrdreMissionSuccessAction,
 } from './actions';
 import {
   DELETE_ORDRE_MISSION,
@@ -30,14 +30,17 @@ export function* loadOrdreMission() {
 }
 
 export function* deleteOrdreMission({ id }) {
-  console.log(id);
   try {
-    yield call(request.delete, `${webService.DELETE_ORDRE_MISSION}?Id=${id}`, {
-      headers: {
-        'Content-Type': 'application/json',
+    const { data } = yield call(
+      request.delete,
+      `${webService.DELETE_ORDRE_MISSION}?Id=${id}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
       },
-    });
-    yield put(deleteOrdreMissionAction());
+    );
+    yield put(deleteOrdreMissionSuccessAction(data));
   } catch (error) {
     yield put(deleteOrdreMissionErrorAction(error));
   }

@@ -16,6 +16,7 @@ import { createStructuredSelector } from 'reselect';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import Stack from '@mui/material/Stack';
 import { Link, useHistory, useLocation } from 'react-router-dom';
+import { Alert } from '@mui/material';
 import saga from './saga';
 import reducer from './reducer';
 import { cleanupStoreAction, loadUserInfoAction } from './actions';
@@ -61,10 +62,18 @@ export default function MyRequests() {
           <h1 style={{ fontSize: '72px', marginBottom: '10px' }}>
             Welcome {userInfo.firstName} {userInfo.lastName}
           </h1>
-          <p style={{ fontSize: '24px', marginBottom: '30px' }}>
+
+          <Alert
+            severity="info"
+            style={{
+              fontSize: '20px',
+              marginBottom: '30px',
+              textAlign: 'center',
+            }}
+          >
             This is my Requests section, where you can access or place your
             requests.
-          </p>
+          </Alert>
         </Stack>
       </Box>
     </Box>

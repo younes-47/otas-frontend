@@ -51,7 +51,7 @@ const ordreMissionTableReducer = (state = initialState, action) =>
         break;
       case DELETE_ORDRE_MISSION_SUCCESS:
         draft.deletingOrdreMission = false;
-        draft.errorDeletingOrdreMission = false;
+        draft.ordreMissions = action.data;
         break;
     }
   });
