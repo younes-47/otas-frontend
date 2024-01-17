@@ -4,6 +4,7 @@
   "app.containers.AvanceCaisseTable.header": "",
   "app.containers.AvanceVoyage.header": "",
   "app.containers.AvanceVoyageTable.header": "",
+  "app.containers.AvanceVoyageView.header": "",
   "app.containers.DecideOnAvanceCaisse.header": "",
   "app.containers.DecideOnAvanceCaisseForm.header": "",
   "app.containers.DecideOnAvanceCaisseTable.header": "",

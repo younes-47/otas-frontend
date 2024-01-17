@@ -3,8 +3,14 @@ import request from 'utils/request';
 import {
   loadDepenseCaisseSuccessAction,
   loadDepenseCaisseErrorAction,
+  deleteDepenseCaisseSuccessAction,
+  deleteDepenseCaisseErrorAction,
 } from './actions';
-import { LOAD_DEPENSE_CAISSES, webService } from './constants';
+import {
+  DELETE_DEPENSE_CAISSE,
+  LOAD_DEPENSE_CAISSES,
+  webService,
+} from './constants';
 
 // Individual exports for testing
 
@@ -25,6 +31,24 @@ export function* loadDepenseCaisse() {
   }
 }
 
+export function* deleteOrdreMission({ id }) {
+  try {
+    const { data } = yield call(
+      request.delete,
+      `${webService.DELETE_DEPENSE_CAISSE}?Id=${id}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    yield put(deleteDepenseCaisseSuccessAction(data));
+  } catch (error) {
+    yield put(deleteDepenseCaisseErrorAction(error));
+  }
+}
+
 export default function* depenseCaisseSaga() {
   yield takeLatest(LOAD_DEPENSE_CAISSES, loadDepenseCaisse);
+  yield takeLatest(DELETE_DEPENSE_CAISSE, deleteOrdreMission);
 }

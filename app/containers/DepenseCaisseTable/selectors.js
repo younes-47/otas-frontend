@@ -6,7 +6,7 @@ import { initialState } from './reducer';
  */
 
 const selectDepenseCaisseTableDomain = (state) =>
-  state.depenseCaisse || initialState;
+  state.depenseCaisseTable || initialState;
 
 /**
  * Other specific selectors
@@ -37,8 +37,36 @@ const makeSelectDepenseCaisses = () =>
     (substate) => substate.depenseCaisses,
   );
 
+const makeSelectDeletingDepenseCaisse = () =>
+  createSelector(
+    selectDepenseCaisseTableDomain,
+    (substate) => substate.deletingDepenseCaisse,
+  );
+
+const makeSelectErrorDeletingDepenseCaisse = () =>
+  createSelector(
+    selectDepenseCaisseTableDomain,
+    (substate) => substate.errorDeletingDepenseCaisse,
+  );
+
+const makeSelectCleanupStore = () =>
+  createSelector(
+    selectDepenseCaisseTableDomain,
+    (substate) => substate.storeCleanup,
+  );
+
+const makeSelectAddedDepenseCaisse = () =>
+  createSelector(
+    selectDepenseCaisseTableDomain,
+    (substate) => substate.addedDepenseCaisse,
+  );
+
 export default makeSelectDepenseCaisseTable;
 export {
+  makeSelectAddedDepenseCaisse,
+  makeSelectErrorDeletingDepenseCaisse,
+  makeSelectDeletingDepenseCaisse,
+  makeSelectCleanupStore,
   selectDepenseCaisseTableDomain,
   makeSelectLoadingDepenseCaisses,
   makeSelectErrorLoadingDepenseCaisses,

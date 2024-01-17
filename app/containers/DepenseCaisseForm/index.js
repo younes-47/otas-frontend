@@ -19,6 +19,11 @@ import { DropzoneArea } from 'material-ui-dropzone';
 import {
   Alert,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Divider,
   FormControlLabel,
   FormLabel,
@@ -32,16 +37,24 @@ import { useInjectReducer } from 'utils/injectReducer';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import dayjs from 'dayjs';
 import { changePageContentAction } from 'pages/DepenseCaisse/actions';
+import { setAddedDepenseCaisseAction } from 'containers/DepenseCaisseTable/actions';
 import Expenses from './Expenses';
-import makeSelectDepenseCaisseForm, { makeSelectOnBehalf } from './selectors';
+import makeSelectDepenseCaisseForm, {
+  makeSelectAddDepenseCaisse,
+  makeSelectOnBehalf,
+} from './selectors';
 import reducer from './reducer';
 import saga from './saga';
-import { SelectOnBehalfAction } from './actions';
+import {
+  AddDepenseCaisseAction,
+  SelectOnBehalfAction,
+  cleanupStoreAction,
+} from './actions';
 
 const mapStateToProps = createStructuredSelector({
-  depenseCaisseForm: makeSelectDepenseCaisseForm(),
   isSideBarVisible: makeSelectIsSideBarVisible(),
   onBehalfSelection: makeSelectOnBehalf(),
+  errorAddingDepenseCaisse: makeSelectAddDepenseCaisse(),
 });
 
 export function DepenseCaisseForm() {
@@ -51,16 +64,18 @@ export function DepenseCaisseForm() {
 
   const [currency, setCurrency] = useState('MAD');
   const [total, setTotal] = useState(0.0);
+  const [expensesCounter, setExpensesCounter] = useState(1); // This counter is being used for the uniqueness of expenses ids
   const [description, setDescription] = useState('');
   const [receiptsFile, setReceiptsFile] = useState('');
   const [receiptsFileName, setReceiptsFileName] = useState('');
-  const { isSideBarVisible, onBehalfSelection } = useSelector(mapStateToProps);
+  const { isSideBarVisible, onBehalfSelection, errorAddingDepenseCaisse } =
+    useSelector(mapStateToProps);
   const [expenses, setExpenses] = useState([
     {
       id: 0,
       description: '',
       expenseDate: dayjs(Date()),
-      estimatedExpenseFee: 0.0,
+      estimatedFee: 0.0,
     },
   ]);
   const [actualRequester, setActualRequester] = useState({
@@ -73,7 +88,16 @@ export function DepenseCaisseForm() {
     manager: '',
   });
 
-  const history = useHistory();
+  const [inputError, setInputError] = useState('');
+  const [modalVisibility, setModalVisibility] = useState(false);
+
+  useEffect(() => {
+    if (errorAddingDepenseCaisse === false) {
+      dispatch(cleanupStoreAction());
+      dispatch(setAddedDepenseCaisseAction());
+      dispatch(changePageContentAction('TABLE'));
+    }
+  }, [errorAddingDepenseCaisse]);
 
   // const handleFileChange = (e) => {
   //   const file = e.target.files[0];
@@ -89,18 +113,18 @@ export function DepenseCaisseForm() {
   useEffect(() => {
     let totalExpenses = 0.0;
     expenses.forEach((expense) => {
-      totalExpenses += parseFloat(expense.estimatedExpenseFee);
+      totalExpenses += parseFloat(expense.estimatedFee);
     });
     setTotal(totalExpenses);
   }, [expenses]);
 
   const addExpense = () => {
-    const expenseId = uuidv4();
+    setExpensesCounter(expensesCounter + 1);
     const newExpense = {
-      id: expenseId,
+      id: expensesCounter,
       description: '',
       expenseDate: dayjs(Date()),
-      estimatedExpenseFee: 0.0,
+      estimatedFee: 0.0,
     };
     setExpenses((prevExpenses) => [...prevExpenses, newExpense]);
   };
@@ -132,33 +156,128 @@ export function DepenseCaisseForm() {
   };
 
   const updateReceiptsFileData = async (e) => {
-    const file = e.currentTarget.files[0];
+    // const file = e.currentTarget.files[0];
+    // setReceiptsFileName(file.name);
+    // const buffer = await file.arrayBuffer();
+    // const byteArray = new Uint8Array(buffer);
+    // let binaryData = '';
+    // for (let i = 0; i < byteArray.length; i += 1) {
+    //   binaryData += String(byteArray[i]);
+    // }
+
+    const file = e.target.files[0];
     setReceiptsFileName(file.name);
-    const buffer = await file.arrayBuffer();
-    const byteArray = new Int8Array(buffer);
-    let binaryData = '';
-    for (let i = 0; i < byteArray.length; i += 1) {
-      binaryData += String(byteArray[i]);
-    }
-    setReceiptsFile(binaryData);
+    const binaryData = new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = (event) => {
+        resolve(event.target.result);
+      };
+
+      reader.onerror = (err) => {
+        reject(err);
+      };
+
+      reader.readAsDataURL(file);
+    });
+    const response = await binaryData;
+    const base64data = response.split(',')[1];
+    setReceiptsFile(base64data);
   };
 
   const handlecurrencyChange = (event) => {
     setCurrency(event.target.value);
   };
+
   // Handle on buttons click
   const handleOnReturnButtonClick = () => {
+    dispatch(cleanupStoreAction());
     dispatch(changePageContentAction('TABLE'));
   };
 
   const data = {
-    userId: '4',
     onBehalf: onBehalfSelection === 'true',
     description,
     receiptsFile,
     currency,
     actualRequester,
     expenses,
+  };
+
+  const handleOnSaveAsDraftClick = () => {
+    // Invalid on behalf selection
+    if (data.onBehalf !== true && data.onBehalf !== false) {
+      setInputError(
+        'Could not figure out whether you are filling this request on behalf of someone else or not! Please select "Yes" or "No".',
+      );
+      setModalVisibility(true);
+      return;
+    }
+
+    // on behalf of someone + missing actual requester info
+    if (
+      data.onBehalf === true &&
+      (actualRequester.firstName === '' ||
+        actualRequester.lastName === '' ||
+        actualRequester.registrationNumber === 0 ||
+        actualRequester.jobTitle === '' ||
+        actualRequester.department === '' ||
+        actualRequester.manager === '' ||
+        actualRequester.hiringDate === '')
+    ) {
+      setInputError(
+        'You must fill all actual requester information if you are filling this request on behalf of someone else!',
+      );
+      setModalVisibility(true);
+      return;
+    }
+
+    // Description
+    if (data.description === '') {
+      setInputError('You must provide a description for the request!');
+      setModalVisibility(true);
+      return;
+    }
+
+    let isAllGood = true;
+
+    // expenses
+    data.expenses.forEach((expense) => {
+      if (expense.description === '') {
+        setInputError(
+          'One of the expenses required information is missing! Please review your expenses and fill all necessary information.',
+        );
+        setModalVisibility(true);
+        isAllGood = false;
+      }
+      // fee = 0
+      if (expense.estimatedFee <= 0 || expense.estimatedFee === '0') {
+        setInputError(
+          'Expense fee cannot be 0 or negative! Please review your expenses information and try again.',
+        );
+        setModalVisibility(true);
+        isAllGood = false;
+      }
+      // value is blank
+      if (expense.estimatedFee === '') {
+        setInputError(
+          'Invalid Total value! Please review your trajectories and/or expenses fee/Mileage values and try again',
+        );
+        setModalVisibility(true);
+        isAllGood = false;
+      }
+    });
+
+    // Receipts file
+    if (data.receiptsFile === '') {
+      setInputError('Please upload your receipts!');
+      setModalVisibility(true);
+      isAllGood = false;
+    }
+    if (isAllGood === false) {
+      return;
+    }
+    dispatch(AddDepenseCaisseAction(data));
   };
 
   return (
@@ -593,13 +712,35 @@ export function DepenseCaisseForm() {
         >
           Return
         </Button>
-        <Button variant="contained" color="warning">
-          Save as Draf
+        <Button
+          variant="contained"
+          color="warning"
+          onClick={handleOnSaveAsDraftClick}
+        >
+          Save as Draft
         </Button>
         <Button variant="contained" color="success">
           Confirm
         </Button>
       </Stack>
+
+      {/* This dialog appears only when submitting a bad request */}
+      <Dialog
+        open={modalVisibility}
+        keepMounted
+        onClose={() => setModalVisibility(false)}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle>Bad Request!</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            <Alert severity="error">{inputError}</Alert>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setModalVisibility(false)}>Close</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

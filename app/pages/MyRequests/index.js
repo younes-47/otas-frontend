@@ -59,10 +59,9 @@ export default function MyRequests() {
     >
       <Box display="flex" justifyContent="center" textAlign="center">
         <Stack>
-          <h1 style={{ fontSize: '72px', marginBottom: '10px' }}>
+          <h1 style={{ fontSize: '65px', marginBottom: '10px' }}>
             Welcome {userInfo.firstName} {userInfo.lastName}
           </h1>
-
           <Alert
             severity="info"
             style={{
@@ -79,7 +78,3 @@ export default function MyRequests() {
     </Box>
   );
 }
-
-// MyRequests.propTypes = {
-//   dispatch: PropTypes.func.isRequired,
-// };

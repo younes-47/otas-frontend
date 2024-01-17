@@ -14,7 +14,13 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import {
+  Alert,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Divider,
   FormControlLabel,
   FormLabel,
@@ -29,23 +35,33 @@ import { useInjectReducer } from 'utils/injectReducer';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import dayjs from 'dayjs';
 import { changePageContentAction } from 'pages/AvanceCaisse/actions';
-import makeSelectAvanceCaisseForm, { makeSelectOnBehalf } from './selectors';
+import { setAddedAvanceCaisseAction } from 'containers/AvanceCaisseTable/actions';
+import makeSelectAvanceCaisseForm, {
+  makeSelectAddAvanceCaisse,
+  makeSelectOnBehalf,
+} from './selectors';
 import reducer from './reducer';
 import saga from './saga';
 import Expenses from './Expenses';
-import { SelectOnBehalfAction } from './actions';
+import {
+  AddAvanceCaisseAction,
+  SelectOnBehalfAction,
+  cleanupStoreAction,
+} from './actions';
 
 const mapStateToProps = createStructuredSelector({
   avanceCaisseForm: makeSelectAvanceCaisseForm(),
   isSideBarVisible: makeSelectIsSideBarVisible(),
   onBehalfSelection: makeSelectOnBehalf(),
+  errorAddingAvanceCaisse: makeSelectAddAvanceCaisse(),
 });
 
 export function AvanceCaisseForm() {
   useInjectReducer({ key: 'avanceCaisseForm', reducer });
   useInjectSaga({ key: 'avanceCaisseForm', saga });
   const dispatch = useDispatch();
-  const { isSideBarVisible, onBehalfSelection } = useSelector(mapStateToProps);
+  const { isSideBarVisible, onBehalfSelection, errorAddingAvanceCaisse } =
+    useSelector(mapStateToProps);
   const [currency, setCurrency] = useState('MAD');
   const [total, setTotal] = useState(0.0);
   const [description, setDescription] = useState('');
@@ -67,11 +83,15 @@ export function AvanceCaisseForm() {
     },
   ]);
 
-  const handleOnBehalfSelectionChange = (event) => {
-    if (event.target.value !== String(onBehalfSelection)) {
-      dispatch(SelectOnBehalfAction(event.target.value.toString()));
+  const [inputError, setInputError] = useState('');
+  const [modalVisibility, setModalVisibility] = useState(false);
+  useEffect(() => {
+    if (errorAddingAvanceCaisse === false) {
+      dispatch(cleanupStoreAction());
+      dispatch(setAddedAvanceCaisseAction());
+      dispatch(changePageContentAction('TABLE'));
     }
-  };
+  }, [errorAddingAvanceCaisse]);
 
   useEffect(() => {
     let totalExpenses = 0.0;
@@ -80,6 +100,11 @@ export function AvanceCaisseForm() {
     });
     setTotal(totalExpenses);
   }, [expenses]);
+  const handleOnBehalfSelectionChange = (event) => {
+    if (event.target.value !== String(onBehalfSelection)) {
+      dispatch(SelectOnBehalfAction(event.target.value.toString()));
+    }
+  };
 
   const addExpense = () => {
     const expenseId = uuidv4();
@@ -124,11 +149,81 @@ export function AvanceCaisseForm() {
 
   // Handle on buttons click
   const handleOnReturnButtonClick = () => {
+    dispatch(cleanupStoreAction());
     dispatch(changePageContentAction('TABLE'));
   };
 
+  const handleOnSaveAsDraftClick = () => {
+    // Invalid on behalf selection
+    if (data.onBehalf !== true && data.onBehalf !== false) {
+      setInputError(
+        'Could not figure out whether you are filling this request on behalf of someone else or not! Please select "Yes" or "No".',
+      );
+      setModalVisibility(true);
+      return;
+    }
+
+    // on behalf of someone + missing actual requester info
+    if (
+      data.onBehalf === true &&
+      (actualRequester.firstName === '' ||
+        actualRequester.lastName === '' ||
+        actualRequester.registrationNumber === 0 ||
+        actualRequester.jobTitle === '' ||
+        actualRequester.department === '' ||
+        actualRequester.manager === '' ||
+        actualRequester.hiringDate === '')
+    ) {
+      setInputError(
+        'You must fill all actual requester information if you are filling this request on behalf of someone else!',
+      );
+      setModalVisibility(true);
+      return;
+    }
+
+    // Description
+    if (data.description === '') {
+      setInputError('You must provide a description for the request!');
+      setModalVisibility(true);
+      return;
+    }
+
+    let isAllGood = true;
+
+    // expenses
+    data.expenses.forEach((expense) => {
+      if (expense.description === '') {
+        setInputError(
+          'One of the expenses required information is missing! Please review your expenses and fill all necessary information.',
+        );
+        setModalVisibility(true);
+        isAllGood = false;
+      }
+      // fee = 0
+      if (expense.estimatedFee <= 0 || expense.estimatedFee === '0') {
+        setInputError(
+          'Expense fee cannot be 0 or negative! Please review your expenses information and try again.',
+        );
+        setModalVisibility(true);
+        isAllGood = false;
+      }
+      // value is blank
+      if (expense.estimatedFee === '') {
+        setInputError(
+          'Invalid Total value! Please review your trajectories and/or expenses fee/Mileage values and try again',
+        );
+        setModalVisibility(true);
+        isAllGood = false;
+      }
+    });
+
+    if (isAllGood === false) {
+      return;
+    }
+    dispatch(AddAvanceCaisseAction(data));
+  };
+
   const data = {
-    userId: '4',
     onBehalf: onBehalfSelection === 'true',
     description,
     currency,
@@ -513,13 +608,35 @@ export function AvanceCaisseForm() {
         >
           Return
         </Button>
-        <Button variant="contained" color="warning">
+        <Button
+          variant="contained"
+          color="warning"
+          onClick={handleOnSaveAsDraftClick}
+        >
           Save as Draf
         </Button>
         <Button variant="contained" color="success">
           Confirm
         </Button>
       </Stack>
+
+      {/* This dialog appears only when submitting a bad request */}
+      <Dialog
+        open={modalVisibility}
+        keepMounted
+        onClose={() => setModalVisibility(false)}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle>Bad Request!</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            <Alert severity="error">{inputError}</Alert>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setModalVisibility(false)}>Close</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

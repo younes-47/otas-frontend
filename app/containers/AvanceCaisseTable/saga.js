@@ -3,8 +3,14 @@ import request from 'utils/request';
 import {
   loadAvanceCaisseSuccessAction,
   loadAvanceCaisseErrorAction,
+  deleteAvanceCaisseSuccessAction,
+  deleteAvanceCaisseErrorAction,
 } from './actions';
-import { LOAD_AVANCE_CAISSES, webService } from './constants';
+import {
+  DELETE_AVANCE_CAISSE,
+  LOAD_AVANCE_CAISSES,
+  webService,
+} from './constants';
 
 // Individual exports for testing
 export function* loadAvanceCaisse() {
@@ -24,6 +30,24 @@ export function* loadAvanceCaisse() {
   }
 }
 
+export function* deleteAvanceCaisse({ id }) {
+  try {
+    const { data } = yield call(
+      request.delete,
+      `${webService.DELETE_AVANCE_CAISSE}?Id=${id}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    yield put(deleteAvanceCaisseSuccessAction(data));
+  } catch (error) {
+    yield put(deleteAvanceCaisseErrorAction(error));
+  }
+}
+
 export default function* avanceCaisseSaga() {
   yield takeLatest(LOAD_AVANCE_CAISSES, loadAvanceCaisse);
+  yield takeLatest(DELETE_AVANCE_CAISSE, deleteAvanceCaisse);
 }

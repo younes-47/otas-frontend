@@ -37,8 +37,36 @@ const makeSelectAvanceCaisses = () =>
     (substate) => substate.avanceCaisses,
   );
 
+const makeSelectDeletingAvanceCaisse = () =>
+  createSelector(
+    selectAvanceCaisseTableDomain,
+    (substate) => substate.deletingAvanceCaisse,
+  );
+
+const makeSelectErrorDeletingAvanceCaisse = () =>
+  createSelector(
+    selectAvanceCaisseTableDomain,
+    (substate) => substate.errorDeletingAvanceCaisse,
+  );
+
+const makeSelectCleanupStore = () =>
+  createSelector(
+    selectAvanceCaisseTableDomain,
+    (substate) => substate.storeCleanup,
+  );
+
+const makeSelectAddedAvanceCaisse = () =>
+  createSelector(
+    selectAvanceCaisseTableDomain,
+    (substate) => substate.addedAvanceCaisse,
+  );
+
 export default makeSelectAvanceCaisseTable;
 export {
+  makeSelectCleanupStore,
+  makeSelectAddedAvanceCaisse,
+  makeSelectErrorDeletingAvanceCaisse,
+  makeSelectDeletingAvanceCaisse,
   selectAvanceCaisseTableDomain,
   makeSelectLoadingAvanceCaisses,
   makeSelectErrorLoadingAvanceCaisses,

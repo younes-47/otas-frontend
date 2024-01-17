@@ -12,6 +12,20 @@ export const LOAD_AVANCE_CAISSES_SUCCESS =
 export const LOAD_AVANCE_CAISSES_ERROR =
   'app/AvanceCaisseTable/LOAD_AVANCE_CAISSES_ERROR';
 
+export const DELETE_AVANCE_CAISSE =
+  'app/AvanceCaisseTable/DELETE_AVANCE_CAISSE';
+export const DELETE_AVANCE_CAISSE_SUCCESS =
+  'app/AvanceCaisseTable/DELETE_AVANCE_CAISSE_SUCCESS';
+export const DELETE_AVANCE_CAISSE_ERROR =
+  'app/AvanceCaisseTable/DELETE_AVANCE_CAISSE_ERROR';
+
+export const ADDED_AVANCE_CAISSE =
+  'app/AvanceCaisseTable/DELETE_AVANCE_CAISSE_ERROR';
+
+export const CLEANUP_STORE_ACTION =
+  'app/AvanceCaisseTable/CLEANUP_STORE_ACTION';
+
 export const webService = {
   LOAD_AVANCE_CAISSES: '/AvanceCaisse/Requests/Table',
+  DELETE_AVANCE_CAISSE: '/AvanceCaisse/Delete',
 };

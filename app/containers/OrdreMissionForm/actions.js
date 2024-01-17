@@ -16,6 +16,7 @@ import {
   VIEW_ORDRE_MISSION,
   CHANGE_ABROAD_ACTION,
   CHANGE_TRANSPORTATION_METHOD_ACTION,
+  CLEANUP_STORE_ACTION,
 } from './constants';
 
 export function defaultAction() {
@@ -37,9 +38,10 @@ export function AddOrdreMissionSuccessAction() {
   };
 }
 
-export function AddOrdreMissionErrorAction() {
+export function AddOrdreMissionErrorAction(error) {
   return {
     type: ADD_ORDRE_MISSION_ERROR,
+    error,
   };
 }
 
@@ -81,5 +83,11 @@ export function SelectTransportationMethodAction(
   return {
     type: CHANGE_TRANSPORTATION_METHOD_ACTION,
     transportationMethodSelection,
+  };
+}
+
+export function cleanupStoreAction() {
+  return {
+    type: CLEANUP_STORE_ACTION,
   };
 }

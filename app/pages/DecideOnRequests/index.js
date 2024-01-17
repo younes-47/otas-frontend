@@ -15,6 +15,7 @@ import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import { Box, Stack } from '@mui/system';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
+import { Alert } from '@mui/material';
 import makeSelectDecideOnRequests, { makeSelectUserInfo } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
@@ -60,13 +61,18 @@ export function DecideOnRequests() {
     >
       <Box display="flex" justifyContent="center" textAlign="center">
         <Stack>
-          <h1 style={{ fontSize: '72px', marginBottom: '10px' }}>
-            Welcome {userInfo?.firstName} {userInfo?.lastName}
-          </h1>
-          <p style={{ fontSize: '24px', marginBottom: '30px' }}>
+          <Alert
+            severity="info"
+            style={{
+              fontSize: '20px',
+              marginBottom: '30px',
+              marginTop: '80px',
+              textAlign: 'center',
+            }}
+          >
             This is the section where you can access and decide upon requests of
             others as a {userInfo?.level}
-          </p>
+          </Alert>
         </Stack>
       </Box>
     </Box>

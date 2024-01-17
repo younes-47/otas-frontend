@@ -34,10 +34,16 @@ import { Stack } from '@mui/system';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import dayjs from 'dayjs';
 import { ChangePageContentAction } from 'pages/OrdreMission/actions';
+import {
+  cleanupOrdreMissionTableStoreAction,
+  setAddedOrdreMissionAction,
+} from 'containers/OrdreMissionTable/actions';
 import saga from './saga';
 import reducer from './reducer';
 import makeSelectOrdreMissionForm, {
   makeSelectAbroad,
+  makeSelectAddOrdreMissionError,
+  makeSelectAddOrdreMissionSuccess,
   makeSelectOnBehalf,
 } from './selectors';
 import Trips from './Trips';
@@ -46,20 +52,26 @@ import {
   AddOrdreMissionAction,
   SelectAbroadAction,
   SelectOnBehalfAction,
+  cleanupStoreAction,
 } from './actions';
 
 const mapStateToProps = createStructuredSelector({
-  ordreMissionForm: makeSelectOrdreMissionForm(),
   isSideBarVisible: makeSelectIsSideBarVisible(),
   onBehalfSelection: makeSelectOnBehalf(),
   abroadSelection: makeSelectAbroad(),
+  errorAddingOrdreMission: makeSelectAddOrdreMissionError(),
 });
 
 export function OrdreMissionForm() {
   useInjectReducer({ key: 'ordreMissionForm', reducer });
   useInjectSaga({ key: 'ordreMissionForm', saga });
-  const { isSideBarVisible, onBehalfSelection, abroadSelection } =
-    useSelector(mapStateToProps);
+  const dispatch = useDispatch();
+  const {
+    isSideBarVisible,
+    onBehalfSelection,
+    abroadSelection,
+    errorAddingOrdreMission,
+  } = useSelector(mapStateToProps);
   const [trips, setTrips] = useState([
     {
       id: 0,
@@ -101,6 +113,7 @@ export function OrdreMissionForm() {
   const [expensesCounter, setExpensesCounter] = useState(0); // This counter is being used for the uniqueness of expenses ids
   const [error, setError] = useState('');
   const [modalVisibility, setModalVisibility] = useState(false);
+
   useEffect(() => {
     let totalTripsMAD = 0.0;
     let totalTripsEUR = 0.0;
@@ -137,7 +150,12 @@ export function OrdreMissionForm() {
     setTotalEUR(TOTAL_EUR);
   }, [trips, expenses]);
 
-  const dispatch = useDispatch();
+  useEffect(() => {
+    if (errorAddingOrdreMission === false) {
+      dispatch(cleanupStoreAction());
+      dispatch(ChangePageContentAction('TABLE'));
+    }
+  }, [errorAddingOrdreMission]);
 
   const handleOnBehalfSelectionChange = (event) => {
     if (event.target.value !== String(onBehalfSelection)) {
@@ -222,7 +240,6 @@ export function OrdreMissionForm() {
   };
 
   const data = {
-    UserId: '4',
     description,
     Abroad: abroadSelection === 'true',
     onBehalf: onBehalfSelection === 'true',
@@ -233,6 +250,7 @@ export function OrdreMissionForm() {
 
   // Handle on buttons click
   const handleOnReturnButtonClick = () => {
+    dispatch(cleanupStoreAction());
     dispatch(ChangePageContentAction('TABLE'));
   };
   const handleOnSaveAsDraftClick = () => {
@@ -388,9 +406,8 @@ export function OrdreMissionForm() {
       return;
     }
     dispatch(AddOrdreMissionAction(data));
-    dispatch(ChangePageContentAction('TABLE'));
+    dispatch(setAddedOrdreMissionAction());
   };
-
   return (
     <Box
       position="fixed"

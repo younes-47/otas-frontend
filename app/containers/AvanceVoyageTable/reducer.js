@@ -5,6 +5,7 @@
  */
 import produce from 'immer';
 import {
+  CLEANUP_STORE_ACTION,
   DEFAULT_ACTION,
   LOAD_AVANCE_VOYAGES,
   LOAD_AVANCE_VOYAGES_ERROR,
@@ -35,6 +36,11 @@ const avanceVoyageTableReducer = (state = initialState, action) =>
         draft.loadingAvanceVoyages = false;
         draft.errorLoadingAvanceVoyages = false;
         draft.avanceVoyages = action.data;
+        break;
+      case CLEANUP_STORE_ACTION:
+        draft.loadingAvanceVoyages = false;
+        draft.errorLoadingAvanceVoyages = null;
+        draft.avanceVoyages = [];
         break;
     }
   });

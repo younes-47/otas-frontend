@@ -28,10 +28,13 @@ export function OrdreMission() {
     [],
   );
 
-  if (pageContent === 'ADD') {
-    return <OrdreMissionForm></OrdreMissionForm>;
-  }
-  return <OrdreMissionTable></OrdreMissionTable>;
+  // if (pageContent === 'ADD') {
+  //   return <OrdreMissionForm></OrdreMissionForm>;
+  // }
+  // return <OrdreMissionTable></OrdreMissionTable>;
+  return (
+    <>{pageContent === 'ADD' ? <OrdreMissionForm /> : <OrdreMissionTable />}</>
+  );
 }
 
 OrdreMission.propTypes = {

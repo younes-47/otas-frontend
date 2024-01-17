@@ -16,7 +16,7 @@ const Expenses = ({
   removeExpense,
   isExpenseRequired,
 }) => {
-  const { id, description, expenseDate, estimatedExpenseFee } = expenseData;
+  const { id, description, expenseDate, estimatedFee } = expenseData;
 
   const handleExpenseDate = (e, expenseId) => {
     const tzoffset = new Date().getTimezoneOffset() * 60000; // offset in milliseconds
@@ -62,10 +62,10 @@ const Expenses = ({
           required
           id="outlined-basic"
           label="Fee"
-          value={estimatedExpenseFee}
+          value={estimatedFee}
           type="number"
           onChange={(e) =>
-            updateExpenseData(id, 'estimatedExpenseFee', e.target.value)
+            updateExpenseData(id, 'estimatedFee', e.target.value)
           }
           variant="outlined"
           sx={{ maxWidth: 120 }}

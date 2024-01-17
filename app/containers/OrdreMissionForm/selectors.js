@@ -25,6 +25,17 @@ const makeSelectAddOrdreMission = () =>
     (substate) => substate.AddOrdreMission,
   );
 
+const makeSelectAddOrdreMissionSuccess = () =>
+  createSelector(
+    selectOrdreMissionFormDomain,
+    (substate) => substate.addOrdreMissionSuccess,
+  );
+const makeSelectAddOrdreMissionError = () =>
+  createSelector(
+    selectOrdreMissionFormDomain,
+    (substate) => substate.errorAddingOrdreMission,
+  );
+
 const makeSelectUpdateOrdreMission = () =>
   createSelector(
     selectOrdreMissionFormDomain,
@@ -54,13 +65,22 @@ const makeSelectTransportationMethodSelector = () =>
     (substate) => substate.transportationMethodSelector,
   );
 
+const makeSelectCleanupStore = () =>
+  createSelector(
+    selectOrdreMissionFormDomain,
+    (substate) => substate.storeCleanup,
+  );
+
 export default makeSelectOrdreMissionForm;
 export {
+  makeSelectAddOrdreMissionError,
+  makeSelectAddOrdreMissionSuccess,
   selectOrdreMissionFormDomain,
   makeSelectAddOrdreMission,
   makeSelectUpdateOrdreMission,
   makeSelectViewOrdreMission,
   makeSelectOnBehalf,
   makeSelectAbroad,
+  makeSelectCleanupStore,
   makeSelectTransportationMethodSelector,
 };

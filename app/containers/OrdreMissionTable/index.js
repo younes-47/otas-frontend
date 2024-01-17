@@ -15,29 +15,35 @@ import {
   DialogContentText,
   DialogTitle,
   IconButton,
+  Snackbar,
 } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import Tables from 'components/Tables';
-import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { DateTimeFormater } from 'utils/Custom/stringManipulation';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import { ChangePageContentAction } from 'pages/OrdreMission/actions';
 import saga from './saga';
 import reducer from './reducer';
 import {
+  makeSelectAddedOrdreMission,
   makeSelectErrorLoadingOrdreMissions,
   makeSelectLoadingOrdreMissions,
   makeSelectOrdreMissions,
 } from './selectors';
-import { deleteOrdreMissionAction, loadOrdreMissionAction } from './actions';
-// import makeSelectPageContent from '../../pages/OrdreMission/selectors';
+import {
+  cleanupOrdreMissionTableStoreAction,
+  deleteOrdreMissionAction,
+  loadOrdreMissionAction,
+} from './actions';
 
 const mapStateToProps = createStructuredSelector({
   loadingOrdreMissions: makeSelectLoadingOrdreMissions(),
   errorLoadingOrdreMissions: makeSelectErrorLoadingOrdreMissions(),
   ordreMissions: makeSelectOrdreMissions(),
   isSideBarVisible: makeSelectIsSideBarVisible(),
-  // pageContent: makeSelectPageContent(),
+  addedOrdreMission: makeSelectAddedOrdreMission(),
 });
 
 export function OrdreMissionTable() {
@@ -49,10 +55,36 @@ export function OrdreMissionTable() {
     loadingOrdreMissions,
     errorLoadingOrdreMissions,
     isSideBarVisible,
-    // pageContent,
+    addedOrdreMission,
   } = useSelector(mapStateToProps);
   const [modalVisibility, setModalVisibility] = useState(false);
   const [ordreMissionToDeleteId, setOrdreMissionToDeleteId] = useState();
+  const [deleteSnackbarVisibility, setDeleteSnackbarVisibility] =
+    useState(false);
+  const [addSnackbarVisibility, setAddSnackbarVisibility] = useState(false);
+  const action = (
+    <IconButton
+      size="small"
+      aria-label="close"
+      color="inherit"
+      onClick={() => handleDeleteSnackbarClose()}
+    >
+      <CloseIcon fontSize="small" />
+    </IconButton>
+  );
+
+  const handleDeleteSnackbarClose = () => setDeleteSnackbarVisibility(false);
+  const handleAddSnackbarClose = () => setAddSnackbarVisibility(false);
+
+  const handleOnCreateButtonClick = () => {
+    dispatch(ChangePageContentAction('ADD'));
+  };
+
+  const handleOnConfirmDeletionButtonClick = (id) => {
+    dispatch(deleteOrdreMissionAction(id));
+    setDeleteSnackbarVisibility(true);
+  };
+
   const ordreMissionColumns = [
     {
       field: 'id',
@@ -236,20 +268,20 @@ export function OrdreMissionTable() {
     },
   };
 
-  const handleOnCreateButtonClick = () => {
-    dispatch(ChangePageContentAction('ADD'));
-  };
-
-  const handleOnConfirmDeletionButtonClick = (id) => {
-    dispatch(deleteOrdreMissionAction(id));
-  };
-
   useEffect(() => {
     if (errorLoadingOrdreMissions === null) {
       dispatch(loadOrdreMissionAction());
+      if (addedOrdreMission === true) {
+        setAddSnackbarVisibility(true);
+      }
     }
   }, [ordreMissions]);
-
+  useEffect(
+    () => () => {
+      dispatch(cleanupOrdreMissionTableStoreAction());
+    },
+    [],
+  );
   return (
     <Box
       position="fixed"
@@ -309,8 +341,8 @@ export function OrdreMissionTable() {
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
             <Alert severity="error">
-              This will delete all information related to this request. This
-              can&apos;t be undone.
+              This will delete all information related to it. This can&apos;t be
+              undone.
             </Alert>
           </DialogContentText>
         </DialogContent>
@@ -334,6 +366,37 @@ export function OrdreMissionTable() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Snackbar
+        open={deleteSnackbarVisibility}
+        autoHideDuration={3000}
+        onClose={handleDeleteSnackbarClose}
+        action={action}
+      >
+        <Alert
+          onClose={handleDeleteSnackbarClose}
+          severity="error"
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          Request has been deleted successfully!
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={addSnackbarVisibility}
+        autoHideDuration={3000}
+        onClose={handleAddSnackbarClose}
+        action={action}
+      >
+        <Alert
+          onClose={handleAddSnackbarClose}
+          severity="success"
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          Request has been added successfully!
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }

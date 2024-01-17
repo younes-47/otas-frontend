@@ -17,5 +17,15 @@ const makeSelectOnBehalf = () =>
 const makeSelectDepenseCaisseForm = () =>
   createSelector(selectDepenseCaisseFormDomain, (substate) => substate);
 
+const makeSelectAddDepenseCaisse = () =>
+  createSelector(
+    selectDepenseCaisseFormDomain,
+    (substate) => substate.errorAddingDepenseCaisse,
+  );
+
 export default makeSelectDepenseCaisseForm;
-export { selectDepenseCaisseFormDomain, makeSelectOnBehalf };
+export {
+  selectDepenseCaisseFormDomain,
+  makeSelectOnBehalf,
+  makeSelectAddDepenseCaisse,
+};

@@ -5,6 +5,8 @@
  */
 
 import {
+  ADDED_ORDRE_MISSION,
+  CLEANUP_STORE_ACTION,
   DEFAULT_ACTION,
   DELETE_ORDRE_MISSION,
   DELETE_ORDRE_MISSION_ERROR,
@@ -58,5 +60,17 @@ export function deleteOrdreMissionErrorAction(error) {
   return {
     type: DELETE_ORDRE_MISSION_ERROR,
     error,
+  };
+}
+
+export function cleanupOrdreMissionTableStoreAction() {
+  return {
+    type: CLEANUP_STORE_ACTION,
+  };
+}
+
+export function setAddedOrdreMissionAction() {
+  return {
+    type: ADDED_ORDRE_MISSION,
   };
 }

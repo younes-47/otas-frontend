@@ -24,7 +24,9 @@ export const CHANGE_TRANSPORTATION_METHOD_ACTION =
 
 export const VIEW_ORDRE_MISSION = 'app/OrdreMissionForm/VIEW_ORDRE_MISSION';
 export const CHANGE_ONBEHALF_SELECTION_ACTION =
-  'app/OrdreMission/ON_BEHALF_SELECTION';
+  'app/OrdreMissionForm/ON_BEHALF_SELECTION';
+
+export const CLEANUP_STORE_ACTION = 'app/OrdreMissionForm/CLEANUP_STORE_ACTION';
 
 export const webService = {
   ADD_ORDRE_MISSION: '/OrdreMission/Create',

@@ -14,7 +14,8 @@ import Tables from 'components/Tables';
 import { useEffect } from 'react';
 import { DateTimeFormater } from 'utils/Custom/stringManipulation';
 import AvanceVoyageTable from 'containers/AvanceVoyageTable';
-import { loadAvanceVoyageAction } from './actions';
+import AvanceVoyageView from 'containers/AvanceVoyageView';
+import { cleanupStoreAction, loadAvanceVoyageAction } from './actions';
 import saga from './saga';
 import reducer from './reducer';
 import { makeSelectChangePageContent } from './selectors';
@@ -28,8 +29,17 @@ export function AvanceVoyage() {
   useInjectReducer({ key: 'avanceVoyage', reducer });
 
   const dispatch = useDispatch();
-  const { pageContent } = useSelector(mapStateToProps);
 
+  useEffect(
+    () => () => {
+      dispatch(cleanupStoreAction());
+    },
+    [],
+  );
+  const { pageContent } = useSelector(mapStateToProps);
+  if (pageContent === 'VIEW') {
+    return <AvanceVoyageView></AvanceVoyageView>;
+  }
   return <AvanceVoyageTable></AvanceVoyageTable>;
 }
 

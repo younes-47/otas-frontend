@@ -5,6 +5,8 @@
  */
 import produce from 'immer';
 import {
+  ADDED_ORDRE_MISSION,
+  CLEANUP_STORE_ACTION,
   DEFAULT_ACTION,
   DELETE_ORDRE_MISSION,
   DELETE_ORDRE_MISSION_ERROR,
@@ -20,6 +22,7 @@ export const initialState = {
   ordreMissions: [],
   deletingOrdreMission: false,
   errorDeletingOrdreMission: false,
+  addedOrdreMission: false,
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -41,6 +44,9 @@ const ordreMissionTableReducer = (state = initialState, action) =>
         draft.errorLoadingOrdreMissions = false;
         draft.ordreMissions = action.data;
         break;
+      case ADDED_ORDRE_MISSION:
+        draft.addedOrdreMission = true;
+        break;
       case DELETE_ORDRE_MISSION:
         draft.deletingOrdreMission = true;
         draft.errorDeletingOrdreMission = false;
@@ -52,6 +58,14 @@ const ordreMissionTableReducer = (state = initialState, action) =>
       case DELETE_ORDRE_MISSION_SUCCESS:
         draft.deletingOrdreMission = false;
         draft.ordreMissions = action.data;
+        break;
+      case CLEANUP_STORE_ACTION:
+        draft.loadingOrdreMissions = false;
+        draft.errorLoadingOrdreMissions = null;
+        draft.ordreMissions = [];
+        draft.deletingOrdreMission = false;
+        draft.errorDeletingOrdreMission = false;
+        draft.addedOrdreMission = false;
         break;
     }
   });

@@ -4,6 +4,7 @@
   "app.containers.AvanceCaisseTable.header": "This is the AvanceCaisseTable container!",
   "app.containers.AvanceVoyage.header": "This is the AvanceVoyage container!",
   "app.containers.AvanceVoyageTable.header": "This is the AvanceVoyageTable container!",
+  "app.containers.AvanceVoyageView.header": "This is the AvanceVoyageView container!",
   "app.containers.DecideOnAvanceCaisse.header": "This is the DecideOnAvanceCaisse container!",
   "app.containers.DecideOnAvanceCaisseForm.header": "This is the DecideOnAvanceCaisseForm container!",
   "app.containers.DecideOnAvanceCaisseTable.header": "This is the DecideOnAvanceCaisseTable container!",

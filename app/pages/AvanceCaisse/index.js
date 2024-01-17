@@ -25,12 +25,12 @@ const mapStateToProps = createStructuredSelector({
 export function AvanceCaisse() {
   useInjectReducer({ key: 'avanceCaisse', reducer });
 
-  const disptach = useDispatch();
+  const dispatch = useDispatch();
   const { pageContent } = useSelector(mapStateToProps);
 
   useEffect(
     () => () => {
-      disptach(cleanupStoreAction());
+      dispatch(cleanupStoreAction());
     },
     [],
   );
