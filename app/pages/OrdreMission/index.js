@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import OrdreMissionTable from 'containers/OrdreMissionTable';
 import OrdreMissionForm from 'containers/OrdreMissionForm';
 import { useInjectSaga } from 'utils/injectSaga';
+import OrdreMissionView from 'containers/OrdreMissionView';
 import reducer from './reducer';
 
 import saga from './saga';
@@ -32,9 +33,17 @@ export function OrdreMission() {
   //   return <OrdreMissionForm></OrdreMissionForm>;
   // }
   // return <OrdreMissionTable></OrdreMissionTable>;
-  return (
-    <>{pageContent === 'ADD' ? <OrdreMissionForm /> : <OrdreMissionTable />}</>
-  );
+
+  switch (pageContent) {
+    case 'ADD':
+      return <OrdreMissionForm />;
+    case 'VIEW':
+      return <OrdreMissionView state="VIEW" />;
+    case 'CONFIRM':
+      return <OrdreMissionView state="CONFIRM" />;
+    default:
+      return <OrdreMissionTable />;
+  }
 }
 
 OrdreMission.propTypes = {

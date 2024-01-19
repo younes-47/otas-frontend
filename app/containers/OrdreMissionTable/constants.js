@@ -19,7 +19,7 @@ export const DELETE_ORDRE_MISSION_SUCCESS =
 export const DELETE_ORDRE_MISSION_ERROR =
   'app/OrdreMissionTable/DELETE_ORDRE_MISSION_ERROR';
 
-export const ADDED_ORDRE_MISSION = 'app/OrdreMissionTable/DELETE_ORDRE_MISSION';
+export const ADDED_ORDRE_MISSION = 'app/OrdreMissionTable/ADDED_ORDRE_MISSION';
 
 export const CLEANUP_STORE_ACTION =
   'app/OrdreMissionTable/CLEANUP_STORE_ACTION';

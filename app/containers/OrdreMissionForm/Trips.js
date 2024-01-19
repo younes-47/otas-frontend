@@ -66,6 +66,13 @@ const Trips = ({ tripData, updateTripData, isTripRequired, removeTrip }) => {
       setCalculatedTripFee(parseFloat(value) + parseFloat(highwayFee));
     }
   }, [unit, value, highwayFee]);
+  // if (id === 0) {
+  //   updateTripData(id, 'departureDate', '2025-01-19T00:00:00.000Z');
+  //   updateTripData(id, 'arrivalDate', '2025-01-20T00:00:00.000Z');
+  // } else {
+  //   updateTripData(id, 'departureDate', '2025-01-21T00:00:00.000Z');
+  //   updateTripData(id, 'arrivalDate', '2025-01-23T00:00:00.000Z');
+  // }
   return (
     <Box key={id} marginRight={3} marginLeft={3} marginBottom={2}>
       <Box display="flex" justifyContent="center" gap={0.8}>
@@ -104,7 +111,7 @@ const Trips = ({ tripData, updateTripData, isTripRequired, removeTrip }) => {
 
         <DateTimePicker
           sx={{ minWidth: 160, maxWidth: 160 }}
-          label="Departure"
+          label="Departure Date"
           value={departureDate}
           onChange={(e) => {
             handleTripDates(id, 'departureDate', e);

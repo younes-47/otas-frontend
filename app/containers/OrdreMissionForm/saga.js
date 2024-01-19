@@ -6,14 +6,19 @@ import {
   AddOrdreMissionSuccessAction,
 } from './actions';
 
-export function* AddOrdreMission({ data }) {
+export function* AddOrdreMission({ form }) {
   try {
-    yield call(request.post, webService.ADD_ORDRE_MISSION, data, {
-      headers: {
-        'Content-Type': 'application/json',
+    const { data } = yield call(
+      request.post,
+      webService.ADD_ORDRE_MISSION,
+      form,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
       },
-    });
-    yield put(AddOrdreMissionSuccessAction());
+    );
+    yield put(AddOrdreMissionSuccessAction(data)); // data is ID
   } catch (error) {
     yield put(AddOrdreMissionErrorAction(error));
   }

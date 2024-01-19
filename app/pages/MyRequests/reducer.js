@@ -14,12 +14,8 @@ import {
 
 export const initialState = {
   loadingUserInfo: false,
-  errorUserInfo: true,
-  userInfo: {
-    firstName: '',
-    lastName: '',
-    level: '',
-  },
+  errorUserInfo: null,
+  userInfo: null,
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -30,14 +26,12 @@ const overviewReducer = (state = initialState, action) =>
         break;
       case LOAD_USER_INFO:
         draft.loadingUserInfo = true;
-        draft.errorUserInfo = false;
+        draft.errorUserInfo = null;
         break;
       case LOAD_USER_INFO_SUCCESS:
         draft.loadingUserInfo = false;
         draft.errorUserInfo = false;
-        draft.userInfo.firstName = action.data.firstName;
-        draft.userInfo.lastName = action.data.lastName;
-        draft.userInfo.level = action.data.level;
+        draft.userInfo = action.data;
         break;
       case LOAD_USER_INFO_ERROR:
         draft.loadingUserInfo = false;
@@ -47,9 +41,7 @@ const overviewReducer = (state = initialState, action) =>
       case STORE_CLEANUP:
         draft.loadingUserInfo = false;
         draft.errorUserInfo = true;
-        draft.userInfo.firstName = '';
-        draft.userInfo.lastName = '';
-        draft.userInfo.level = '';
+        draft.userInfo = null;
         break;
     }
   });

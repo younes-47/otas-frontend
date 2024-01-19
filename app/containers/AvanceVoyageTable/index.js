@@ -21,7 +21,11 @@ import {
   setAvanceVoyageIdentityAction,
 } from 'containers/AvanceVoyageView/actions';
 import { changePageContentAction } from 'pages/AvanceVoyage/actions';
-import { loadAvanceVoyageAction } from './actions';
+import { makeSelectUserInfo } from 'pages/MyRequests/selectors';
+import {
+  cleanupAvanceVoyageTableStoreAction,
+  loadAvanceVoyageAction,
+} from './actions';
 import saga from './saga';
 import reducer from './reducer';
 import {
@@ -209,7 +213,12 @@ export function AvanceVoyageTable() {
       dispatch(loadAvanceVoyageAction());
     }
   }, [avanceVoyages]);
-
+  useEffect(
+    () => () => {
+      dispatch(cleanupAvanceVoyageTableStoreAction());
+    },
+    [],
+  );
   return (
     <Box
       position="fixed"

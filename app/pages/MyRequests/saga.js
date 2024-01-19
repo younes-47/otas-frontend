@@ -15,9 +15,9 @@ export function* loadUserInfo() {
         'Content-Type': 'application/json',
       },
     });
-    yield put(loadUserInfoSuccessAction(data)); // success action
+    yield put(loadUserInfoSuccessAction(data));
   } catch (error) {
-    yield put(loadUserInfoErrorAction(error)); // error action
+    yield put(loadUserInfoErrorAction(error));
   }
 }
 // Individual exports for testing

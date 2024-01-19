@@ -34,14 +34,31 @@ export default function MyRequests() {
   const { isSideBarVisible, userInfo } = useSelector(mapStateToProps);
 
   useEffect(() => {
-    dispatch(loadUserInfoAction());
+    // only token, username, and role => dispatch to get userInfo
+    if (localStorage.length === 3) {
+      dispatch(loadUserInfoAction());
+    }
+  }, []);
+
+  useEffect(() => {
+    if (userInfo !== null) {
+      localStorage.setItem('firstName', userInfo.firstName);
+      localStorage.setItem('lastName', userInfo.lastName);
+      localStorage.setItem('registrationNumber', userInfo.registrationNumber);
+      localStorage.setItem('jobTitle', userInfo.jobTitle);
+      localStorage.setItem('department', userInfo.department);
+      localStorage.setItem('managerUserName', userInfo.managerUserName);
+      localStorage.setItem('level', userInfo.level);
+    }
   }, [userInfo]);
+
   useEffect(
     () => () => {
       dispatch(cleanupStoreAction());
     },
     [],
   );
+
   return (
     <Box
       position="fixed"
@@ -60,7 +77,12 @@ export default function MyRequests() {
       <Box display="flex" justifyContent="center" textAlign="center">
         <Stack>
           <h1 style={{ fontSize: '65px', marginBottom: '10px' }}>
-            Welcome {userInfo.firstName} {userInfo.lastName}
+            Welcome{' '}
+            {localStorage.getItem('firstName') !== null
+              ? `${localStorage.getItem('firstName')} ${localStorage.getItem(
+                  'lastName',
+                )}`
+              : `${userInfo?.firstName} ${userInfo?.lastName}`}
           </h1>
           <Alert
             severity="info"

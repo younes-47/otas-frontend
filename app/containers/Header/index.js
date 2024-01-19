@@ -50,9 +50,7 @@ export function Header() {
     Title = 'Untitled';
   }
   const onLogOutButtonClick = () => {
-    localStorage.removeItem('username');
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
+    localStorage.clear();
     history.push('/login');
   };
 

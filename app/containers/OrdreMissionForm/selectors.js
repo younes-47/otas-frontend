@@ -71,8 +71,15 @@ const makeSelectCleanupStore = () =>
     (substate) => substate.storeCleanup,
   );
 
+const makeSelectOrdreMissionIdentity = () =>
+  createSelector(
+    selectOrdreMissionFormDomain,
+    (substate) => substate.ordreMissionIdentity,
+  );
+
 export default makeSelectOrdreMissionForm;
 export {
+  makeSelectOrdreMissionIdentity,
   makeSelectAddOrdreMissionError,
   makeSelectAddOrdreMissionSuccess,
   selectOrdreMissionFormDomain,

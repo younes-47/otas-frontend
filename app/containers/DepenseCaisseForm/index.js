@@ -38,6 +38,7 @@ import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import dayjs from 'dayjs';
 import { changePageContentAction } from 'pages/DepenseCaisse/actions';
 import { setAddedDepenseCaisseAction } from 'containers/DepenseCaisseTable/actions';
+import DisplayUserinfo from 'components/DisplayUserinfo';
 import Expenses from './Expenses';
 import makeSelectDepenseCaisseForm, {
   makeSelectAddDepenseCaisse,
@@ -315,61 +316,7 @@ export function DepenseCaisseForm() {
       </Box>
 
       {/* USER INFO */}
-      <Box justifyContent="center" textAlign="center" marginBottom={3}>
-        <Box display="flex" justifyContent="center" gap={2} marginBottom={2}>
-          <TextField
-            id="outlined-basic"
-            label="First Name"
-            defaultValue="Placeholder"
-            variant="filled"
-            disabled
-          />
-          <TextField
-            id="outlined-basic"
-            label="Last Name"
-            defaultValue="Placeholder"
-            variant="filled"
-            disabled
-          />
-          <TextField
-            id="outlined-basic"
-            label="Registration Number"
-            defaultValue="Placeholder"
-            variant="filled"
-            disabled
-          />
-        </Box>
-        <Box display="flex" justifyContent="center" gap={2} marginBottom={2}>
-          <TextField
-            id="outlined-basic"
-            label="Job Title"
-            defaultValue="Placeholder"
-            variant="filled"
-            disabled
-          />
-          <TextField
-            id="outlined-basic"
-            label="Hiring Date"
-            defaultValue="Placeholder"
-            variant="filled"
-            disabled
-          />
-          <TextField
-            id="outlined-basic"
-            label="Department"
-            defaultValue="Placeholder"
-            variant="filled"
-            disabled
-          />
-        </Box>
-        <TextField
-          id="outlined-basic"
-          label="Manager"
-          defaultValue="Placeholder"
-          variant="filled"
-          disabled
-        />
-      </Box>
+      <DisplayUserinfo />
 
       {/* DIVIDER */}
       <Box

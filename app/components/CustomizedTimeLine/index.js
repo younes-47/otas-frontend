@@ -4,50 +4,82 @@
  *
  */
 
-import { Timeline } from '@mui/icons-material';
-import { TimelineOppositeContent } from '@mui/lab'
 import * as React from 'react';
+import PropTypes from 'prop-types';
+import Timeline from '@mui/lab/Timeline';
+import CloseIcon from '@mui/icons-material/Close';
+import EditIcon from '@mui/icons-material/Edit';
+import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import CheckIcon from '@mui/icons-material/Check';
 import TimelineItem from '@mui/lab/TimelineItem';
 import TimelineSeparator from '@mui/lab/TimelineSeparator';
 import TimelineConnector from '@mui/lab/TimelineConnector';
 import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineDot from '@mui/lab/TimelineDot';
-import TimelineOppositeContent, {
-  timelineOppositeContentClasses,
-} from '@mui/lab/TimelineOppositeContent';
+import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
+import { DateTimeFormater } from 'utils/Custom/stringManipulation';
 
-function CustomizedTimeLine() {
-  return (
-    <Timeline
-      sx={{
-        [`& .${timelineOppositeContentClasses.root}`]: {
-          flex: 0.2,
-        },
-      }}
-    >
-      <TimelineItem>
-        <TimelineOppositeContent color="textSecondary">
-          09:30 am
-        </TimelineOppositeContent>
-        <TimelineSeparator>
-          <TimelineDot />
-          <TimelineConnector />
-        </TimelineSeparator>
-        <TimelineContent>Eat</TimelineContent>
-      </TimelineItem>
-      <TimelineItem>
-        <TimelineOppositeContent color="textSecondary">
-          10:00 am
-        </TimelineOppositeContent>
-        <TimelineSeparator>
-          <TimelineDot />
-        </TimelineSeparator>
-        <TimelineContent>Code</TimelineContent>
-      </TimelineItem>
-    </Timeline>
-  );
-}
+const getDotColor = (status) => {
+  if (status === 'Approved') return 'success';
+  if (status === 'Returned') return 'warning';
+  if (status === 'Rejected') return 'error';
+  return 'primary';
+};
+const getDotIcon = (status) => {
+  if (status === 'Draft' || status === 'Submitted') {
+    return <EditIcon fontSize="small"></EditIcon>;
+  }
+  if (status === 'Approved') return <CheckIcon fontSize="small"></CheckIcon>;
+  if (status === 'Returned')
+    return (
+      <SettingsBackupRestoreIcon fontSize="small"></SettingsBackupRestoreIcon>
+    );
+  if (status === 'Rejected') return <CloseIcon fontSize="small"></CloseIcon>;
+  if (
+    status === "Pending Manager's Approval" ||
+    status === "Pending HR's Approval" ||
+    status === "Pending Finance Department's Approval" ||
+    status === "Pending General Director's Approval" ||
+    status === "Pending Vice President's Approval" ||
+    status === "Pending Treasury's Validation" ||
+    status === 'Preparing Funds'
+  ) {
+    return <MoreHorizIcon fontSize="small"></MoreHorizIcon>;
+  }
+  return <></>;
+};
 
-CustomizedTimeLine.propTypes = {};
+const CustomizedTimeLine = ({ statusHistory, lastOne }) => (
+  <>
+    <TimelineItem>
+      <TimelineOppositeContent color="textSecondary">
+        {DateTimeFormater(statusHistory.createDate)}
+      </TimelineOppositeContent>
+      <TimelineSeparator>
+        <TimelineDot
+          color={getDotColor(statusHistory.status)}
+          variant={lastOne ? 'outlined' : undefined}
+        >
+          {getDotIcon(statusHistory.status)}
+        </TimelineDot>
+        {lastOne === false && <TimelineConnector />}
+      </TimelineSeparator>
+      <TimelineContent>
+        {statusHistory.status}{' '}
+        {statusHistory.deciderLevel !== null &&
+          (statusHistory.status === 'Approved' ||
+            statusHistory.status === 'Returned' ||
+            statusHistory.status === 'Rejected') &&
+          `by ${statusHistory.deciderFirstName} ${statusHistory.deciderLastName}`}
+      </TimelineContent>
+    </TimelineItem>
+  </>
+);
+
+CustomizedTimeLine.propTypes = {
+  statusHistory: PropTypes.object.isRequired,
+  lastOne: PropTypes.bool.isRequired,
+};
 
 export default CustomizedTimeLine;

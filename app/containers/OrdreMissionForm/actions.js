@@ -10,10 +10,6 @@ import {
   ADD_ORDRE_MISSION_SUCCESS,
   DEFAULT_ACTION,
   CHANGE_ONBEHALF_SELECTION_ACTION,
-  UPDATE_ORDRE_MISSION,
-  UPDATE_ORDRE_MISSION_ERROR,
-  UPDATE_ORDRE_MISSION_SUCCESS,
-  VIEW_ORDRE_MISSION,
   CHANGE_ABROAD_ACTION,
   CHANGE_TRANSPORTATION_METHOD_ACTION,
   CLEANUP_STORE_ACTION,
@@ -25,16 +21,17 @@ export function defaultAction() {
   };
 }
 
-export function AddOrdreMissionAction(data) {
+export function AddOrdreMissionAction(form) {
   return {
     type: ADD_ORDRE_MISSION,
-    data,
+    form,
   };
 }
 
-export function AddOrdreMissionSuccessAction() {
+export function AddOrdreMissionSuccessAction(id) {
   return {
     type: ADD_ORDRE_MISSION_SUCCESS,
+    id,
   };
 }
 
@@ -45,26 +42,6 @@ export function AddOrdreMissionErrorAction(error) {
   };
 }
 
-export function UpdateOrdreMisisonAction() {
-  return {
-    type: UPDATE_ORDRE_MISSION,
-  };
-}
-export function UpdateOrdreMisisonSuccessAction() {
-  return {
-    type: UPDATE_ORDRE_MISSION_SUCCESS,
-  };
-}
-export function UpdateOrdreMisisonErrorAction() {
-  return {
-    type: UPDATE_ORDRE_MISSION_ERROR,
-  };
-}
-export function ViewOrdreMissionAction() {
-  return {
-    type: VIEW_ORDRE_MISSION,
-  };
-}
 export function SelectOnBehalfAction(onBehalfSelection) {
   return {
     type: CHANGE_ONBEHALF_SELECTION_ACTION,

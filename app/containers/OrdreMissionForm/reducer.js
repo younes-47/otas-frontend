@@ -7,8 +7,6 @@ import produce from 'immer';
 import {
   DEFAULT_ACTION,
   ADD_ORDRE_MISSION,
-  UPDATE_ORDRE_MISSION,
-  VIEW_ORDRE_MISSION,
   CHANGE_ONBEHALF_SELECTION_ACTION,
   CHANGE_ABROAD_ACTION,
   CHANGE_TRANSPORTATION_METHOD_ACTION,
@@ -23,6 +21,7 @@ export const initialState = {
   transportationMethodSelection: '',
   addingOrdreMission: false,
   errorAddingOrdreMission: null,
+  ordreMissionIdentity: null,
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -38,6 +37,7 @@ const ordreMissionFormReducer = (state = initialState, action) =>
       case ADD_ORDRE_MISSION_SUCCESS:
         draft.addingOrdreMission = false;
         draft.errorAddingOrdreMission = false;
+        draft.ordreMissionIdentity = action.id;
         break;
       case ADD_ORDRE_MISSION_ERROR:
         draft.addingOrdreMission = false;
@@ -59,6 +59,7 @@ const ordreMissionFormReducer = (state = initialState, action) =>
         draft.transportationMethodSelection = '';
         draft.addingOrdreMission = false;
         draft.errorAddingOrdreMission = null;
+        draft.ordreMissionIdentity = null;
         break;
     }
   });

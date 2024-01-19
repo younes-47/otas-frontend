@@ -38,6 +38,7 @@ import {
   cleanupOrdreMissionTableStoreAction,
   setAddedOrdreMissionAction,
 } from 'containers/OrdreMissionTable/actions';
+import DisplayUserinfo from 'components/DisplayUserinfo';
 import saga from './saga';
 import reducer from './reducer';
 import makeSelectOrdreMissionForm, {
@@ -75,35 +76,35 @@ export function OrdreMissionForm() {
   const [trips, setTrips] = useState([
     {
       id: 0,
-      departurePlace: '',
-      destination: '',
-      departureDate: '',
-      arrivalDate: '',
-      transportationMethod: '',
-      unit: '',
-      value: 0,
+      departurePlace: 'X',
+      destination: 'Y',
+      departureDate: dayjs(new Date('2025-01-10T00:00:00.000Z')),
+      arrivalDate: dayjs(new Date('2025-01-11T00:00:00.000Z')),
+      transportationMethod: 'Train',
+      unit: 'MAD',
+      value: 9,
       highwayFee: 0,
     },
     {
       id: 1,
-      departurePlace: '',
-      destination: '',
-      departureDate: '',
-      arrivalDate: '',
-      transportationMethod: '',
-      unit: '',
-      value: 0,
+      departurePlace: 'X',
+      destination: 'Y',
+      departureDate: dayjs(new Date('2025-01-12T00:00:00.000Z')),
+      arrivalDate: dayjs(new Date('2025-01-13T00:00:00.000Z')),
+      transportationMethod: 'Train',
+      unit: 'MAD',
+      value: 9,
       highwayFee: 0,
     },
   ]);
   const [actualRequester, setActualRequester] = useState({
     firstName: '',
     lastName: '',
-    registrationNumber: 0,
+    registrationNumber: '',
     jobTitle: '',
     hiringDate: dayjs(Date()),
     department: '',
-    manager: '',
+    managerUserId: 0,
   });
   const [totalMAD, setTotalMAD] = useState(0);
   const [totalEUR, setTotalEUR] = useState(0);
@@ -157,6 +158,13 @@ export function OrdreMissionForm() {
     }
   }, [errorAddingOrdreMission]);
 
+  useEffect(
+    () => () => {
+      dispatch(cleanupStoreAction());
+    },
+    [],
+  );
+
   const handleOnBehalfSelectionChange = (event) => {
     if (event.target.value !== String(onBehalfSelection)) {
       dispatch(SelectOnBehalfAction(event.target.value.toString()));
@@ -177,6 +185,9 @@ export function OrdreMissionForm() {
     if (fieldName === 'hiringDate') {
       const tzoffset = new Date().getTimezoneOffset() * 60000; // offset in milliseconds
       updatedValue = new Date(value - tzoffset).toISOString().slice(0, -1);
+    }
+    if (fieldName === 'registrationNumber') {
+      updatedValue = value.toString();
     }
     const updatedRequester = { ...actualRequester, [fieldName]: updatedValue };
 
@@ -268,10 +279,10 @@ export function OrdreMissionForm() {
       data.onBehalf === true &&
       (actualRequester.firstName === '' ||
         actualRequester.lastName === '' ||
-        actualRequester.registrationNumber === 0 ||
+        actualRequester.registrationNumber === '' ||
         actualRequester.jobTitle === '' ||
         actualRequester.department === '' ||
-        actualRequester.manager === '' ||
+        actualRequester.managerUserId === '' ||
         actualRequester.hiringDate === '')
     ) {
       setError(
@@ -406,8 +417,15 @@ export function OrdreMissionForm() {
       return;
     }
     dispatch(AddOrdreMissionAction(data));
+    dispatch(cleanupStoreAction());
     dispatch(setAddedOrdreMissionAction());
   };
+
+  const handleOnConfirmButtonClick = () => {
+    handleOnSaveAsDraftClick();
+    dispatch(ChangePageContentAction('CONFIRM'));
+  };
+
   return (
     <Box
       position="fixed"
@@ -444,61 +462,7 @@ export function OrdreMissionForm() {
         </Box>
 
         {/* USER INFO */}
-        <Box justifyContent="center" textAlign="center" marginBottom={3}>
-          <Box display="flex" justifyContent="center" gap={2} marginBottom={2}>
-            <TextField
-              id="outlined-basic"
-              label="First Name"
-              defaultValue="Placeholder"
-              variant="filled"
-              disabled
-            />
-            <TextField
-              id="outlined-basic"
-              label="Last Name"
-              defaultValue="Placeholder"
-              variant="filled"
-              disabled
-            />
-            <TextField
-              id="outlined-basic"
-              label="Registration Number"
-              defaultValue="Placeholder"
-              variant="filled"
-              disabled
-            />
-          </Box>
-          <Box display="flex" justifyContent="center" gap={2} marginBottom={2}>
-            <TextField
-              id="outlined-basic"
-              label="Job Title"
-              defaultValue="Placeholder"
-              variant="filled"
-              disabled
-            />
-            <TextField
-              id="outlined-basic"
-              label="Hiring Date"
-              defaultValue="Placeholder"
-              variant="filled"
-              disabled
-            />
-            <TextField
-              id="outlined-basic"
-              label="Department"
-              defaultValue="Placeholder"
-              variant="filled"
-              disabled
-            />
-          </Box>
-          <TextField
-            id="outlined-basic"
-            label="Manager"
-            defaultValue="Placeholder"
-            variant="filled"
-            disabled
-          />
-        </Box>
+        <DisplayUserinfo />
 
         {/* DIVIDER */}
         <Box
@@ -629,9 +593,9 @@ export function OrdreMissionForm() {
                 id="outlined-basic"
                 label="Manager"
                 variant="outlined"
-                value={actualRequester.manager}
+                value={actualRequester.managerUserId}
                 onChange={(e) =>
-                  updateActualRequesterData('manager', e.target.value)
+                  updateActualRequesterData('managerUserId', e.target.value)
                 }
                 required
               />
@@ -848,7 +812,11 @@ export function OrdreMissionForm() {
           >
             Save as Draft
           </Button>
-          <Button variant="contained" color="success">
+          <Button
+            variant="contained"
+            color="success"
+            onClick={handleOnConfirmButtonClick}
+          >
             Confirm
           </Button>
         </Stack>

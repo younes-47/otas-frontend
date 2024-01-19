@@ -24,6 +24,7 @@ import { DateTimeFormater } from 'utils/Custom/stringManipulation';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import { ChangePageContentAction } from 'pages/OrdreMission/actions';
+import { cleanupStoreAction } from 'containers/OrdreMissionForm/actions';
 import saga from './saga';
 import reducer from './reducer';
 import {
@@ -67,14 +68,11 @@ export function OrdreMissionTable() {
       size="small"
       aria-label="close"
       color="inherit"
-      onClick={() => handleDeleteSnackbarClose()}
+      onClick={() => setDeleteSnackbarVisibility(false)}
     >
       <CloseIcon fontSize="small" />
     </IconButton>
   );
-
-  const handleDeleteSnackbarClose = () => setDeleteSnackbarVisibility(false);
-  const handleAddSnackbarClose = () => setAddSnackbarVisibility(false);
 
   const handleOnCreateButtonClick = () => {
     dispatch(ChangePageContentAction('ADD'));
@@ -370,11 +368,11 @@ export function OrdreMissionTable() {
       <Snackbar
         open={deleteSnackbarVisibility}
         autoHideDuration={3000}
-        onClose={handleDeleteSnackbarClose}
+        onClose={() => setAddSnackbarVisibility(false)}
         action={action}
       >
         <Alert
-          onClose={handleDeleteSnackbarClose}
+          onClose={() => setAddSnackbarVisibility(false)}
           severity="error"
           variant="filled"
           sx={{ width: '100%' }}
@@ -385,11 +383,11 @@ export function OrdreMissionTable() {
       <Snackbar
         open={addSnackbarVisibility}
         autoHideDuration={3000}
-        onClose={handleAddSnackbarClose}
+        onClose={() => setAddSnackbarVisibility(false)}
         action={action}
       >
         <Alert
-          onClose={handleAddSnackbarClose}
+          onClose={() => setAddSnackbarVisibility(false)}
           severity="success"
           variant="filled"
           sx={{ width: '100%' }}

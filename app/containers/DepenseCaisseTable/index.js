@@ -77,20 +77,24 @@ export function DepenseCaisseTable() {
     {
       field: 'total',
       hide: false,
+      width: 150,
       headerName: 'Total',
-      flex: 1,
+      renderCell: (params) => {
+        const { total } = params.row;
+        return total.toFixed(2);
+      },
     },
     {
       field: 'currency',
       hide: false,
       headerName: 'Currency',
-      flex: 1,
+      width: 150,
     },
     {
       field: 'latestStatus',
       hide: false,
       headerName: 'Latest Status',
-      flex: 1,
+      width: 150,
       renderCell: (params) => {
         const { latestStatus } = params.row;
         if (
@@ -170,13 +174,13 @@ export function DepenseCaisseTable() {
       hide: false,
       type: 'boolean',
       headerName: 'onBehalf',
-      flex: 1,
+      width: 150,
     },
     {
       field: 'receiptsFileName',
       hide: false,
       headerName: 'Receipts File',
-      flex: 1,
+      width: 150,
       renderCell: () => (
         <IconButton>
           <FilePresent color="warning" fontSize="large"></FilePresent>

@@ -38,7 +38,7 @@ export function loadAvanceVoyageErrorAction(error) {
   };
 }
 
-export function cleanupAvanceVoyageViewStoreAction() {
+export function cleanupAvanceVoyageTableStoreAction() {
   return {
     type: CLEANUP_STORE_ACTION,
   };
