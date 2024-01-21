@@ -7,6 +7,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
+import PropTypes from 'prop-types';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
@@ -31,21 +32,19 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { Stack } from '@mui/system';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import dayjs from 'dayjs';
 import { ChangePageContentAction } from 'pages/OrdreMission/actions';
-import {
-  cleanupOrdreMissionTableStoreAction,
-  setAddedOrdreMissionAction,
-} from 'containers/OrdreMissionTable/actions';
+import { setOrdreMissionStatusAction } from 'containers/OrdreMissionTable/actions';
 import DisplayUserinfo from 'components/DisplayUserinfo';
+import { loadOrdreMissionDetailsAction } from 'containers/OrdreMissionView/actions';
+import { makeSelectOrdreMissionDetails } from 'containers/OrdreMissionView/selectors';
 import saga from './saga';
 import reducer from './reducer';
-import makeSelectOrdreMissionForm, {
+import {
   makeSelectAbroad,
   makeSelectAddOrdreMissionError,
-  makeSelectAddOrdreMissionSuccess,
   makeSelectOnBehalf,
+  makeSelectOrdreMissionIdentity,
 } from './selectors';
 import Trips from './Trips';
 import Expenses from './Expenses';
@@ -53,6 +52,7 @@ import {
   AddOrdreMissionAction,
   SelectAbroadAction,
   SelectOnBehalfAction,
+  UpdateOrdreMissionAction,
   cleanupStoreAction,
 } from './actions';
 
@@ -61,9 +61,11 @@ const mapStateToProps = createStructuredSelector({
   onBehalfSelection: makeSelectOnBehalf(),
   abroadSelection: makeSelectAbroad(),
   errorAddingOrdreMission: makeSelectAddOrdreMissionError(),
+  ordreMissionidentity: makeSelectOrdreMissionIdentity(),
+  ordreMissionDetails: makeSelectOrdreMissionDetails(),
 });
 
-export function OrdreMissionForm() {
+export function OrdreMissionForm({ state }) {
   useInjectReducer({ key: 'ordreMissionForm', reducer });
   useInjectSaga({ key: 'ordreMissionForm', saga });
   const dispatch = useDispatch();
@@ -72,6 +74,8 @@ export function OrdreMissionForm() {
     onBehalfSelection,
     abroadSelection,
     errorAddingOrdreMission,
+    ordreMissionidentity,
+    ordreMissionDetails,
   } = useSelector(mapStateToProps);
   const [trips, setTrips] = useState([
     {
@@ -102,7 +106,6 @@ export function OrdreMissionForm() {
     lastName: '',
     registrationNumber: '',
     jobTitle: '',
-    hiringDate: dayjs(Date()),
     department: '',
     managerUserId: 0,
   });
@@ -112,8 +115,16 @@ export function OrdreMissionForm() {
   const [description, setDescription] = useState('');
   const [tripsCounter, setTripsCounter] = useState(2); // This counter is being used for the uniqueness of trips ids
   const [expensesCounter, setExpensesCounter] = useState(0); // This counter is being used for the uniqueness of expenses ids
-  const [error, setError] = useState('');
+  const [modalBody, setModalBody] = useState('');
+  const [modalHeader, setModalHeader] = useState('');
   const [modalVisibility, setModalVisibility] = useState(false);
+  const [modalSevirity, setModalSevirity] = useState('');
+
+  useEffect(() => {
+    if ((state === 'EDIT' || state === 'MODIFY') && ordreMissionidentity) {
+      dispatch(loadOrdreMissionDetailsAction(ordreMissionidentity));
+    }
+  }, [ordreMissionidentity]);
 
   useEffect(() => {
     let totalTripsMAD = 0.0;
@@ -182,10 +193,6 @@ export function OrdreMissionForm() {
 
   const updateActualRequesterData = (fieldName, value) => {
     let updatedValue = value;
-    if (fieldName === 'hiringDate') {
-      const tzoffset = new Date().getTimezoneOffset() * 60000; // offset in milliseconds
-      updatedValue = new Date(value - tzoffset).toISOString().slice(0, -1);
-    }
     if (fieldName === 'registrationNumber') {
       updatedValue = value.toString();
     }
@@ -250,28 +257,61 @@ export function OrdreMissionForm() {
     );
   };
 
-  const data = {
-    description,
-    Abroad: abroadSelection === 'true',
-    onBehalf: onBehalfSelection === 'true',
-    trips,
-    expenses,
-    actualRequester,
+  const getAction = () => {
+    let action = '';
+    if (ordreMissionDetails !== null) {
+      action = state === 'EDIT' ? 'save' : 'submit';
+    }
+    return action;
   };
 
-  // Handle on buttons click
-  const handleOnReturnButtonClick = () => {
-    dispatch(cleanupStoreAction());
-    dispatch(ChangePageContentAction('TABLE'));
+  const data = {
+    id: ordreMissionDetails !== null ? ordreMissionDetails?.id : 0,
+    action: getAction(),
+    description:
+      ordreMissionDetails !== null
+        ? ordreMissionDetails?.description
+        : description,
+    Abroad:
+      ordreMissionDetails !== null
+        ? ordreMissionDetails?.abroad
+        : abroadSelection === 'true',
+    onBehalf:
+      ordreMissionDetails !== null
+        ? ordreMissionDetails?.onBehalf
+        : onBehalfSelection === 'true',
+    trips:
+      ordreMissionDetails !== null
+        ? ordreMissionDetails?.avanceVoyagesDetails.trips
+        : trips,
+    expenses:
+      ordreMissionDetails !== null
+        ? ordreMissionDetails?.avanceVoyagesDetails.expenses
+        : expenses,
+    actualRequester:
+      ordreMissionDetails?.requesterInfo !== null
+        ? ordreMissionDetails?.RequesterInfo
+        : actualRequester,
   };
-  const handleOnSaveAsDraftClick = () => {
+  // const data = {
+  //   description,
+  //   Abroad: abroadSelection === 'true',
+  //   onBehalf: onBehalfSelection === 'true',
+  //   trips,
+  //   expenses,
+  //   actualRequester,
+  // };
+
+  const ValidateInputs = () => {
     // Invalid on behalf selection
     if (data.onBehalf !== true && data.onBehalf !== false) {
-      setError(
+      setModalHeader('Invalid Information!');
+      setModalBody(
         'Could not figure out whether you are filling this request on behalf of someone else or not! Please select "Yes" or "No".',
       );
+      setModalSevirity('error');
       setModalVisibility(true);
-      return;
+      return false;
     }
 
     // on behalf of someone + missing actual requester info
@@ -282,30 +322,35 @@ export function OrdreMissionForm() {
         actualRequester.registrationNumber === '' ||
         actualRequester.jobTitle === '' ||
         actualRequester.department === '' ||
-        actualRequester.managerUserId === '' ||
-        actualRequester.hiringDate === '')
+        actualRequester.managerUserId === '')
     ) {
-      setError(
+      setModalHeader('Invalid Information!');
+      setModalBody(
         'You must fill all actual requester information if you are filling this request on behalf of someone else!',
       );
+      setModalSevirity('error');
       setModalVisibility(true);
-      return;
+      return false;
     }
 
     // invalid abroad selection
     if (data.Abroad !== true && data.Abroad !== false) {
-      setError(
+      setModalHeader('Invalid Information!');
+      setModalBody(
         'Could not figure out whether this request is abroad or not! Please select "Yes" or "No".',
       );
+      setModalSevirity('error');
       setModalVisibility(true);
-      return;
+      return false;
     }
 
     // Description
     if (data.description === '') {
-      setError('You must provide a description for the mission!');
+      setModalHeader('Invalid Information!');
+      setModalBody('You must provide a description for the mission!');
+      setModalSevirity('error');
       setModalVisibility(true);
-      return;
+      return false;
     }
 
     // Trips
@@ -324,18 +369,22 @@ export function OrdreMissionForm() {
         trip.transportationMethod === '' ||
         trip.unit === ''
       ) {
-        setError(
+        setModalHeader('Invalid Information!');
+        setModalBody(
           "One of the trajectories' required information is missing! Please review your trajectories and fill all necessary information",
         );
+        setModalSevirity('error');
         setModalVisibility(true);
         isAllGood = false;
       }
 
       // value = 0
       if (trip.value <= 0 || trip.value === '0') {
-        setError(
+        setModalHeader('Invalid Information!');
+        setModalBody(
           "A trajectory's fee or mileage cannot be 0 or negative! Please review your trajectories information and try again",
         );
+        setModalSevirity('error');
         setModalVisibility(true);
         isAllGood = false;
       }
@@ -346,18 +395,22 @@ export function OrdreMissionForm() {
         totalMAD.isNaN === true ||
         totalEUR.isNaN === true
       ) {
-        setError(
+        setModalHeader('Invalid Information!');
+        setModalBody(
           'Invalid Total value! Please review your trajectories and/or expenses fee/Mileage values and try again',
         );
+        setModalSevirity('error');
         setModalVisibility(true);
         isAllGood = false;
       }
 
       // ArrivalDate < DepartureDate
       if (trip.departureDate > trip.arrivalDate) {
-        setError(
+        setModalHeader('Invalid Information!');
+        setModalBody(
           'Arrival date cannot be earlier than the departure date! Please review your trajectories information and try again',
         );
+        setModalSevirity('error');
         setModalVisibility(true);
         isAllGood = false;
       }
@@ -369,9 +422,11 @@ export function OrdreMissionForm() {
           trip.arrivalDate >
           sortedTrips.at(sortedTrips.length - 1).departureDate
         ) {
-          setError(
+          setModalHeader('Invalid Information!');
+          setModalBody(
             'Trips dates do not make sense! You cannot start another trip before you arrive from the previous one.',
           );
+          setModalSevirity('error');
           setModalVisibility(true);
           isAllGood = false;
         }
@@ -383,9 +438,11 @@ export function OrdreMissionForm() {
         expense.description === '' ||
         (expense.currency !== 'MAD' && expense.currency !== 'EUR')
       ) {
-        setError(
+        setModalHeader('Invalid Information!');
+        setModalBody(
           'One of the expenses required information is missing! Please review your expenses and fill all necessary information.',
         );
+        setModalSevirity('error');
         setModalVisibility(true);
         isAllGood = false;
       }
@@ -394,9 +451,11 @@ export function OrdreMissionForm() {
         expense.estimatedExpenseFee <= 0 ||
         expense.estimatedExpenseFee === '0'
       ) {
-        setError(
+        setModalHeader('Invalid Information!');
+        setModalBody(
           'Expense fee cannot be 0 or negative! Please review your expenses information and try again.',
         );
+        setModalSevirity('error');
         setModalVisibility(true);
         isAllGood = false;
       }
@@ -406,24 +465,69 @@ export function OrdreMissionForm() {
         totalMAD.isNaN === true ||
         totalEUR.isNaN === true
       ) {
-        setError(
+        setModalHeader('Invalid Information!');
+        setModalBody(
           'Invalid Total value! Please review your trajectories and/or expenses fee/Mileage values and try again',
         );
+        setModalSevirity('error');
         setModalVisibility(true);
         isAllGood = false;
       }
     });
     if (isAllGood === false) {
-      return;
+      return false;
     }
-    dispatch(AddOrdreMissionAction(data));
+
+    return true;
+  };
+
+  // Handle on buttons click
+  const handleOnReturnButtonClick = () => {
     dispatch(cleanupStoreAction());
-    dispatch(setAddedOrdreMissionAction());
+    dispatch(ChangePageContentAction('TABLE'));
+  };
+  const handleOnSaveAsDraftClick = () => {
+    const result = ValidateInputs();
+    if (result === true) {
+      if (state === 'ADD') {
+        dispatch(AddOrdreMissionAction(data));
+        dispatch(cleanupStoreAction());
+        dispatch(setOrdreMissionStatusAction('SAVED'));
+      }
+      if (state === 'EDIT') {
+        // Edit and save in case of draft
+        dispatch(UpdateOrdreMissionAction(data));
+        dispatch(cleanupStoreAction());
+        dispatch(setOrdreMissionStatusAction('UPDATED'));
+      }
+    }
   };
 
   const handleOnConfirmButtonClick = () => {
-    handleOnSaveAsDraftClick();
-    dispatch(ChangePageContentAction('CONFIRM'));
+    const result = ValidateInputs();
+    if (result === true) {
+      dispatch(ChangePageContentAction('CONFIRM'));
+    }
+  };
+
+  const handleOnSubmitModificationsButtonClick = () => {
+    setModalHeader('Confirmation');
+    setModalBody(
+      "Please Review your information before confirming your submition. You won't be able to modify your request afterwards!",
+    );
+    setModalSevirity('warning');
+    setModalVisibility(true);
+  };
+
+  const handleOnSubmitModificationsConfirmationButtonClick = () => {
+    // This button is in the modal
+    const result = ValidateInputs();
+    if (result === true) {
+      dispatch(UpdateOrdreMissionAction(data));
+      dispatch(cleanupStoreAction());
+      dispatch(setOrdreMissionStatusAction('RESUBMITTED'));
+      dispatch(ChangePageContentAction('TABLE'));
+    }
   };
 
   return (
@@ -565,17 +669,6 @@ export function OrdreMissionForm() {
                     updateActualRequesterData('jobTitle', e.target.value)
                   }
                   required
-                />
-
-                <DatePicker
-                  sx={{ maxWidth: 210 }}
-                  required
-                  label="Hiring Date"
-                  value={actualRequester.hiringDate}
-                  onChange={(e) =>
-                    updateActualRequesterData('hiringDate', e.$d)
-                  }
-                  format="DD/MM/YYYY"
                 />
 
                 <TextField
@@ -805,37 +898,58 @@ export function OrdreMissionForm() {
           >
             Return
           </Button>
-          <Button
-            variant="contained"
-            color="warning"
-            onClick={handleOnSaveAsDraftClick}
-          >
-            Save as Draft
-          </Button>
-          <Button
-            variant="contained"
-            color="success"
-            onClick={handleOnConfirmButtonClick}
-          >
-            Confirm
-          </Button>
+          {state !== 'MODIFY' && (
+            <>
+              <Button
+                variant="contained"
+                color="warning"
+                onClick={handleOnSaveAsDraftClick}
+              >
+                Save as Draft
+              </Button>
+              <Button
+                variant="contained"
+                color="success"
+                onClick={handleOnConfirmButtonClick}
+              >
+                Confirm
+              </Button>
+            </>
+          )}
+          {state === 'MODIFY' && (
+            <Button
+              variant="contained"
+              color="success"
+              onClick={handleOnSubmitModificationsButtonClick}
+            >
+              Submit Modifications
+            </Button>
+          )}
         </Stack>
 
-        {/* This dialog appears only when submitting a bad request */}
+        {/* THE MODAL */}
         <Dialog
           open={modalVisibility}
           keepMounted
           onClose={() => setModalVisibility(false)}
           aria-describedby="alert-dialog-slide-description"
         >
-          <DialogTitle>Bad Request!</DialogTitle>
+          <DialogTitle>{modalHeader}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-slide-description">
-              <Alert severity="error">{error}</Alert>
+              <Alert severity={modalSevirity}>{modalBody}</Alert>
             </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setModalVisibility(false)}>Close</Button>
+            {modalHeader === 'Confirmation' && (
+              <Button
+                color="success"
+                onClick={handleOnSubmitModificationsConfirmationButtonClick}
+              >
+                Submit
+              </Button>
+            )}
           </DialogActions>
         </Dialog>
       </LocalizationProvider>
@@ -844,7 +958,7 @@ export function OrdreMissionForm() {
 }
 
 OrdreMissionForm.propTypes = {
-  // dispatch: PropTypes.func.isRequired,
+  state: PropTypes.string.isRequired,
 };
 
 export default OrdreMissionForm;

@@ -6,8 +6,7 @@
 
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { connect, useDispatch, useSelector } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
+import { useDispatch, useSelector } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
@@ -38,6 +37,7 @@ import CustomizedTimeLine from 'components/CustomizedTimeLine';
 import { ChangePageContentAction } from 'pages/OrdreMission/actions';
 import { cleanupStoreAction } from 'containers/OrdreMissionForm/actions';
 import { makeSelectOrdreMissionIdentity } from 'containers/OrdreMissionForm/selectors';
+import { setOrdreMissionStatusAction } from 'containers/OrdreMissionTable/actions';
 import {
   makeSelectErrorLoadingOrdreMissionDetails,
   makeSelectOrdreMissionDetails,
@@ -47,6 +47,7 @@ import saga from './saga';
 import {
   cleanupOrdreMissionViewStoreAction,
   loadOrdreMissionDetailsAction,
+  submitOrdreMissionAction,
 } from './actions';
 import DisplayTrips from './DisplayTrips';
 
@@ -98,6 +99,12 @@ export function OrdreMissionView({ state }) {
 
   // Handle on buttons click
   const handleOnReturnButtonClick = () => {
+    dispatch(cleanupOrdreMissionViewStoreAction());
+    dispatch(ChangePageContentAction('TABLE'));
+  };
+  const handleOnSubmitButtonClick = () => {
+    dispatch(submitOrdreMissionAction(ordreMissionidentity));
+    dispatch(setOrdreMissionStatusAction('SUBMITTED'));
     dispatch(cleanupOrdreMissionViewStoreAction());
     dispatch(ChangePageContentAction('TABLE'));
   };
@@ -153,7 +160,8 @@ export function OrdreMissionView({ state }) {
         >
           <Typography variant="caption">
             *This request has been saved as a draft. You can still modify it if
-            you don&apos;t submit it
+            you don&apos;t submit it. <br /> Please note, your request cannot be
+            edited once it has been submitted
           </Typography>
         </Box>
       )}
@@ -282,7 +290,11 @@ export function OrdreMissionView({ state }) {
         >
           Return
         </Button>
-        <Button variant="contained" color="success">
+        <Button
+          variant="contained"
+          color="success"
+          onClick={handleOnSubmitButtonClick}
+        >
           Submit
         </Button>
       </Stack>

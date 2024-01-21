@@ -5,9 +5,12 @@ import {
   loadDepenseCaisseErrorAction,
   deleteDepenseCaisseSuccessAction,
   deleteDepenseCaisseErrorAction,
+  downloadDepenseCaisseReceiptsFileSuccessAction,
+  downloadDepenseCaisseReceiptsFileErrorAction,
 } from './actions';
 import {
   DELETE_DEPENSE_CAISSE,
+  DOWNLOAD_DEPENSE_CAISSE_RECEIPTS,
   LOAD_DEPENSE_CAISSES,
   webService,
 } from './constants';
@@ -31,6 +34,23 @@ export function* loadDepenseCaisse() {
   }
 }
 
+export function* DownloadDepenseCaisseReceiptsFile({ fileName }) {
+  try {
+    const { data } = yield call(
+      request.get,
+      `${webService.LOAD_DEPENSE_CAISSES}?fileName=${fileName}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    yield put(downloadDepenseCaisseReceiptsFileSuccessAction(data));
+  } catch (error) {
+    yield put(downloadDepenseCaisseReceiptsFileErrorAction(error));
+  }
+}
+
 export function* deleteOrdreMission({ id }) {
   try {
     const { data } = yield call(
@@ -50,5 +70,9 @@ export function* deleteOrdreMission({ id }) {
 
 export default function* depenseCaisseSaga() {
   yield takeLatest(LOAD_DEPENSE_CAISSES, loadDepenseCaisse);
+  yield takeLatest(
+    DOWNLOAD_DEPENSE_CAISSE_RECEIPTS,
+    DownloadDepenseCaisseReceiptsFile,
+  );
   yield takeLatest(DELETE_DEPENSE_CAISSE, deleteOrdreMission);
 }

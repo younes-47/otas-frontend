@@ -19,34 +19,17 @@ const selectOrdreMissionFormDomain = (state) =>
 const makeSelectOrdreMissionForm = () =>
   createSelector(selectOrdreMissionFormDomain, (substate) => substate);
 
-const makeSelectAddOrdreMission = () =>
-  createSelector(
-    selectOrdreMissionFormDomain,
-    (substate) => substate.AddOrdreMission,
-  );
-
-const makeSelectAddOrdreMissionSuccess = () =>
-  createSelector(
-    selectOrdreMissionFormDomain,
-    (substate) => substate.addOrdreMissionSuccess,
-  );
 const makeSelectAddOrdreMissionError = () =>
   createSelector(
     selectOrdreMissionFormDomain,
     (substate) => substate.errorAddingOrdreMission,
   );
-
-const makeSelectUpdateOrdreMission = () =>
+const makeSelectUpdateOrdreMissionError = () =>
   createSelector(
     selectOrdreMissionFormDomain,
-    (substate) => substate.UpdateOrdreMission,
+    (substate) => substate.errorUpdatingOrdreMission,
   );
 
-const makeSelectViewOrdreMission = () =>
-  createSelector(
-    selectOrdreMissionFormDomain,
-    (substate) => substate.ViewOrdreMission,
-  );
 const makeSelectOnBehalf = () =>
   createSelector(
     selectOrdreMissionFormDomain,
@@ -79,13 +62,10 @@ const makeSelectOrdreMissionIdentity = () =>
 
 export default makeSelectOrdreMissionForm;
 export {
+  makeSelectUpdateOrdreMissionError,
   makeSelectOrdreMissionIdentity,
   makeSelectAddOrdreMissionError,
-  makeSelectAddOrdreMissionSuccess,
   selectOrdreMissionFormDomain,
-  makeSelectAddOrdreMission,
-  makeSelectUpdateOrdreMission,
-  makeSelectViewOrdreMission,
   makeSelectOnBehalf,
   makeSelectAbroad,
   makeSelectCleanupStore,

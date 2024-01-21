@@ -12,6 +12,12 @@ export const ADD_ORDRE_MISSION_SUCCESS =
 export const ADD_ORDRE_MISSION_ERROR =
   'app/OrdreMissionForm/ADD_ORDRE_MISSION_ERROR';
 
+export const UPDATE_ORDRE_MISSION = 'app/OrdreMissionForm/UPDATE_ORDRE_MISSION';
+export const UPDATE_ORDRE_MISSION_SUCCESS =
+  'app/OrdreMissionForm/UPDATE_ORDRE_MISSION_SUCCESS';
+export const UPDATE_ORDRE_MISSION_ERROR =
+  'app/OrdreMissionForm/UPDATE_ORDRE_MISSION_ERROR';
+
 export const CHANGE_ABROAD_ACTION = 'app/OrdreMissionForm/CHANGE_ABROAD_ACTION';
 export const CHANGE_TRANSPORTATION_METHOD_ACTION =
   'app/OrdreMissionForm/CHANGE_TRANSPORTATION_METHOD_ACTION';
@@ -23,4 +29,5 @@ export const CLEANUP_STORE_ACTION = 'app/OrdreMissionForm/CLEANUP_STORE_ACTION';
 
 export const webService = {
   ADD_ORDRE_MISSION: '/OrdreMission/Create',
+  UPDATE_ORDRE_MISSION: '/OrdreMission/Modify',
 };

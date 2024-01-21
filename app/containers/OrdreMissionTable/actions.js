@@ -5,7 +5,6 @@
  */
 
 import {
-  ADDED_ORDRE_MISSION,
   CLEANUP_STORE_ACTION,
   DEFAULT_ACTION,
   DELETE_ORDRE_MISSION,
@@ -14,6 +13,7 @@ import {
   LOAD_ORDRE_MISSIONS,
   LOAD_ORDRE_MISSIONS_ERROR,
   LOAD_ORDRE_MISSIONS_SUCCESS,
+  STATUS_ORDRE_MISSION,
 } from './constants';
 
 export function defaultAction() {
@@ -69,8 +69,9 @@ export function cleanupOrdreMissionTableStoreAction() {
   };
 }
 
-export function setAddedOrdreMissionAction() {
+export function setOrdreMissionStatusAction(data) {
   return {
-    type: ADDED_ORDRE_MISSION,
+    type: STATUS_ORDRE_MISSION,
+    data,
   };
 }

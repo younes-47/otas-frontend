@@ -5,7 +5,7 @@
  */
 
 import {
-  ADDED_AVANCE_CAISSE,
+  STATUS_AVANCE_CAISSE,
   CLEANUP_STORE_ACTION,
   DEFAULT_ACTION,
   DELETE_AVANCE_CAISSE,
@@ -69,8 +69,9 @@ export function cleanupAvanceCaisseTableStoreAction() {
   };
 }
 
-export function setAddedAvanceCaisseAction() {
+export function setAvanceCaisseStatusAction(data) {
   return {
-    type: ADDED_AVANCE_CAISSE,
+    type: STATUS_AVANCE_CAISSE,
+    data,
   };
 }

@@ -30,12 +30,13 @@ import {
   makeSelectAvanceCaisses,
   makeSelectLoadingAvanceCaisses,
   makeSelectErrorLoadingAvanceCaisses,
-  makeSelectAddedAvanceCaisse,
+  makeSelectStatusAvanceCaisse,
 } from './selectors';
 import {
   cleanupAvanceCaisseTableStoreAction,
   deleteAvanceCaisseAction,
   loadAvanceCaisseAction,
+  setAvanceCaisseStatusAction,
 } from './actions';
 
 const mapStateToProps = createStructuredSelector({
@@ -43,7 +44,7 @@ const mapStateToProps = createStructuredSelector({
   loadingAvanceCaisses: makeSelectLoadingAvanceCaisses(),
   errorLoadingAvanceCaisses: makeSelectErrorLoadingAvanceCaisses(),
   isSideBarVisible: makeSelectIsSideBarVisible(),
-  addedAvanceCaisse: makeSelectAddedAvanceCaisse(),
+  statusAvanceCaisse: makeSelectStatusAvanceCaisse(),
 });
 
 export function AvanceCaisseTable() {
@@ -54,32 +55,28 @@ export function AvanceCaisseTable() {
     avanceCaisses,
     loadingAvanceCaisses,
     errorLoadingAvanceCaisses,
-    addedAvanceCaisse,
+    statusAvanceCaisse,
     isSideBarVisible,
   } = useSelector(mapStateToProps);
   const [modalVisibility, setModalVisibility] = useState(false);
   const [avanceCaisseToDeleteId, setAvanceCaisseToDeleteId] = useState();
 
-  const [deleteSnackbarVisibility, setDeleteSnackbarVisibility] =
-    useState(false);
-  const [addSnackbarVisibility, setAddSnackbarVisibility] = useState(false);
+  const [snackbarVisibility, setSnackbarVisibility] = useState(false);
+  const [snackbarAlertSeverity, setSnackbarAlertSeverity] = useState('');
   const action = (
     <IconButton
       size="small"
       aria-label="close"
       color="inherit"
-      onClick={() => handleDeleteSnackbarClose()}
+      onClick={() => setSnackbarVisibility()}
     >
       <CloseIcon fontSize="small" />
     </IconButton>
   );
 
-  const handleDeleteSnackbarClose = () => setDeleteSnackbarVisibility(false);
-  const handleAddSnackbarClose = () => setAddSnackbarVisibility(false);
-
   const handleOnConfirmDeletionButtonClick = (id) => {
     dispatch(deleteAvanceCaisseAction(id));
-    setDeleteSnackbarVisibility(true);
+    dispatch(setAvanceCaisseStatusAction('DELETED'));
   };
 
   const handleOnCreateButtonClick = () => {
@@ -89,8 +86,21 @@ export function AvanceCaisseTable() {
   useEffect(() => {
     if (errorLoadingAvanceCaisses === null) {
       dispatch(loadAvanceCaisseAction());
-      if (addedAvanceCaisse === true) {
-        setAddSnackbarVisibility(true);
+      if (statusAvanceCaisse === true) {
+        switch (statusAvanceCaisse) {
+          case 'SAVED':
+            setSnackbarAlertSeverity('warning');
+            break;
+          case 'UPDATED':
+            setSnackbarAlertSeverity('warning');
+            break;
+          case 'DELETED':
+            setSnackbarAlertSeverity('error');
+            break;
+          default:
+            setSnackbarAlertSeverity('success');
+        }
+        setSnackbarAlertSeverity(true);
       }
     }
   }, [avanceCaisses]);
@@ -377,33 +387,18 @@ export function AvanceCaisseTable() {
       </Dialog>
 
       <Snackbar
-        open={deleteSnackbarVisibility}
+        open={snackbarVisibility}
         autoHideDuration={3000}
-        onClose={handleDeleteSnackbarClose}
+        onClose={() => setSnackbarVisibility(false)}
         action={action}
       >
         <Alert
-          onClose={handleDeleteSnackbarClose}
-          severity="error"
+          onClose={() => setSnackbarVisibility(false)}
+          severity={snackbarAlertSeverity}
           variant="filled"
           sx={{ width: '100%' }}
         >
-          Request has been deleted successfully!
-        </Alert>
-      </Snackbar>
-      <Snackbar
-        open={addSnackbarVisibility}
-        autoHideDuration={3000}
-        onClose={handleAddSnackbarClose}
-        action={action}
-      >
-        <Alert
-          onClose={handleAddSnackbarClose}
-          severity="success"
-          variant="filled"
-          sx={{ width: '100%' }}
-        >
-          Request has been added successfully!
+          Request has been {statusAvanceCaisse.ToLowerCase()} successfully!
         </Alert>
       </Snackbar>
     </Box>

@@ -55,16 +55,16 @@ const makeSelectCleanupStore = () =>
     (substate) => substate.storeCleanup,
   );
 
-const makeSelectAddedAvanceCaisse = () =>
+const makeSelectStatusAvanceCaisse = () =>
   createSelector(
     selectAvanceCaisseTableDomain,
-    (substate) => substate.addedAvanceCaisse,
+    (substate) => substate.statusAvanceCaisse,
   );
 
 export default makeSelectAvanceCaisseTable;
 export {
   makeSelectCleanupStore,
-  makeSelectAddedAvanceCaisse,
+  makeSelectStatusAvanceCaisse,
   makeSelectErrorDeletingAvanceCaisse,
   makeSelectDeletingAvanceCaisse,
   selectAvanceCaisseTableDomain,

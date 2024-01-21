@@ -8,7 +8,6 @@ import Box from '@mui/material/Box';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
-import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import {
   Alert,
   Button,
@@ -29,14 +28,15 @@ import { FilePresent } from '@mui/icons-material';
 import saga from './saga';
 import reducer from './reducer';
 import {
-  makeSelectAddedDepenseCaisse,
   makeSelectDepenseCaisses,
   makeSelectErrorLoadingDepenseCaisses,
   makeSelectLoadingDepenseCaisses,
+  makeSelectStatusDepenseCaisse,
 } from './selectors';
 import {
   cleanupDepenseCaisseTableStoreAction,
   deleteDepenseCaisseAction,
+  downloadDepenseCaisseReceiptsFileAction,
   loadDepenseCaisseAction,
 } from './actions';
 
@@ -45,7 +45,7 @@ const mapStateToProps = createStructuredSelector({
   loadingDepenseCaisses: makeSelectLoadingDepenseCaisses(),
   errorLoadingDepenseCaisses: makeSelectErrorLoadingDepenseCaisses(),
   isSideBarVisible: makeSelectIsSideBarVisible(),
-  addedDepenseCaisse: makeSelectAddedDepenseCaisse(),
+  statusDepenseCaisse: makeSelectStatusDepenseCaisse(),
 });
 
 export function DepenseCaisseTable() {
@@ -56,8 +56,8 @@ export function DepenseCaisseTable() {
     depenseCaisses,
     loadingDepenseCaisses,
     errorLoadingDepenseCaisses,
-    addedDepenseCaisse,
     isSideBarVisible,
+    statusDepenseCaisse,
   } = useSelector(mapStateToProps);
   const [modalVisibility, setModalVisibility] = useState(false);
   const [depenseCaisseToDeleteId, setDepenseCaisseToDeleteId] = useState();
@@ -181,11 +181,14 @@ export function DepenseCaisseTable() {
       hide: false,
       headerName: 'Receipts File',
       width: 150,
-      renderCell: () => (
-        <IconButton>
-          <FilePresent color="warning" fontSize="large"></FilePresent>
-        </IconButton>
-      ),
+      renderCell: (params) => {
+        const { receiptsFileName } = params.row;
+        return (
+          <IconButton onClick={handleOnFileIconClick(receiptsFileName)}>
+            <FilePresent color="warning" fontSize="large"></FilePresent>
+          </IconButton>
+        );
+      },
     },
     {
       field: 'createDate',
@@ -256,22 +259,18 @@ export function DepenseCaisseTable() {
     },
   ];
 
-  const [deleteSnackbarVisibility, setDeleteSnackbarVisibility] =
-    useState(false);
-  const [addSnackbarVisibility, setAddSnackbarVisibility] = useState(false);
+  const [snackbarVisibility, setSnackbarVisibility] = useState(false);
+  const [snackbarAlertSeverity, setSnackbarAlertSeverity] = useState('');
   const action = (
     <IconButton
       size="small"
       aria-label="close"
       color="inherit"
-      onClick={() => handleDeleteSnackbarClose()}
+      onClick={() => setSnackbarVisibility(false)}
     >
       <CloseIcon fontSize="small" />
     </IconButton>
   );
-
-  const handleDeleteSnackbarClose = () => setDeleteSnackbarVisibility(false);
-  const handleAddSnackbarClose = () => setAddSnackbarVisibility(false);
 
   const depenseCaisseInitialState = {
     columns: {
@@ -281,22 +280,40 @@ export function DepenseCaisseTable() {
     },
   };
 
+  // handle buttons
   const handleOnConfirmDeletionButtonClick = (id) => {
     dispatch(deleteDepenseCaisseAction(id));
-    setDeleteSnackbarVisibility(true);
+    setSnackbarVisibility(true);
   };
   const handleOnCreateButtonClick = () => {
     dispatch(changePageContentAction('ADD'));
+  };
+  const handleOnFileIconClick = (fileName) => {
+    dispatch(downloadDepenseCaisseReceiptsFileAction(fileName));
   };
 
   useEffect(() => {
     if (errorLoadingDepenseCaisses === null) {
       dispatch(loadDepenseCaisseAction());
-      if (addedDepenseCaisse === true) {
-        setAddSnackbarVisibility(true);
+      if (statusDepenseCaisse !== '') {
+        switch (statusDepenseCaisse) {
+          case 'SAVED':
+            setSnackbarAlertSeverity('warning');
+            break;
+          case 'UPDATED':
+            setSnackbarAlertSeverity('warning');
+            break;
+          case 'DELETED':
+            setSnackbarAlertSeverity('error');
+            break;
+          default:
+            setSnackbarAlertSeverity('success');
+        }
+        setSnackbarVisibility(true);
       }
     }
   }, [depenseCaisses]);
+
   useEffect(
     () => () => {
       dispatch(cleanupDepenseCaisseTableStoreAction());
@@ -389,33 +406,18 @@ export function DepenseCaisseTable() {
       </Dialog>
 
       <Snackbar
-        open={deleteSnackbarVisibility}
+        open={snackbarVisibility}
         autoHideDuration={3000}
-        onClose={handleDeleteSnackbarClose}
+        onClose={() => setSnackbarVisibility(false)}
         action={action}
       >
         <Alert
-          onClose={handleDeleteSnackbarClose}
-          severity="error"
+          onClose={() => setSnackbarVisibility(false)}
+          severity={snackbarAlertSeverity}
           variant="filled"
           sx={{ width: '100%' }}
         >
-          Request has been deleted successfully!
-        </Alert>
-      </Snackbar>
-      <Snackbar
-        open={addSnackbarVisibility}
-        autoHideDuration={3000}
-        onClose={handleAddSnackbarClose}
-        action={action}
-      >
-        <Alert
-          onClose={handleAddSnackbarClose}
-          severity="success"
-          variant="filled"
-          sx={{ width: '100%' }}
-        >
-          Request has been added successfully!
+          Request has been {statusDepenseCaisse.ToLowerCase()} successfully!
         </Alert>
       </Snackbar>
     </Box>

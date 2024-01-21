@@ -13,6 +13,9 @@ import {
   CLEANUP_STORE_ACTION,
   ADD_ORDRE_MISSION_ERROR,
   ADD_ORDRE_MISSION_SUCCESS,
+  UPDATE_ORDRE_MISSION,
+  UPDATE_ORDRE_MISSION_SUCCESS,
+  UPDATE_ORDRE_MISSION_ERROR,
 } from './constants';
 
 export const initialState = {
@@ -21,6 +24,8 @@ export const initialState = {
   transportationMethodSelection: '',
   addingOrdreMission: false,
   errorAddingOrdreMission: null,
+  updatingOrdreMission: false,
+  errorUpdatingOrdreMission: null,
   ordreMissionIdentity: null,
 };
 
@@ -43,6 +48,19 @@ const ordreMissionFormReducer = (state = initialState, action) =>
         draft.addingOrdreMission = false;
         draft.errorAddingOrdreMission = true;
         break;
+      case UPDATE_ORDRE_MISSION:
+        draft.updatingOrdreMission = true;
+        draft.errorUpdatingOrdreMission = null;
+        break;
+      case UPDATE_ORDRE_MISSION_SUCCESS:
+        draft.updatingOrdreMission = false;
+        draft.errorUpdatingOrdreMission = false;
+        draft.ordreMissionIdentity = action.id;
+        break;
+      case UPDATE_ORDRE_MISSION_ERROR:
+        draft.updatingOrdreMission = false;
+        draft.errorUpdatingOrdreMission = true;
+        break;
       case CHANGE_ONBEHALF_SELECTION_ACTION:
         draft.onBehalfSelection = action.onBehalfSelection;
         break;
@@ -59,6 +77,8 @@ const ordreMissionFormReducer = (state = initialState, action) =>
         draft.transportationMethodSelection = '';
         draft.addingOrdreMission = false;
         draft.errorAddingOrdreMission = null;
+        draft.updatingOrdreMission = false;
+        draft.errorUpdatingOrdreMission = null;
         draft.ordreMissionIdentity = null;
         break;
     }

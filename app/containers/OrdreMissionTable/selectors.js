@@ -40,11 +40,12 @@ const makeSelectOrdreMissions = () =>
 const makeSelectOrdreMissionTable = () =>
   createSelector(selectOrdreMissionTableDomain, (substate) => substate);
 
-const makeSelectAddedOrdreMission = () =>
+const makeSelectStatusOrdreMission = () =>
   createSelector(
     selectOrdreMissionTableDomain,
-    (substate) => substate.addedOrdreMission,
+    (substate) => substate.statusOrdreMission,
   );
+
 const makeSelectCleanupStore = () =>
   createSelector(
     selectOrdreMissionTableDomain,
@@ -53,7 +54,7 @@ const makeSelectCleanupStore = () =>
 
 export default makeSelectOrdreMissionTable;
 export {
-  makeSelectAddedOrdreMission,
+  makeSelectStatusOrdreMission,
   makeSelectCleanupStore,
   selectOrdreMissionTableDomain,
   makeSelectOrdreMissions,

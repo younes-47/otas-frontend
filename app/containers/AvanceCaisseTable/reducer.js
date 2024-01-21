@@ -5,7 +5,7 @@
  */
 import produce from 'immer';
 import {
-  ADDED_AVANCE_CAISSE,
+  STATUS_AVANCE_CAISSE,
   CLEANUP_STORE_ACTION,
   DEFAULT_ACTION,
   DELETE_AVANCE_CAISSE,
@@ -22,7 +22,7 @@ export const initialState = {
   avanceCaisses: [],
   deletingAvanceCaisse: false,
   errorDeletingAvanceCaisse: false,
-  addedAvanceCaisse: false,
+  statusAvanceCaisse: '',
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -44,8 +44,8 @@ const avanceCaisseTableReducer = (state = initialState, action) =>
         draft.errorLoadingAvanceCaisses = false;
         draft.avanceCaisses = action.data;
         break;
-      case ADDED_AVANCE_CAISSE:
-        draft.addedAvanceCaisse = true;
+      case STATUS_AVANCE_CAISSE:
+        draft.statusAvanceCaisse = action.data;
         break;
       case DELETE_AVANCE_CAISSE:
         draft.deletingAvanceCaisse = true;
@@ -65,7 +65,7 @@ const avanceCaisseTableReducer = (state = initialState, action) =>
         draft.avanceCaisses = [];
         draft.deletingAvanceCaisse = false;
         draft.errorDeletingAvanceCaisse = false;
-        draft.addedAvanceCaisse = false;
+        draft.statusAvanceCaisse = '';
         break;
     }
   });

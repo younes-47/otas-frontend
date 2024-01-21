@@ -32,10 +32,20 @@ export function DepenseCaisse() {
     [],
   );
 
-  if (pageContent === 'ADD') {
-    return <DepenseCaisseForm></DepenseCaisseForm>;
+  switch (pageContent) {
+    case 'ADD':
+      return <DepenseCaisseForm state="ADD"></DepenseCaisseForm>;
+    // case 'VIEW':
+    //   return <DepenseCaisseView state="VIEW" />;
+    // case 'CONFIRM':
+    //   return <DepenseCaisseView state="CONFIRM" />;
+    case 'EDIT':
+      return <DepenseCaisseForm state="EDIT" />;
+    case 'MODIFY': // This case is when the user modifies its request in a returned state, which whill restrict saving it as draft again
+      return <DepenseCaisseForm state="MODIFY" />;
+    default:
+      return <DepenseCaisseTable />;
   }
-  return <DepenseCaisseTable></DepenseCaisseTable>;
 }
 
 DepenseCaisse.propTypes = {

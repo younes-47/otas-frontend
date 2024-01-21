@@ -34,10 +34,20 @@ export function AvanceCaisse() {
     },
     [],
   );
-  if (pageContent === 'ADD') {
-    return <AvanceCaisseForm></AvanceCaisseForm>;
+  switch (pageContent) {
+    case 'ADD':
+      return <AvanceCaisseForm state="ADD" />;
+    // case 'VIEW':
+    //   return <DepenseCaisseView state="VIEW" />;
+    // case 'CONFIRM':
+    //   return <DepenseCaisseView state="CONFIRM" />;
+    case 'EDIT':
+      return <AvanceCaisseForm state="EDIT" />;
+    case 'MODIFY': // This case is when the user modifies its request in a returned state, which whill restrict saving it as draft again
+      return <AvanceCaisseForm state="MODIFY" />;
+    default:
+      return <AvanceCaisseTable />;
   }
-  return <AvanceCaisseTable></AvanceCaisseTable>;
 }
 
 AvanceCaisse.propTypes = {

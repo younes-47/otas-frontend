@@ -19,8 +19,8 @@ export const DELETE_AVANCE_CAISSE_SUCCESS =
 export const DELETE_AVANCE_CAISSE_ERROR =
   'app/AvanceCaisseTable/DELETE_AVANCE_CAISSE_ERROR';
 
-export const ADDED_AVANCE_CAISSE =
-  'app/AvanceCaisseTable/DELETE_AVANCE_CAISSE_ERROR';
+export const STATUS_AVANCE_CAISSE =
+  'app/AvanceCaisseTable/STATUS_AVANCE_CAISSE';
 
 export const CLEANUP_STORE_ACTION =
   'app/AvanceCaisseTable/CLEANUP_STORE_ACTION';

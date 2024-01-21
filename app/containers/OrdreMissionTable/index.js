@@ -24,19 +24,21 @@ import { DateTimeFormater } from 'utils/Custom/stringManipulation';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import { ChangePageContentAction } from 'pages/OrdreMission/actions';
-import { cleanupStoreAction } from 'containers/OrdreMissionForm/actions';
+import { loadOrdreMissionDetailsAction } from 'containers/OrdreMissionView/actions';
+import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import saga from './saga';
 import reducer from './reducer';
 import {
-  makeSelectAddedOrdreMission,
   makeSelectErrorLoadingOrdreMissions,
   makeSelectLoadingOrdreMissions,
   makeSelectOrdreMissions,
+  makeSelectStatusOrdreMission,
 } from './selectors';
 import {
   cleanupOrdreMissionTableStoreAction,
   deleteOrdreMissionAction,
   loadOrdreMissionAction,
+  setOrdreMissionStatusAction,
 } from './actions';
 
 const mapStateToProps = createStructuredSelector({
@@ -44,7 +46,7 @@ const mapStateToProps = createStructuredSelector({
   errorLoadingOrdreMissions: makeSelectErrorLoadingOrdreMissions(),
   ordreMissions: makeSelectOrdreMissions(),
   isSideBarVisible: makeSelectIsSideBarVisible(),
-  addedOrdreMission: makeSelectAddedOrdreMission(),
+  statusOrdreMission: makeSelectStatusOrdreMission(),
 });
 
 export function OrdreMissionTable() {
@@ -56,31 +58,68 @@ export function OrdreMissionTable() {
     loadingOrdreMissions,
     errorLoadingOrdreMissions,
     isSideBarVisible,
-    addedOrdreMission,
+    statusOrdreMission,
   } = useSelector(mapStateToProps);
   const [modalVisibility, setModalVisibility] = useState(false);
   const [ordreMissionToDeleteId, setOrdreMissionToDeleteId] = useState();
-  const [deleteSnackbarVisibility, setDeleteSnackbarVisibility] =
-    useState(false);
-  const [addSnackbarVisibility, setAddSnackbarVisibility] = useState(false);
+  const [snackbarVisibility, setSnackbarVisibility] = useState(false);
+  const [snackbarAlertSeverity, setSnackbarAlertSeverity] = useState('');
   const action = (
     <IconButton
       size="small"
       aria-label="close"
       color="inherit"
-      onClick={() => setDeleteSnackbarVisibility(false)}
+      onClick={() => setSnackbarVisibility(false)}
     >
       <CloseIcon fontSize="small" />
     </IconButton>
   );
 
+  useEffect(() => {
+    if (errorLoadingOrdreMissions === null) {
+      dispatch(loadOrdreMissionAction());
+      if (statusOrdreMission !== '') {
+        switch (statusOrdreMission) {
+          case 'SAVED':
+            setSnackbarAlertSeverity('warning');
+            break;
+          case 'UPDATED':
+            setSnackbarAlertSeverity('warning');
+            break;
+          case 'DELETED':
+            setSnackbarAlertSeverity('error');
+            break;
+          default:
+            setSnackbarAlertSeverity('success');
+        }
+        setSnackbarVisibility(true);
+      }
+    }
+  }, [ordreMissions]);
+  useEffect(
+    () => () => {
+      dispatch(cleanupOrdreMissionTableStoreAction());
+    },
+    [],
+  );
+
+  // handle table buttons actions
   const handleOnCreateButtonClick = () => {
     dispatch(ChangePageContentAction('ADD'));
   };
 
+  const handleOnEditButtonClick = (id) => {
+    dispatch(loadOrdreMissionDetailsAction(id));
+    dispatch(ChangePageContentAction('EDIT'));
+  };
+  const handleOnModifyButtonClick = (id) => {
+    dispatch(loadOrdreMissionDetailsAction(id));
+    dispatch(ChangePageContentAction('MODIFY'));
+  };
+
   const handleOnConfirmDeletionButtonClick = (id) => {
     dispatch(deleteOrdreMissionAction(id));
-    setDeleteSnackbarVisibility(true);
+    dispatch(setOrdreMissionStatusAction('DELETED'));
   };
 
   const ordreMissionColumns = [
@@ -211,6 +250,7 @@ export function OrdreMissionTable() {
                 color="warning"
                 sx={{ mr: '10px' }}
                 startIcon={<EditIcon />}
+                onClick={handleOnEditButtonClick(id)}
               >
                 Edit
               </Button>
@@ -238,9 +278,10 @@ export function OrdreMissionTable() {
                 variant="contained"
                 color="warning"
                 sx={{ mr: '10px' }}
-                startIcon={<EditIcon />}
+                startIcon={<PriorityHighIcon />}
+                onClick={handleOnModifyButtonClick(id)}
               >
-                Edit
+                Modify
               </Button>
             </Box>
           );
@@ -266,20 +307,6 @@ export function OrdreMissionTable() {
     },
   };
 
-  useEffect(() => {
-    if (errorLoadingOrdreMissions === null) {
-      dispatch(loadOrdreMissionAction());
-      if (addedOrdreMission === true) {
-        setAddSnackbarVisibility(true);
-      }
-    }
-  }, [ordreMissions]);
-  useEffect(
-    () => () => {
-      dispatch(cleanupOrdreMissionTableStoreAction());
-    },
-    [],
-  );
   return (
     <Box
       position="fixed"
@@ -366,33 +393,18 @@ export function OrdreMissionTable() {
       </Dialog>
 
       <Snackbar
-        open={deleteSnackbarVisibility}
+        open={snackbarVisibility}
         autoHideDuration={3000}
-        onClose={() => setAddSnackbarVisibility(false)}
+        onClose={() => setSnackbarVisibility(false)}
         action={action}
       >
         <Alert
-          onClose={() => setAddSnackbarVisibility(false)}
-          severity="error"
+          onClose={() => setSnackbarVisibility(false)}
+          severity={snackbarAlertSeverity}
           variant="filled"
           sx={{ width: '100%' }}
         >
-          Request has been deleted successfully!
-        </Alert>
-      </Snackbar>
-      <Snackbar
-        open={addSnackbarVisibility}
-        autoHideDuration={3000}
-        onClose={() => setAddSnackbarVisibility(false)}
-        action={action}
-      >
-        <Alert
-          onClose={() => setAddSnackbarVisibility(false)}
-          severity="success"
-          variant="filled"
-          sx={{ width: '100%' }}
-        >
-          Request has been added successfully!
+          Request has been {statusOrdreMission.ToLowerCase()} successfully!
         </Alert>
       </Snackbar>
     </Box>

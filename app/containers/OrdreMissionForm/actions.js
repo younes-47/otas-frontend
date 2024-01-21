@@ -13,6 +13,9 @@ import {
   CHANGE_ABROAD_ACTION,
   CHANGE_TRANSPORTATION_METHOD_ACTION,
   CLEANUP_STORE_ACTION,
+  UPDATE_ORDRE_MISSION,
+  UPDATE_ORDRE_MISSION_SUCCESS,
+  UPDATE_ORDRE_MISSION_ERROR,
 } from './constants';
 
 export function defaultAction() {
@@ -38,6 +41,27 @@ export function AddOrdreMissionSuccessAction(id) {
 export function AddOrdreMissionErrorAction(error) {
   return {
     type: ADD_ORDRE_MISSION_ERROR,
+    error,
+  };
+}
+
+export function UpdateOrdreMissionAction(form) {
+  return {
+    type: UPDATE_ORDRE_MISSION,
+    form,
+  };
+}
+
+export function UpdateOrdreMissionSuccessAction(id) {
+  return {
+    type: UPDATE_ORDRE_MISSION_SUCCESS,
+    id,
+  };
+}
+
+export function UpdateOrdreMissionErrorAction(error) {
+  return {
+    type: UPDATE_ORDRE_MISSION_ERROR,
     error,
   };
 }

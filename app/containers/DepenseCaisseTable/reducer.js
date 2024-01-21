@@ -5,7 +5,7 @@
  */
 import produce from 'immer';
 import {
-  ADDED_DEPENSE_CAISSE,
+  STATUS_DEPENSE_CAISSE,
   CLEANUP_STORE_ACTION,
   DEFAULT_ACTION,
   DELETE_DEPENSE_CAISSE,
@@ -21,8 +21,10 @@ export const initialState = {
   errorLoadingDepenseCaisses: null,
   depenseCaisses: [],
   deletingDepenseCaisse: false,
-  errorDeletingDepenseCaisse: false,
-  addedDepenseCaisse: false,
+  errorDeletingDepenseCaisse: null,
+  downloadingDepenseCaisseReceiptsFile: false,
+  errorDownloadingDepenseCaisseReceiptsFile: null,
+  statusDepenseCaisse: '',
 };
 /* eslint-disable default-case, no-param-reassign */
 const depenseCaisseReducer = (state = initialState, action) =>
@@ -43,12 +45,12 @@ const depenseCaisseReducer = (state = initialState, action) =>
         draft.errorLoadingDepenseCaisses = false;
         draft.depenseCaisses = action.data;
         break;
-      case ADDED_DEPENSE_CAISSE:
-        draft.addedDepenseCaisse = true;
+      case STATUS_DEPENSE_CAISSE:
+        draft.statusDepenseCaisse = action.data;
         break;
       case DELETE_DEPENSE_CAISSE:
         draft.deletingDepenseCaisse = true;
-        draft.errorDeletingDepenseCaisse = false;
+        draft.errorDeletingDepenseCaisse = null;
         break;
       case DELETE_DEPENSE_CAISSE_ERROR:
         draft.deletingDepenseCaisse = false;
@@ -56,6 +58,7 @@ const depenseCaisseReducer = (state = initialState, action) =>
         break;
       case DELETE_DEPENSE_CAISSE_SUCCESS:
         draft.deletingDepenseCaisse = false;
+        draft.errorDeletingDepenseCaisse = false;
         draft.depenseCaisses = action.data;
         break;
       case CLEANUP_STORE_ACTION:
@@ -63,8 +66,10 @@ const depenseCaisseReducer = (state = initialState, action) =>
         draft.errorLoadingDepenseCaisses = null;
         draft.depenseCaisses = [];
         draft.deletingDepenseCaisse = false;
-        draft.errorDeletingDepenseCaisse = false;
-        draft.addedDepenseCaisse = false;
+        draft.errorDeletingDepenseCaisse = null;
+        draft.downloadingDepenseCaisseReceiptsFile = false;
+        draft.errorDownloadingDepenseCaisseReceiptsFile = null;
+        draft.statusDepenseCaisse = '';
         break;
     }
   });

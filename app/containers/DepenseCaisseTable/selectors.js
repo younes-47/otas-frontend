@@ -49,21 +49,35 @@ const makeSelectErrorDeletingDepenseCaisse = () =>
     (substate) => substate.errorDeletingDepenseCaisse,
   );
 
+const makeSelectDownloadingDepenseCaisseReceiptsFile = () =>
+  createSelector(
+    selectDepenseCaisseTableDomain,
+    (substate) => substate.downloadingDepenseCaisseReceiptsFile,
+  );
+
+const makeSelectErrorDownloadingDepenseCaisseReceiptsFile = () =>
+  createSelector(
+    selectDepenseCaisseTableDomain,
+    (substate) => substate.errorDownloadingDepenseCaisseReceiptsFile,
+  );
+
 const makeSelectCleanupStore = () =>
   createSelector(
     selectDepenseCaisseTableDomain,
     (substate) => substate.storeCleanup,
   );
 
-const makeSelectAddedDepenseCaisse = () =>
+const makeSelectStatusDepenseCaisse = () =>
   createSelector(
     selectDepenseCaisseTableDomain,
-    (substate) => substate.addedDepenseCaisse,
+    (substate) => substate.statusDepenseCaisse,
   );
 
 export default makeSelectDepenseCaisseTable;
 export {
-  makeSelectAddedDepenseCaisse,
+  makeSelectErrorDownloadingDepenseCaisseReceiptsFile,
+  makeSelectDownloadingDepenseCaisseReceiptsFile,
+  makeSelectStatusDepenseCaisse,
   makeSelectErrorDeletingDepenseCaisse,
   makeSelectDeletingDepenseCaisse,
   makeSelectCleanupStore,

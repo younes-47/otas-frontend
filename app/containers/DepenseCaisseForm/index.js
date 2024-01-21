@@ -8,11 +8,8 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { Box, Stack } from '@mui/system';
-import { v4 as uuidv4 } from 'uuid';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import PropTypes from 'prop-types';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import { DropzoneArea } from 'material-ui-dropzone';
@@ -37,13 +34,10 @@ import { useInjectReducer } from 'utils/injectReducer';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import dayjs from 'dayjs';
 import { changePageContentAction } from 'pages/DepenseCaisse/actions';
-import { setAddedDepenseCaisseAction } from 'containers/DepenseCaisseTable/actions';
 import DisplayUserinfo from 'components/DisplayUserinfo';
+import { setDepenseCaisseStatusAction } from 'containers/DepenseCaisseTable/actions';
 import Expenses from './Expenses';
-import makeSelectDepenseCaisseForm, {
-  makeSelectAddDepenseCaisse,
-  makeSelectOnBehalf,
-} from './selectors';
+import { makeSelectAddDepenseCaisse, makeSelectOnBehalf } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
 import {
@@ -58,7 +52,7 @@ const mapStateToProps = createStructuredSelector({
   errorAddingDepenseCaisse: makeSelectAddDepenseCaisse(),
 });
 
-export function DepenseCaisseForm() {
+export function DepenseCaisseForm({ state }) {
   useInjectReducer({ key: 'depenseCaisseForm', reducer });
   useInjectSaga({ key: 'depenseCaisseForm', saga });
   const dispatch = useDispatch();
@@ -82,9 +76,8 @@ export function DepenseCaisseForm() {
   const [actualRequester, setActualRequester] = useState({
     firstName: '',
     lastName: '',
-    registrationNumber: 0,
+    registrationNumber: '',
     jobTitle: '',
-    hiringDate: dayjs(Date()),
     department: '',
     manager: '',
   });
@@ -95,7 +88,7 @@ export function DepenseCaisseForm() {
   useEffect(() => {
     if (errorAddingDepenseCaisse === false) {
       dispatch(cleanupStoreAction());
-      dispatch(setAddedDepenseCaisseAction());
+      dispatch(setDepenseCaisseStatusAction('SAVED'));
       dispatch(changePageContentAction('TABLE'));
     }
   }, [errorAddingDepenseCaisse]);
@@ -147,9 +140,8 @@ export function DepenseCaisseForm() {
 
   const updateActualRequesterData = (fieldName, value) => {
     let updatedValue = value;
-    if (fieldName === 'hiringDate') {
-      const tzoffset = new Date().getTimezoneOffset() * 60000; // offset in milliseconds
-      updatedValue = new Date(value - tzoffset).toISOString().slice(0, -1);
+    if (fieldName === 'registrationNumber') {
+      updatedValue = value.toString();
     }
     const updatedRequester = { ...actualRequester, [fieldName]: updatedValue };
 
@@ -189,13 +181,6 @@ export function DepenseCaisseForm() {
   const handlecurrencyChange = (event) => {
     setCurrency(event.target.value);
   };
-
-  // Handle on buttons click
-  const handleOnReturnButtonClick = () => {
-    dispatch(cleanupStoreAction());
-    dispatch(changePageContentAction('TABLE'));
-  };
-
   const data = {
     onBehalf: onBehalfSelection === 'true',
     description,
@@ -205,14 +190,14 @@ export function DepenseCaisseForm() {
     expenses,
   };
 
-  const handleOnSaveAsDraftClick = () => {
+  const ValidateInputs = () => {
     // Invalid on behalf selection
     if (data.onBehalf !== true && data.onBehalf !== false) {
       setInputError(
         'Could not figure out whether you are filling this request on behalf of someone else or not! Please select "Yes" or "No".',
       );
       setModalVisibility(true);
-      return;
+      return false;
     }
 
     // on behalf of someone + missing actual requester info
@@ -220,24 +205,23 @@ export function DepenseCaisseForm() {
       data.onBehalf === true &&
       (actualRequester.firstName === '' ||
         actualRequester.lastName === '' ||
-        actualRequester.registrationNumber === 0 ||
+        actualRequester.registrationNumber === '' ||
         actualRequester.jobTitle === '' ||
         actualRequester.department === '' ||
-        actualRequester.manager === '' ||
-        actualRequester.hiringDate === '')
+        actualRequester.manager === '')
     ) {
       setInputError(
         'You must fill all actual requester information if you are filling this request on behalf of someone else!',
       );
       setModalVisibility(true);
-      return;
+      return false;
     }
 
     // Description
     if (data.description === '') {
       setInputError('You must provide a description for the request!');
       setModalVisibility(true);
-      return;
+      return false;
     }
 
     let isAllGood = true;
@@ -276,11 +260,28 @@ export function DepenseCaisseForm() {
       isAllGood = false;
     }
     if (isAllGood === false) {
-      return;
+      return false;
     }
-    dispatch(AddDepenseCaisseAction(data));
+
+    return true;
   };
 
+  // Handle on buttons click
+  const handleOnReturnButtonClick = () => {
+    dispatch(cleanupStoreAction());
+    dispatch(changePageContentAction('TABLE'));
+  };
+
+  const handleOnSaveAsDraftClick = () => {
+    const result = ValidateInputs();
+    if (result === true) {
+      if (state === 'ADD') {
+        dispatch(AddDepenseCaisseAction(data));
+        dispatch(cleanupStoreAction());
+        dispatch(setDepenseCaisseStatusAction('SAVED'));
+      }
+    }
+  };
   return (
     <Box
       position="fixed"
@@ -421,18 +422,6 @@ export function DepenseCaisseForm() {
                 }
                 required
               />
-              <LocalizationProvider reuired dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  sx={{ maxWidth: 210 }}
-                  required
-                  label="Hiring Date"
-                  value={actualRequester.hiringDate}
-                  onChange={(e) =>
-                    updateActualRequesterData('hiringDate', e.$d)
-                  }
-                  format="DD/MM/YYYY"
-                />
-              </LocalizationProvider>
               <TextField
                 id="outlined-basic"
                 label="Department"
@@ -693,7 +682,7 @@ export function DepenseCaisseForm() {
 }
 
 DepenseCaisseForm.propTypes = {
-  // dispatch: PropTypes.func.isRequired,
+  state: PropTypes.string.isRequired,
 };
 
 export default DepenseCaisseForm;

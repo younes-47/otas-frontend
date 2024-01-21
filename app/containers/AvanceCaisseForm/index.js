@@ -9,9 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { Box, Stack } from '@mui/system';
 import { v4 as uuidv4 } from 'uuid';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import PropTypes from 'prop-types';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import {
   Alert,
@@ -35,8 +33,8 @@ import { useInjectReducer } from 'utils/injectReducer';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import dayjs from 'dayjs';
 import { changePageContentAction } from 'pages/AvanceCaisse/actions';
-import { setAddedAvanceCaisseAction } from 'containers/AvanceCaisseTable/actions';
 import DisplayUserinfo from 'components/DisplayUserinfo';
+import { setAvanceCaisseStatusAction } from 'containers/AvanceCaisseTable/actions';
 import makeSelectAvanceCaisseForm, {
   makeSelectAddAvanceCaisse,
   makeSelectOnBehalf,
@@ -57,7 +55,7 @@ const mapStateToProps = createStructuredSelector({
   errorAddingAvanceCaisse: makeSelectAddAvanceCaisse(),
 });
 
-export function AvanceCaisseForm() {
+export function AvanceCaisseForm({ state }) {
   useInjectReducer({ key: 'avanceCaisseForm', reducer });
   useInjectSaga({ key: 'avanceCaisseForm', saga });
   const dispatch = useDispatch();
@@ -69,9 +67,8 @@ export function AvanceCaisseForm() {
   const [actualRequester, setActualRequester] = useState({
     firstName: '',
     lastName: '',
-    registrationNumber: 0,
+    registrationNumber: '',
     jobTitle: '',
-    hiringDate: dayjs(Date()),
     department: '',
     manager: '',
   });
@@ -89,7 +86,7 @@ export function AvanceCaisseForm() {
   useEffect(() => {
     if (errorAddingAvanceCaisse === false) {
       dispatch(cleanupStoreAction());
-      dispatch(setAddedAvanceCaisseAction());
+      dispatch(setAvanceCaisseStatusAction('SAVED'));
       dispatch(changePageContentAction('TABLE'));
     }
   }, [errorAddingAvanceCaisse]);
@@ -128,9 +125,8 @@ export function AvanceCaisseForm() {
 
   const updateActualRequesterData = (fieldName, value) => {
     let updatedValue = value;
-    if (fieldName === 'hiringDate') {
-      const tzoffset = new Date().getTimezoneOffset() * 60000; // offset in milliseconds
-      updatedValue = new Date(value - tzoffset).toISOString().slice(0, -1);
+    if (fieldName === 'registrationNumber') {
+      updatedValue = value.toString();
     }
     const updatedRequester = { ...actualRequester, [fieldName]: updatedValue };
 
@@ -141,27 +137,14 @@ export function AvanceCaisseForm() {
     setCurrency(event.target.value);
   };
 
-  const removeExpense = (expenseId) => {
-    const updatedExpenses = expenses.filter(
-      (expense) => expense.id !== expenseId,
-    );
-    setExpenses(updatedExpenses);
-  };
-
-  // Handle on buttons click
-  const handleOnReturnButtonClick = () => {
-    dispatch(cleanupStoreAction());
-    dispatch(changePageContentAction('TABLE'));
-  };
-
-  const handleOnSaveAsDraftClick = () => {
+  const ValidateInputs = () => {
     // Invalid on behalf selection
     if (data.onBehalf !== true && data.onBehalf !== false) {
       setInputError(
         'Could not figure out whether you are filling this request on behalf of someone else or not! Please select "Yes" or "No".',
       );
       setModalVisibility(true);
-      return;
+      return false;
     }
 
     // on behalf of someone + missing actual requester info
@@ -169,24 +152,23 @@ export function AvanceCaisseForm() {
       data.onBehalf === true &&
       (actualRequester.firstName === '' ||
         actualRequester.lastName === '' ||
-        actualRequester.registrationNumber === 0 ||
+        actualRequester.registrationNumber === '' ||
         actualRequester.jobTitle === '' ||
         actualRequester.department === '' ||
-        actualRequester.manager === '' ||
-        actualRequester.hiringDate === '')
+        actualRequester.manager === '')
     ) {
       setInputError(
         'You must fill all actual requester information if you are filling this request on behalf of someone else!',
       );
       setModalVisibility(true);
-      return;
+      return false;
     }
 
     // Description
     if (data.description === '') {
       setInputError('You must provide a description for the request!');
       setModalVisibility(true);
-      return;
+      return false;
     }
 
     let isAllGood = true;
@@ -219,11 +201,35 @@ export function AvanceCaisseForm() {
     });
 
     if (isAllGood === false) {
-      return;
+      return false;
     }
-    dispatch(AddAvanceCaisseAction(data));
+
+    return true;
   };
 
+  const removeExpense = (expenseId) => {
+    const updatedExpenses = expenses.filter(
+      (expense) => expense.id !== expenseId,
+    );
+    setExpenses(updatedExpenses);
+  };
+
+  // Handle on buttons click
+  const handleOnReturnButtonClick = () => {
+    dispatch(cleanupStoreAction());
+    dispatch(changePageContentAction('TABLE'));
+  };
+
+  const handleOnSaveAsDraftClick = () => {
+    const result = ValidateInputs();
+    if (result === true) {
+      if (state === 'ADD') {
+        dispatch(AddAvanceCaisseAction(data));
+        dispatch(cleanupStoreAction());
+        dispatch(setAvanceCaisseStatusAction('SAVED'));
+      }
+    }
+  };
   const data = {
     onBehalf: onBehalfSelection === 'true',
     description,
@@ -372,18 +378,6 @@ export function AvanceCaisseForm() {
                 }
                 required
               />
-              <LocalizationProvider reuired dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  sx={{ maxWidth: 210 }}
-                  required
-                  label="Hiring Date"
-                  value={actualRequester.hiringDate}
-                  onChange={(e) =>
-                    updateActualRequesterData('hiringDate', e.$d)
-                  }
-                  format="DD/MM/YYYY"
-                />
-              </LocalizationProvider>
               <TextField
                 id="outlined-basic"
                 label="Department"
@@ -589,7 +583,7 @@ export function AvanceCaisseForm() {
 }
 
 AvanceCaisseForm.propTypes = {
-  // dispatch: PropTypes.func.isRequired,
+  state: PropTypes.string.isRequired,
 };
 
 export default AvanceCaisseForm;

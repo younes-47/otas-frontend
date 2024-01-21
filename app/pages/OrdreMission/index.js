@@ -36,11 +36,15 @@ export function OrdreMission() {
 
   switch (pageContent) {
     case 'ADD':
-      return <OrdreMissionForm />;
+      return <OrdreMissionForm state="ADD" />;
     case 'VIEW':
       return <OrdreMissionView state="VIEW" />;
     case 'CONFIRM':
       return <OrdreMissionView state="CONFIRM" />;
+    case 'EDIT':
+      return <OrdreMissionForm state="EDIT" />;
+    case 'MODIFY': // This case is when the user modifies its request in a returned state, which whill restrict saving it as draft again
+      return <OrdreMissionForm state="MODIFY" />;
     default:
       return <OrdreMissionTable />;
   }
