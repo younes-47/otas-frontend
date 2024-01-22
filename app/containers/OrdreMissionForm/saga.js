@@ -1,5 +1,6 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 import request from 'utils/request';
+import { loadOrdreMissionDetailsAction } from 'pages/OrdreMission/actions';
 import {
   ADD_ORDRE_MISSION,
   UPDATE_ORDRE_MISSION,
@@ -24,7 +25,8 @@ export function* AddOrdreMission({ form }) {
         },
       },
     );
-    yield put(AddOrdreMissionSuccessAction(data)); // data is ID
+    yield put(AddOrdreMissionSuccessAction());
+    yield put(loadOrdreMissionDetailsAction(data)); // data is ID
   } catch (error) {
     yield put(AddOrdreMissionErrorAction(error));
   }
@@ -33,7 +35,7 @@ export function* AddOrdreMission({ form }) {
 export function* UpdateOrdreMission({ form }) {
   try {
     const { data } = yield call(
-      request.post,
+      request.put,
       webService.UPDATE_ORDRE_MISSION,
       form,
       {

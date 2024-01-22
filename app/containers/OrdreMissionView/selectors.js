@@ -19,21 +19,11 @@ const selectOrdreMissionViewDomain = (state) =>
 const makeSelectOrdreMissionView = () =>
   createSelector(selectOrdreMissionViewDomain, (substate) => substate);
 
-const makeSelectOrdreMissionDetails = () =>
+const makeSelectErrorSubmittingOrdreMission = () =>
   createSelector(
     selectOrdreMissionViewDomain,
-    (substate) => substate.ordreMissionDetails,
-  );
-
-const makeSelectErrorLoadingOrdreMissionDetails = () =>
-  createSelector(
-    selectOrdreMissionViewDomain,
-    (substate) => substate.errorLoadingOrdreMissionDetails,
+    (substate) => substate.errorSubmittingOrdreMission,
   );
 
 export default makeSelectOrdreMissionView;
-export {
-  selectOrdreMissionViewDomain,
-  makeSelectOrdreMissionDetails,
-  makeSelectErrorLoadingOrdreMissionDetails,
-};
+export { selectOrdreMissionViewDomain, makeSelectErrorSubmittingOrdreMission };

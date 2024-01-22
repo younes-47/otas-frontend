@@ -6,16 +6,24 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import AirlineStopsIcon from '@mui/icons-material/AirlineStops';
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Collapse,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  ListSubheader,
   Typography,
 } from '@mui/material';
 import { Box } from '@mui/system';
 import { DateTimePicker } from '@mui/x-date-pickers';
 import { createStructuredSelector } from 'reselect';
 import { useSelector } from 'react-redux';
+import { ExpandLess, ExpandMore, StarBorder } from '@mui/icons-material';
 import { makeSelectAbroad } from './selectors';
 // import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
@@ -24,224 +32,44 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const DisplayTrips = ({ tripData }) => {
-  const {
-    id,
-    departurePlace,
-    destination,
-    departureDate,
-    arrivalDate,
-    transportationMethod,
-    unit,
-    value,
-    highwayFee,
-  } = tripData;
+  const departurePlace = `From: ${tripData.departurePlace}`;
+  const destination = `To: ${tripData.destination}`;
+  const departureDate = `Depart On: ${tripData.departureDate}`;
+  const transportationMethod = `With: ${tripData.transportationMethod}`;
+  const arrivalDate = `Arrive On: ${tripData.arrivalDate}`;
+  const unit = `Unit: ${tripData.unit}`;
+  const value = `Amount: ${tripData.value}`;
+  const highwayFee = `HighwayFee: ${tripData.highwayFee}`;
+  const estimatedFee = `Total (estm.): ${tripData.estimatedFee}`;
+  const [open, setOpen] = useState(false);
+
+  const handleClick = () => {
+    setOpen(!open);
+  };
 
   return (
-    <Box
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(8, 1fr)',
-        width: '100%',
-        bgcolor: (theme) =>
-          theme.palette.mode === 'dark' ? '#101010' : 'grey.100',
-        color: (theme) =>
-          theme.palette.mode === 'dark' ? 'grey.300' : 'grey.800',
-        border: '1px solid',
-        borderColor: (theme) =>
-          theme.palette.mode === 'dark' ? 'grey.800' : 'grey.300',
-        p: 1,
-        borderRadius: 2,
-        fontSize: '0.875rem',
-        fontWeight: '700',
-      }}
-      marginBottom={3}
-      gap={3}
-    >
-      <Accordion defaultExpanded sx={{ width: '60%' }}>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1bh-content"
-          id="panel1bh-header"
-        >
-          <Typography
-            variant="h6"
-            sx={{ width: '33%', flexShrink: 0, fontWeight: 'bold' }}
-          >
-            Trips
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Box>
-            <Typography variant="overline">From</Typography>
-            <Box
-              sx={{
-                bgcolor: (theme) =>
-                  theme.palette.mode === 'dark' ? '#101010' : '#fff',
-                color: (theme) =>
-                  theme.palette.mode === 'dark' ? 'grey.300' : 'grey.800',
-                border: '1px solid',
-                borderColor: (theme) =>
-                  theme.palette.mode === 'dark' ? 'grey.800' : 'grey.300',
-                p: 1,
-                borderRadius: 2,
-                fontSize: '0.875rem',
-                fontWeight: '700',
-              }}
-              display="flex"
-              justifyContent="space-between"
-            >
-              <Typography variant="p" align="left">
-                {tripData.departurePlace}
-              </Typography>
-            </Box>
-          </Box>
-          <Box>
-            <Typography variant="overline">To</Typography>
-            <Box
-              sx={{
-                bgcolor: (theme) =>
-                  theme.palette.mode === 'dark' ? '#101010' : '#fff',
-                color: (theme) =>
-                  theme.palette.mode === 'dark' ? 'grey.300' : 'grey.800',
-                border: '1px solid',
-                borderColor: (theme) =>
-                  theme.palette.mode === 'dark' ? 'grey.800' : 'grey.300',
-                p: 1,
-                borderRadius: 2,
-                fontSize: '0.875rem',
-                fontWeight: '700',
-              }}
-              display="flex"
-              justifyContent="space-between"
-            >
-              <Typography variant="p" align="left">
-                {tripData.destination}
-              </Typography>
-            </Box>
-          </Box>
-          <Box>
-            <Typography variant="overline">Depart On</Typography>
-            <Box
-              sx={{
-                bgcolor: (theme) =>
-                  theme.palette.mode === 'dark' ? '#101010' : '#fff',
-                color: (theme) =>
-                  theme.palette.mode === 'dark' ? 'grey.300' : 'grey.800',
-                border: '1px solid',
-                borderColor: (theme) =>
-                  theme.palette.mode === 'dark' ? 'grey.800' : 'grey.300',
-                p: 1,
-                borderRadius: 2,
-                fontSize: '0.875rem',
-                fontWeight: '700',
-              }}
-              display="flex"
-              justifyContent="space-between"
-            >
-              <Typography variant="p" align="left">
-                {tripData.departureDate}
-              </Typography>
-            </Box>
-          </Box>
-          <Box>
-            <Typography variant="overline">Arrive On</Typography>
-            <Box
-              sx={{
-                bgcolor: (theme) =>
-                  theme.palette.mode === 'dark' ? '#101010' : '#fff',
-                color: (theme) =>
-                  theme.palette.mode === 'dark' ? 'grey.300' : 'grey.800',
-                border: '1px solid',
-                borderColor: (theme) =>
-                  theme.palette.mode === 'dark' ? 'grey.800' : 'grey.300',
-                p: 1,
-                borderRadius: 2,
-                fontSize: '0.875rem',
-                fontWeight: '700',
-              }}
-              display="flex"
-              justifyContent="space-between"
-            >
-              <Typography variant="p" align="left">
-                {tripData.arrivalDate}
-              </Typography>
-            </Box>
-          </Box>
-          <Box>
-            <Typography variant="overline">With</Typography>
-            <Box
-              sx={{
-                bgcolor: (theme) =>
-                  theme.palette.mode === 'dark' ? '#101010' : '#fff',
-                color: (theme) =>
-                  theme.palette.mode === 'dark' ? 'grey.300' : 'grey.800',
-                border: '1px solid',
-                borderColor: (theme) =>
-                  theme.palette.mode === 'dark' ? 'grey.800' : 'grey.300',
-                p: 1,
-                borderRadius: 2,
-                fontSize: '0.875rem',
-                fontWeight: '700',
-              }}
-              display="flex"
-              justifyContent="space-between"
-            >
-              <Typography variant="p" align="left">
-                {tripData.departureDate}
-              </Typography>
-            </Box>
-          </Box>
-          <Box>
-            <Typography variant="overline">Highway Fee</Typography>
-            <Box
-              sx={{
-                bgcolor: (theme) =>
-                  theme.palette.mode === 'dark' ? '#101010' : '#fff',
-                color: (theme) =>
-                  theme.palette.mode === 'dark' ? 'grey.300' : 'grey.800',
-                border: '1px solid',
-                borderColor: (theme) =>
-                  theme.palette.mode === 'dark' ? 'grey.800' : 'grey.300',
-                p: 1,
-                borderRadius: 2,
-                fontSize: '0.875rem',
-                fontWeight: '700',
-              }}
-              display="flex"
-              justifyContent="space-between"
-            >
-              <Typography variant="p" align="left">
-                {tripData.highwayFee}
-              </Typography>
-            </Box>
-          </Box>
-          <Box>
-            <Typography variant="overline">Estimated Fee</Typography>
-            <Box
-              sx={{
-                bgcolor: (theme) =>
-                  theme.palette.mode === 'dark' ? '#101010' : '#fff',
-                color: (theme) =>
-                  theme.palette.mode === 'dark' ? 'grey.300' : 'grey.800',
-                border: '1px solid',
-                borderColor: (theme) =>
-                  theme.palette.mode === 'dark' ? 'grey.800' : 'grey.300',
-                p: 1,
-                borderRadius: 2,
-                fontSize: '0.875rem',
-                fontWeight: '700',
-              }}
-              display="flex"
-              justifyContent="space-between"
-            >
-              <Typography variant="p" align="left">
-                {tripData.estimatedFee}
-              </Typography>
-            </Box>
-          </Box>
-        </AccordionDetails>
-      </Accordion>
-    </Box>
+    <>
+      <ListItemButton onClick={handleClick}>
+        <ListItemIcon>
+          <AirlineStopsIcon />
+        </ListItemIcon>
+        <ListItemText primary="Trjectory" />
+        {open ? <ExpandLess /> : <ExpandMore />}
+      </ListItemButton>
+      <Collapse in={open} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding dense>
+          <ListItemText primary={departurePlace} />
+          <ListItemText primary={destination} />
+          <ListItemText primary={departureDate} />
+          <ListItemText primary={transportationMethod} />
+          <ListItemText primary={arrivalDate} />
+          <ListItemText primary={unit} />
+          <ListItemText primary={value} />
+          <ListItemText primary={highwayFee} />
+          <ListItemText primary={estimatedFee} />
+        </List>
+      </Collapse>
+    </>
   );
 };
 

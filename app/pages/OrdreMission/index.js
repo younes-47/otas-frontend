@@ -11,7 +11,7 @@ import reducer from './reducer';
 
 import saga from './saga';
 import { makeSelectPageContent } from './selectors';
-import { cleanupStoreAction } from './actions';
+import { cleanupParentOrdreMissionPageAction } from './actions';
 
 const mapStateToProps = createStructuredSelector({
   isSideBarVisible: makeSelectIsSideBarVisible(),
@@ -20,19 +20,17 @@ const mapStateToProps = createStructuredSelector({
 
 export function OrdreMission() {
   useInjectReducer({ key: 'ordreMission', reducer });
+  useInjectSaga({ key: 'ordreMission', saga });
+
   const { pageContent } = useSelector(mapStateToProps);
   const dispatch = useDispatch();
-  useEffect(
-    () => () => {
-      dispatch(cleanupStoreAction());
-    },
-    [],
-  );
 
-  // if (pageContent === 'ADD') {
-  //   return <OrdreMissionForm></OrdreMissionForm>;
-  // }
-  // return <OrdreMissionTable></OrdreMissionTable>;
+  // useEffect(
+  //   () => () => {
+  //     dispatch(cleanupParentOrdreMissionPageAction());
+  //   },
+  //   [],
+  // );
 
   switch (pageContent) {
     case 'ADD':

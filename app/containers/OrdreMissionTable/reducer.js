@@ -33,7 +33,7 @@ const ordreMissionTableReducer = (state = initialState, action) =>
         break;
       case LOAD_ORDRE_MISSIONS:
         draft.loadingOrdreMissions = true;
-        draft.errorLoadingOrdreMissions = false;
+        draft.errorLoadingOrdreMissions = null;
         break;
       case LOAD_ORDRE_MISSIONS_ERROR:
         draft.loadingOrdreMissions = false;

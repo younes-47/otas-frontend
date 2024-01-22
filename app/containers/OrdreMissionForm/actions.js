@@ -16,6 +16,7 @@ import {
   UPDATE_ORDRE_MISSION,
   UPDATE_ORDRE_MISSION_SUCCESS,
   UPDATE_ORDRE_MISSION_ERROR,
+  ORDRE_MISSION_IDENTITY,
 } from './constants';
 
 export function defaultAction() {
@@ -31,10 +32,9 @@ export function AddOrdreMissionAction(form) {
   };
 }
 
-export function AddOrdreMissionSuccessAction(id) {
+export function AddOrdreMissionSuccessAction() {
   return {
     type: ADD_ORDRE_MISSION_SUCCESS,
-    id,
   };
 }
 
@@ -87,8 +87,15 @@ export function SelectTransportationMethodAction(
   };
 }
 
-export function cleanupStoreAction() {
+export function cleanupOrdreMissionFormPageAction() {
   return {
     type: CLEANUP_STORE_ACTION,
+  };
+}
+
+export function setOrdreMissionIdentity(data) {
+  return {
+    type: ORDRE_MISSION_IDENTITY,
+    data,
   };
 }

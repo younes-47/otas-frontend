@@ -26,7 +26,6 @@ export const initialState = {
   errorAddingOrdreMission: null,
   updatingOrdreMission: false,
   errorUpdatingOrdreMission: null,
-  ordreMissionIdentity: null,
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -42,12 +41,12 @@ const ordreMissionFormReducer = (state = initialState, action) =>
       case ADD_ORDRE_MISSION_SUCCESS:
         draft.addingOrdreMission = false;
         draft.errorAddingOrdreMission = false;
-        draft.ordreMissionIdentity = action.id;
         break;
       case ADD_ORDRE_MISSION_ERROR:
         draft.addingOrdreMission = false;
         draft.errorAddingOrdreMission = true;
         break;
+
       case UPDATE_ORDRE_MISSION:
         draft.updatingOrdreMission = true;
         draft.errorUpdatingOrdreMission = null;
@@ -55,7 +54,6 @@ const ordreMissionFormReducer = (state = initialState, action) =>
       case UPDATE_ORDRE_MISSION_SUCCESS:
         draft.updatingOrdreMission = false;
         draft.errorUpdatingOrdreMission = false;
-        draft.ordreMissionIdentity = action.id;
         break;
       case UPDATE_ORDRE_MISSION_ERROR:
         draft.updatingOrdreMission = false;
@@ -79,7 +77,6 @@ const ordreMissionFormReducer = (state = initialState, action) =>
         draft.errorAddingOrdreMission = null;
         draft.updatingOrdreMission = false;
         draft.errorUpdatingOrdreMission = null;
-        draft.ordreMissionIdentity = null;
         break;
     }
   });

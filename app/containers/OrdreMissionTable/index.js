@@ -23,8 +23,10 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { DateTimeFormater } from 'utils/Custom/stringManipulation';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
-import { ChangePageContentAction } from 'pages/OrdreMission/actions';
-import { loadOrdreMissionDetailsAction } from 'containers/OrdreMissionView/actions';
+import {
+  ChangePageContentAction,
+  loadOrdreMissionDetailsAction,
+} from 'pages/OrdreMission/actions';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import saga from './saga';
 import reducer from './reducer';
@@ -81,10 +83,10 @@ export function OrdreMissionTable() {
       if (statusOrdreMission !== '') {
         switch (statusOrdreMission) {
           case 'SAVED':
-            setSnackbarAlertSeverity('warning');
+            setSnackbarAlertSeverity('info');
             break;
           case 'UPDATED':
-            setSnackbarAlertSeverity('warning');
+            setSnackbarAlertSeverity('info');
             break;
           case 'DELETED':
             setSnackbarAlertSeverity('error');
@@ -112,6 +114,7 @@ export function OrdreMissionTable() {
     dispatch(loadOrdreMissionDetailsAction(id));
     dispatch(ChangePageContentAction('EDIT'));
   };
+
   const handleOnModifyButtonClick = (id) => {
     dispatch(loadOrdreMissionDetailsAction(id));
     dispatch(ChangePageContentAction('MODIFY'));
@@ -250,7 +253,9 @@ export function OrdreMissionTable() {
                 color="warning"
                 sx={{ mr: '10px' }}
                 startIcon={<EditIcon />}
-                onClick={handleOnEditButtonClick(id)}
+                onClick={() => {
+                  handleOnEditButtonClick(id);
+                }}
               >
                 Edit
               </Button>
@@ -279,7 +284,9 @@ export function OrdreMissionTable() {
                 color="warning"
                 sx={{ mr: '10px' }}
                 startIcon={<PriorityHighIcon />}
-                onClick={handleOnModifyButtonClick(id)}
+                onClick={() => {
+                  handleOnModifyButtonClick(id);
+                }}
               >
                 Modify
               </Button>
@@ -404,7 +411,7 @@ export function OrdreMissionTable() {
           variant="filled"
           sx={{ width: '100%' }}
         >
-          Request has been {statusOrdreMission.ToLowerCase()} successfully!
+          Request has been {statusOrdreMission} successfully!
         </Alert>
       </Snackbar>
     </Box>

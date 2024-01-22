@@ -24,8 +24,21 @@ const makeSelectPageContent = () =>
 const makeSelectCleanupStore = () =>
   createSelector(selectOrdreMissionDomain, (substate) => substate.storeCleanup);
 
+const makeSelectOrdreMissionDetails = () =>
+  createSelector(
+    selectOrdreMissionDomain,
+    (substate) => substate.ordreMissionDetails,
+  );
+
+const makeSelectErrorLoadingOrdreMissionDetails = () =>
+  createSelector(
+    selectOrdreMissionDomain,
+    (substate) => substate.errorLoadingOrdreMissionDetails,
+  );
 export default makeSelectOrdreMission;
 export {
+  makeSelectOrdreMissionDetails,
+  makeSelectErrorLoadingOrdreMissionDetails,
   selectOrdreMissionDomain,
   makeSelectPageContent,
   makeSelectCleanupStore,

@@ -26,6 +26,8 @@ export const CHANGE_ONBEHALF_SELECTION_ACTION =
   'app/OrdreMissionForm/ON_BEHALF_SELECTION';
 
 export const CLEANUP_STORE_ACTION = 'app/OrdreMissionForm/CLEANUP_STORE_ACTION';
+export const ORDRE_MISSION_IDENTITY =
+  'app/OrdreMissionForm/ORDRE_MISSION_IDENTITY';
 
 export const webService = {
   ADD_ORDRE_MISSION: '/OrdreMission/Create',

@@ -21,25 +21,6 @@ export function defaultAction() {
   };
 }
 
-export function loadOrdreMissionDetailsAction(id) {
-  return {
-    type: LOAD_ORDRE_MISSION_DETAILS,
-    id,
-  };
-}
-export function loadOrdreMissionDetailsSuccessAction(data) {
-  return {
-    type: LOAD_ORDRE_MISSION_DETAILS_SUCCESS,
-    data,
-  };
-}
-
-export function loadOrdreMissionDetailsErrorAction(error) {
-  return {
-    type: LOAD_ORDRE_MISSION_DETAILS_ERROR,
-    error,
-  };
-}
 export function submitOrdreMissionAction(id) {
   return {
     type: SUBMIT_ORDRE_MISSION,

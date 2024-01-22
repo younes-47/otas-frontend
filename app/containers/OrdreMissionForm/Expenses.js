@@ -31,8 +31,7 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const Expenses = ({ expenseData, updateExpenseData, removeExpense }) => {
-  const { id, description, expenseDate, currency, estimatedExpenseFee } =
-    expenseData;
+  const { id, description, expenseDate, currency, estimatedFee } = expenseData;
 
   const { abroadSelection } = useSelector(mapStateToProps);
 
@@ -97,9 +96,9 @@ const Expenses = ({ expenseData, updateExpenseData, removeExpense }) => {
           type="number"
           id="outlined-basic"
           label="Fee"
-          value={estimatedExpenseFee}
+          value={estimatedFee}
           onChange={(e) =>
-            updateExpenseData(id, 'estimatedExpenseFee', e.target.value)
+            updateExpenseData(id, 'estimatedFee', e.target.value)
           }
           sx={{ maxWidth: 120 }}
           disabled={currency !== 'MAD' && currency !== 'EUR'}

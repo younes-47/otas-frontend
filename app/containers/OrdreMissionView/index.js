@@ -27,6 +27,8 @@ import {
   DialogTitle,
   Divider,
   IconButton,
+  List,
+  ListSubheader,
   Snackbar,
   Stack,
   Typography,
@@ -34,28 +36,30 @@ import {
 import DisplayUserinfo from 'components/DisplayUserinfo';
 import { Timeline } from '@mui/icons-material';
 import CustomizedTimeLine from 'components/CustomizedTimeLine';
-import { ChangePageContentAction } from 'pages/OrdreMission/actions';
-import { cleanupStoreAction } from 'containers/OrdreMissionForm/actions';
-import { makeSelectOrdreMissionIdentity } from 'containers/OrdreMissionForm/selectors';
+import {
+  ChangePageContentAction,
+  cleanupParentOrdreMissionPageAction,
+} from 'pages/OrdreMission/actions';
 import { setOrdreMissionStatusAction } from 'containers/OrdreMissionTable/actions';
 import {
   makeSelectErrorLoadingOrdreMissionDetails,
   makeSelectOrdreMissionDetails,
-} from './selectors';
+} from 'pages/OrdreMission/selectors';
+import { cleanupOrdreMissionFormPageAction } from 'containers/OrdreMissionForm/actions';
 import reducer from './reducer';
 import saga from './saga';
 import {
   cleanupOrdreMissionViewStoreAction,
-  loadOrdreMissionDetailsAction,
   submitOrdreMissionAction,
 } from './actions';
 import DisplayTrips from './DisplayTrips';
-
+import { makeSelectErrorSubmittingOrdreMission } from './selectors';
+import DisplayExpenses from './DisplayExpenses';
 const mapStateToProps = createStructuredSelector({
   isSideBarVisible: makeSelectIsSideBarVisible(),
   errorLoadingOrdreMissionDetails: makeSelectErrorLoadingOrdreMissionDetails(),
+  errorSubmittingOrdreMission: makeSelectErrorSubmittingOrdreMission(),
   ordreMissionDetails: makeSelectOrdreMissionDetails(),
-  ordreMissionidentity: makeSelectOrdreMissionIdentity(),
 });
 
 export function OrdreMissionView({ state }) {
@@ -73,40 +77,36 @@ export function OrdreMissionView({ state }) {
     </IconButton>
   );
 
-  const {
-    isSideBarVisible,
-    errorLoadingOrdreMissionDetails,
-    ordreMissionDetails,
-    ordreMissionidentity,
-  } = useSelector(mapStateToProps);
+  const { isSideBarVisible, ordreMissionDetails, errorSubmittingOrdreMission } =
+    useSelector(mapStateToProps);
   const dispatch = useDispatch();
   const [statusHistoryDialogVisibility, setStatusHistoryDialogVisibility] =
     useState(false);
 
-  useEffect(() => {
-    if (errorLoadingOrdreMissionDetails === null && ordreMissionidentity) {
-      dispatch(loadOrdreMissionDetailsAction(ordreMissionidentity));
-    }
-  }, [ordreMissionidentity]);
-
   useEffect(
     () => () => {
-      dispatch(cleanupStoreAction()); // ordremissionform
-      // dispatch(cleanupOrdreMissionViewStoreAction());
+      dispatch(cleanupOrdreMissionViewStoreAction());
+      dispatch(cleanupParentOrdreMissionPageAction());
+      dispatch(cleanupOrdreMissionFormPageAction());
     },
     [],
   );
 
+  useEffect(() => {
+    if (errorSubmittingOrdreMission === false) {
+      dispatch(cleanupOrdreMissionViewStoreAction());
+      dispatch(setOrdreMissionStatusAction('SUBMITTED'));
+      dispatch(cleanupParentOrdreMissionPageAction());
+    }
+  }, [errorSubmittingOrdreMission]);
+
   // Handle on buttons click
   const handleOnReturnButtonClick = () => {
     dispatch(cleanupOrdreMissionViewStoreAction());
-    dispatch(ChangePageContentAction('TABLE'));
+    dispatch(cleanupParentOrdreMissionPageAction());
   };
   const handleOnSubmitButtonClick = () => {
-    dispatch(submitOrdreMissionAction(ordreMissionidentity));
-    dispatch(setOrdreMissionStatusAction('SUBMITTED'));
-    dispatch(cleanupOrdreMissionViewStoreAction());
-    dispatch(ChangePageContentAction('TABLE'));
+    dispatch(submitOrdreMissionAction(ordreMissionDetails.id));
   };
 
   return (
@@ -160,8 +160,8 @@ export function OrdreMissionView({ state }) {
         >
           <Typography variant="caption">
             *This request has been saved as a draft. You can still modify it if
-            you don&apos;t submit it. <br /> Please note, your request cannot be
-            edited once it has been submitted
+            you don&apos;t submit it. <br /> Please note: your request cannot be
+            edited once it is submitted.
           </Typography>
         </Box>
       )}
@@ -240,27 +240,62 @@ export function OrdreMissionView({ state }) {
               </Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Accordion defaultExpanded sx={{ width: '60%' }}>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panel1bh-content"
-                  id="panel1bh-header"
+              <Box
+                key={avanceVoyage.id}
+                display="flex"
+                justifyContent="center"
+                marginBottom={3}
+                marginTop={3}
+              >
+                <List
+                  sx={{
+                    width: '100%',
+                    maxWidth: 360,
+                    bgcolor: 'background.paper',
+                  }}
+                  component="nav"
+                  aria-labelledby="nested-list-subheader"
+                  subheader={
+                    <ListSubheader
+                      sx={{ fontSize: '20px' }}
+                      component="div"
+                      id="nested-list-subheader"
+                    >
+                      Trajectories
+                    </ListSubheader>
+                  }
                 >
-                  <Typography
-                    variant="h6"
-                    sx={{ width: '33%', flexShrink: 0, fontWeight: 'bold' }}
-                  >
-                    Trips
-                  </Typography>
-                </AccordionSummary>
-                <AccordionDetails>
                   {avanceVoyage.trips.map((trip) => (
                     <div key={trip.id}>
                       <DisplayTrips tripData={trip} />
                     </div>
                   ))}
-                </AccordionDetails>
-              </Accordion>
+                </List>
+                <List
+                  sx={{
+                    width: '100%',
+                    maxWidth: 360,
+                    bgcolor: 'background.paper',
+                  }}
+                  component="nav"
+                  aria-labelledby="nested-list-subheader"
+                  subheader={
+                    <ListSubheader
+                      sx={{ fontSize: '20px' }}
+                      component="div"
+                      id="nested-list-subheader"
+                    >
+                      Expenses
+                    </ListSubheader>
+                  }
+                >
+                  {avanceVoyage.expenses.map((expense) => (
+                    <div key={expense.id}>
+                      <DisplayExpenses expenseData={expense} />
+                    </div>
+                  ))}
+                </List>
+              </Box>
             </AccordionDetails>
           </Accordion>
         </Box>

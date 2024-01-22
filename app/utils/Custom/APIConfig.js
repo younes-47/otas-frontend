@@ -1,6 +1,6 @@
 const DevConfig = {
   BACKEND_SERVER_PROTOCOL: 'http',
-  BACKEND_SERVER_IP: 'localhost',
+  BACKEND_SERVER_IP: 'DI3142DZ3',
   BACKEND_SERVER_PORT: '5030',
 };
 const ProdConfig = {

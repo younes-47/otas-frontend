@@ -33,18 +33,20 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { Stack } from '@mui/system';
 import dayjs from 'dayjs';
-import { ChangePageContentAction } from 'pages/OrdreMission/actions';
+import {
+  ChangePageContentAction,
+  cleanupParentOrdreMissionPageAction,
+} from 'pages/OrdreMission/actions';
 import { setOrdreMissionStatusAction } from 'containers/OrdreMissionTable/actions';
 import DisplayUserinfo from 'components/DisplayUserinfo';
-import { loadOrdreMissionDetailsAction } from 'containers/OrdreMissionView/actions';
-import { makeSelectOrdreMissionDetails } from 'containers/OrdreMissionView/selectors';
+import { makeSelectOrdreMissionDetails } from 'pages/OrdreMission/selectors';
 import saga from './saga';
 import reducer from './reducer';
 import {
   makeSelectAbroad,
   makeSelectAddOrdreMissionError,
   makeSelectOnBehalf,
-  makeSelectOrdreMissionIdentity,
+  makeSelectUpdateOrdreMissionError,
 } from './selectors';
 import Trips from './Trips';
 import Expenses from './Expenses';
@@ -53,7 +55,7 @@ import {
   SelectAbroadAction,
   SelectOnBehalfAction,
   UpdateOrdreMissionAction,
-  cleanupStoreAction,
+  cleanupOrdreMissionFormPageAction,
 } from './actions';
 
 const mapStateToProps = createStructuredSelector({
@@ -61,7 +63,7 @@ const mapStateToProps = createStructuredSelector({
   onBehalfSelection: makeSelectOnBehalf(),
   abroadSelection: makeSelectAbroad(),
   errorAddingOrdreMission: makeSelectAddOrdreMissionError(),
-  ordreMissionidentity: makeSelectOrdreMissionIdentity(),
+  errorUpdatingOrdreMission: makeSelectUpdateOrdreMissionError(),
   ordreMissionDetails: makeSelectOrdreMissionDetails(),
 });
 
@@ -74,7 +76,7 @@ export function OrdreMissionForm({ state }) {
     onBehalfSelection,
     abroadSelection,
     errorAddingOrdreMission,
-    ordreMissionidentity,
+    errorUpdatingOrdreMission,
     ordreMissionDetails,
   } = useSelector(mapStateToProps);
   const [trips, setTrips] = useState([
@@ -107,7 +109,7 @@ export function OrdreMissionForm({ state }) {
     registrationNumber: '',
     jobTitle: '',
     department: '',
-    managerUserId: 0,
+    managerUserName: '',
   });
   const [totalMAD, setTotalMAD] = useState(0);
   const [totalEUR, setTotalEUR] = useState(0);
@@ -121,10 +123,67 @@ export function OrdreMissionForm({ state }) {
   const [modalSevirity, setModalSevirity] = useState('');
 
   useEffect(() => {
-    if ((state === 'EDIT' || state === 'MODIFY') && ordreMissionidentity) {
-      dispatch(loadOrdreMissionDetailsAction(ordreMissionidentity));
+    if (state === 'EDIT' || state === 'MODIFY') {
+      if (ordreMissionDetails !== null) {
+        updateDescriptionData(ordreMissionDetails?.description);
+        dispatch(
+          SelectOnBehalfAction(ordreMissionDetails?.onBehalf.toString()),
+        );
+        dispatch(SelectAbroadAction(ordreMissionDetails?.abroad.toString()));
+        if (ordreMissionDetails?.requesterInfo !== null) {
+          updateActualRequesterData(
+            'firstName',
+            ordreMissionDetails?.requesterInfo?.firstName,
+          );
+          updateActualRequesterData(
+            'lastName',
+            ordreMissionDetails?.requesterInfo?.lastName,
+          );
+          updateActualRequesterData(
+            'registrationNumber',
+            ordreMissionDetails?.requesterInfo?.registrationNumber,
+          );
+          updateActualRequesterData(
+            'jobTitle',
+            ordreMissionDetails?.requesterInfo?.jobTitle,
+          );
+          updateActualRequesterData(
+            'managerUserName',
+            ordreMissionDetails?.requesterInfo?.managerUserName,
+          );
+          updateActualRequesterData(
+            'department',
+            ordreMissionDetails?.requesterInfo?.department,
+          );
+        }
+
+        setTrips([]);
+        ordreMissionDetails?.avanceVoyagesDetails?.forEach((avanceDetails) => {
+          avanceDetails?.trips?.forEach((trip) => {
+            const formattedDateTrip = {
+              ...trip,
+              departureDate: dayjs(new Date(trip.departureDate)),
+              arrivalDate: dayjs(new Date(trip.arrivalDate)),
+            };
+            setTrips((prevTrips) => [...prevTrips, formattedDateTrip]);
+          });
+          avanceDetails?.expenses?.forEach((expense) => {
+            const formattedDateExpense = {
+              id: expense.id,
+              currency: expense.currency,
+              description: expense.description,
+              expenseDate: dayjs(new Date(expense.expenseDate)),
+              estimatedFee: expense.estimatedFee,
+            };
+            setExpenses((prevExpenses) => [
+              ...prevExpenses,
+              formattedDateExpense,
+            ]);
+          });
+        });
+      }
     }
-  }, [ordreMissionidentity]);
+  }, [ordreMissionDetails]);
 
   useEffect(() => {
     let totalTripsMAD = 0.0;
@@ -151,27 +210,35 @@ export function OrdreMissionForm({ state }) {
     });
     expenses.forEach((expense) => {
       if (expense.currency === 'MAD') {
-        totalExpensesMAD += parseFloat(expense.estimatedExpenseFee);
+        totalExpensesMAD += parseFloat(expense.estimatedFee);
       } else {
-        totalExpensesEUR += parseFloat(expense.estimatedExpenseFee);
+        totalExpensesEUR += parseFloat(expense.estimatedFee);
       }
     });
     const TOTAL_MAD = totalExpensesMAD + totalTripsMAD;
     const TOTAL_EUR = totalExpensesEUR + totalTripsEUR;
-    setTotalMAD(TOTAL_MAD);
-    setTotalEUR(TOTAL_EUR);
+    setTotalMAD(Number(TOTAL_MAD.toFixed(2)));
+    setTotalEUR(Number(TOTAL_EUR.toFixed(2)));
   }, [trips, expenses]);
 
   useEffect(() => {
     if (errorAddingOrdreMission === false) {
-      dispatch(cleanupStoreAction());
-      dispatch(ChangePageContentAction('TABLE'));
+      dispatch(cleanupOrdreMissionFormPageAction());
+      dispatch(setOrdreMissionStatusAction('SAVED'));
+      dispatch(cleanupParentOrdreMissionPageAction());
     }
   }, [errorAddingOrdreMission]);
+  useEffect(() => {
+    if (errorUpdatingOrdreMission === false) {
+      dispatch(cleanupOrdreMissionFormPageAction());
+      dispatch(setOrdreMissionStatusAction('UPDATED'));
+      dispatch(cleanupParentOrdreMissionPageAction());
+    }
+  }, [errorUpdatingOrdreMission]);
 
   useEffect(
     () => () => {
-      dispatch(cleanupStoreAction());
+      dispatch(cleanupOrdreMissionFormPageAction());
     },
     [],
   );
@@ -192,13 +259,10 @@ export function OrdreMissionForm({ state }) {
   };
 
   const updateActualRequesterData = (fieldName, value) => {
-    let updatedValue = value;
-    if (fieldName === 'registrationNumber') {
-      updatedValue = value.toString();
-    }
-    const updatedRequester = { ...actualRequester, [fieldName]: updatedValue };
-
-    setActualRequester(updatedRequester);
+    setActualRequester((prevActualRequester) => ({
+      ...prevActualRequester,
+      [fieldName]: value,
+    }));
   };
 
   const addTrip = () => {
@@ -237,7 +301,7 @@ export function OrdreMissionForm({ state }) {
       description: '',
       expenseDate: dayjs(Date()),
       currency: '',
-      estimatedExpenseFee: 0.0,
+      estimatedFee: 0.0,
     };
     setExpenses((prevExpenses) => [...prevExpenses, newExpense]);
   };
@@ -268,39 +332,13 @@ export function OrdreMissionForm({ state }) {
   const data = {
     id: ordreMissionDetails !== null ? ordreMissionDetails?.id : 0,
     action: getAction(),
-    description:
-      ordreMissionDetails !== null
-        ? ordreMissionDetails?.description
-        : description,
-    Abroad:
-      ordreMissionDetails !== null
-        ? ordreMissionDetails?.abroad
-        : abroadSelection === 'true',
-    onBehalf:
-      ordreMissionDetails !== null
-        ? ordreMissionDetails?.onBehalf
-        : onBehalfSelection === 'true',
-    trips:
-      ordreMissionDetails !== null
-        ? ordreMissionDetails?.avanceVoyagesDetails.trips
-        : trips,
-    expenses:
-      ordreMissionDetails !== null
-        ? ordreMissionDetails?.avanceVoyagesDetails.expenses
-        : expenses,
-    actualRequester:
-      ordreMissionDetails?.requesterInfo !== null
-        ? ordreMissionDetails?.RequesterInfo
-        : actualRequester,
+    description,
+    Abroad: abroadSelection === 'true',
+    onBehalf: onBehalfSelection === 'true',
+    trips,
+    expenses,
+    actualRequester,
   };
-  // const data = {
-  //   description,
-  //   Abroad: abroadSelection === 'true',
-  //   onBehalf: onBehalfSelection === 'true',
-  //   trips,
-  //   expenses,
-  //   actualRequester,
-  // };
 
   const ValidateInputs = () => {
     // Invalid on behalf selection
@@ -447,10 +485,7 @@ export function OrdreMissionForm({ state }) {
         isAllGood = false;
       }
       // fee = 0
-      if (
-        expense.estimatedExpenseFee <= 0 ||
-        expense.estimatedExpenseFee === '0'
-      ) {
+      if (expense.estimatedFee <= 0 || expense.estimatedFee === '0') {
         setModalHeader('Invalid Information!');
         setModalBody(
           'Expense fee cannot be 0 or negative! Please review your expenses information and try again.',
@@ -461,7 +496,7 @@ export function OrdreMissionForm({ state }) {
       }
       // value is blank
       if (
-        expense.estimatedExpenseFee === '' ||
+        expense.estimatedFee === '' ||
         totalMAD.isNaN === true ||
         totalEUR.isNaN === true
       ) {
@@ -483,22 +518,18 @@ export function OrdreMissionForm({ state }) {
 
   // Handle on buttons click
   const handleOnReturnButtonClick = () => {
-    dispatch(cleanupStoreAction());
-    dispatch(ChangePageContentAction('TABLE'));
+    dispatch(cleanupOrdreMissionFormPageAction());
+    dispatch(cleanupParentOrdreMissionPageAction());
   };
   const handleOnSaveAsDraftClick = () => {
     const result = ValidateInputs();
     if (result === true) {
       if (state === 'ADD') {
         dispatch(AddOrdreMissionAction(data));
-        dispatch(cleanupStoreAction());
-        dispatch(setOrdreMissionStatusAction('SAVED'));
       }
       if (state === 'EDIT') {
         // Edit and save in case of draft
         dispatch(UpdateOrdreMissionAction(data));
-        dispatch(cleanupStoreAction());
-        dispatch(setOrdreMissionStatusAction('UPDATED'));
       }
     }
   };
@@ -506,7 +537,15 @@ export function OrdreMissionForm({ state }) {
   const handleOnConfirmButtonClick = () => {
     const result = ValidateInputs();
     if (result === true) {
-      dispatch(ChangePageContentAction('CONFIRM'));
+      if (state === 'ADD') {
+        dispatch(AddOrdreMissionAction(data));
+        dispatch(ChangePageContentAction('CONFIRM'));
+      }
+      if (state === 'EDIT') {
+        // Edit and save in case of draft
+        dispatch(UpdateOrdreMissionAction(data));
+        dispatch(ChangePageContentAction('CONFIRM'));
+      }
     }
   };
 
@@ -552,7 +591,19 @@ export function OrdreMissionForm({ state }) {
           textAlign="center"
           marginBottom={2}
         >
-          <h1 style={{ fontSize: '30px' }}>Ordre Mission</h1>
+          {state === 'ADD' && (
+            <h1 style={{ fontSize: '30px' }}>Ordre Mission</h1>
+          )}
+          {state === 'EDIT' && (
+            <h1 style={{ fontSize: '30px' }}>
+              Editing Ordre Mission #{ordreMissionDetails?.id}
+            </h1>
+          )}
+          {state === 'Modify' && (
+            <h1 style={{ fontSize: '30px' }}>
+              Modifying Ordre Mission #{ordreMissionDetails?.id}
+            </h1>
+          )}
         </Box>
 
         {/* DIVIDER */}
@@ -681,17 +732,17 @@ export function OrdreMissionForm({ state }) {
                   }
                   required
                 />
+                <TextField
+                  id="outlined-basic"
+                  label="Manager"
+                  variant="outlined"
+                  value={actualRequester.managerUserName}
+                  onChange={(e) =>
+                    updateActualRequesterData('managerUserName', e.target.value)
+                  }
+                  required
+                />
               </Box>
-              <TextField
-                id="outlined-basic"
-                label="Manager"
-                variant="outlined"
-                value={actualRequester.managerUserId}
-                onChange={(e) =>
-                  updateActualRequesterData('managerUserId', e.target.value)
-                }
-                required
-              />
             </Box>
           </>
         ) : (
@@ -783,13 +834,13 @@ export function OrdreMissionForm({ state }) {
             ></AddCircleIcon>
           </IconButton>
         </Box>
-        {trips.map((trip) => (
+        {trips.map((trip, index) => (
           <div key={trip.id}>
             <Trips
               key={trip.id}
               tripData={trip}
               updateTripData={updateTripData}
-              isTripRequired={trip.id === 0 || trip.id === 1}
+              isTripRequired={index === 0 || index === 1}
               removeTrip={removeTrip}
             />
           </div>
