@@ -36,12 +36,24 @@ import dayjs from 'dayjs';
 import { changePageContentAction } from 'pages/DepenseCaisse/actions';
 import DisplayUserinfo from 'components/DisplayUserinfo';
 import { setDepenseCaisseStatusAction } from 'containers/DepenseCaisseTable/actions';
+import {
+  makeSelectDepenseCaisseDetails,
+  makeSelectErrorLoadingDepenseCaisseDetails,
+} from 'pages/DepenseCaisse/selectors';
 import Expenses from './Expenses';
-import { makeSelectAddDepenseCaisse, makeSelectOnBehalf } from './selectors';
+import {
+  makeSelectAddDepenseCaisse,
+  makeSelectErrorLoadingStaticData,
+  makeSelectErrorSubmittingDepenseCaisse,
+  makeSelectErrorUpdatingDepenseCaisse,
+  makeSelectOnBehalf,
+  makeSelectStaticData,
+} from './selectors';
 import reducer from './reducer';
 import saga from './saga';
 import {
   AddDepenseCaisseAction,
+  LoadStaticDataAction,
   SelectOnBehalfAction,
   cleanupStoreAction,
 } from './actions';
@@ -50,12 +62,30 @@ const mapStateToProps = createStructuredSelector({
   isSideBarVisible: makeSelectIsSideBarVisible(),
   onBehalfSelection: makeSelectOnBehalf(),
   errorAddingDepenseCaisse: makeSelectAddDepenseCaisse(),
+  errorLoadingStaticData: makeSelectErrorLoadingStaticData(),
+  errorUpdatingDepenseCaisse: makeSelectErrorUpdatingDepenseCaisse(),
+  errorSubmittingDepenseCaisse: makeSelectErrorSubmittingDepenseCaisse(),
+  errorLoadingDepenseCaisseDetails:
+    makeSelectErrorLoadingDepenseCaisseDetails(),
+  staticData: makeSelectStaticData(),
+  DepenseCaisseDetails: makeSelectDepenseCaisseDetails(),
 });
 
 export function DepenseCaisseForm({ state }) {
   useInjectReducer({ key: 'depenseCaisseForm', reducer });
   useInjectSaga({ key: 'depenseCaisseForm', saga });
   const dispatch = useDispatch();
+  const {
+    errorLoadingStaticData,
+    errorUpdatingDepenseCaisse,
+    errorSubmittingDepenseCaisse,
+    DepenseCaisseDetails,
+    staticData,
+    errorLoadingDepenseCaisseDetails,
+    isSideBarVisible,
+    onBehalfSelection,
+    errorAddingDepenseCaisse,
+  } = useSelector(mapStateToProps);
 
   const [currency, setCurrency] = useState('MAD');
   const [total, setTotal] = useState(0.0);
@@ -63,13 +93,32 @@ export function DepenseCaisseForm({ state }) {
   const [description, setDescription] = useState('');
   const [receiptsFile, setReceiptsFile] = useState('');
   const [receiptsFileName, setReceiptsFileName] = useState('');
-  const { isSideBarVisible, onBehalfSelection, errorAddingDepenseCaisse } =
-    useSelector(mapStateToProps);
+  const [inputError, setInputError] = useState('');
+
+  const [modalVisibility, setModalVisibility] = useState(false);
+  const [modalBody, setModalBody] = useState('');
+  const [modalHeader, setModalHeader] = useState('');
+  const [modalSevirity, setModalSevirity] = useState('');
+  const [buttonClicked, setButtonClicked] = useState(''); // this state is used to track which button has been clicked
+  const [savedSnackbarVisibility, setSavedSnackbarVisibility] = useState(false);
+  const action = (
+    <IconButton
+      size="small"
+      aria-label="close"
+      color="inherit"
+      onClick={() => setSavedSnackbarVisibility(false)}
+    >
+      <CloseIcon fontSize="small" />
+    </IconButton>
+  );
+
+  const readOnly = state === 'VIEW' || state === 'CONFIRM';
+
   const [expenses, setExpenses] = useState([
     {
       id: 0,
       description: '',
-      expenseDate: dayjs(Date()),
+      expenseDate: null,
       estimatedFee: 0.0,
     },
   ]);
@@ -82,8 +131,11 @@ export function DepenseCaisseForm({ state }) {
     manager: '',
   });
 
-  const [inputError, setInputError] = useState('');
-  const [modalVisibility, setModalVisibility] = useState(false);
+  useEffect(() => {
+    if (errorLoadingStaticData === null) {
+      dispatch(LoadStaticDataAction());
+    }
+  }, [staticData]);
 
   useEffect(() => {
     if (errorAddingDepenseCaisse === false) {
@@ -92,11 +144,6 @@ export function DepenseCaisseForm({ state }) {
       dispatch(changePageContentAction('TABLE'));
     }
   }, [errorAddingDepenseCaisse]);
-
-  // const handleFileChange = (e) => {
-  //   const file = e.target.files[0];
-  //   setSelectedFile(file);
-  // };
 
   const handleOnBehalfSelectionChange = (event) => {
     if (event.target.value !== String(onBehalfSelection)) {
@@ -149,15 +196,6 @@ export function DepenseCaisseForm({ state }) {
   };
 
   const updateReceiptsFileData = async (e) => {
-    // const file = e.currentTarget.files[0];
-    // setReceiptsFileName(file.name);
-    // const buffer = await file.arrayBuffer();
-    // const byteArray = new Uint8Array(buffer);
-    // let binaryData = '';
-    // for (let i = 0; i < byteArray.length; i += 1) {
-    //   binaryData += String(byteArray[i]);
-    // }
-
     const file = e.target.files[0];
     setReceiptsFileName(file.name);
     const binaryData = new Promise((resolve, reject) => {
@@ -247,6 +285,18 @@ export function DepenseCaisseForm({ state }) {
       if (expense.estimatedFee === '') {
         setInputError(
           'Invalid Total value! Please review your trajectories and/or expenses fee/Mileage values and try again',
+        );
+        setModalVisibility(true);
+        isAllGood = false;
+      }
+      // expense date is invalid
+      if (
+        expense.expenseDate === null ||
+        expense.expenseDate === '' ||
+        !expense.expenseDate
+      ) {
+        setInputError(
+          "One of the expenses' date is not set yet! Please review your expenses information and try again.",
         );
         setModalVisibility(true);
         isAllGood = false;
