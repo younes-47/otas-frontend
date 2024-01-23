@@ -98,36 +98,29 @@ export function DepenseCaisseTable() {
           'filename=',
         )[1];
 
-      // Create a Blob from the content
       const blob = new Blob(
         [downloadDepenseCaisseReceiptsFileResponse.content.headers],
         { type: 'application/octet-stream' },
       );
 
-      // Create a URL for the Blob
       const blobUrl = window.URL.createObjectURL(blob);
-      // Use Axios to trigger the download
       axios({
         url: blobUrl,
         method: 'GET',
-        responseType: 'blob', // Important for binary data
+        responseType: 'blob',
       }).then((response) => {
         // Create a download link
         const link = document.createElement('a');
         link.href = window.URL.createObjectURL(new Blob([response.data]));
         link.download = filename;
 
-        // Append the link to the document and trigger the download
         document.body.appendChild(link);
         link.click();
-
-        // Clean up
         document.body.removeChild(link);
       });
     }
   }, [errorDownloadingDepenseCaisseReceiptsFile]);
 
-  // useEffect(() => {
   //   if (errorDownloadingDepenseCaisseReceiptsFile === false) {
   //     if (downloadDepenseCaisseReceiptsFileResponse.statusCode === 200) {
   //       // Find the Content-Disposition header

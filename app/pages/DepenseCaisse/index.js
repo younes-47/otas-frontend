@@ -11,6 +11,8 @@ import { useInjectReducer } from 'utils/injectReducer';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import DepenseCaisseForm from 'containers/DepenseCaisseForm';
 import DepenseCaisseTable from 'containers/DepenseCaisseTable';
+import { useInjectSaga } from 'redux-injectors';
+import saga from './saga';
 import reducer from './reducer';
 import { makeSelectChangePageContent } from './selectors';
 import { cleanupDepesneCaisseParentPageStoreAction } from './actions';
@@ -22,15 +24,16 @@ const mapStateToProps = createStructuredSelector({
 
 export function DepenseCaisse() {
   useInjectReducer({ key: 'depenseCaisse', reducer });
+  useInjectSaga({ key: 'depenseCaisse', saga });
   const { pageContent } = useSelector(mapStateToProps);
 
   const dispatch = useDispatch();
-  useEffect(
-    () => () => {
-      dispatch(cleanupDepesneCaisseParentPageStoreAction());
-    },
-    [],
-  );
+  // useEffect(
+  //   () => () => {
+  //     dispatch(cleanupDepesneCaisseParentPageStoreAction());
+  //   },
+  //   [],
+  // );
 
   switch (pageContent) {
     case 'ADD':
