@@ -23,7 +23,10 @@ import {
   Snackbar,
 } from '@mui/material';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
-import { changePageContentAction } from 'pages/AvanceCaisse/actions';
+import {
+  changePageContentAction,
+  loadAvanceCaisseDetailsAction,
+} from 'pages/AvanceCaisse/actions';
 import saga from './saga';
 import reducer from './reducer';
 import {
@@ -31,11 +34,13 @@ import {
   makeSelectLoadingAvanceCaisses,
   makeSelectErrorLoadingAvanceCaisses,
   makeSelectStatusAvanceCaisse,
+  makeSelectErrorDeletingAvanceCaisse,
 } from './selectors';
 import {
   cleanupAvanceCaisseTableStoreAction,
   deleteAvanceCaisseAction,
   loadAvanceCaisseAction,
+  nullifyErrorDeletingAvanceCaisseAction,
   setAvanceCaisseStatusAction,
 } from './actions';
 
@@ -43,6 +48,7 @@ const mapStateToProps = createStructuredSelector({
   avanceCaisses: makeSelectAvanceCaisses(),
   loadingAvanceCaisses: makeSelectLoadingAvanceCaisses(),
   errorLoadingAvanceCaisses: makeSelectErrorLoadingAvanceCaisses(),
+  errorDeletingAvanceCaisse: makeSelectErrorDeletingAvanceCaisse(),
   isSideBarVisible: makeSelectIsSideBarVisible(),
   statusAvanceCaisse: makeSelectStatusAvanceCaisse(),
 });
@@ -56,11 +62,11 @@ export function AvanceCaisseTable() {
     loadingAvanceCaisses,
     errorLoadingAvanceCaisses,
     statusAvanceCaisse,
+    errorDeletingAvanceCaisse,
     isSideBarVisible,
   } = useSelector(mapStateToProps);
   const [modalVisibility, setModalVisibility] = useState(false);
   const [avanceCaisseToDeleteId, setAvanceCaisseToDeleteId] = useState();
-
   const [snackbarVisibility, setSnackbarVisibility] = useState(false);
   const [snackbarAlertSeverity, setSnackbarAlertSeverity] = useState('');
   const action = (
@@ -74,28 +80,16 @@ export function AvanceCaisseTable() {
     </IconButton>
   );
 
-  const handleOnConfirmDeletionButtonClick = (id) => {
-    dispatch(deleteAvanceCaisseAction(id));
-    dispatch(setAvanceCaisseStatusAction('DELETED'));
-  };
-
-  const handleOnCreateButtonClick = () => {
-    dispatch(changePageContentAction('ADD'));
-  };
-
   useEffect(() => {
     if (errorLoadingAvanceCaisses === null) {
       dispatch(loadAvanceCaisseAction());
       if (statusAvanceCaisse === true) {
         switch (statusAvanceCaisse) {
           case 'SAVED':
-            setSnackbarAlertSeverity('warning');
+            setSnackbarAlertSeverity('info');
             break;
           case 'UPDATED':
-            setSnackbarAlertSeverity('warning');
-            break;
-          case 'DELETED':
-            setSnackbarAlertSeverity('error');
+            setSnackbarAlertSeverity('info');
             break;
           default:
             setSnackbarAlertSeverity('success');
@@ -105,12 +99,40 @@ export function AvanceCaisseTable() {
     }
   }, [avanceCaisses]);
 
+  useEffect(() => {
+    if (errorDeletingAvanceCaisse === false) {
+      dispatch(setAvanceCaisseStatusAction('DELETED'));
+      setSnackbarAlertSeverity('error');
+      setSnackbarVisibility(true);
+      dispatch(nullifyErrorDeletingAvanceCaisseAction());
+    }
+  }, [errorDeletingAvanceCaisse]);
+
   useEffect(
     () => () => {
       dispatch(cleanupAvanceCaisseTableStoreAction());
     },
     [],
   );
+
+  // handle table buttons actions
+  const handleOnCreateButtonClick = () => {
+    dispatch(changePageContentAction('ADD'));
+  };
+
+  const handleOnEditButtonClick = (id) => {
+    dispatch(loadAvanceCaisseDetailsAction(id));
+    dispatch(changePageContentAction('EDIT'));
+  };
+
+  const handleOnModifyButtonClick = (id) => {
+    dispatch(loadAvanceCaisseDetailsAction(id));
+    dispatch(changePageContentAction('MODIFY'));
+  };
+
+  const handleOnConfirmDeletionButtonClick = (id) => {
+    dispatch(deleteAvanceCaisseAction(id));
+  };
 
   const avanceCaisseColumns = [
     {
@@ -246,6 +268,9 @@ export function AvanceCaisseTable() {
                 color="warning"
                 sx={{ mr: '10px' }}
                 startIcon={<EditIcon />}
+                onClick={() => {
+                  handleOnEditButtonClick(id);
+                }}
               >
                 Edit
               </Button>
@@ -273,9 +298,12 @@ export function AvanceCaisseTable() {
                 variant="contained"
                 color="warning"
                 sx={{ mr: '10px' }}
-                startIcon={<EditIcon />}
+                startIcon={<PriorityHighIcon />}
+                onClick={() => {
+                  handleOnModifyButtonClick(id);
+                }}
               >
-                Edit
+                Modify
               </Button>
             </Box>
           );
@@ -398,7 +426,7 @@ export function AvanceCaisseTable() {
           variant="filled"
           sx={{ width: '100%' }}
         >
-          Request has been {statusAvanceCaisse.ToLowerCase()} successfully!
+          Request has been {statusAvanceCaisse} successfully!
         </Alert>
       </Snackbar>
     </Box>

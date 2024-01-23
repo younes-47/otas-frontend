@@ -14,6 +14,7 @@ import {
   LOAD_AVANCE_CAISSES,
   LOAD_AVANCE_CAISSES_ERROR,
   LOAD_AVANCE_CAISSES_SUCCESS,
+  NULLIFY_ERROR_DELETING,
 } from './constants';
 
 export function defaultAction() {
@@ -73,5 +74,11 @@ export function setAvanceCaisseStatusAction(data) {
   return {
     type: STATUS_AVANCE_CAISSE,
     data,
+  };
+}
+
+export function nullifyErrorDeletingAvanceCaisseAction() {
+  return {
+    type: NULLIFY_ERROR_DELETING,
   };
 }

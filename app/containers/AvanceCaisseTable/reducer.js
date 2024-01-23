@@ -14,6 +14,7 @@ import {
   LOAD_AVANCE_CAISSES,
   LOAD_AVANCE_CAISSES_ERROR,
   LOAD_AVANCE_CAISSES_SUCCESS,
+  NULLIFY_ERROR_DELETING,
 } from './constants';
 
 export const initialState = {
@@ -46,6 +47,9 @@ const avanceCaisseTableReducer = (state = initialState, action) =>
         break;
       case STATUS_AVANCE_CAISSE:
         draft.statusAvanceCaisse = action.data;
+        break;
+      case NULLIFY_ERROR_DELETING:
+        draft.errorDeletingAvanceCaisse = null;
         break;
       case DELETE_AVANCE_CAISSE:
         draft.deletingAvanceCaisse = true;
