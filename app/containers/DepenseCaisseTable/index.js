@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { createStructuredSelector } from 'reselect';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { useDispatch, useSelector } from 'react-redux';
+import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
+
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import Box from '@mui/material/Box';
@@ -414,7 +416,7 @@ export function DepenseCaisseTable() {
                 variant="contained"
                 color="warning"
                 sx={{ mr: '10px' }}
-                startIcon={<EditIcon />}
+                startIcon={<PriorityHighIcon />}
                 onClick={() => {
                   handleOnModifyButtonClick(id);
                 }}

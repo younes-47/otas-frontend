@@ -23,8 +23,36 @@ const makeSelectAddDepenseCaisse = () =>
     (substate) => substate.errorAddingDepenseCaisse,
   );
 
+const makeSelectErrorLoadingStaticData = () =>
+  createSelector(
+    selectDepenseCaisseFormDomain,
+    (substate) => substate.errorLoadingStaticData,
+  );
+
+const makeSelectStaticData = () =>
+  createSelector(
+    selectDepenseCaisseFormDomain,
+    (substate) => substate.staticData,
+  );
+
+const makeSelectErrorUpdatingDepenseCaisse = () =>
+  createSelector(
+    selectDepenseCaisseFormDomain,
+    (substate) => substate.errorUpdatingDepenseCaisse,
+  );
+
+const makeSelectErrorSubmittingDepenseCaisse = () =>
+  createSelector(
+    selectDepenseCaisseFormDomain,
+    (substate) => substate.errorSubmittingDepenseCaisse,
+  );
+
 export default makeSelectDepenseCaisseForm;
 export {
+  makeSelectErrorSubmittingDepenseCaisse,
+  makeSelectErrorLoadingStaticData,
+  makeSelectErrorUpdatingDepenseCaisse,
+  makeSelectStaticData,
   selectDepenseCaisseFormDomain,
   makeSelectOnBehalf,
   makeSelectAddDepenseCaisse,
