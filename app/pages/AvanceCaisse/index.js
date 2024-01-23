@@ -24,23 +24,25 @@ const mapStateToProps = createStructuredSelector({
 
 export function AvanceCaisse() {
   useInjectReducer({ key: 'avanceCaisse', reducer });
+  useInjectSaga({ key: 'avanceCaisse', saga });
 
   const dispatch = useDispatch();
   const { pageContent } = useSelector(mapStateToProps);
 
-  useEffect(
-    () => () => {
-      dispatch(cleanupStoreAction());
-    },
-    [],
-  );
+  // useEffect(
+  //   () => () => {
+  //     dispatch(cleanupStoreAction());
+  //   },
+  //   [],
+  // );
+
   switch (pageContent) {
     case 'ADD':
       return <AvanceCaisseForm state="ADD" />;
-    // case 'VIEW':
-    //   return <DepenseCaisseView state="VIEW" />;
-    // case 'CONFIRM':
-    //   return <DepenseCaisseView state="CONFIRM" />;
+    case 'VIEW':
+      return <AvanceCaisseForm state="VIEW" />;
+    case 'CONFIRM':
+      return <AvanceCaisseForm state="CONFIRM" />;
     case 'EDIT':
       return <AvanceCaisseForm state="EDIT" />;
     case 'MODIFY': // This case is when the user modifies its request in a returned state, which whill restrict saving it as draft again
