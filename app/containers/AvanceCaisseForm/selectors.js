@@ -22,8 +22,42 @@ const makeSelectAddAvanceCaisse = () =>
     (substate) => substate.errorAddingAvanceCaisse,
   );
 
+const makeSelectErrorLoadingStaticData = () =>
+  createSelector(
+    selectAvanceCaisseFormDomain,
+    (substate) => substate.errorLoadingStaticData,
+  );
+
+const makeSelectStaticData = () =>
+  createSelector(
+    selectAvanceCaisseFormDomain,
+    (substate) => substate.staticData,
+  );
+
+const makeSelectErrorAddingAvanceCaisse = () =>
+  createSelector(
+    selectAvanceCaisseFormDomain,
+    (substate) => substate.errorAddingAvanceCaisse,
+  );
+const makeSelectErrorUpdatingAvanceCaisse = () =>
+  createSelector(
+    selectAvanceCaisseFormDomain,
+    (substate) => substate.errorUpdatingAvanceCaisse,
+  );
+
+const makeSelectErrorSubmittingAvanceCaisse = () =>
+  createSelector(
+    selectAvanceCaisseFormDomain,
+    (substate) => substate.errorSubmittingAvanceCaisse,
+  );
+
 export default makeSelectAvanceCaisseForm;
 export {
+  makeSelectErrorAddingAvanceCaisse,
+  makeSelectErrorUpdatingAvanceCaisse,
+  makeSelectErrorSubmittingAvanceCaisse,
+  makeSelectStaticData,
+  makeSelectErrorLoadingStaticData,
   selectAvanceCaisseFormDomain,
   makeSelectOnBehalf,
   makeSelectAddAvanceCaisse,
