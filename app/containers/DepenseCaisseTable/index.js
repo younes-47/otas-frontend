@@ -8,6 +8,7 @@ import Box from '@mui/material/Box';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
+import axios from 'axios';
 import {
   Alert,
   Button,
@@ -22,13 +23,19 @@ import {
 import Tables from 'components/Tables';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import { DateTimeFormater } from 'utils/Custom/stringManipulation';
-import { changePageContentAction } from 'pages/DepenseCaisse/actions';
+import {
+  changePageContentAction,
+  loadDepenseCaisseDetailsAction,
+} from 'pages/DepenseCaisse/actions';
 import CloseIcon from '@mui/icons-material/Close';
 import { FilePresent } from '@mui/icons-material';
 import saga from './saga';
 import reducer from './reducer';
 import {
+  makeSelectDepenseCaisseReceiptsFileDownloadResponse,
   makeSelectDepenseCaisses,
+  makeSelectErrorDeletingDepenseCaisse,
+  makeSelectErrorDownloadingDepenseCaisseReceiptsFile,
   makeSelectErrorLoadingDepenseCaisses,
   makeSelectLoadingDepenseCaisses,
   makeSelectStatusDepenseCaisse,
@@ -38,6 +45,8 @@ import {
   deleteDepenseCaisseAction,
   downloadDepenseCaisseReceiptsFileAction,
   loadDepenseCaisseAction,
+  nullifyErrorDeletingDepenseCaisseAction,
+  setDepenseCaisseStatusAction,
 } from './actions';
 
 const mapStateToProps = createStructuredSelector({
@@ -46,6 +55,11 @@ const mapStateToProps = createStructuredSelector({
   errorLoadingDepenseCaisses: makeSelectErrorLoadingDepenseCaisses(),
   isSideBarVisible: makeSelectIsSideBarVisible(),
   statusDepenseCaisse: makeSelectStatusDepenseCaisse(),
+  errorDeletingDepenseCaisse: makeSelectErrorDeletingDepenseCaisse(),
+  errorDownloadingDepenseCaisseReceiptsFile:
+    makeSelectErrorDownloadingDepenseCaisseReceiptsFile(),
+  downloadDepenseCaisseReceiptsFileResponse:
+    makeSelectDepenseCaisseReceiptsFileDownloadResponse(),
 });
 
 export function DepenseCaisseTable() {
@@ -58,9 +72,174 @@ export function DepenseCaisseTable() {
     errorLoadingDepenseCaisses,
     isSideBarVisible,
     statusDepenseCaisse,
+    errorDeletingDepenseCaisse,
+    downloadDepenseCaisseReceiptsFileResponse,
+    errorDownloadingDepenseCaisseReceiptsFile,
   } = useSelector(mapStateToProps);
   const [modalVisibility, setModalVisibility] = useState(false);
   const [depenseCaisseToDeleteId, setDepenseCaisseToDeleteId] = useState();
+  const [snackbarVisibility, setSnackbarVisibility] = useState(false);
+  const [snackbarAlertSeverity, setSnackbarAlertSeverity] = useState('');
+  const action = (
+    <IconButton
+      size="small"
+      aria-label="close"
+      color="inherit"
+      onClick={() => setSnackbarVisibility(false)}
+    >
+      <CloseIcon fontSize="small" />
+    </IconButton>
+  );
+
+  useEffect(() => {
+    if (errorDownloadingDepenseCaisseReceiptsFile === false) {
+      const filename =
+        downloadDepenseCaisseReceiptsFileResponse.content.headers[0].value[0].split(
+          'filename=',
+        )[1];
+
+      // Create a Blob from the content
+      const blob = new Blob(
+        [downloadDepenseCaisseReceiptsFileResponse.content.headers],
+        { type: 'application/octet-stream' },
+      );
+
+      // Create a URL for the Blob
+      const blobUrl = window.URL.createObjectURL(blob);
+      // Use Axios to trigger the download
+      axios({
+        url: blobUrl,
+        method: 'GET',
+        responseType: 'blob', // Important for binary data
+      }).then((response) => {
+        // Create a download link
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(new Blob([response.data]));
+        link.download = filename;
+
+        // Append the link to the document and trigger the download
+        document.body.appendChild(link);
+        link.click();
+
+        // Clean up
+        document.body.removeChild(link);
+      });
+    }
+  }, [errorDownloadingDepenseCaisseReceiptsFile]);
+
+  // useEffect(() => {
+  //   if (errorDownloadingDepenseCaisseReceiptsFile === false) {
+  //     if (downloadDepenseCaisseReceiptsFileResponse.statusCode === 200) {
+  //       // Find the Content-Disposition header
+  //       const contentDispositionHeader =
+  //         downloadDepenseCaisseReceiptsFileResponse.content.headers.find(
+  //           (header) => header.key === 'Content-Disposition',
+  //         );
+
+  //       // Check if the header is found and has a value property
+  //       if (contentDispositionHeader && contentDispositionHeader.value) {
+  //         // Extract filename from Content-Disposition header
+  //         const filename =
+  //           contentDispositionHeader.value[0].split('filename=')[1];
+
+  //         // Make a separate request to get the file content
+  //         axios({
+  //           url: `http://DI3142DZ3:5030/api/DepenseCaisse/ReceiptsFile/Download?fileName=${filename}`,
+  //           method: 'GET',
+  //           responseType: 'blob', // Important for binary data
+  //         })
+  //           .then((response) => {
+  //             // Create a Blob from the content
+  //             const blob = new Blob([response.data], {
+  //               type: 'application/octet-stream',
+  //             });
+
+  //             // Create a URL for the Blob
+  //             const blobUrl = window.URL.createObjectURL(blob);
+
+  //             // Create a download link
+  //             const link = document.createElement('a');
+  //             link.href = blobUrl;
+  //             link.download = filename;
+
+  //             // Append the link to the document and trigger the download
+  //             document.body.appendChild(link);
+  //             link.click();
+
+  //             // Clean up
+  //             document.body.removeChild(link);
+  //             window.URL.revokeObjectURL(blobUrl); // Release the Blob URL
+  //           })
+  //           .catch((error) => {
+  //             console.error('Error fetching file content:', error);
+  //           });
+  //       } else {
+  //         console.error(
+  //           'Content-Disposition header not found or does not have a value property.',
+  //         );
+  //       }
+  //     }
+  //   }
+  // }, [downloadDepenseCaisseReceiptsFileResponse]);
+
+  useEffect(() => {
+    if (errorLoadingDepenseCaisses === null) {
+      dispatch(loadDepenseCaisseAction());
+      if (statusDepenseCaisse !== '') {
+        switch (statusDepenseCaisse) {
+          case 'SAVED':
+            setSnackbarAlertSeverity('info');
+            setSnackbarVisibility(true);
+            break;
+          case 'UPDATED':
+            setSnackbarAlertSeverity('info');
+            setSnackbarVisibility(true);
+            break;
+          default:
+            setSnackbarAlertSeverity('success');
+            setSnackbarVisibility(true);
+        }
+        setSnackbarVisibility(true);
+      }
+    }
+  }, [depenseCaisses]);
+
+  useEffect(() => {
+    if (errorDeletingDepenseCaisse === false) {
+      dispatch(setDepenseCaisseStatusAction('DELETED'));
+      setSnackbarAlertSeverity('error');
+      setSnackbarVisibility(true);
+      dispatch(nullifyErrorDeletingDepenseCaisseAction());
+    }
+  }, [errorDeletingDepenseCaisse]);
+
+  useEffect(
+    () => () => {
+      dispatch(cleanupDepenseCaisseTableStoreAction());
+    },
+    [],
+  );
+
+  // handle buttons
+  const handleOnCreateButtonClick = () => {
+    dispatch(changePageContentAction('ADD'));
+  };
+  const handleOnEditButtonClick = (id) => {
+    dispatch(loadDepenseCaisseDetailsAction(id));
+    dispatch(changePageContentAction('EDIT'));
+  };
+  const handleOnModifyButtonClick = (id) => {
+    dispatch(loadDepenseCaisseDetailsAction(id));
+    dispatch(changePageContentAction('MODIFY'));
+  };
+
+  const handleOnConfirmDeletionButtonClick = (id) => {
+    dispatch(deleteDepenseCaisseAction(id));
+  };
+
+  const handleOnFileIconClick = (fileName) => {
+    dispatch(downloadDepenseCaisseReceiptsFileAction(fileName));
+  };
   const depenseCaisseColumns = [
     {
       field: 'id',
@@ -184,7 +363,7 @@ export function DepenseCaisseTable() {
       renderCell: (params) => {
         const { receiptsFileName } = params.row;
         return (
-          <IconButton onClick={handleOnFileIconClick(receiptsFileName)}>
+          <IconButton onClick={() => handleOnFileIconClick(receiptsFileName)}>
             <FilePresent color="warning" fontSize="large"></FilePresent>
           </IconButton>
         );
@@ -212,6 +391,9 @@ export function DepenseCaisseTable() {
                 color="warning"
                 sx={{ mr: '10px' }}
                 startIcon={<EditIcon />}
+                onClick={() => {
+                  handleOnEditButtonClick(id);
+                }}
               >
                 Edit
               </Button>
@@ -240,8 +422,11 @@ export function DepenseCaisseTable() {
                 color="warning"
                 sx={{ mr: '10px' }}
                 startIcon={<EditIcon />}
+                onClick={() => {
+                  handleOnModifyButtonClick(id);
+                }}
               >
-                Edit
+                Modify
               </Button>
             </Box>
           );
@@ -259,19 +444,6 @@ export function DepenseCaisseTable() {
     },
   ];
 
-  const [snackbarVisibility, setSnackbarVisibility] = useState(false);
-  const [snackbarAlertSeverity, setSnackbarAlertSeverity] = useState('');
-  const action = (
-    <IconButton
-      size="small"
-      aria-label="close"
-      color="inherit"
-      onClick={() => setSnackbarVisibility(false)}
-    >
-      <CloseIcon fontSize="small" />
-    </IconButton>
-  );
-
   const depenseCaisseInitialState = {
     columns: {
       columnVisibilityModel: {
@@ -279,47 +451,6 @@ export function DepenseCaisseTable() {
       },
     },
   };
-
-  // handle buttons
-  const handleOnConfirmDeletionButtonClick = (id) => {
-    dispatch(deleteDepenseCaisseAction(id));
-    setSnackbarVisibility(true);
-  };
-  const handleOnCreateButtonClick = () => {
-    dispatch(changePageContentAction('ADD'));
-  };
-  const handleOnFileIconClick = (fileName) => {
-    dispatch(downloadDepenseCaisseReceiptsFileAction(fileName));
-  };
-
-  useEffect(() => {
-    if (errorLoadingDepenseCaisses === null) {
-      dispatch(loadDepenseCaisseAction());
-      if (statusDepenseCaisse !== '') {
-        switch (statusDepenseCaisse) {
-          case 'SAVED':
-            setSnackbarAlertSeverity('warning');
-            break;
-          case 'UPDATED':
-            setSnackbarAlertSeverity('warning');
-            break;
-          case 'DELETED':
-            setSnackbarAlertSeverity('error');
-            break;
-          default:
-            setSnackbarAlertSeverity('success');
-        }
-        setSnackbarVisibility(true);
-      }
-    }
-  }, [depenseCaisses]);
-
-  useEffect(
-    () => () => {
-      dispatch(cleanupDepenseCaisseTableStoreAction());
-    },
-    [],
-  );
   return (
     <Box
       position="fixed"
@@ -417,7 +548,7 @@ export function DepenseCaisseTable() {
           variant="filled"
           sx={{ width: '100%' }}
         >
-          Request has been {statusDepenseCaisse.ToLowerCase()} successfully!
+          Request has been {statusDepenseCaisse} successfully!
         </Alert>
       </Snackbar>
     </Box>

@@ -38,7 +38,7 @@ export function* DownloadDepenseCaisseReceiptsFile({ fileName }) {
   try {
     const { data } = yield call(
       request.get,
-      `${webService.LOAD_DEPENSE_CAISSES}?fileName=${fileName}`,
+      `${webService.DOWNLOAD_RECEIPTS}?fileName=${fileName}`,
       {
         headers: {
           'Content-Type': 'application/json',

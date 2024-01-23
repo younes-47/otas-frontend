@@ -16,6 +16,7 @@ import {
   LOAD_DEPENSE_CAISSES,
   LOAD_DEPENSE_CAISSES_ERROR,
   LOAD_DEPENSE_CAISSES_SUCCESS,
+  NULLIFY_ERROR_DELETING,
   STATUS_DEPENSE_CAISSE,
 } from './constants';
 
@@ -97,5 +98,11 @@ export function setDepenseCaisseStatusAction(data) {
   return {
     type: STATUS_DEPENSE_CAISSE,
     data,
+  };
+}
+
+export function nullifyErrorDeletingDepenseCaisseAction() {
+  return {
+    type: NULLIFY_ERROR_DELETING,
   };
 }

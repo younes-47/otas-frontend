@@ -14,6 +14,10 @@ import {
   LOAD_DEPENSE_CAISSES,
   LOAD_DEPENSE_CAISSES_ERROR,
   LOAD_DEPENSE_CAISSES_SUCCESS,
+  NULLIFY_ERROR_DELETING,
+  DOWNLOAD_DEPENSE_CAISSE_RECEIPTS,
+  DOWNLOAD_DEPENSE_CAISSE_RECEIPTS_SUCCESS,
+  DOWNLOAD_DEPENSE_CAISSE_RECEIPTS_ERROR,
 } from './constants';
 
 export const initialState = {
@@ -24,6 +28,7 @@ export const initialState = {
   errorDeletingDepenseCaisse: null,
   downloadingDepenseCaisseReceiptsFile: false,
   errorDownloadingDepenseCaisseReceiptsFile: null,
+  downloadDepenseCaisseReceiptsFileResponse: null,
   statusDepenseCaisse: '',
 };
 /* eslint-disable default-case, no-param-reassign */
@@ -45,8 +50,24 @@ const depenseCaisseReducer = (state = initialState, action) =>
         draft.errorLoadingDepenseCaisses = false;
         draft.depenseCaisses = action.data;
         break;
+      case DOWNLOAD_DEPENSE_CAISSE_RECEIPTS:
+        draft.downloadingDepenseCaisseReceiptsFile = true;
+        draft.errorDownloadingDepenseCaisseReceiptsFile = null;
+        break;
+      case DOWNLOAD_DEPENSE_CAISSE_RECEIPTS_SUCCESS:
+        draft.downloadingDepenseCaisseReceiptsFile = false;
+        draft.errorDownloadingDepenseCaisseReceiptsFile = false;
+        draft.downloadDepenseCaisseReceiptsFileResponse = action.data;
+        break;
+      case DOWNLOAD_DEPENSE_CAISSE_RECEIPTS_ERROR:
+        draft.downloadingDepenseCaisseReceiptsFile = false;
+        draft.errorDownloadingDepenseCaisseReceiptsFile = true;
+        break;
       case STATUS_DEPENSE_CAISSE:
         draft.statusDepenseCaisse = action.data;
+        break;
+      case NULLIFY_ERROR_DELETING:
+        draft.errorDeletingOrdreMission = null;
         break;
       case DELETE_DEPENSE_CAISSE:
         draft.deletingDepenseCaisse = true;
@@ -54,7 +75,7 @@ const depenseCaisseReducer = (state = initialState, action) =>
         break;
       case DELETE_DEPENSE_CAISSE_ERROR:
         draft.deletingDepenseCaisse = false;
-        draft.errorDeletingDepenseCaisse = action.error;
+        draft.errorDeletingDepenseCaisse = true;
         break;
       case DELETE_DEPENSE_CAISSE_SUCCESS:
         draft.deletingDepenseCaisse = false;

@@ -30,6 +30,9 @@ export const DELETE_DEPENSE_CAISSE_ERROR =
 export const STATUS_DEPENSE_CAISSE =
   'app/DepenseCaisseTable/STATUS_DEPENSE_CAISSE';
 
+export const NULLIFY_ERROR_DELETING =
+  'app/DepenseCaisseTable/NULLIFY_ERROR_DELETING';
+
 export const CLEANUP_STORE_ACTION =
   'app/DepenseCaisseTable/CLEANUP_STORE_ACTION';
 
