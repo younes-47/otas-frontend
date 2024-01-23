@@ -22,6 +22,9 @@ export const DELETE_ORDRE_MISSION_ERROR =
 export const STATUS_ORDRE_MISSION =
   'app/OrdreMissionTable/STATUS_ORDRE_MISSION';
 
+export const NULLIFY_ERROR_DELETING =
+  'app/OrdreMissionTable/NULLIFY_ERROR_DELETING';
+
 export const CLEANUP_STORE_ACTION =
   'app/OrdreMissionTable/CLEANUP_STORE_ACTION';
 

@@ -31,6 +31,7 @@ import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import saga from './saga';
 import reducer from './reducer';
 import {
+  makeSelectErrorDeletingOrdreMission,
   makeSelectErrorLoadingOrdreMissions,
   makeSelectLoadingOrdreMissions,
   makeSelectOrdreMissions,
@@ -40,12 +41,14 @@ import {
   cleanupOrdreMissionTableStoreAction,
   deleteOrdreMissionAction,
   loadOrdreMissionAction,
+  nullifyErrorDeletingOrdreMissionAction,
   setOrdreMissionStatusAction,
 } from './actions';
 
 const mapStateToProps = createStructuredSelector({
   loadingOrdreMissions: makeSelectLoadingOrdreMissions(),
   errorLoadingOrdreMissions: makeSelectErrorLoadingOrdreMissions(),
+  errorDeletingOrdreMission: makeSelectErrorDeletingOrdreMission(),
   ordreMissions: makeSelectOrdreMissions(),
   isSideBarVisible: makeSelectIsSideBarVisible(),
   statusOrdreMission: makeSelectStatusOrdreMission(),
@@ -61,6 +64,7 @@ export function OrdreMissionTable() {
     errorLoadingOrdreMissions,
     isSideBarVisible,
     statusOrdreMission,
+    errorDeletingOrdreMission,
   } = useSelector(mapStateToProps);
   const [modalVisibility, setModalVisibility] = useState(false);
   const [ordreMissionToDeleteId, setOrdreMissionToDeleteId] = useState();
@@ -84,20 +88,30 @@ export function OrdreMissionTable() {
         switch (statusOrdreMission) {
           case 'SAVED':
             setSnackbarAlertSeverity('info');
+            setSnackbarVisibility(true);
             break;
           case 'UPDATED':
             setSnackbarAlertSeverity('info');
-            break;
-          case 'DELETED':
-            setSnackbarAlertSeverity('error');
+            setSnackbarVisibility(true);
             break;
           default:
             setSnackbarAlertSeverity('success');
+            setSnackbarVisibility(true);
         }
         setSnackbarVisibility(true);
       }
     }
   }, [ordreMissions]);
+
+  useEffect(() => {
+    if (errorDeletingOrdreMission === false) {
+      dispatch(setOrdreMissionStatusAction('DELETED'));
+      setSnackbarAlertSeverity('error');
+      setSnackbarVisibility(true);
+      dispatch(nullifyErrorDeletingOrdreMissionAction());
+    }
+  }, [errorDeletingOrdreMission]);
+
   useEffect(
     () => () => {
       dispatch(cleanupOrdreMissionTableStoreAction());
@@ -122,7 +136,6 @@ export function OrdreMissionTable() {
 
   const handleOnConfirmDeletionButtonClick = (id) => {
     dispatch(deleteOrdreMissionAction(id));
-    dispatch(setOrdreMissionStatusAction('DELETED'));
   };
 
   const ordreMissionColumns = [

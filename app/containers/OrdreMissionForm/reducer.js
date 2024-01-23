@@ -16,16 +16,27 @@ import {
   UPDATE_ORDRE_MISSION,
   UPDATE_ORDRE_MISSION_SUCCESS,
   UPDATE_ORDRE_MISSION_ERROR,
+  SUBMIT_ORDRE_MISSION,
+  SUBMIT_ORDRE_MISSION_SUCCESS,
+  SUBMIT_ORDRE_MISSION_ERROR,
+  LOAD_STATIC_DATA,
+  LOAD_STATIC_DATA_SUCCESS,
+  LOAD_STATIC_DATA_ERROR,
 } from './constants';
 
 export const initialState = {
   onBehalfSelection: 'false',
   abroadSelection: 'false',
   transportationMethodSelection: '',
+  loadingStaticData: false,
+  errorLoadingStaticData: null,
+  staticData: null,
   addingOrdreMission: false,
   errorAddingOrdreMission: null,
   updatingOrdreMission: false,
   errorUpdatingOrdreMission: null,
+  submittingOrdreMission: false,
+  errorSubmittingOrdreMission: null,
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -33,6 +44,19 @@ const ordreMissionFormReducer = (state = initialState, action) =>
   produce(state, (draft) => {
     switch (action.type) {
       case DEFAULT_ACTION:
+        break;
+      case LOAD_STATIC_DATA:
+        draft.loadingStaticData = true;
+        draft.errorLoadingStaticData = null;
+        break;
+      case LOAD_STATIC_DATA_SUCCESS:
+        draft.loadingStaticData = false;
+        draft.errorLoadingStaticData = false;
+        draft.staticData = action.data;
+        break;
+      case LOAD_STATIC_DATA_ERROR:
+        draft.loadingStaticData = false;
+        draft.errorLoadingStaticData = true;
         break;
       case ADD_ORDRE_MISSION:
         draft.addingOrdreMission = true;
@@ -46,7 +70,18 @@ const ordreMissionFormReducer = (state = initialState, action) =>
         draft.addingOrdreMission = false;
         draft.errorAddingOrdreMission = true;
         break;
-
+      case SUBMIT_ORDRE_MISSION:
+        draft.submittingOrdreMission = true;
+        draft.errorSubmittingOrdreMission = null;
+        break;
+      case SUBMIT_ORDRE_MISSION_SUCCESS:
+        draft.submittingOrdreMission = false;
+        draft.errorSubmittingOrdreMission = false;
+        break;
+      case SUBMIT_ORDRE_MISSION_ERROR:
+        draft.submittingOrdreMission = false;
+        draft.errorSubmittingOrdreMission = true;
+        break;
       case UPDATE_ORDRE_MISSION:
         draft.updatingOrdreMission = true;
         draft.errorUpdatingOrdreMission = null;
@@ -77,6 +112,8 @@ const ordreMissionFormReducer = (state = initialState, action) =>
         draft.errorAddingOrdreMission = null;
         draft.updatingOrdreMission = false;
         draft.errorUpdatingOrdreMission = null;
+        draft.submittingOrdreMission = false;
+        draft.errorSubmittingOrdreMission = null;
         break;
     }
   });

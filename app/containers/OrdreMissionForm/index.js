@@ -17,9 +17,12 @@ import TextField from '@mui/material/TextField';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import CloseIcon from '@mui/icons-material/Close';
+import HistoryIcon from '@mui/icons-material/History';
 import FormLabel from '@mui/material/FormLabel';
 import {
   Alert,
+  Autocomplete,
   Button,
   Dialog,
   DialogActions,
@@ -27,9 +30,11 @@ import {
   DialogContentText,
   DialogTitle,
   IconButton,
+  Snackbar,
+  Typography,
 } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { LocalizationProvider } from '@mui/x-date-pickers';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { Stack } from '@mui/system';
 import dayjs from 'dayjs';
@@ -39,31 +44,45 @@ import {
 } from 'pages/OrdreMission/actions';
 import { setOrdreMissionStatusAction } from 'containers/OrdreMissionTable/actions';
 import DisplayUserinfo from 'components/DisplayUserinfo';
-import { makeSelectOrdreMissionDetails } from 'pages/OrdreMission/selectors';
+import {
+  makeSelectErrorLoadingOrdreMissionDetails,
+  makeSelectOrdreMissionDetails,
+} from 'pages/OrdreMission/selectors';
+import { makeSelectErrorSubmittingOrdreMission } from 'containers/OrdreMissionView/selectors';
+import CustomizedTimeLine from 'components/CustomizedTimeLine';
+import { Timeline } from '@mui/icons-material';
 import saga from './saga';
 import reducer from './reducer';
 import {
   makeSelectAbroad,
   makeSelectAddOrdreMissionError,
+  makeSelectErrorLoadingStaticData,
   makeSelectOnBehalf,
+  makeSelectStaticData,
   makeSelectUpdateOrdreMissionError,
 } from './selectors';
 import Trips from './Trips';
 import Expenses from './Expenses';
 import {
   AddOrdreMissionAction,
+  LoadStaticDataAction,
   SelectAbroadAction,
   SelectOnBehalfAction,
   UpdateOrdreMissionAction,
   cleanupOrdreMissionFormPageAction,
+  submitOrdreMissionAction,
 } from './actions';
 
 const mapStateToProps = createStructuredSelector({
   isSideBarVisible: makeSelectIsSideBarVisible(),
   onBehalfSelection: makeSelectOnBehalf(),
   abroadSelection: makeSelectAbroad(),
+  errorLoadingStaticData: makeSelectErrorLoadingStaticData(),
   errorAddingOrdreMission: makeSelectAddOrdreMissionError(),
   errorUpdatingOrdreMission: makeSelectUpdateOrdreMissionError(),
+  errorSubmittingOrdreMission: makeSelectErrorSubmittingOrdreMission(),
+  errorLoadingOrdreMissionDetails: makeSelectErrorLoadingOrdreMissionDetails(),
+  staticData: makeSelectStaticData(),
   ordreMissionDetails: makeSelectOrdreMissionDetails(),
 });
 
@@ -75,9 +94,13 @@ export function OrdreMissionForm({ state }) {
     isSideBarVisible,
     onBehalfSelection,
     abroadSelection,
+    errorLoadingStaticData,
+    staticData,
     errorAddingOrdreMission,
     errorUpdatingOrdreMission,
+    errorLoadingOrdreMissionDetails,
     ordreMissionDetails,
+    errorSubmittingOrdreMission,
   } = useSelector(mapStateToProps);
   const [trips, setTrips] = useState([
     {
@@ -121,6 +144,26 @@ export function OrdreMissionForm({ state }) {
   const [modalHeader, setModalHeader] = useState('');
   const [modalVisibility, setModalVisibility] = useState(false);
   const [modalSevirity, setModalSevirity] = useState('');
+  const [buttonClicked, setButtonClicked] = useState(''); // this state is used to track which button has been clicked
+  const [savedSnackbarVisibility, setSavedSnackbarVisibility] = useState(false);
+  const action = (
+    <IconButton
+      size="small"
+      aria-label="close"
+      color="inherit"
+      onClick={() => setSavedSnackbarVisibility(false)}
+    >
+      <CloseIcon fontSize="small" />
+    </IconButton>
+  );
+
+  const readOnly = state === 'VIEW' || state === 'CONFIRM';
+
+  useEffect(() => {
+    if (errorLoadingStaticData === null) {
+      dispatch(LoadStaticDataAction());
+    }
+  }, [staticData]);
 
   useEffect(() => {
     if (state === 'EDIT' || state === 'MODIFY') {
@@ -221,24 +264,48 @@ export function OrdreMissionForm({ state }) {
     setTotalEUR(Number(TOTAL_EUR.toFixed(2)));
   }, [trips, expenses]);
 
+  // Listen to adding & updating --> when saving as draft
   useEffect(() => {
     if (errorAddingOrdreMission === false) {
-      dispatch(cleanupOrdreMissionFormPageAction());
-      dispatch(setOrdreMissionStatusAction('SAVED'));
-      dispatch(cleanupParentOrdreMissionPageAction());
+      if (buttonClicked === 'SAVE-AS-DRAFT') {
+        dispatch(setOrdreMissionStatusAction('SAVED'));
+        dispatch(cleanupParentOrdreMissionPageAction());
+      }
     }
-  }, [errorAddingOrdreMission]);
-  useEffect(() => {
     if (errorUpdatingOrdreMission === false) {
-      dispatch(cleanupOrdreMissionFormPageAction());
-      dispatch(setOrdreMissionStatusAction('UPDATED'));
+      if (buttonClicked === 'SAVE-AS-DRAFT') {
+        dispatch(setOrdreMissionStatusAction('UPDATED'));
+        dispatch(cleanupParentOrdreMissionPageAction());
+      }
+    }
+  }, [errorAddingOrdreMission, errorUpdatingOrdreMission]);
+
+  // Listen to loading --> when confirming adding or updating
+  useEffect(() => {
+    if (buttonClicked === 'CONFIRM') {
+      dispatch(ChangePageContentAction('CONFIRM'));
+      setSavedSnackbarVisibility(true);
+    }
+  }, [errorLoadingOrdreMissionDetails]);
+
+  // Listen to Submit/Resubmit
+  useEffect(() => {
+    if (errorSubmittingOrdreMission === false) {
+      if (buttonClicked === 'SUBMIT') {
+        dispatch(setOrdreMissionStatusAction('SUBMITTED'));
+      }
+      if (buttonClicked === 'SUBMIT-MODIFICATIONS') {
+        dispatch(setOrdreMissionStatusAction('RESUBMITTED'));
+      }
+
       dispatch(cleanupParentOrdreMissionPageAction());
     }
-  }, [errorUpdatingOrdreMission]);
+  }, [errorSubmittingOrdreMission]);
 
   useEffect(
     () => () => {
       dispatch(cleanupOrdreMissionFormPageAction());
+      dispatch(cleanupParentOrdreMissionPageAction());
     },
     [],
   );
@@ -271,8 +338,8 @@ export function OrdreMissionForm({ state }) {
       id: tripsCounter,
       departurePlace: '',
       destination: '',
-      departureDate: '',
-      arrivalDate: '',
+      departureDate: null,
+      arrivalDate: null,
       transportationMethod: '',
       unit: '',
       value: 0,
@@ -299,7 +366,7 @@ export function OrdreMissionForm({ state }) {
     const newExpense = {
       id: expensesCounter,
       description: '',
-      expenseDate: dayjs(Date()),
+      expenseDate: null,
       currency: '',
       estimatedFee: 0.0,
     };
@@ -322,11 +389,11 @@ export function OrdreMissionForm({ state }) {
   };
 
   const getAction = () => {
-    let action = '';
+    let requestAction = '';
     if (ordreMissionDetails !== null) {
-      action = state === 'EDIT' ? 'save' : 'submit';
+      requestAction = state === 'EDIT' ? 'save' : 'submit';
     }
-    return action;
+    return requestAction;
   };
 
   const data = {
@@ -355,12 +422,12 @@ export function OrdreMissionForm({ state }) {
     // on behalf of someone + missing actual requester info
     if (
       data.onBehalf === true &&
-      (actualRequester.firstName === '' ||
-        actualRequester.lastName === '' ||
-        actualRequester.registrationNumber === '' ||
-        actualRequester.jobTitle === '' ||
-        actualRequester.department === '' ||
-        actualRequester.managerUserId === '')
+      (!actualRequester.firstName ||
+        !actualRequester.lastName ||
+        !actualRequester.registrationNumber ||
+        !actualRequester.jobTitle ||
+        !actualRequester.department ||
+        !actualRequester.managerUserName)
     ) {
       setModalHeader('Invalid Information!');
       setModalBody(
@@ -526,10 +593,12 @@ export function OrdreMissionForm({ state }) {
     if (result === true) {
       if (state === 'ADD') {
         dispatch(AddOrdreMissionAction(data));
+        setButtonClicked('SAVE-AS-DRAFT');
       }
       if (state === 'EDIT') {
         // Edit and save in case of draft
         dispatch(UpdateOrdreMissionAction(data));
+        setButtonClicked('SAVE-AS-DRAFT');
       }
     }
   };
@@ -539,20 +608,25 @@ export function OrdreMissionForm({ state }) {
     if (result === true) {
       if (state === 'ADD') {
         dispatch(AddOrdreMissionAction(data));
-        dispatch(ChangePageContentAction('CONFIRM'));
+        setButtonClicked('CONFIRM');
       }
       if (state === 'EDIT') {
         // Edit and save in case of draft
         dispatch(UpdateOrdreMissionAction(data));
-        dispatch(ChangePageContentAction('CONFIRM'));
+        setButtonClicked('CONFIRM');
       }
     }
+  };
+
+  const handleOnSubmitButtonClick = () => {
+    dispatch(submitOrdreMissionAction(ordreMissionDetails.id));
+    setButtonClicked('SUBMIT');
   };
 
   const handleOnSubmitModificationsButtonClick = () => {
     setModalHeader('Confirmation');
     setModalBody(
-      "Please Review your information before confirming your submition. You won't be able to modify your request afterwards!",
+      "Please Review your information before confirming your changes. You won't be able to modify your request afterwards!",
     );
     setModalSevirity('warning');
     setModalVisibility(true);
@@ -563,12 +637,9 @@ export function OrdreMissionForm({ state }) {
     const result = ValidateInputs();
     if (result === true) {
       dispatch(UpdateOrdreMissionAction(data));
-      dispatch(cleanupStoreAction());
-      dispatch(setOrdreMissionStatusAction('RESUBMITTED'));
-      dispatch(ChangePageContentAction('TABLE'));
+      setButtonClicked('SUBMIT-MODIFICATIONS');
     }
   };
-
   return (
     <Box
       position="fixed"
@@ -592,20 +663,65 @@ export function OrdreMissionForm({ state }) {
           marginBottom={2}
         >
           {state === 'ADD' && (
-            <h1 style={{ fontSize: '30px' }}>Ordre Mission</h1>
+            <h1 style={{ fontSize: '30px' }}>New Ordre Mission Request</h1>
           )}
           {state === 'EDIT' && (
             <h1 style={{ fontSize: '30px' }}>
               Editing Ordre Mission #{ordreMissionDetails?.id}
             </h1>
           )}
-          {state === 'Modify' && (
+          {state === 'MODIFY' && (
             <h1 style={{ fontSize: '30px' }}>
               Modifying Ordre Mission #{ordreMissionDetails?.id}
             </h1>
           )}
+          {state === 'VIEW' && (
+            <h1 style={{ fontSize: '30px' }}>
+              View Ordre Mission #{ordreMissionDetails?.id}
+            </h1>
+          )}
+          {state === 'CONFIRM' && (
+            <h1 style={{ fontSize: '30px' }}>
+              <Typography variant="h5" marginTop={3} gutterBottom>
+                Please Review your information before submitting
+              </Typography>
+            </h1>
+          )}
         </Box>
-
+        {state === 'CONFIRM' && (
+          <Box
+            display="flex"
+            justifyContent="center"
+            textAlign="center"
+            marginBottom={1}
+          >
+            <Typography variant="caption">
+              *This request has been saved as a draft. You can still modify it
+              if you don&apos;t submit it. <br /> Please note: your request
+              cannot be edited once it is submitted.
+            </Typography>
+          </Box>
+        )}
+        {state === 'VIEW' && (
+          <Box
+            display="flex"
+            justifyContent="center"
+            textAlign="center"
+            marginBottom={2}
+          >
+            <Button
+              variant="contained"
+              color="warning"
+              onClick={() => {
+                setModalVisibility(true);
+                setModalHeader('Status History');
+              }}
+              startIcon={<HistoryIcon />}
+            >
+              Status History
+            </Button>
+          </Box>
+        )}
         {/* DIVIDER */}
         <Box
           display="flex"
@@ -617,41 +733,56 @@ export function OrdreMissionForm({ state }) {
         </Box>
 
         {/* USER INFO */}
-        <DisplayUserinfo />
+        {readOnly ? (
+          <DisplayUserinfo
+            userData={
+              ordreMissionDetails?.requesterInfo !== null
+                ? ordreMissionDetails?.requesterInfo
+                : null
+            }
+          />
+        ) : (
+          <DisplayUserinfo />
+        )}
 
-        {/* DIVIDER */}
-        <Box
-          display="flex"
-          justifyContent="center"
-          textAlign="center"
-          marginBottom={3}
-        >
-          <Divider style={{ width: '60%', opacity: 0.7 }} />
-        </Box>
+        {!readOnly && (
+          <>
+            {/* DIVIDER */}
+            <Box
+              display="flex"
+              justifyContent="center"
+              textAlign="center"
+              marginBottom={3}
+            >
+              <Divider style={{ width: '60%', opacity: 0.7 }} />
+            </Box>
+            <Box textAlign="center">
+              <Typography variant="subtitle1">
+                Are you filling this form on behalf of someone else?
+              </Typography>
+            </Box>
+            <RadioGroup
+              row
+              aria-labelledby="demo-row-radio-buttons-group-label"
+              name="row-radio-buttons-group"
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                marginBottom: '20px',
+              }}
+              value={onBehalfSelection ? onBehalfSelection.toString() : ''} // Convert the boolean to a string
+              onChange={handleOnBehalfSelectionChange}
+            >
+              <FormControlLabel value="true" control={<Radio />} label="Yes" />
+              <FormControlLabel value="false" control={<Radio />} label="No" />
+            </RadioGroup>
+          </>
+        )}
 
-        <Box textAlign="center">
-          <FormLabel id="demo-row-radio-buttons-group-label">
-            Are you filling this form on behalf of someone else?
-          </FormLabel>
-        </Box>
-        <RadioGroup
-          row
-          aria-labelledby="demo-row-radio-buttons-group-label"
-          name="row-radio-buttons-group"
-          sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'center',
-            marginBottom: '20px',
-          }}
-          value={onBehalfSelection ? onBehalfSelection.toString() : ''} // Convert the boolean to a string
-          onChange={handleOnBehalfSelectionChange}
-        >
-          <FormControlLabel value="true" control={<Radio />} label="Yes" />
-          <FormControlLabel value="false" control={<Radio />} label="No" />
-        </RadioGroup>
-
-        {onBehalfSelection && onBehalfSelection.toString() === 'true' ? (
+        {onBehalfSelection &&
+        onBehalfSelection.toString() === 'true' &&
+        !readOnly ? (
           <>
             <Box
               display="flex"
@@ -659,9 +790,9 @@ export function OrdreMissionForm({ state }) {
               textAlign="center"
               marginBottom={2}
             >
-              <h1 style={{ fontSize: '18px' }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
                 Please fill the actual requester information*
-              </h1>
+              </Typography>
             </Box>
 
             <Box justifyContent="center" textAlign="center" marginBottom={3}>
@@ -711,36 +842,50 @@ export function OrdreMissionForm({ state }) {
                 gap={2}
                 marginBottom={2}
               >
-                <TextField
-                  id="outlined-basic"
-                  label="Job Title"
-                  variant="outlined"
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  options={staticData.jobTitles}
+                  sx={{ width: 222 }}
                   value={actualRequester.jobTitle}
-                  onChange={(e) =>
-                    updateActualRequesterData('jobTitle', e.target.value)
+                  onChange={(e, newValue) =>
+                    updateActualRequesterData('jobTitle', newValue)
                   }
                   required
+                  renderInput={(params) => (
+                    // eslint-disable-next-line react/jsx-props-no-spreading
+                    <TextField {...params} label="Job Title" />
+                  )}
                 />
-
-                <TextField
-                  id="outlined-basic"
-                  label="Department"
-                  variant="outlined"
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  options={staticData.departments}
+                  sx={{ width: 222 }}
                   value={actualRequester.department}
-                  onChange={(e) =>
-                    updateActualRequesterData('department', e.target.value)
+                  onChange={(e, newValue) =>
+                    updateActualRequesterData('department', newValue)
                   }
                   required
+                  renderInput={(params) => (
+                    // eslint-disable-next-line react/jsx-props-no-spreading
+                    <TextField {...params} label="Department" />
+                  )}
                 />
-                <TextField
-                  id="outlined-basic"
-                  label="Manager"
-                  variant="outlined"
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  options={staticData.managersUsernames}
+                  sx={{ width: 222 }}
                   value={actualRequester.managerUserName}
-                  onChange={(e) =>
-                    updateActualRequesterData('managerUserName', e.target.value)
+                  onChange={(e, newValue) =>
+                    updateActualRequesterData('managerUserName', newValue)
                   }
                   required
+                  renderInput={(params) => (
+                    // eslint-disable-next-line react/jsx-props-no-spreading
+                    <TextField {...params} label="Manager" />
+                  )}
                 />
               </Box>
             </Box>
@@ -759,27 +904,45 @@ export function OrdreMissionForm({ state }) {
           <Divider style={{ width: '60%', opacity: 0.7 }} />
         </Box>
 
-        <Box textAlign="center">
-          <FormLabel id="demo-row-radio-buttons-group-label">
-            Is this mission abroad?
-          </FormLabel>
-        </Box>
-        <RadioGroup
-          row
-          aria-labelledby="demo-row-radio-buttons-group-label"
-          name="row-radio-buttons-group"
-          sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'center',
-            marginBottom: '20px',
-          }}
-          value={abroadSelection ? abroadSelection.toString() : ''} // Convert the boolean to a string
-          onChange={handleAbroadSelectionChange}
-        >
-          <FormControlLabel value="true" control={<Radio />} label="Yes" />
-          <FormControlLabel value="false" control={<Radio />} label="No" />
-        </RadioGroup>
+        {!readOnly ? (
+          <>
+            <Box textAlign="center">
+              <Typography variant="subtitle1">
+                Is this mission abroad?
+              </Typography>
+            </Box>
+            <RadioGroup
+              row
+              aria-labelledby="demo-row-radio-buttons-group-label"
+              name="row-radio-buttons-group"
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                marginBottom: '20px',
+              }}
+              value={abroadSelection ? abroadSelection.toString() : ''} // Convert the boolean to a string
+              onChange={handleAbroadSelectionChange}
+            >
+              <FormControlLabel value="true" control={<Radio />} label="Yes" />
+              <FormControlLabel value="false" control={<Radio />} label="No" />
+            </RadioGroup>
+          </>
+        ) : (
+          <Box
+            textAlign="center"
+            display="flex"
+            justifyContent="center"
+            marginBottom={3}
+          >
+            <Typography variant="subtitle1" display="flex">
+              This Mission is set to be:&nbsp;
+              <Box sx={{ fontWeight: 'bold' }}>
+                {ordreMissionDetails?.abroad === true ? 'Abroad' : 'NOT Abroad'}
+              </Box>
+            </Typography>
+          </Box>
+        )}
 
         {/* DIVIDER */}
         <Box
@@ -792,6 +955,7 @@ export function OrdreMissionForm({ state }) {
         </Box>
 
         {/* DESCRIPTION */}
+
         <Box
           display="flex"
           justifyContent="center"
@@ -799,14 +963,17 @@ export function OrdreMissionForm({ state }) {
           marginBottom={3}
         >
           <TextField
-            variant="outlined"
+            variant={readOnly ? 'filled' : 'outlined'}
             multiline
             minRows={3}
             label="Mission description"
-            value={description}
+            value={readOnly ? ordreMissionDetails?.description : description}
             onChange={(e) => updateDescriptionData(e.target.value)}
             required
             sx={{ width: '50%' }}
+            InputProps={{
+              readOnly,
+            }}
           />
         </Box>
 
@@ -828,11 +995,13 @@ export function OrdreMissionForm({ state }) {
           marginBottom={2}
         >
           <h1 style={{ fontSize: '25px' }}>Trajectories</h1>
-          <IconButton onClick={addTrip}>
-            <AddCircleIcon
-              sx={{ color: 'green', fontSize: '30px' }}
-            ></AddCircleIcon>
-          </IconButton>
+          {!readOnly && (
+            <IconButton onClick={addTrip}>
+              <AddCircleIcon
+                sx={{ color: 'green', fontSize: '30px' }}
+              ></AddCircleIcon>
+            </IconButton>
+          )}
         </Box>
         {trips.map((trip, index) => (
           <div key={trip.id}>
@@ -841,6 +1010,7 @@ export function OrdreMissionForm({ state }) {
               tripData={trip}
               updateTripData={updateTripData}
               isTripRequired={index === 0 || index === 1}
+              isTripModifiabale={readOnly === false}
               removeTrip={removeTrip}
             />
           </div>
@@ -864,13 +1034,18 @@ export function OrdreMissionForm({ state }) {
         >
           <Box display="flex" justifyContent="flex-start" width="40rem">
             <h1 style={{ fontSize: '18px' }}>
-              Other expenses <em>(optional)</em>
+              Other expenses&nbsp;
+              {state !== 'CONFIRM' && state !== 'VIEW' && (
+                <Typography variant="caption">(optional)</Typography>
+              )}
             </h1>
-            <IconButton onClick={addExpense}>
-              <AddCircleIcon
-                sx={{ color: 'chocolate', fontSize: '30px' }}
-              ></AddCircleIcon>
-            </IconButton>
+            {state !== 'CONFIRM' && state !== 'VIEW' && (
+              <IconButton onClick={addExpense}>
+                <AddCircleIcon
+                  sx={{ color: 'chocolate', fontSize: '30px' }}
+                ></AddCircleIcon>
+              </IconButton>
+            )}
           </Box>
         </Box>
         {expenses.map((expense) => (
@@ -886,7 +1061,7 @@ export function OrdreMissionForm({ state }) {
                 expenseData={expense}
                 updateExpenseData={updateExpenseData}
                 removeExpense={removeExpense}
-                isExpenseRequired={false}
+                isExpenseRequired={readOnly}
               />
             </div>
           </Box>
@@ -949,7 +1124,7 @@ export function OrdreMissionForm({ state }) {
           >
             Return
           </Button>
-          {state !== 'MODIFY' && (
+          {(state === 'EDIT' || state === 'ADD') && (
             <>
               <Button
                 variant="contained"
@@ -976,6 +1151,15 @@ export function OrdreMissionForm({ state }) {
               Submit Modifications
             </Button>
           )}
+          {state === 'CONFIRM' && (
+            <Button
+              variant="contained"
+              color="success"
+              onClick={handleOnSubmitButtonClick}
+            >
+              Submit
+            </Button>
+          )}
         </Stack>
 
         {/* THE MODAL */}
@@ -986,10 +1170,21 @@ export function OrdreMissionForm({ state }) {
           aria-describedby="alert-dialog-slide-description"
         >
           <DialogTitle>{modalHeader}</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-slide-description">
-              <Alert severity={modalSevirity}>{modalBody}</Alert>
-            </DialogContentText>
+          <DialogContent dividers>
+            {modalHeader === 'Status History' ? (
+              <Timeline position="alternate">
+                {ordreMissionDetails?.statusHistory?.map((sh, i, arr) => (
+                  <CustomizedTimeLine
+                    statusHistory={sh}
+                    lastOne={arr.length - 1 === i}
+                  ></CustomizedTimeLine>
+                ))}
+              </Timeline>
+            ) : (
+              <DialogContentText id="alert-dialog-slide-description">
+                <Alert severity={modalSevirity}>{modalBody}</Alert>
+              </DialogContentText>
+            )}
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setModalVisibility(false)}>Close</Button>
@@ -1003,6 +1198,22 @@ export function OrdreMissionForm({ state }) {
             )}
           </DialogActions>
         </Dialog>
+
+        <Snackbar
+          open={savedSnackbarVisibility}
+          autoHideDuration={3000}
+          onClose={() => setSavedSnackbarVisibility(false)}
+          action={action}
+        >
+          <Alert
+            onClose={() => setSavedSnackbarVisibility(false)}
+            severity="info"
+            variant="filled"
+            sx={{ width: '100%' }}
+          >
+            Request has been saved!
+          </Alert>
+        </Snackbar>
       </LocalizationProvider>
     </Box>
   );

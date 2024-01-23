@@ -13,6 +13,7 @@ import {
   LOAD_ORDRE_MISSIONS,
   LOAD_ORDRE_MISSIONS_ERROR,
   LOAD_ORDRE_MISSIONS_SUCCESS,
+  NULLIFY_ERROR_DELETING,
   STATUS_ORDRE_MISSION,
 } from './constants';
 
@@ -21,7 +22,7 @@ export const initialState = {
   errorLoadingOrdreMissions: null,
   ordreMissions: [],
   deletingOrdreMission: false,
-  errorDeletingOrdreMission: false,
+  errorDeletingOrdreMission: null,
   statusOrdreMission: '', // This state is used to show action notification in table page (add/submit)
 };
 
@@ -47,16 +48,20 @@ const ordreMissionTableReducer = (state = initialState, action) =>
       case STATUS_ORDRE_MISSION:
         draft.statusOrdreMission = action.data;
         break;
+      case NULLIFY_ERROR_DELETING:
+        draft.errorDeletingOrdreMission = null;
+        break;
       case DELETE_ORDRE_MISSION:
         draft.deletingOrdreMission = true;
         draft.errorDeletingOrdreMission = false;
         break;
       case DELETE_ORDRE_MISSION_ERROR:
         draft.deletingOrdreMission = false;
-        draft.errorDeletingOrdreMission = action.error;
+        draft.errorDeletingOrdreMission = true;
         break;
       case DELETE_ORDRE_MISSION_SUCCESS:
         draft.deletingOrdreMission = false;
+        draft.errorDeletingOrdreMission = false;
         draft.ordreMissions = action.data;
         break;
       case CLEANUP_STORE_ACTION:
@@ -64,7 +69,7 @@ const ordreMissionTableReducer = (state = initialState, action) =>
         draft.errorLoadingOrdreMissions = null;
         draft.ordreMissions = [];
         draft.deletingOrdreMission = false;
-        draft.errorDeletingOrdreMission = false;
+        draft.errorDeletingOrdreMission = null;
         draft.statusOrdreMission = '';
         break;
     }

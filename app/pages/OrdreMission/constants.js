@@ -20,5 +20,4 @@ export const CLEANUP_STORE_ACTION = 'app/OrdreMission/CLEANUP_STORE_ACTION';
 
 export const webService = {
   LOAD_ORDRE_MISSION_DETAILS: '/OrdreMission/View',
-  SUBMIT_ORDRE_MISSION: '/OrdreMission/Submit',
 };

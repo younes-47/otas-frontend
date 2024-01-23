@@ -13,7 +13,7 @@ import DepenseCaisseForm from 'containers/DepenseCaisseForm';
 import DepenseCaisseTable from 'containers/DepenseCaisseTable';
 import reducer from './reducer';
 import { makeSelectChangePageContent } from './selectors';
-import { cleanupStoreAction } from './actions';
+import { cleanupDepesneCaisseParentPageStoreAction } from './actions';
 
 const mapStateToProps = createStructuredSelector({
   pageContent: makeSelectChangePageContent(),
@@ -27,7 +27,7 @@ export function DepenseCaisse() {
   const dispatch = useDispatch();
   useEffect(
     () => () => {
-      dispatch(cleanupStoreAction());
+      dispatch(cleanupDepesneCaisseParentPageStoreAction());
     },
     [],
   );
@@ -35,10 +35,10 @@ export function DepenseCaisse() {
   switch (pageContent) {
     case 'ADD':
       return <DepenseCaisseForm state="ADD"></DepenseCaisseForm>;
-    // case 'VIEW':
-    //   return <DepenseCaisseView state="VIEW" />;
-    // case 'CONFIRM':
-    //   return <DepenseCaisseView state="CONFIRM" />;
+    case 'VIEW':
+      return <DepenseCaisseForm state="VIEW" />;
+    case 'CONFIRM':
+      return <DepenseCaisseForm state="CONFIRM" />;
     case 'EDIT':
       return <DepenseCaisseForm state="EDIT" />;
     case 'MODIFY': // This case is when the user modifies its request in a returned state, which whill restrict saving it as draft again

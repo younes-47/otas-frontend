@@ -3,6 +3,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+
 import {
   Divider,
   FormControl,
@@ -30,7 +32,12 @@ const mapStateToProps = createStructuredSelector({
   abroadSelection: makeSelectAbroad(),
 });
 
-const Expenses = ({ expenseData, updateExpenseData, removeExpense }) => {
+const Expenses = ({
+  expenseData,
+  updateExpenseData,
+  removeExpense,
+  isExpenseRequired,
+}) => {
   const { id, description, expenseDate, currency, estimatedFee } = expenseData;
 
   const { abroadSelection } = useSelector(mapStateToProps);
@@ -44,22 +51,33 @@ const Expenses = ({ expenseData, updateExpenseData, removeExpense }) => {
   return (
     <Box key={id}>
       <Box display="flex" gap={2} marginBottom="1rem">
-        <IconButton onClick={() => removeExpense(id)}>
-          <HighlightOffIcon
-            sx={{ color: 'red', fontSize: '25px' }}
-          ></HighlightOffIcon>
-        </IconButton>
+        {isExpenseRequired === false ? (
+          <IconButton onClick={() => removeExpense(id)}>
+            <HighlightOffIcon
+              sx={{ color: 'red', fontSize: '25px' }}
+            ></HighlightOffIcon>
+          </IconButton>
+        ) : (
+          <IconButton sx={{ fontSize: '10px' }} disableRipple>
+            <KeyboardArrowRightIcon />
+          </IconButton>
+        )}
 
         <TextField
           required
+          InputProps={{
+            readOnly: isExpenseRequired,
+          }}
+          variant={!isExpenseRequired ? 'outlined' : 'filled'}
           id="outlined-basic"
           label="Description"
           value={description}
           onChange={(e) => updateExpenseData(id, 'description', e.target.value)}
-          variant="outlined"
         />
 
         <DatePicker
+          readOnly={isExpenseRequired}
+          variant={!isExpenseRequired ? 'outlined' : 'filled'}
           value={expenseDate}
           onChange={(e) => handleExpenseDate(e, id)}
           sx={{ maxWidth: 170 }}
@@ -75,6 +93,8 @@ const Expenses = ({ expenseData, updateExpenseData, removeExpense }) => {
               Currency
             </InputLabel>
             <Select
+              inputProps={{ readOnly: isExpenseRequired }}
+              variant={!isExpenseRequired ? 'outlined' : 'filled'}
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               label="Currency"
@@ -92,6 +112,9 @@ const Expenses = ({ expenseData, updateExpenseData, removeExpense }) => {
           </FormControl>
         </Box>
         <TextField
+          InputProps={{
+            readOnly: isExpenseRequired,
+          }}
           required
           type="number"
           id="outlined-basic"
@@ -103,7 +126,9 @@ const Expenses = ({ expenseData, updateExpenseData, removeExpense }) => {
           sx={{ maxWidth: 120 }}
           disabled={currency !== 'MAD' && currency !== 'EUR'}
           variant={
-            currency !== 'MAD' && currency !== 'EUR' ? 'filled' : 'outlined'
+            (currency !== 'MAD' && currency !== 'EUR') || isExpenseRequired
+              ? 'filled'
+              : 'outlined'
           }
         />
       </Box>
@@ -115,6 +140,7 @@ Expenses.propTypes = {
   expenseData: PropTypes.object.isRequired,
   updateExpenseData: PropTypes.func.isRequired,
   removeExpense: PropTypes.func.isRequired,
+  isExpenseRequired: PropTypes.bool.isRequired,
 };
 
 export default Expenses;

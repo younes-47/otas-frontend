@@ -13,6 +13,7 @@ import {
   LOAD_ORDRE_MISSIONS,
   LOAD_ORDRE_MISSIONS_ERROR,
   LOAD_ORDRE_MISSIONS_SUCCESS,
+  NULLIFY_ERROR_DELETING,
   STATUS_ORDRE_MISSION,
 } from './constants';
 
@@ -73,5 +74,11 @@ export function setOrdreMissionStatusAction(data) {
   return {
     type: STATUS_ORDRE_MISSION,
     data,
+  };
+}
+
+export function nullifyErrorDeletingOrdreMissionAction() {
+  return {
+    type: NULLIFY_ERROR_DELETING,
   };
 }

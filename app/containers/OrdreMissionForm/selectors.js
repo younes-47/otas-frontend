@@ -19,6 +19,18 @@ const selectOrdreMissionFormDomain = (state) =>
 const makeSelectOrdreMissionForm = () =>
   createSelector(selectOrdreMissionFormDomain, (substate) => substate);
 
+const makeSelectErrorLoadingStaticData = () =>
+  createSelector(
+    selectOrdreMissionFormDomain,
+    (substate) => substate.errorLoadingStaticData,
+  );
+
+const makeSelectStaticData = () =>
+  createSelector(
+    selectOrdreMissionFormDomain,
+    (substate) => substate.staticData,
+  );
+
 const makeSelectAddOrdreMissionError = () =>
   createSelector(
     selectOrdreMissionFormDomain,
@@ -28,6 +40,12 @@ const makeSelectUpdateOrdreMissionError = () =>
   createSelector(
     selectOrdreMissionFormDomain,
     (substate) => substate.errorUpdatingOrdreMission,
+  );
+
+const makeSelectErrorSubmittingOrdreMission = () =>
+  createSelector(
+    selectOrdreMissionFormDomain,
+    (substate) => substate.errorSubmittingOrdreMission,
   );
 
 const makeSelectOnBehalf = () =>
@@ -56,6 +74,9 @@ const makeSelectCleanupStore = () =>
 
 export default makeSelectOrdreMissionForm;
 export {
+  makeSelectStaticData,
+  makeSelectErrorLoadingStaticData,
+  makeSelectErrorSubmittingOrdreMission,
   makeSelectUpdateOrdreMissionError,
   makeSelectAddOrdreMissionError,
   selectOrdreMissionFormDomain,

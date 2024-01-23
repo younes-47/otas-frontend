@@ -36,9 +36,9 @@ export function OrdreMission() {
     case 'ADD':
       return <OrdreMissionForm state="ADD" />;
     case 'VIEW':
-      return <OrdreMissionView state="VIEW" />;
+      return <OrdreMissionForm state="VIEW" />;
     case 'CONFIRM':
-      return <OrdreMissionView state="CONFIRM" />;
+      return <OrdreMissionForm state="CONFIRM" />;
     case 'EDIT':
       return <OrdreMissionForm state="EDIT" />;
     case 'MODIFY': // This case is when the user modifies its request in a returned state, which whill restrict saving it as draft again

@@ -26,7 +26,13 @@ const mapStateToProps = createStructuredSelector({
   abroadSelection: makeSelectAbroad(),
 });
 
-const Trips = ({ tripData, updateTripData, isTripRequired, removeTrip }) => {
+const Trips = ({
+  tripData,
+  updateTripData,
+  isTripRequired,
+  removeTrip,
+  isTripModifiabale = true,
+}) => {
   const {
     id,
     departurePlace,
@@ -77,6 +83,7 @@ const Trips = ({ tripData, updateTripData, isTripRequired, removeTrip }) => {
     <Box key={id} marginRight={3} marginLeft={3} marginBottom={2}>
       <Box display="flex" justifyContent="center" gap={0.8}>
         <TextField
+          variant={isTripModifiabale ? 'outlined' : 'filled'}
           id="input-with-icon-textfield"
           label="Departure"
           value={departurePlace}
@@ -87,9 +94,9 @@ const Trips = ({ tripData, updateTripData, isTripRequired, removeTrip }) => {
                 <LocationOnIcon />
               </InputAdornment>
             ),
+            readOnly: !isTripModifiabale,
           }}
           sx={{ minWidth: 160, maxWidth: 160 }}
-          variant="outlined"
           required
         />
         <TextField
@@ -103,13 +110,16 @@ const Trips = ({ tripData, updateTripData, isTripRequired, removeTrip }) => {
                 <LocationOnIcon />
               </InputAdornment>
             ),
+            readOnly: !isTripModifiabale,
           }}
           sx={{ minWidth: 160, maxWidth: 160 }}
-          variant="outlined"
+          variant={isTripModifiabale ? 'outlined' : 'filled'}
           required
         />
 
         <DateTimePicker
+          readOnly={!isTripModifiabale}
+          variant={isTripModifiabale ? 'outlined' : 'filled'}
           sx={{ minWidth: 160, maxWidth: 160 }}
           label="Departure Date"
           value={departureDate}
@@ -122,6 +132,8 @@ const Trips = ({ tripData, updateTripData, isTripRequired, removeTrip }) => {
         />
 
         <DateTimePicker
+          readOnly={!isTripModifiabale}
+          variant={isTripModifiabale ? 'outlined' : 'filled'}
           sx={{ minWidth: 160, maxWidth: 160 }}
           label="Arrival"
           value={arrivalDate}
@@ -138,6 +150,7 @@ const Trips = ({ tripData, updateTripData, isTripRequired, removeTrip }) => {
               Transportation
             </InputLabel>
             <Select
+              inputProps={{ readOnly: !isTripModifiabale }}
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               label="Transportation"
@@ -146,6 +159,7 @@ const Trips = ({ tripData, updateTripData, isTripRequired, removeTrip }) => {
                 updateTripData(id, 'transportationMethod', e.target.value)
               }
               required
+              variant={isTripModifiabale ? 'outlined' : 'filled'}
             >
               {Object.values(transportationMethodOptions).map(
                 (transportationMethodOption) => (
@@ -185,10 +199,14 @@ const Trips = ({ tripData, updateTripData, isTripRequired, removeTrip }) => {
                 transportationMethodOptions.indexOf(transportationMethod) === -1
               }
               variant={
-                transportationMethodOptions.indexOf(transportationMethod) === -1
+                transportationMethodOptions.indexOf(transportationMethod) ===
+                  -1 || !isTripModifiabale
                   ? 'filled'
                   : 'outlined'
               }
+              inputProps={{
+                readOnly: !isTripModifiabale,
+              }}
             >
               {transportationMethod === transportationMethodOptions[6] ||
               transportationMethod === transportationMethodOptions[7] ? (
@@ -205,39 +223,26 @@ const Trips = ({ tripData, updateTripData, isTripRequired, removeTrip }) => {
           </FormControl>
         </Box>
 
-        {unit === 'KM' ? (
-          <TextField
-            required
-            id="outlined-required"
-            type="number"
-            label="Mileage"
-            value={value}
-            onChange={(e) => updateTripData(id, 'value', e.target.value)}
-            disabled={unit !== 'KM' && unit !== 'MAD' && unit !== 'EUR'}
-            variant={
-              unit !== 'KM' && unit !== 'MAD' && unit !== 'EUR'
-                ? 'filled'
-                : 'outlined'
-            }
-            sx={{ maxWidth: 90, minWidth: 90 }}
-          />
-        ) : (
-          <TextField
-            required
-            id="outlined-required"
-            type="number"
-            label="Fee"
-            value={value}
-            onChange={(e) => updateTripData(id, 'value', e.target.value)}
-            disabled={unit !== 'KM' && unit !== 'MAD' && unit !== 'EUR'}
-            variant={
-              unit !== 'KM' && unit !== 'MAD' && unit !== 'EUR'
-                ? 'filled'
-                : 'outlined'
-            }
-            sx={{ maxWidth: 90, minWidth: 90 }}
-          />
-        )}
+        <TextField
+          required
+          id="outlined-required"
+          type="number"
+          label={unit === 'KM' ? 'Mileage' : 'Fee'}
+          value={value}
+          onChange={(e) => updateTripData(id, 'value', e.target.value)}
+          sx={{ maxWidth: 90, minWidth: 90 }}
+          variant={
+            (unit !== 'KM' && unit !== 'MAD' && unit !== 'EUR') ||
+            !isTripModifiabale
+              ? 'filled'
+              : 'outlined'
+          }
+          disabled={unit !== 'KM' && unit !== 'MAD' && unit !== 'EUR'}
+          inputProps={{
+            readOnly: !isTripModifiabale,
+          }}
+        />
+
         {transportationMethod === transportationMethodOptions[6] ||
         transportationMethod === transportationMethodOptions[7] ? (
           <TextField
@@ -253,6 +258,10 @@ const Trips = ({ tripData, updateTripData, isTripRequired, removeTrip }) => {
             value={highwayFee}
             onChange={(e) => updateTripData(id, 'highwayFee', e.target.value)}
             sx={{ maxWidth: 90, minWidth: 90 }}
+            variant={!isTripModifiabale ? 'filled' : undefined}
+            inputProps={{
+              readOnly: !isTripModifiabale,
+            }}
           />
         ) : (
           <TextField
@@ -263,8 +272,8 @@ const Trips = ({ tripData, updateTripData, isTripRequired, removeTrip }) => {
             label="Highway"
             value={highwayFee}
             onChange={(e) => updateTripData(id, 'highwayFee', e.target.value)}
-            variant="filled"
             sx={{ maxWidth: 90, minWidth: 90 }}
+            variant="filled"
           />
         )}
 
@@ -273,9 +282,10 @@ const Trips = ({ tripData, updateTripData, isTripRequired, removeTrip }) => {
           id="filled-read-only-input"
           label="Total"
           value={
-            unit === 'EUR'
-              ? `EUR ${calculatedTripFee}`
-              : `MAD ${calculatedTripFee}`
+            // unit === 'EUR'
+            //   ? `EUR ${calculatedTripFee}`
+            //   : `MAD ${calculatedTripFee}`
+            calculatedTripFee
           }
           InputProps={{
             readOnly: true,
@@ -284,15 +294,15 @@ const Trips = ({ tripData, updateTripData, isTripRequired, removeTrip }) => {
           color="success"
           focused
         />
-        {isTripRequired === false ? (
+        {isTripRequired || !isTripModifiabale ? (
+          <IconButton sx={{ fontSize: '10px' }} disableRipple>
+            <KeyboardArrowLeftIcon></KeyboardArrowLeftIcon>
+          </IconButton>
+        ) : (
           <IconButton onClick={() => removeTrip(id)}>
             <HighlightOffIcon
               sx={{ color: 'red', fontSize: '25px' }}
             ></HighlightOffIcon>
-          </IconButton>
-        ) : (
-          <IconButton sx={{ fontSize: '10px' }} disableRipple>
-            <KeyboardArrowLeftIcon></KeyboardArrowLeftIcon>
           </IconButton>
         )}
       </Box>
@@ -305,6 +315,7 @@ Trips.propTypes = {
   updateTripData: PropTypes.func.isRequired,
   isTripRequired: PropTypes.bool.isRequired,
   removeTrip: PropTypes.func.isRequired,
+  isTripModifiabale: PropTypes.bool,
   // removeTrip: PropTypes.func.isRequired,
   // dispatch: PropTypes.func.isRequired,
 };

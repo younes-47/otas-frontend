@@ -17,6 +17,12 @@ import {
   UPDATE_ORDRE_MISSION_SUCCESS,
   UPDATE_ORDRE_MISSION_ERROR,
   ORDRE_MISSION_IDENTITY,
+  SUBMIT_ORDRE_MISSION,
+  SUBMIT_ORDRE_MISSION_SUCCESS,
+  SUBMIT_ORDRE_MISSION_ERROR,
+  LOAD_STATIC_DATA,
+  LOAD_STATIC_DATA_SUCCESS,
+  LOAD_STATIC_DATA_ERROR,
 } from './constants';
 
 export function defaultAction() {
@@ -25,6 +31,25 @@ export function defaultAction() {
   };
 }
 
+export function LoadStaticDataAction() {
+  return {
+    type: LOAD_STATIC_DATA,
+  };
+}
+
+export function LoadStaticDataSuccessAction(data) {
+  return {
+    type: LOAD_STATIC_DATA_SUCCESS,
+    data,
+  };
+}
+
+export function LoadStaticDataErrorAction(error) {
+  return {
+    type: LOAD_STATIC_DATA_ERROR,
+    error,
+  };
+}
 export function AddOrdreMissionAction(form) {
   return {
     type: ADD_ORDRE_MISSION,
@@ -52,16 +77,35 @@ export function UpdateOrdreMissionAction(form) {
   };
 }
 
-export function UpdateOrdreMissionSuccessAction(id) {
+export function UpdateOrdreMissionSuccessAction() {
   return {
     type: UPDATE_ORDRE_MISSION_SUCCESS,
-    id,
   };
 }
 
 export function UpdateOrdreMissionErrorAction(error) {
   return {
     type: UPDATE_ORDRE_MISSION_ERROR,
+    error,
+  };
+}
+
+export function submitOrdreMissionAction(id) {
+  return {
+    type: SUBMIT_ORDRE_MISSION,
+    id,
+  };
+}
+export function submitOrdreMissionSuccessAction(data) {
+  return {
+    type: SUBMIT_ORDRE_MISSION_SUCCESS,
+    data,
+  };
+}
+
+export function submitOrdreMissionErrorAction(error) {
+  return {
+    type: SUBMIT_ORDRE_MISSION_ERROR,
     error,
   };
 }

@@ -36,10 +36,7 @@ import {
 import DisplayUserinfo from 'components/DisplayUserinfo';
 import { Timeline } from '@mui/icons-material';
 import CustomizedTimeLine from 'components/CustomizedTimeLine';
-import {
-  ChangePageContentAction,
-  cleanupParentOrdreMissionPageAction,
-} from 'pages/OrdreMission/actions';
+import { cleanupParentOrdreMissionPageAction } from 'pages/OrdreMission/actions';
 import { setOrdreMissionStatusAction } from 'containers/OrdreMissionTable/actions';
 import {
   makeSelectErrorLoadingOrdreMissionDetails,
