@@ -24,6 +24,8 @@ export const initialState = {
 const ordreMissionReducer = (state = initialState, action) =>
   produce(state, (draft) => {
     switch (action.type) {
+      case DEFAULT_ACTION:
+        break;
       case LOAD_ORDRE_MISSION_DETAILS:
         draft.loadingOrdreMissionDetails = true;
         draft.errorLoadingOrdreMissionDetails = null;
@@ -36,8 +38,6 @@ const ordreMissionReducer = (state = initialState, action) =>
       case LOAD_ORDRE_MISSION_DETAILS_ERROR:
         draft.loadingOrdreMissionDetails = false;
         draft.errorLoadingOrdreMissionDetails = true;
-        break;
-      case DEFAULT_ACTION:
         break;
       case CHANGE_PAGE_CONTENT_ACTION:
         draft.pageContent = action.pageContent;

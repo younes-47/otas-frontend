@@ -69,7 +69,7 @@ export function* UpdateOrdreMission({ form }) {
   }
 }
 
-export function* submitOrdreMission({ id }) {
+export function* SubmitOrdreMission({ id }) {
   try {
     yield call(request.put, `${webService.SUBMIT_ORDRE_MISSION}?Id=${id}`, {
       headers: {
@@ -86,5 +86,5 @@ export default function* ordreMissionFormSaga() {
   yield takeLatest(LOAD_STATIC_DATA, LoadStaticData);
   yield takeLatest(ADD_ORDRE_MISSION, AddOrdreMission);
   yield takeLatest(UPDATE_ORDRE_MISSION, UpdateOrdreMission);
-  yield takeLatest(SUBMIT_ORDRE_MISSION, UpdateOrdreMission);
+  yield takeLatest(SUBMIT_ORDRE_MISSION, SubmitOrdreMission);
 }

@@ -50,6 +50,7 @@ export function LoadStaticDataErrorAction(error) {
     error,
   };
 }
+
 export function AddOrdreMissionAction(form) {
   return {
     type: ADD_ORDRE_MISSION,

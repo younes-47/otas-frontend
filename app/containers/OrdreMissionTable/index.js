@@ -88,15 +88,12 @@ export function OrdreMissionTable() {
         switch (statusOrdreMission) {
           case 'SAVED':
             setSnackbarAlertSeverity('info');
-            setSnackbarVisibility(true);
             break;
           case 'UPDATED':
             setSnackbarAlertSeverity('info');
-            setSnackbarVisibility(true);
             break;
           default:
             setSnackbarAlertSeverity('success');
-            setSnackbarVisibility(true);
         }
         setSnackbarVisibility(true);
       }
