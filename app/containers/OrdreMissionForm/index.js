@@ -575,6 +575,21 @@ export function OrdreMissionForm({ state }) {
         setModalVisibility(true);
         isAllGood = false;
       }
+      // expense date is invalid
+      if (
+        expense.expenseDate === null ||
+        expense.expenseDate === '' ||
+        !expense.expenseDate
+      ) {
+        setModalHeader('Invalid Information!');
+
+        setModalBody(
+          "One of the expenses' date is not set yet! Please review your expenses information and try again.",
+        );
+        setModalSevirity('error');
+        setModalVisibility(true);
+        isAllGood = false;
+      }
     });
     if (isAllGood === false) {
       return false;
