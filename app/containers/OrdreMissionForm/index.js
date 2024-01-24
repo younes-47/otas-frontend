@@ -44,20 +44,20 @@ import {
 } from 'pages/OrdreMission/actions';
 import { setOrdreMissionStatusAction } from 'containers/OrdreMissionTable/actions';
 import DisplayUserinfo from 'components/DisplayUserinfo';
-import {
-  makeSelectErrorLoadingOrdreMissionDetails,
-  makeSelectOrdreMissionDetails,
-} from 'pages/OrdreMission/selectors';
-import { makeSelectErrorSubmittingOrdreMission } from 'containers/OrdreMissionView/selectors';
+
 import CustomizedTimeLine from 'components/CustomizedTimeLine';
 import { Timeline } from '@mui/icons-material';
+import { makeSelectOrdreMissionIdentity } from 'pages/OrdreMission/selectors';
 import saga from './saga';
 import reducer from './reducer';
 import {
   makeSelectAbroad,
   makeSelectAddOrdreMissionError,
+  makeSelectErrorLoadingOrdreMissionDetails,
   makeSelectErrorLoadingStaticData,
+  makeSelectErrorSubmittingOrdreMission,
   makeSelectOnBehalf,
+  makeSelectOrdreMissionDetails,
   makeSelectStaticData,
   makeSelectUpdateOrdreMissionError,
 } from './selectors';
@@ -70,6 +70,7 @@ import {
   SelectOnBehalfAction,
   UpdateOrdreMissionAction,
   cleanupOrdreMissionFormPageAction,
+  loadOrdreMissionDetailsAction,
   submitOrdreMissionAction,
 } from './actions';
 
@@ -81,8 +82,9 @@ const mapStateToProps = createStructuredSelector({
   errorAddingOrdreMission: makeSelectAddOrdreMissionError(),
   errorUpdatingOrdreMission: makeSelectUpdateOrdreMissionError(),
   errorSubmittingOrdreMission: makeSelectErrorSubmittingOrdreMission(),
-  errorLoadingOrdreMissionDetails: makeSelectErrorLoadingOrdreMissionDetails(),
   staticData: makeSelectStaticData(),
+  ordreMissionIdentity: makeSelectOrdreMissionIdentity(),
+  errorLoadingOrdreMissionDetails: makeSelectErrorLoadingOrdreMissionDetails(),
   ordreMissionDetails: makeSelectOrdreMissionDetails(),
 });
 
@@ -101,6 +103,7 @@ export function OrdreMissionForm({ state }) {
     errorLoadingOrdreMissionDetails,
     ordreMissionDetails,
     errorSubmittingOrdreMission,
+    ordreMissionIdentity,
   } = useSelector(mapStateToProps);
   const [trips, setTrips] = useState([
     {
@@ -159,12 +162,21 @@ export function OrdreMissionForm({ state }) {
 
   const readOnly = state === 'VIEW' || state === 'CONFIRM';
 
+  // Load JobTitles, Managerusernames, departments
   useEffect(() => {
     if (errorLoadingStaticData === null) {
       dispatch(LoadStaticDataAction());
     }
   }, [staticData]);
 
+  // Load the data
+  useEffect(() => {
+    if (errorLoadingOrdreMissionDetails === null) {
+      dispatch(loadOrdreMissionDetailsAction(ordreMissionIdentity));
+    }
+  }, [errorLoadingOrdreMissionDetails]);
+
+  // Fill the loaded data in case of editing/modifying
   useEffect(() => {
     if (state === 'EDIT' || state === 'MODIFY') {
       if (ordreMissionDetails !== null) {
@@ -174,33 +186,35 @@ export function OrdreMissionForm({ state }) {
         );
         dispatch(SelectAbroadAction(ordreMissionDetails?.abroad.toString()));
         if (ordreMissionDetails?.requesterInfo !== null) {
-          updateActualRequesterData(
-            'firstName',
-            ordreMissionDetails?.requesterInfo?.firstName,
-          );
-          updateActualRequesterData(
-            'lastName',
-            ordreMissionDetails?.requesterInfo?.lastName,
-          );
-          updateActualRequesterData(
-            'registrationNumber',
-            ordreMissionDetails?.requesterInfo?.registrationNumber,
-          );
-          updateActualRequesterData(
-            'jobTitle',
-            ordreMissionDetails?.requesterInfo?.jobTitle,
-          );
-          updateActualRequesterData(
-            'managerUserName',
-            ordreMissionDetails?.requesterInfo?.managerUserName,
-          );
-          updateActualRequesterData(
-            'department',
-            ordreMissionDetails?.requesterInfo?.department,
-          );
+          // updateActualRequesterData(
+          //   'firstName',
+          //   ordreMissionDetails?.requesterInfo?.firstName,
+          // );
+          // updateActualRequesterData(
+          //   'lastName',
+          //   ordreMissionDetails?.requesterInfo?.lastName,
+          // );
+          // updateActualRequesterData(
+          //   'registrationNumber',
+          //   ordreMissionDetails?.requesterInfo?.registrationNumber,
+          // );
+          // updateActualRequesterData(
+          //   'jobTitle',
+          //   ordreMissionDetails?.requesterInfo?.jobTitle,
+          // );
+          // updateActualRequesterData(
+          //   'managerUserName',
+          //   ordreMissionDetails?.requesterInfo?.managerUserName,
+          // );
+          // updateActualRequesterData(
+          //   'department',
+          //   ordreMissionDetails?.requesterInfo?.department,
+          // );
+          setActualRequester(ordreMissionDetails?.requesterInfo);
         }
 
         setTrips([]);
+
         ordreMissionDetails?.avanceVoyagesDetails?.forEach((avanceDetails) => {
           avanceDetails?.trips?.forEach((trip) => {
             const formattedDateTrip = {
@@ -268,14 +282,14 @@ export function OrdreMissionForm({ state }) {
   useEffect(() => {
     if (errorAddingOrdreMission === false) {
       if (buttonClicked === 'SAVE-AS-DRAFT') {
-        dispatch(setOrdreMissionStatusAction('SAVED'));
         dispatch(cleanupParentOrdreMissionPageAction());
+        dispatch(setOrdreMissionStatusAction('SAVED'));
       }
     }
     if (errorUpdatingOrdreMission === false) {
       if (buttonClicked === 'SAVE-AS-DRAFT') {
-        dispatch(setOrdreMissionStatusAction('UPDATED'));
         dispatch(cleanupParentOrdreMissionPageAction());
+        dispatch(setOrdreMissionStatusAction('UPDATED'));
       }
     }
   }, [errorAddingOrdreMission, errorUpdatingOrdreMission]);
@@ -305,7 +319,6 @@ export function OrdreMissionForm({ state }) {
   useEffect(
     () => () => {
       dispatch(cleanupOrdreMissionFormPageAction());
-      dispatch(cleanupParentOrdreMissionPageAction());
     },
     [],
   );
@@ -634,7 +647,7 @@ export function OrdreMissionForm({ state }) {
   };
 
   const handleOnSubmitButtonClick = () => {
-    dispatch(submitOrdreMissionAction(ordreMissionDetails.id));
+    dispatch(submitOrdreMissionAction(ordreMissionDetails?.id));
     setButtonClicked('SUBMIT');
   };
 

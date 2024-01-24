@@ -31,6 +31,18 @@ const makeSelectStaticData = () =>
     (substate) => substate.staticData,
   );
 
+const makeSelectOrdreMissionDetails = () =>
+  createSelector(
+    selectOrdreMissionFormDomain,
+    (substate) => substate.ordreMissionDetails,
+  );
+
+const makeSelectErrorLoadingOrdreMissionDetails = () =>
+  createSelector(
+    selectOrdreMissionFormDomain,
+    (substate) => substate.errorLoadingOrdreMissionDetails,
+  );
+
 const makeSelectAddOrdreMissionError = () =>
   createSelector(
     selectOrdreMissionFormDomain,
@@ -74,6 +86,8 @@ const makeSelectCleanupStore = () =>
 
 export default makeSelectOrdreMissionForm;
 export {
+  makeSelectOrdreMissionDetails,
+  makeSelectErrorLoadingOrdreMissionDetails,
   makeSelectStaticData,
   makeSelectErrorLoadingStaticData,
   makeSelectErrorSubmittingOrdreMission,

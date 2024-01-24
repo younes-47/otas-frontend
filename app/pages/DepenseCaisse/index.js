@@ -11,7 +11,7 @@ import { useInjectReducer } from 'utils/injectReducer';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import DepenseCaisseForm from 'containers/DepenseCaisseForm';
 import DepenseCaisseTable from 'containers/DepenseCaisseTable';
-import { useInjectSaga } from 'redux-injectors';
+import { useInjectSaga } from 'utils/injectSaga';
 import saga from './saga';
 import reducer from './reducer';
 import { makeSelectChangePageContent } from './selectors';
@@ -37,7 +37,7 @@ export function DepenseCaisse() {
 
   switch (pageContent) {
     case 'ADD':
-      return <DepenseCaisseForm state="ADD"></DepenseCaisseForm>;
+      return <DepenseCaisseForm state="ADD" />;
     case 'VIEW':
       return <DepenseCaisseForm state="VIEW" />;
     case 'CONFIRM':

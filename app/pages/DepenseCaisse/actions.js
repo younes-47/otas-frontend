@@ -8,8 +8,8 @@ import {
   CHANGE_PAGE_CONTENT_ACTION,
   CLEANUP_STORE_ACTION,
   DEFAULT_ACTION,
-  LLOAD_DEPENSE_CAISSE_DETAILS_ERROR,
   LOAD_DEPENSE_CAISSE_DETAILS,
+  LOAD_DEPENSE_CAISSE_DETAILS_ERROR,
   LOAD_DEPENSE_CAISSE_DETAILS_SUCCESS,
 } from './constants';
 
@@ -34,7 +34,7 @@ export function loadDepenseCaisseDetailsSuccessAction(data) {
 
 export function loadDepenseCaisseDetailsErrorAction(error) {
   return {
-    type: LLOAD_DEPENSE_CAISSE_DETAILS_ERROR,
+    type: LOAD_DEPENSE_CAISSE_DETAILS_ERROR,
     error,
   };
 }

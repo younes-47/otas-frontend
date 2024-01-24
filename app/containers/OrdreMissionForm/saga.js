@@ -1,8 +1,8 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 import request from 'utils/request';
-import { loadOrdreMissionDetailsAction } from 'pages/OrdreMission/actions';
 import {
   ADD_ORDRE_MISSION,
+  LOAD_ORDRE_MISSION_DETAILS,
   LOAD_STATIC_DATA,
   SUBMIT_ORDRE_MISSION,
   UPDATE_ORDRE_MISSION,
@@ -15,6 +15,9 @@ import {
   LoadStaticDataSuccessAction,
   UpdateOrdreMissionErrorAction,
   UpdateOrdreMissionSuccessAction,
+  loadOrdreMissionDetailsAction,
+  loadOrdreMissionDetailsErrorAction,
+  loadOrdreMissionDetailsSuccessAction,
   submitOrdreMissionErrorAction,
   submitOrdreMissionSuccessAction,
 } from './actions';
@@ -82,9 +85,27 @@ export function* SubmitOrdreMission({ id }) {
   }
 }
 
+export function* loadOrdreMissionDetailsSaga({ id }) {
+  try {
+    const { data } = yield call(
+      request.get,
+      `${webService.LOAD_ORDRE_MISSION_DETAILS}?Id=${id}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    yield put(loadOrdreMissionDetailsSuccessAction(data));
+  } catch (error) {
+    yield put(loadOrdreMissionDetailsErrorAction(error));
+  }
+}
+
 export default function* ordreMissionFormSaga() {
   yield takeLatest(LOAD_STATIC_DATA, LoadStaticData);
   yield takeLatest(ADD_ORDRE_MISSION, AddOrdreMission);
   yield takeLatest(UPDATE_ORDRE_MISSION, UpdateOrdreMission);
   yield takeLatest(SUBMIT_ORDRE_MISSION, SubmitOrdreMission);
+  yield takeLatest(LOAD_ORDRE_MISSION_DETAILS, loadOrdreMissionDetailsSaga);
 }

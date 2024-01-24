@@ -22,7 +22,7 @@ export const initialState = {
   errorLoadingAvanceCaisses: null,
   avanceCaisses: [],
   deletingAvanceCaisse: false,
-  errorDeletingAvanceCaisse: false,
+  errorDeletingAvanceCaisse: null,
   statusAvanceCaisse: '',
 };
 
@@ -34,11 +34,11 @@ const avanceCaisseTableReducer = (state = initialState, action) =>
         break;
       case LOAD_AVANCE_CAISSES:
         draft.loadingAvanceCaisses = true;
-        draft.errorLoadingAvanceCaisses = false;
+        draft.errorLoadingAvanceCaisses = null;
         break;
       case LOAD_AVANCE_CAISSES_ERROR:
         draft.loadingAvanceCaisses = false;
-        draft.errorLoadingAvanceCaisses = action.error;
+        draft.errorLoadingAvanceCaisses = true;
         break;
       case LOAD_AVANCE_CAISSES_SUCCESS:
         draft.loadingAvanceCaisses = false;
@@ -53,14 +53,15 @@ const avanceCaisseTableReducer = (state = initialState, action) =>
         break;
       case DELETE_AVANCE_CAISSE:
         draft.deletingAvanceCaisse = true;
-        draft.errorDeletingAvanceCaisse = false;
+        draft.errorDeletingAvanceCaisse = null;
         break;
       case DELETE_AVANCE_CAISSE_ERROR:
         draft.deletingAvanceCaisse = false;
-        draft.errorDeletingAvanceCaisse = action.error;
+        draft.errorDeletingAvanceCaisse = true;
         break;
       case DELETE_AVANCE_CAISSE_SUCCESS:
         draft.deletingAvanceCaisse = false;
+        draft.errorDeletingAvanceCaisse = false;
         draft.avanceCaisses = action.data;
         break;
       case CLEANUP_STORE_ACTION:
@@ -68,7 +69,7 @@ const avanceCaisseTableReducer = (state = initialState, action) =>
         draft.errorLoadingAvanceCaisses = null;
         draft.avanceCaisses = [];
         draft.deletingAvanceCaisse = false;
-        draft.errorDeletingAvanceCaisse = false;
+        draft.errorDeletingAvanceCaisse = null;
         draft.statusAvanceCaisse = '';
         break;
     }

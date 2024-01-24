@@ -26,8 +26,10 @@ import EditIcon from '@mui/icons-material/Edit';
 import {
   ChangePageContentAction,
   loadOrdreMissionDetailsAction,
+  setOrdreMissionIdentityAction,
 } from 'pages/OrdreMission/actions';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
+import { makeSelectErrorLoadingOrdreMissionDetails } from 'pages/OrdreMission/selectors';
 import saga from './saga';
 import reducer from './reducer';
 import {
@@ -122,12 +124,12 @@ export function OrdreMissionTable() {
   };
 
   const handleOnEditButtonClick = (id) => {
-    dispatch(loadOrdreMissionDetailsAction(id));
+    dispatch(setOrdreMissionIdentityAction(id));
     dispatch(ChangePageContentAction('EDIT'));
   };
 
   const handleOnModifyButtonClick = (id) => {
-    dispatch(loadOrdreMissionDetailsAction(id));
+    dispatch(setOrdreMissionIdentityAction(id));
     dispatch(ChangePageContentAction('MODIFY'));
   };
 

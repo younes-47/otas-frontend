@@ -20,7 +20,7 @@ const mapStateToProps = createStructuredSelector({
 
 export function OrdreMission() {
   useInjectReducer({ key: 'ordreMission', reducer });
-  useInjectSaga({ key: 'ordreMission', saga });
+  // useInjectSaga({ key: 'ordreMission', saga });
 
   const { pageContent } = useSelector(mapStateToProps);
   const dispatch = useDispatch();

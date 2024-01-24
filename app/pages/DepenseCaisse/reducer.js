@@ -8,7 +8,7 @@ import {
   CHANGE_PAGE_CONTENT_ACTION,
   CLEANUP_STORE_ACTION,
   DEFAULT_ACTION,
-  LLOAD_DEPENSE_CAISSE_DETAILS_ERROR,
+  LOAD_DEPENSE_CAISSE_DETAILS_ERROR,
   LOAD_DEPENSE_CAISSE_DETAILS,
   LOAD_DEPENSE_CAISSE_DETAILS_SUCCESS,
 } from './constants';
@@ -34,7 +34,7 @@ const depenseCaisseReducer = (state = initialState, action) =>
         draft.errorLoadingDepenseCaisseDetails = false;
         draft.depenseCaisseDetails = action.data;
         break;
-      case LLOAD_DEPENSE_CAISSE_DETAILS_ERROR:
+      case LOAD_DEPENSE_CAISSE_DETAILS_ERROR:
         draft.loadingDepenseCaisseDetails = false;
         draft.errorLoadingDepenseCaisseDetails = true;
         break;

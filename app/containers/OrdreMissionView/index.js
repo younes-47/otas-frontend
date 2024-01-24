@@ -38,10 +38,6 @@ import { Timeline } from '@mui/icons-material';
 import CustomizedTimeLine from 'components/CustomizedTimeLine';
 import { cleanupParentOrdreMissionPageAction } from 'pages/OrdreMission/actions';
 import { setOrdreMissionStatusAction } from 'containers/OrdreMissionTable/actions';
-import {
-  makeSelectErrorLoadingOrdreMissionDetails,
-  makeSelectOrdreMissionDetails,
-} from 'pages/OrdreMission/selectors';
 import { cleanupOrdreMissionFormPageAction } from 'containers/OrdreMissionForm/actions';
 import reducer from './reducer';
 import saga from './saga';
@@ -54,9 +50,7 @@ import { makeSelectErrorSubmittingOrdreMission } from './selectors';
 import DisplayExpenses from './DisplayExpenses';
 const mapStateToProps = createStructuredSelector({
   isSideBarVisible: makeSelectIsSideBarVisible(),
-  errorLoadingOrdreMissionDetails: makeSelectErrorLoadingOrdreMissionDetails(),
   errorSubmittingOrdreMission: makeSelectErrorSubmittingOrdreMission(),
-  ordreMissionDetails: makeSelectOrdreMissionDetails(),
 });
 
 export function OrdreMissionView({ state }) {

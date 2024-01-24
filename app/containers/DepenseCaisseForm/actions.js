@@ -113,7 +113,7 @@ export function submitDepenseCaisseErrorAction(error) {
   };
 }
 
-export function cleanupStoreAction() {
+export function cleanupDepenseCaisseFormPageStoreAction() {
   return {
     type: CLEANUP_STORE_ACTION,
   };

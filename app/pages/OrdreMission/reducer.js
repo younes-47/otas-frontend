@@ -8,16 +8,13 @@ import {
   DEFAULT_ACTION,
   CHANGE_PAGE_CONTENT_ACTION,
   CLEANUP_STORE_ACTION,
-  LOAD_ORDRE_MISSION_DETAILS,
-  LOAD_ORDRE_MISSION_DETAILS_SUCCESS,
-  LOAD_ORDRE_MISSION_DETAILS_ERROR,
+  ORDRE_MISSION_IDENTITY,
 } from './constants';
 
 export const initialState = {
   pageContent: 'TABLE',
-  loadingOrdreMissionDetails: false,
-  errorLoadingOrdreMissionDetails: null,
-  ordreMissionDetails: null,
+
+  ordreMissionIdentity: null,
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -26,27 +23,15 @@ const ordreMissionReducer = (state = initialState, action) =>
     switch (action.type) {
       case DEFAULT_ACTION:
         break;
-      case LOAD_ORDRE_MISSION_DETAILS:
-        draft.loadingOrdreMissionDetails = true;
-        draft.errorLoadingOrdreMissionDetails = null;
-        break;
-      case LOAD_ORDRE_MISSION_DETAILS_SUCCESS:
-        draft.loadingOrdreMissionDetails = false;
-        draft.errorLoadingOrdreMissionDetails = false;
-        draft.ordreMissionDetails = action.data;
-        break;
-      case LOAD_ORDRE_MISSION_DETAILS_ERROR:
-        draft.loadingOrdreMissionDetails = false;
-        draft.errorLoadingOrdreMissionDetails = true;
-        break;
       case CHANGE_PAGE_CONTENT_ACTION:
         draft.pageContent = action.pageContent;
         break;
+      case ORDRE_MISSION_IDENTITY:
+        draft.ordreMissionIdentity = action.id;
+        break;
       case CLEANUP_STORE_ACTION:
         draft.pageContent = 'TABLE';
-        draft.loadingOrdreMissionDetails = false;
-        draft.errorLoadingOrdreMissionDetails = null;
-        draft.ordreMissionDetails = null;
+        draft.ordreMissionIdentity = null;
         break;
     }
   });

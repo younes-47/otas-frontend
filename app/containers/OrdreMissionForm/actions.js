@@ -16,18 +16,40 @@ import {
   UPDATE_ORDRE_MISSION,
   UPDATE_ORDRE_MISSION_SUCCESS,
   UPDATE_ORDRE_MISSION_ERROR,
-  ORDRE_MISSION_IDENTITY,
   SUBMIT_ORDRE_MISSION,
   SUBMIT_ORDRE_MISSION_SUCCESS,
   SUBMIT_ORDRE_MISSION_ERROR,
   LOAD_STATIC_DATA,
   LOAD_STATIC_DATA_SUCCESS,
   LOAD_STATIC_DATA_ERROR,
+  LOAD_ORDRE_MISSION_DETAILS,
+  LOAD_ORDRE_MISSION_DETAILS_SUCCESS,
+  LOAD_ORDRE_MISSION_DETAILS_ERROR,
 } from './constants';
 
 export function defaultAction() {
   return {
     type: DEFAULT_ACTION,
+  };
+}
+
+export function loadOrdreMissionDetailsAction(id) {
+  return {
+    type: LOAD_ORDRE_MISSION_DETAILS,
+    id,
+  };
+}
+export function loadOrdreMissionDetailsSuccessAction(data) {
+  return {
+    type: LOAD_ORDRE_MISSION_DETAILS_SUCCESS,
+    data,
+  };
+}
+
+export function loadOrdreMissionDetailsErrorAction(error) {
+  return {
+    type: LOAD_ORDRE_MISSION_DETAILS_ERROR,
+    error,
   };
 }
 
@@ -135,12 +157,5 @@ export function SelectTransportationMethodAction(
 export function cleanupOrdreMissionFormPageAction() {
   return {
     type: CLEANUP_STORE_ACTION,
-  };
-}
-
-export function setOrdreMissionIdentity(data) {
-  return {
-    type: ORDRE_MISSION_IDENTITY,
-    data,
   };
 }

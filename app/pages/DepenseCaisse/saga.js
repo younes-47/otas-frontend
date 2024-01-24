@@ -1,16 +1,10 @@
 import { take, call, put, select, takeLatest } from 'redux-saga/effects';
 import request from 'utils/request';
 import {
-  loadDepenseCaisseSuccessAction,
-  loadDepenseCaisseErrorAction,
   loadDepenseCaisseDetailsSuccessAction,
   loadDepenseCaisseDetailsErrorAction,
 } from './actions';
-import {
-  LOAD_DEPENSE_CAISSES,
-  LOAD_DEPENSE_CAISSE_DETAILS,
-  webService,
-} from './constants';
+import { LOAD_DEPENSE_CAISSE_DETAILS, webService } from './constants';
 
 // Individual exports for testing
 

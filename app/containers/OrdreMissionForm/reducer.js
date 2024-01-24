@@ -22,6 +22,9 @@ import {
   LOAD_STATIC_DATA,
   LOAD_STATIC_DATA_SUCCESS,
   LOAD_STATIC_DATA_ERROR,
+  LOAD_ORDRE_MISSION_DETAILS,
+  LOAD_ORDRE_MISSION_DETAILS_SUCCESS,
+  LOAD_ORDRE_MISSION_DETAILS_ERROR,
 } from './constants';
 
 export const initialState = {
@@ -37,6 +40,9 @@ export const initialState = {
   errorUpdatingOrdreMission: null,
   submittingOrdreMission: false,
   errorSubmittingOrdreMission: null,
+  loadingOrdreMissionDetails: false,
+  errorLoadingOrdreMissionDetails: null,
+  ordreMissionDetails: null,
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -57,6 +63,19 @@ const ordreMissionFormReducer = (state = initialState, action) =>
       case LOAD_STATIC_DATA_ERROR:
         draft.loadingStaticData = false;
         draft.errorLoadingStaticData = true;
+        break;
+      case LOAD_ORDRE_MISSION_DETAILS:
+        draft.loadingOrdreMissionDetails = true;
+        draft.errorLoadingOrdreMissionDetails = null;
+        break;
+      case LOAD_ORDRE_MISSION_DETAILS_SUCCESS:
+        draft.loadingOrdreMissionDetails = false;
+        draft.errorLoadingOrdreMissionDetails = false;
+        draft.ordreMissionDetails = action.data;
+        break;
+      case LOAD_ORDRE_MISSION_DETAILS_ERROR:
+        draft.loadingOrdreMissionDetails = false;
+        draft.errorLoadingOrdreMissionDetails = true;
         break;
       case ADD_ORDRE_MISSION:
         draft.addingOrdreMission = true;
@@ -114,6 +133,9 @@ const ordreMissionFormReducer = (state = initialState, action) =>
         draft.errorUpdatingOrdreMission = null;
         draft.submittingOrdreMission = false;
         draft.errorSubmittingOrdreMission = null;
+        draft.loadingOrdreMissionDetails = false;
+        draft.errorLoadingOrdreMissionDetails = null;
+        draft.ordreMissionDetails = null;
         break;
     }
   });
