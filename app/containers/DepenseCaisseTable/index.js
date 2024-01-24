@@ -3,7 +3,6 @@ import { createStructuredSelector } from 'reselect';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { useDispatch, useSelector } from 'react-redux';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
-
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import Box from '@mui/material/Box';
@@ -27,7 +26,7 @@ import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import { DateTimeFormater } from 'utils/Custom/stringManipulation';
 import {
   changePageContentAction,
-  loadDepenseCaisseDetailsAction,
+  setDepenseCaisseIdentityAction,
 } from 'pages/DepenseCaisse/actions';
 import CloseIcon from '@mui/icons-material/Close';
 import { FilePresent } from '@mui/icons-material';
@@ -123,60 +122,6 @@ export function DepenseCaisseTable() {
     }
   }, [errorDownloadingDepenseCaisseReceiptsFile]);
 
-  //   if (errorDownloadingDepenseCaisseReceiptsFile === false) {
-  //     if (downloadDepenseCaisseReceiptsFileResponse.statusCode === 200) {
-  //       // Find the Content-Disposition header
-  //       const contentDispositionHeader =
-  //         downloadDepenseCaisseReceiptsFileResponse.content.headers.find(
-  //           (header) => header.key === 'Content-Disposition',
-  //         );
-
-  //       // Check if the header is found and has a value property
-  //       if (contentDispositionHeader && contentDispositionHeader.value) {
-  //         // Extract filename from Content-Disposition header
-  //         const filename =
-  //           contentDispositionHeader.value[0].split('filename=')[1];
-
-  //         // Make a separate request to get the file content
-  //         axios({
-  //           url: `http://DI3142DZ3:5030/api/DepenseCaisse/ReceiptsFile/Download?fileName=${filename}`,
-  //           method: 'GET',
-  //           responseType: 'blob', // Important for binary data
-  //         })
-  //           .then((response) => {
-  //             // Create a Blob from the content
-  //             const blob = new Blob([response.data], {
-  //               type: 'application/octet-stream',
-  //             });
-
-  //             // Create a URL for the Blob
-  //             const blobUrl = window.URL.createObjectURL(blob);
-
-  //             // Create a download link
-  //             const link = document.createElement('a');
-  //             link.href = blobUrl;
-  //             link.download = filename;
-
-  //             // Append the link to the document and trigger the download
-  //             document.body.appendChild(link);
-  //             link.click();
-
-  //             // Clean up
-  //             document.body.removeChild(link);
-  //             window.URL.revokeObjectURL(blobUrl); // Release the Blob URL
-  //           })
-  //           .catch((error) => {
-  //             console.error('Error fetching file content:', error);
-  //           });
-  //       } else {
-  //         console.error(
-  //           'Content-Disposition header not found or does not have a value property.',
-  //         );
-  //       }
-  //     }
-  //   }
-  // }, [downloadDepenseCaisseReceiptsFileResponse]);
-
   useEffect(() => {
     if (errorLoadingDepenseCaisses === null) {
       dispatch(loadDepenseCaisseAction());
@@ -184,15 +129,12 @@ export function DepenseCaisseTable() {
         switch (statusDepenseCaisse) {
           case 'SAVED':
             setSnackbarAlertSeverity('info');
-            setSnackbarVisibility(true);
             break;
           case 'UPDATED':
             setSnackbarAlertSeverity('info');
-            setSnackbarVisibility(true);
             break;
           default:
             setSnackbarAlertSeverity('success');
-            setSnackbarVisibility(true);
         }
         setSnackbarVisibility(true);
       }
@@ -220,11 +162,11 @@ export function DepenseCaisseTable() {
     dispatch(changePageContentAction('ADD'));
   };
   const handleOnEditButtonClick = (id) => {
-    dispatch(loadDepenseCaisseDetailsAction(id));
+    dispatch(setDepenseCaisseIdentityAction(id));
     dispatch(changePageContentAction('EDIT'));
   };
   const handleOnModifyButtonClick = (id) => {
-    dispatch(loadDepenseCaisseDetailsAction(id));
+    dispatch(setDepenseCaisseIdentityAction(id));
     dispatch(changePageContentAction('MODIFY'));
   };
 

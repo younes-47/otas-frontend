@@ -11,8 +11,11 @@ import { Box, Stack } from '@mui/system';
 import { v4 as uuidv4 } from 'uuid';
 import PropTypes from 'prop-types';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import CloseIcon from '@mui/icons-material/Close';
+import HistoryIcon from '@mui/icons-material/History';
 import {
   Alert,
+  Autocomplete,
   Button,
   Dialog,
   DialogActions,
@@ -23,44 +26,79 @@ import {
   FormControlLabel,
   FormLabel,
   IconButton,
+  Paper,
   Radio,
   RadioGroup,
+  Snackbar,
   TextField,
+  Typography,
 } from '@mui/material';
 
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import dayjs from 'dayjs';
-import { changePageContentAction } from 'pages/AvanceCaisse/actions';
+import {
+  changePageContentAction,
+  cleanupAvanceCaisseParentPageStoreAction,
+} from 'pages/AvanceCaisse/actions';
 import DisplayUserinfo from 'components/DisplayUserinfo';
 import { setAvanceCaisseStatusAction } from 'containers/AvanceCaisseTable/actions';
-import makeSelectAvanceCaisseForm, {
+import { makeSelectAvanceCaisseIdentity } from 'pages/AvanceCaisse/selectors';
+import { Timeline } from '@mui/lab';
+import CustomizedTimeLine from 'components/CustomizedTimeLine';
+import {
   makeSelectAddAvanceCaisse,
+  makeSelectAvanceCaisseDetails,
+  makeSelectErrorLoadingAvanceCaisseDetails,
+  makeSelectErrorLoadingStaticData,
+  makeSelectErrorSubmittingAvanceCaisse,
+  makeSelectErrorUpdatingAvanceCaisse,
   makeSelectOnBehalf,
+  makeSelectStaticData,
 } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
 import Expenses from './Expenses';
 import {
   AddAvanceCaisseAction,
+  LoadStaticDataAction,
   SelectOnBehalfAction,
-  cleanupStoreAction,
+  UpdateAvanceCaisseAction,
+  cleanupAvanceCaisseFormPageStoreAction,
+  loadAvanceCaisseDetailsAction,
+  submitAvanceCaisseAction,
 } from './actions';
 
 const mapStateToProps = createStructuredSelector({
-  avanceCaisseForm: makeSelectAvanceCaisseForm(),
   isSideBarVisible: makeSelectIsSideBarVisible(),
   onBehalfSelection: makeSelectOnBehalf(),
   errorAddingAvanceCaisse: makeSelectAddAvanceCaisse(),
+  errorLoadingStaticData: makeSelectErrorLoadingStaticData(),
+  errorUpdatingAvanceCaisse: makeSelectErrorUpdatingAvanceCaisse(),
+  errorSubmittingAvanceCaisse: makeSelectErrorSubmittingAvanceCaisse(),
+  staticData: makeSelectStaticData(),
+  avanceCaisseIdentity: makeSelectAvanceCaisseIdentity(),
+  errorloadingAvanceCaisseDetails: makeSelectErrorLoadingAvanceCaisseDetails(),
+  avanceCaisseDetails: makeSelectAvanceCaisseDetails(),
 });
 
 export function AvanceCaisseForm({ state }) {
   useInjectReducer({ key: 'avanceCaisseForm', reducer });
   useInjectSaga({ key: 'avanceCaisseForm', saga });
   const dispatch = useDispatch();
-  const { isSideBarVisible, onBehalfSelection, errorAddingAvanceCaisse } =
-    useSelector(mapStateToProps);
+  const {
+    avanceCaisseDetails,
+    errorloadingAvanceCaisseDetails,
+    avanceCaisseIdentity,
+    staticData,
+    errorSubmittingAvanceCaisse,
+    errorUpdatingAvanceCaisse,
+    errorLoadingStaticData,
+    isSideBarVisible,
+    onBehalfSelection,
+    errorAddingAvanceCaisse,
+  } = useSelector(mapStateToProps);
   const [currency, setCurrency] = useState('MAD');
   const [total, setTotal] = useState(0.0);
   const [description, setDescription] = useState('');
@@ -70,31 +108,132 @@ export function AvanceCaisseForm({ state }) {
     registrationNumber: '',
     jobTitle: '',
     department: '',
-    manager: '',
+    managerUserName: '',
   });
   const [expenses, setExpenses] = useState([
     {
       id: 0,
       description: '',
-      expenseDate: dayjs(Date()),
-      estimatedExpenseFee: 0.0,
+      expenseDate: null,
+      estimatedFee: 0.0,
     },
   ]);
 
-  const [inputError, setInputError] = useState('');
   const [modalVisibility, setModalVisibility] = useState(false);
+  const [modalBody, setModalBody] = useState('');
+  const [modalHeader, setModalHeader] = useState('');
+  const [modalSevirity, setModalSevirity] = useState('');
+  const [buttonClicked, setButtonClicked] = useState(''); // this state is used to track which button has been clicked
+  const [savedSnackbarVisibility, setSavedSnackbarVisibility] = useState(false);
+  const action = (
+    <IconButton
+      size="small"
+      aria-label="close"
+      color="inherit"
+      onClick={() => setSavedSnackbarVisibility(false)}
+    >
+      <CloseIcon fontSize="small" />
+    </IconButton>
+  );
+
+  const readOnly = state === 'VIEW' || state === 'CONFIRM';
+
+  // Load JobTitles, Managerusernames, departments
+  useEffect(() => {
+    if (errorLoadingStaticData === null) {
+      dispatch(LoadStaticDataAction());
+    }
+  }, [staticData]);
+
+  // Load the data
+  useEffect(() => {
+    if (state !== 'ADD' && errorloadingAvanceCaisseDetails === null) {
+      dispatch(loadAvanceCaisseDetailsAction(avanceCaisseIdentity));
+    }
+  }, [errorloadingAvanceCaisseDetails]);
+
+  // Fill the loaded data in case of editing/modifying
+  useEffect(() => {
+    if (state === 'EDIT' || state === 'MODIFY') {
+      if (avanceCaisseDetails !== null) {
+        setDescription(avanceCaisseDetails?.description);
+        dispatch(
+          SelectOnBehalfAction(avanceCaisseDetails?.onBehalf.toString()),
+        );
+
+        if (avanceCaisseDetails?.requesterInfo !== null) {
+          setActualRequester(avanceCaisseDetails?.requesterInfo);
+        }
+
+        setExpenses([]);
+
+        avanceCaisseDetails?.expenses?.forEach((expense) => {
+          const formattedDateExpense = {
+            id: expense.id,
+            currency: expense.currency,
+            description: expense.description,
+            expenseDate: dayjs(new Date(expense.expenseDate)),
+            estimatedFee: expense.estimatedFee,
+          };
+          setExpenses((prevExpenses) => [
+            ...prevExpenses,
+            formattedDateExpense,
+          ]);
+        });
+      }
+    }
+  }, [avanceCaisseDetails]);
+
+  // Listen to adding & updating --> when saving as draft
   useEffect(() => {
     if (errorAddingAvanceCaisse === false) {
-      dispatch(cleanupStoreAction());
-      dispatch(setAvanceCaisseStatusAction('SAVED'));
-      dispatch(changePageContentAction('TABLE'));
+      if (buttonClicked === 'SAVE-AS-DRAFT') {
+        dispatch(cleanupAvanceCaisseParentPageStoreAction());
+        dispatch(setAvanceCaisseStatusAction('SAVED'));
+      }
     }
-  }, [errorAddingAvanceCaisse]);
+    if (errorUpdatingAvanceCaisse === false) {
+      if (buttonClicked === 'SAVE-AS-DRAFT') {
+        dispatch(cleanupAvanceCaisseParentPageStoreAction());
+        dispatch(setAvanceCaisseStatusAction('UPDATED'));
+      }
+    }
+  }, [errorAddingAvanceCaisse, errorUpdatingAvanceCaisse]);
+
+  // Listen to loading --> when confirming adding or updating
+  useEffect(() => {
+    if (buttonClicked === 'CONFIRM') {
+      dispatch(changePageContentAction('CONFIRM'));
+      setSavedSnackbarVisibility(true);
+    }
+  }, [buttonClicked]);
+
+  // Listen to Submit/Resubmit
+  useEffect(() => {
+    if (errorSubmittingAvanceCaisse === false) {
+      if (buttonClicked === 'SUBMIT') {
+        dispatch(setAvanceCaisseStatusAction('SUBMITTED'));
+      }
+      if (buttonClicked === 'SUBMIT-MODIFICATIONS') {
+        dispatch(setAvanceCaisseStatusAction('RESUBMITTED'));
+      }
+
+      dispatch(cleanupAvanceCaisseParentPageStoreAction());
+    }
+  }, [errorSubmittingAvanceCaisse]);
+
+  useEffect(
+    () => () => {
+      dispatch(cleanupAvanceCaisseFormPageStoreAction());
+      dispatch(cleanupAvanceCaisseParentPageStoreAction());
+    },
+    [],
+  );
 
   useEffect(() => {
     let totalExpenses = 0.0;
     expenses.forEach((expense) => {
-      totalExpenses += parseFloat(expense.estimatedExpenseFee);
+      totalExpenses += parseFloat(expense.estimatedFee);
     });
     setTotal(totalExpenses);
   }, [expenses]);
@@ -104,13 +243,14 @@ export function AvanceCaisseForm({ state }) {
     }
   };
 
+  // FUNCS
   const addExpense = () => {
     const expenseId = uuidv4();
     const newExpense = {
       id: expenseId,
       description: '',
       expenseDate: dayjs(Date()),
-      estimatedExpenseFee: 0.0,
+      estimatedFee: 0.0,
     };
     setExpenses((prevExpenses) => [...prevExpenses, newExpense]);
   };
@@ -137,12 +277,20 @@ export function AvanceCaisseForm({ state }) {
     setCurrency(event.target.value);
   };
 
+  const removeExpense = (expenseId) => {
+    const updatedExpenses = expenses.filter(
+      (expense) => expense.id !== expenseId,
+    );
+    setExpenses(updatedExpenses);
+  };
   const ValidateInputs = () => {
     // Invalid on behalf selection
     if (data.onBehalf !== true && data.onBehalf !== false) {
-      setInputError(
+      setModalHeader('Invalid Information!');
+      setModalBody(
         'Could not figure out whether you are filling this request on behalf of someone else or not! Please select "Yes" or "No".',
       );
+      setModalSevirity('error');
       setModalVisibility(true);
       return false;
     }
@@ -150,23 +298,32 @@ export function AvanceCaisseForm({ state }) {
     // on behalf of someone + missing actual requester info
     if (
       data.onBehalf === true &&
-      (actualRequester.firstName === '' ||
-        actualRequester.lastName === '' ||
-        actualRequester.registrationNumber === '' ||
-        actualRequester.jobTitle === '' ||
-        actualRequester.department === '' ||
-        actualRequester.manager === '')
+      (!actualRequester.firstName ||
+        !actualRequester.lastName ||
+        !actualRequester.registrationNumber ||
+        !actualRequester.jobTitle ||
+        !actualRequester.department ||
+        !actualRequester.managerUserName)
     ) {
-      setInputError(
+      setModalHeader('Invalid Information!');
+      setModalBody(
         'You must fill all actual requester information if you are filling this request on behalf of someone else!',
       );
+      setModalSevirity('error');
       setModalVisibility(true);
       return false;
     }
 
+    // if on behalf is false -> set actual requester to null
+    if (data.onBehalf === false) {
+      setActualRequester(null);
+    }
+
     // Description
     if (data.description === '') {
-      setInputError('You must provide a description for the request!');
+      setModalHeader('Invalid Information!');
+      setModalBody('You must provide a description for the request!');
+      setModalSevirity('error');
       setModalVisibility(true);
       return false;
     }
@@ -176,25 +333,44 @@ export function AvanceCaisseForm({ state }) {
     // expenses
     data.expenses.forEach((expense) => {
       if (expense.description === '') {
-        setInputError(
-          'One of the expenses required information is missing! Please review your expenses and fill all necessary information.',
-        );
+        setModalHeader('Invalid Information!');
+        setModalBody('You must provide a description for your expenses');
+        setModalSevirity('error');
         setModalVisibility(true);
         isAllGood = false;
       }
       // fee = 0
       if (expense.estimatedFee <= 0 || expense.estimatedFee === '0') {
-        setInputError(
+        setModalHeader('Invalid Information!');
+        setModalBody(
           'Expense fee cannot be 0 or negative! Please review your expenses information and try again.',
         );
+        setModalSevirity('error');
         setModalVisibility(true);
         isAllGood = false;
       }
       // value is blank
       if (expense.estimatedFee === '') {
-        setInputError(
-          'Invalid Total value! Please review your trajectories and/or expenses fee/Mileage values and try again',
+        setModalHeader('Invalid Information!');
+        setModalBody(
+          'Invalid Total value! Please review your expenses fee values and try again',
         );
+        setModalSevirity('error');
+        setModalVisibility(true);
+        isAllGood = false;
+      }
+      // expense date is invalid
+      if (
+        expense.expenseDate === null ||
+        expense.expenseDate === '' ||
+        !expense.expenseDate
+      ) {
+        setModalHeader('Invalid Information!');
+
+        setModalBody(
+          "One of the expenses' date is not set yet! Please review your expenses information and try again.",
+        );
+        setModalSevirity('error');
         setModalVisibility(true);
         isAllGood = false;
       }
@@ -207,17 +383,18 @@ export function AvanceCaisseForm({ state }) {
     return true;
   };
 
-  const removeExpense = (expenseId) => {
-    const updatedExpenses = expenses.filter(
-      (expense) => expense.id !== expenseId,
-    );
-    setExpenses(updatedExpenses);
+  const getAction = () => {
+    let requestAction = '';
+    if (avanceCaisseDetails !== null) {
+      requestAction = state === 'EDIT' ? 'save' : 'submit';
+    }
+    return requestAction;
   };
 
   // Handle on buttons click
   const handleOnReturnButtonClick = () => {
-    dispatch(cleanupStoreAction());
-    dispatch(changePageContentAction('TABLE'));
+    dispatch(cleanupAvanceCaisseFormPageStoreAction());
+    dispatch(cleanupAvanceCaisseParentPageStoreAction());
   };
 
   const handleOnSaveAsDraftClick = () => {
@@ -225,12 +402,56 @@ export function AvanceCaisseForm({ state }) {
     if (result === true) {
       if (state === 'ADD') {
         dispatch(AddAvanceCaisseAction(data));
-        dispatch(cleanupStoreAction());
-        dispatch(setAvanceCaisseStatusAction('SAVED'));
+        setButtonClicked('SAVE-AS-DRAFT');
+      }
+      if (state === 'EDIT') {
+        // Edit and save in case of draft
+        dispatch(UpdateAvanceCaisseAction(data));
+        setButtonClicked('SAVE-AS-DRAFT');
       }
     }
   };
+
+  const handleOnConfirmButtonClick = () => {
+    const result = ValidateInputs();
+    if (result === true) {
+      if (state === 'ADD') {
+        dispatch(AddAvanceCaisseAction(data));
+        setButtonClicked('CONFIRM');
+      }
+      if (state === 'EDIT') {
+        // Edit and save in case of draft
+        dispatch(UpdateAvanceCaisseAction(data));
+        setButtonClicked('CONFIRM');
+      }
+    }
+  };
+
+  const handleOnSubmitButtonClick = () => {
+    dispatch(submitAvanceCaisseAction(avanceCaisseDetails?.id));
+    setButtonClicked('SUBMIT');
+  };
+
+  const handleOnSubmitModificationsButtonClick = () => {
+    setModalHeader('Confirmation');
+    setModalBody(
+      "Please Review your information before confirming your changes. You won't be able to modify your request afterwards!",
+    );
+    setModalSevirity('warning');
+    setModalVisibility(true);
+  };
+
+  const handleOnSubmitModificationsConfirmationButtonClick = () => {
+    // This button is in the modal
+    const result = ValidateInputs();
+    if (result === true) {
+      dispatch(UpdateAvanceCaisseAction(data));
+      setButtonClicked('SUBMIT-MODIFICATIONS');
+    }
+  };
   const data = {
+    id: avanceCaisseDetails !== null ? avanceCaisseDetails?.id : 0,
+    action: getAction(),
     onBehalf: onBehalfSelection === 'true',
     description,
     currency,
@@ -259,9 +480,68 @@ export function AvanceCaisseForm({ state }) {
         textAlign="center"
         marginBottom={2}
       >
-        <h1 style={{ fontSize: '30px' }}>Avance Caisse</h1>
+        {state === 'ADD' && (
+          <h1 style={{ fontSize: '30px' }}>New Avance Caisse Request</h1>
+        )}
+        {state === 'EDIT' && (
+          <h1 style={{ fontSize: '30px' }}>
+            Editing Avance Caisse #{avanceCaisseDetails?.id}
+          </h1>
+        )}
+        {state === 'MODIFY' && (
+          <h1 style={{ fontSize: '30px' }}>
+            Modifying Avance Caisse #{avanceCaisseDetails?.id}
+          </h1>
+        )}
+        {state === 'VIEW' && (
+          <h1 style={{ fontSize: '30px' }}>
+            View Avance Caisse #{avanceCaisseDetails?.id}
+          </h1>
+        )}
+        {state === 'CONFIRM' && (
+          <Paper elevation={3}>
+            <Alert severity="info">
+              <Typography variant="h4" marginTop={3}>
+                Please Review your information before submitting
+              </Typography>
+            </Alert>
+          </Paper>
+        )}
       </Box>
-
+      {state === 'CONFIRM' && (
+        <Box
+          display="flex"
+          justifyContent="center"
+          textAlign="center"
+          marginBottom={1}
+        >
+          <Typography variant="caption">
+            *This request has been saved as a draft. You can still modify it if
+            you don&apos;t submit it. <br /> Please note: your request cannot be
+            edited once it is submitted.
+          </Typography>
+        </Box>
+      )}
+      {state === 'VIEW' && (
+        <Box
+          display="flex"
+          justifyContent="center"
+          textAlign="center"
+          marginBottom={2}
+        >
+          <Button
+            variant="contained"
+            color="warning"
+            onClick={() => {
+              setModalVisibility(true);
+              setModalHeader('Status History');
+            }}
+            startIcon={<HistoryIcon />}
+          >
+            Status History
+          </Button>
+        </Box>
+      )}
       {/* DIVIDER */}
       <Box
         display="flex"
@@ -273,42 +553,56 @@ export function AvanceCaisseForm({ state }) {
       </Box>
 
       {/* USER INFO */}
-      <DisplayUserinfo />
+      {readOnly ? (
+        <DisplayUserinfo
+          userData={
+            avanceCaisseDetails?.requesterInfo !== null
+              ? avanceCaisseDetails?.requesterInfo
+              : null
+          }
+        />
+      ) : (
+        <DisplayUserinfo />
+      )}
 
-      {/* DIVIDER */}
-      <Box
-        display="flex"
-        justifyContent="center"
-        textAlign="center"
-        marginBottom={3}
-      >
-        <Divider style={{ width: '60%', opacity: 0.7 }} />
-      </Box>
+      {!readOnly && (
+        <>
+          {/* DIVIDER */}
+          <Box
+            display="flex"
+            justifyContent="center"
+            textAlign="center"
+            marginBottom={3}
+          >
+            <Divider style={{ width: '60%', opacity: 0.7 }} />
+          </Box>
+          <Box textAlign="center">
+            <Typography variant="subtitle1">
+              Are you filling this form on behalf of someone else?
+            </Typography>
+          </Box>
+          <RadioGroup
+            row
+            aria-labelledby="demo-row-radio-buttons-group-label"
+            name="row-radio-buttons-group"
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              marginBottom: '20px',
+            }}
+            value={onBehalfSelection ? onBehalfSelection.toString() : ''} // Convert the boolean to a string
+            onChange={handleOnBehalfSelectionChange}
+          >
+            <FormControlLabel value="true" control={<Radio />} label="Yes" />
+            <FormControlLabel value="false" control={<Radio />} label="No" />
+          </RadioGroup>
+        </>
+      )}
 
-      <Box textAlign="center">
-        <FormLabel id="demo-row-radio-buttons-group-label">
-          Are you filling this form on behalf of someone else?
-        </FormLabel>
-      </Box>
-      <RadioGroup
-        row
-        aria-labelledby="demo-row-radio-buttons-group-label"
-        name="row-radio-buttons-group"
-        sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'center',
-          marginBottom: '20px',
-        }}
-        required
-        value={onBehalfSelection ? onBehalfSelection.toString() : ''} // Convert the boolean to a string
-        onChange={handleOnBehalfSelectionChange}
-      >
-        <FormControlLabel value="true" control={<Radio />} label="Yes" />
-        <FormControlLabel value="false" control={<Radio />} label="No" />
-      </RadioGroup>
-
-      {onBehalfSelection && onBehalfSelection.toString() === 'true' ? (
+      {onBehalfSelection &&
+      onBehalfSelection.toString() === 'true' &&
+      !readOnly ? (
         <>
           <Box
             display="flex"
@@ -368,37 +662,52 @@ export function AvanceCaisseForm({ state }) {
               gap={2}
               marginBottom={2}
             >
-              <TextField
-                id="outlined-basic"
-                label="Job Title"
-                variant="outlined"
+              <Autocomplete
+                disablePortal
+                id="combo-box-demo"
+                options={staticData.jobTitles}
+                sx={{ width: 224 }}
                 value={actualRequester.jobTitle}
-                onChange={(e) =>
-                  updateActualRequesterData('jobTitle', e.target.value)
+                onChange={(e, newValue) =>
+                  updateActualRequesterData('jobTitle', newValue)
                 }
                 required
+                renderInput={(params) => (
+                  // eslint-disable-next-line react/jsx-props-no-spreading
+                  <TextField {...params} label="Job Title" />
+                )}
               />
-              <TextField
-                id="outlined-basic"
-                label="Department"
-                variant="outlined"
-                required
+              <Autocomplete
+                disablePortal
+                id="combo-box-demo"
+                options={staticData.departments}
+                sx={{ width: 224 }}
                 value={actualRequester.department}
-                onChange={(e) =>
-                  updateActualRequesterData('department', e.target.value)
+                onChange={(e, newValue) =>
+                  updateActualRequesterData('department', newValue)
                 }
+                required
+                renderInput={(params) => (
+                  // eslint-disable-next-line react/jsx-props-no-spreading
+                  <TextField {...params} label="Department" />
+                )}
+              />
+              <Autocomplete
+                disablePortal
+                id="combo-box-demo"
+                options={staticData.managersUsernames}
+                sx={{ width: 224 }}
+                value={actualRequester.managerUserName}
+                onChange={(e, newValue) =>
+                  updateActualRequesterData('managerUserName', newValue)
+                }
+                required
+                renderInput={(params) => (
+                  // eslint-disable-next-line react/jsx-props-no-spreading
+                  <TextField {...params} label="Manager" />
+                )}
               />
             </Box>
-            <TextField
-              id="outlined-basic"
-              label="Manager"
-              variant="outlined"
-              value={actualRequester.manager}
-              onChange={(e) =>
-                updateActualRequesterData('manager', e.target.value)
-              }
-              required
-            />
           </Box>
         </>
       ) : (
@@ -415,38 +724,50 @@ export function AvanceCaisseForm({ state }) {
         <Divider style={{ width: '60%', opacity: 0.7 }} />
       </Box>
 
-      <Box
-        textAlign="center"
-        display="flex"
-        justifyContent="center"
-        flexDirection="column"
-      >
-        <FormLabel id="demo-row-radio-buttons-group-label">
-          Please choose the currency
-        </FormLabel>
-      </Box>
-      {/* <Stack direction="column" alignItems="center" justifyContent="center">
-        <Alert severity="info" width="50px">
-          If your request consists of multiple currencies, you may to fill
-          another form.
-        </Alert>
-      </Stack> */}
-      <RadioGroup
-        row
-        aria-labelledby="demo-row-radio-buttons-group-label"
-        name="row-radio-buttons-group"
-        sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'center',
-          marginBottom: '20px',
-        }}
-        value={currency}
-        onChange={handlecurrencyChange}
-      >
-        <FormControlLabel value="MAD" control={<Radio />} label="MAD" />
-        <FormControlLabel value="EUR" control={<Radio />} label="EUR" />
-      </RadioGroup>
+      {!readOnly ? (
+        <>
+          <Box
+            textAlign="center"
+            display="flex"
+            justifyContent="center"
+            flexDirection="column"
+          >
+            <Typography variant="subtitle1">
+              Please choose the currency*
+            </Typography>
+          </Box>
+          <RadioGroup
+            row
+            aria-labelledby="demo-row-radio-buttons-group-label"
+            name="row-radio-buttons-group"
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              marginBottom: '20px',
+            }}
+            value={currency}
+            onChange={handlecurrencyChange}
+          >
+            <FormControlLabel value="MAD" control={<Radio />} label="MAD" />
+            <FormControlLabel value="EUR" control={<Radio />} label="EUR" />
+          </RadioGroup>
+        </>
+      ) : (
+        <Box
+          textAlign="center"
+          display="flex"
+          justifyContent="center"
+          marginBottom={3}
+        >
+          <Typography variant="subtitle1" display="flex">
+            This Request&apos;s currency is set to be:&nbsp;
+            <Box sx={{ fontWeight: 'bold' }}>
+              {avanceCaisseDetails?.currency}
+            </Box>
+          </Typography>
+        </Box>
+      )}
 
       <Box
         display="flex"
@@ -455,14 +776,17 @@ export function AvanceCaisseForm({ state }) {
         marginBottom={3}
       >
         <TextField
-          variant="outlined"
+          variant={readOnly ? 'filled' : 'outlined'}
+          value={readOnly ? avanceCaisseDetails?.description : description}
           multiline
           minRows={3}
           label="Description"
           required
           sx={{ width: '50%' }}
-          value={description}
           onChange={(e) => setDescription(e.target.value)}
+          InputProps={{
+            readOnly,
+          }}
         />
       </Box>
 
@@ -483,12 +807,19 @@ export function AvanceCaisseForm({ state }) {
         marginBottom={2}
       >
         <Box display="flex" justifyContent="flex-start" width="40rem">
-          <h1 style={{ fontSize: '18px' }}>Expense(s)*</h1>
-          <IconButton onClick={addExpense}>
-            <AddCircleIcon
-              sx={{ color: 'chocolate', fontSize: '30px' }}
-            ></AddCircleIcon>
-          </IconButton>
+          <h1 style={{ fontSize: '18px' }}>
+            Expense(s)
+            {state !== 'CONFIRM' && state !== 'VIEW' && (
+              <Typography variant="caption">*</Typography>
+            )}
+          </h1>
+          {state !== 'CONFIRM' && state !== 'VIEW' && (
+            <IconButton onClick={addExpense}>
+              <AddCircleIcon
+                sx={{ color: 'chocolate', fontSize: '30px' }}
+              ></AddCircleIcon>
+            </IconButton>
+          )}
         </Box>
       </Box>
 
@@ -506,6 +837,7 @@ export function AvanceCaisseForm({ state }) {
               updateExpenseData={updateExpenseData}
               removeExpense={removeExpense}
               isExpenseRequired={expense.id === 0}
+              isExpenseModifiabale={readOnly === false}
             />
           </div>
         </Box>
@@ -549,35 +881,96 @@ export function AvanceCaisseForm({ state }) {
         >
           Return
         </Button>
-        <Button
-          variant="contained"
-          color="warning"
-          onClick={handleOnSaveAsDraftClick}
-        >
-          Save as Draf
-        </Button>
-        <Button variant="contained" color="success">
-          Confirm
-        </Button>
+        {(state === 'EDIT' || state === 'ADD') && (
+          <>
+            <Button
+              variant="contained"
+              color="warning"
+              onClick={handleOnSaveAsDraftClick}
+            >
+              Save as Draft
+            </Button>
+            <Button
+              variant="contained"
+              color="success"
+              onClick={handleOnConfirmButtonClick}
+            >
+              Confirm
+            </Button>
+          </>
+        )}
+        {state === 'MODIFY' && (
+          <Button
+            variant="contained"
+            color="success"
+            onClick={handleOnSubmitModificationsButtonClick}
+          >
+            Submit Modifications
+          </Button>
+        )}
+        {state === 'CONFIRM' && (
+          <Button
+            variant="contained"
+            color="success"
+            onClick={handleOnSubmitButtonClick}
+          >
+            Submit
+          </Button>
+        )}
       </Stack>
 
-      {/* This dialog appears only when submitting a bad request */}
+      {/* dialog */}
       <Dialog
         open={modalVisibility}
         keepMounted
         onClose={() => setModalVisibility(false)}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>Bad Request!</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
-            <Alert severity="error">{inputError}</Alert>
-          </DialogContentText>
+        <DialogTitle>{modalHeader}</DialogTitle>
+        <DialogContent dividers>
+          {modalHeader === 'Status History' ? (
+            <Timeline position="alternate">
+              {avanceCaisseDetails?.statusHistory?.map((sh, i, arr) => (
+                <CustomizedTimeLine
+                  statusHistory={sh}
+                  lastOne={arr.length - 1 === i}
+                ></CustomizedTimeLine>
+              ))}
+            </Timeline>
+          ) : (
+            <DialogContentText id="alert-dialog-slide-description">
+              <Alert severity={modalSevirity}>{modalBody}</Alert>
+            </DialogContentText>
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setModalVisibility(false)}>Close</Button>
+          {modalHeader === 'Confirmation' && (
+            <Button
+              color="success"
+              onClick={handleOnSubmitModificationsConfirmationButtonClick}
+            >
+              Submit
+            </Button>
+          )}
         </DialogActions>
       </Dialog>
+
+      <Snackbar
+        open={savedSnackbarVisibility}
+        autoHideDuration={3000}
+        onClose={() => setSavedSnackbarVisibility(false)}
+        action={action}
+      >
+        <Alert
+          onClose={() => setSavedSnackbarVisibility(false)}
+          severity="info"
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          Request has been saved!
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }

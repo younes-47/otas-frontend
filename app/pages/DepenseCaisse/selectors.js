@@ -22,27 +22,15 @@ const makeSelectDepenseCaisse = () =>
 const makeSelectChangePageContent = () =>
   createSelector(selectDepenseCaisseDomain, (substate) => substate.pageContent);
 
-const makeSelectCleanupStore = () =>
+const makeSelectDepenseCaisseIdentity = () =>
   createSelector(
     selectDepenseCaisseDomain,
-    (substate) => substate.storeCleanup,
-  );
-const makeSelectDepenseCaisseDetails = () =>
-  createSelector(
-    selectDepenseCaisseDomain,
-    (substate) => substate.depenseCaisseDetails,
+    (substate) => substate.depenseCaisseIdentity,
   );
 
-const makeSelectErrorLoadingDepenseCaisseDetails = () =>
-  createSelector(
-    selectDepenseCaisseDomain,
-    (substate) => substate.errorLoadingDepenseCaisseDetails,
-  );
 export default makeSelectDepenseCaisse;
 export {
-  makeSelectErrorLoadingDepenseCaisseDetails,
-  makeSelectDepenseCaisseDetails,
+  makeSelectDepenseCaisseIdentity,
   selectDepenseCaisseDomain,
   makeSelectChangePageContent,
-  makeSelectCleanupStore,
 };

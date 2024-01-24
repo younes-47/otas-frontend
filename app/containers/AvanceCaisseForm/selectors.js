@@ -51,8 +51,22 @@ const makeSelectErrorSubmittingAvanceCaisse = () =>
     (substate) => substate.errorSubmittingAvanceCaisse,
   );
 
+const makeSelectAvanceCaisseDetails = () =>
+  createSelector(
+    selectAvanceCaisseFormDomain,
+    (substate) => substate.avanceCaisseDetails,
+  );
+
+const makeSelectErrorLoadingAvanceCaisseDetails = () =>
+  createSelector(
+    selectAvanceCaisseFormDomain,
+    (substate) => substate.errorLoadingAvanceCaisseDetails,
+  );
+
 export default makeSelectAvanceCaisseForm;
 export {
+  makeSelectErrorLoadingAvanceCaisseDetails,
+  makeSelectAvanceCaisseDetails,
   makeSelectErrorAddingAvanceCaisse,
   makeSelectErrorUpdatingAvanceCaisse,
   makeSelectErrorSubmittingAvanceCaisse,

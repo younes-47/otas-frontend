@@ -24,7 +24,7 @@ const mapStateToProps = createStructuredSelector({
 
 export function DepenseCaisse() {
   useInjectReducer({ key: 'depenseCaisse', reducer });
-  useInjectSaga({ key: 'depenseCaisse', saga });
+  // useInjectSaga({ key: 'depenseCaisse', saga });
   const { pageContent } = useSelector(mapStateToProps);
 
   const dispatch = useDispatch();

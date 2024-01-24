@@ -6,6 +6,13 @@
 
 export const DEFAULT_ACTION = 'app/AvanceCaisseForm/DEFAULT_ACTION';
 
+export const LOAD_AVANCE_CAISSE_DETAILS =
+  'app/AvanceCaisseForm/LOAD_AVANCE_CAISSE_DETAILS';
+export const LOAD_AVANCE_CAISSE_DETAILS_SUCCESS =
+  'app/AvanceCaisseForm/LOAD_AVANCE_CAISSE_DETAILS_SUCCESS';
+export const LOAD_AVANCE_CAISSE_DETAILS_ERROR =
+  'app/AvanceCaisseForm/LOAD_AVANCE_CAISSE_DETAILS_ERROR';
+
 export const LOAD_STATIC_DATA = 'app/AvanceCaisseForm/LOAD_STATIC_DATA';
 export const LOAD_STATIC_DATA_SUCCESS =
   'app/AvanceCaisseForm/LOAD_STATIC_DATA_SUCCESS';
@@ -40,4 +47,5 @@ export const webService = {
   ADD_AVANCE_CAISSE: '/AvanceCaisse/Create',
   UPDATE_AVANCE_CAISSE: '/AvanceCaisse/Modify',
   SUBMIT_AVANCE_CAISSE: '/AvanceCaisse/Submit',
+  LOAD_AVANCE_CAISSE_DETAILS: '/AvanceCaisse/View',
 };

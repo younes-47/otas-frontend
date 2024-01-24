@@ -10,6 +10,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Box from '@mui/material/Box';
+import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import CloseIcon from '@mui/icons-material/Close';
 import {
   Alert,
@@ -25,7 +26,7 @@ import {
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import {
   changePageContentAction,
-  loadAvanceCaisseDetailsAction,
+  setAvanceCaisseIdentityAction,
 } from 'pages/AvanceCaisse/actions';
 import saga from './saga';
 import reducer from './reducer';
@@ -83,7 +84,7 @@ export function AvanceCaisseTable() {
   useEffect(() => {
     if (errorLoadingAvanceCaisses === null) {
       dispatch(loadAvanceCaisseAction());
-      if (statusAvanceCaisse === true) {
+      if (statusAvanceCaisse !== '') {
         switch (statusAvanceCaisse) {
           case 'SAVED':
             setSnackbarAlertSeverity('info');
@@ -94,7 +95,7 @@ export function AvanceCaisseTable() {
           default:
             setSnackbarAlertSeverity('success');
         }
-        setSnackbarAlertSeverity(true);
+        setSnackbarVisibility(true);
       }
     }
   }, [avanceCaisses]);
@@ -121,12 +122,12 @@ export function AvanceCaisseTable() {
   };
 
   const handleOnEditButtonClick = (id) => {
-    dispatch(loadAvanceCaisseDetailsAction(id));
+    dispatch(setAvanceCaisseIdentityAction(id));
     dispatch(changePageContentAction('EDIT'));
   };
 
   const handleOnModifyButtonClick = (id) => {
-    dispatch(loadAvanceCaisseDetailsAction(id));
+    dispatch(setAvanceCaisseIdentityAction(id));
     dispatch(changePageContentAction('MODIFY'));
   };
 

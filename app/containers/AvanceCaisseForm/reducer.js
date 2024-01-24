@@ -11,6 +11,9 @@ import {
   CHANGE_ONBEHALF_SELECTION_ACTION,
   CLEANUP_STORE_ACTION,
   DEFAULT_ACTION,
+  LOAD_AVANCE_CAISSE_DETAILS,
+  LOAD_AVANCE_CAISSE_DETAILS_ERROR,
+  LOAD_AVANCE_CAISSE_DETAILS_SUCCESS,
   LOAD_STATIC_DATA,
   LOAD_STATIC_DATA_ERROR,
   LOAD_STATIC_DATA_SUCCESS,
@@ -33,6 +36,9 @@ export const initialState = {
   errorSubmittingAvanceCaisse: null,
   updatingAvanceCaisse: false,
   errorUpdatingAvanceCaisse: null,
+  loadingaAvanceCaisseDetails: false,
+  errorLoadingAvanceCaisseDetails: null,
+  avanceCaisseDetails: null,
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -40,6 +46,19 @@ const avanceCaisseFormReducer = (state = initialState, action) =>
   produce(state, (draft) => {
     switch (action.type) {
       case DEFAULT_ACTION:
+        break;
+      case LOAD_AVANCE_CAISSE_DETAILS:
+        draft.loadingaAvanceCaisseDetails = true;
+        draft.errorLoadingAvanceCaisseDetails = null;
+        break;
+      case LOAD_AVANCE_CAISSE_DETAILS_SUCCESS:
+        draft.loadingaAvanceCaisseDetails = false;
+        draft.errorLoadingAvanceCaisseDetails = false;
+        draft.avanceCaisseDetails = action.data;
+        break;
+      case LOAD_AVANCE_CAISSE_DETAILS_ERROR:
+        draft.loadingaAvanceCaisseDetails = false;
+        draft.errorLoadingAvanceCaisseDetails = true;
         break;
       case LOAD_STATIC_DATA:
         draft.loadingStaticData = true;
@@ -101,6 +120,9 @@ const avanceCaisseFormReducer = (state = initialState, action) =>
         draft.errorSubmittingAvanceCaisse = null;
         draft.updatingAvanceCaisse = false;
         draft.errorUpdatingAvanceCaisse = null;
+        draft.loadingaAvanceCaisseDetails = false;
+        draft.errorLoadingAvanceCaisseDetails = null;
+        draft.avanceCaisseDetails = null;
         break;
       case CHANGE_ONBEHALF_SELECTION_ACTION:
         draft.onBehalfSelection = action.selection;

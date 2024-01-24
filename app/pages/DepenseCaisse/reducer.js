@@ -4,20 +4,17 @@
  *
  */
 import produce from 'immer';
+import { ORDRE_MISSION_IDENTITY } from 'pages/OrdreMission/constants';
 import {
   CHANGE_PAGE_CONTENT_ACTION,
   CLEANUP_STORE_ACTION,
   DEFAULT_ACTION,
-  LOAD_DEPENSE_CAISSE_DETAILS_ERROR,
-  LOAD_DEPENSE_CAISSE_DETAILS,
-  LOAD_DEPENSE_CAISSE_DETAILS_SUCCESS,
+  DEPENSE_CAISSE_IDENTITY,
 } from './constants';
 
 export const initialState = {
   pageContent: 'TABLE',
-  loadingDepenseCaisseDetails: false,
-  errorLoadingDepenseCaisseDetails: null,
-  depenseCaisseDetails: null,
+  depenseCaisseIdentity: null,
 };
 /* eslint-disable default-case, no-param-reassign */
 const depenseCaisseReducer = (state = initialState, action) =>
@@ -25,26 +22,13 @@ const depenseCaisseReducer = (state = initialState, action) =>
     switch (action.type) {
       case DEFAULT_ACTION:
         break;
-      case LOAD_DEPENSE_CAISSE_DETAILS:
-        draft.loadingDepenseCaisseDetails = true;
-        draft.errorLoadingDepenseCaisseDetails = null;
-        break;
-      case LOAD_DEPENSE_CAISSE_DETAILS_SUCCESS:
-        draft.loadingDepenseCaisseDetails = false;
-        draft.errorLoadingDepenseCaisseDetails = false;
-        draft.depenseCaisseDetails = action.data;
-        break;
-      case LOAD_DEPENSE_CAISSE_DETAILS_ERROR:
-        draft.loadingDepenseCaisseDetails = false;
-        draft.errorLoadingDepenseCaisseDetails = true;
+      case DEPENSE_CAISSE_IDENTITY:
+        draft.depenseCaisseIdentity = action.id;
         break;
       case CHANGE_PAGE_CONTENT_ACTION:
         draft.pageContent = action.pageContent;
         break;
       case CLEANUP_STORE_ACTION:
-        draft.loadingDepenseCaisseDetails = false;
-        draft.errorLoadingDepenseCaisseDetails = null;
-        draft.depenseCaisseDetails = null;
         draft.pageContent = 'TABLE';
         break;
     }

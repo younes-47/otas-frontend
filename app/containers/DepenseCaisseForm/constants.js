@@ -6,6 +6,13 @@
 
 export const DEFAULT_ACTION = 'app/DepenseCaisseForm/DEFAULT_ACTION';
 
+export const LOAD_DEPENSE_CAISSE_DETAILS =
+  'app/DepenseCaisseForm/LOAD_DEPENSE_CAISSE_DETAILS';
+export const LOAD_DEPENSE_CAISSE_DETAILS_SUCCESS =
+  'app/DepenseCaisseForm/LOAD_DEPENSE_CAISSE_DETAILS_SUCCESS';
+export const LOAD_DEPENSE_CAISSE_DETAILS_ERROR =
+  'app/DepenseCaisseForm/LOAD_DEPENSE_CAISSE_DETAILS_ERROR';
+
 export const LOAD_STATIC_DATA = 'app/DepenseCaisseForm/LOAD_STATIC_DATA';
 export const LOAD_STATIC_DATA_SUCCESS =
   'app/DepenseCaisseForm/LOAD_STATIC_DATA_SUCCESS';

@@ -16,8 +16,9 @@ const Expenses = ({
   updateExpenseData,
   removeExpense,
   isExpenseRequired,
+  isExpenseModifiabale = true,
 }) => {
-  const { id, description, expenseDate, estimatedExpenseFee } = expenseData;
+  const { id, description, expenseDate, estimatedFee } = expenseData;
 
   const handleExpenseDate = (e, expenseId) => {
     const tzoffset = new Date().getTimezoneOffset() * 60000; // offset in milliseconds
@@ -28,15 +29,15 @@ const Expenses = ({
   return (
     <Box key={id}>
       <Box display="flex" gap={2} marginBottom="1rem">
-        {!isExpenseRequired ? (
+        {isExpenseRequired || !isExpenseModifiabale ? (
+          <IconButton sx={{ fontSize: '10px' }} disableRipple>
+            <KeyboardArrowRightIcon></KeyboardArrowRightIcon>
+          </IconButton>
+        ) : (
           <IconButton onClick={() => removeExpense(id)}>
             <HighlightOffIcon
               sx={{ color: 'red', fontSize: '25px' }}
             ></HighlightOffIcon>
-          </IconButton>
-        ) : (
-          <IconButton sx={{ fontSize: '10px' }} disableRipple>
-            <KeyboardArrowRightIcon></KeyboardArrowRightIcon>
           </IconButton>
         )}
         {/* <IconButton onClick={() => removeExpense(id)}>
@@ -45,36 +46,44 @@ const Expenses = ({
           ></HighlightOffIcon>
         </IconButton> */}
         <TextField
+          variant={isExpenseModifiabale ? 'outlined' : 'filled'}
           required
           id="outlined-basic"
           label="Description"
           value={description}
           onChange={(e) => updateExpenseData(id, 'description', e.target.value)}
-          variant="outlined"
           sx={{ minWidth: 320 }}
+          InputProps={{
+            readOnly: !isExpenseModifiabale,
+          }}
         />
         <LocalizationProvider reuired dateAdapter={AdapterDayjs}>
           <DatePicker
+            readOnly={!isExpenseModifiabale}
+            variant={isExpenseModifiabale ? 'outlined' : 'filled'}
             sx={{ maxWidth: 180 }}
             value={expenseDate}
             onChange={(e) => handleExpenseDate(e, id)}
             required
             label="Expense Date"
-            disablePast
+            disableFuture
             format="DD/MM/YYYY"
           />
         </LocalizationProvider>
         <TextField
           required
           id="outlined-basic"
-          type="number"
           label="Fee"
-          value={estimatedExpenseFee}
+          value={estimatedFee}
+          type="number"
           onChange={(e) =>
-            updateExpenseData(id, 'estimatedExpenseFee', e.target.value)
+            updateExpenseData(id, 'estimatedFee', e.target.value)
           }
-          variant="outlined"
+          variant={isExpenseModifiabale ? 'outlined' : 'filled'}
           sx={{ maxWidth: 120 }}
+          InputProps={{
+            readOnly: !isExpenseModifiabale,
+          }}
         />
       </Box>
     </Box>
@@ -86,6 +95,7 @@ Expenses.propTypes = {
   updateExpenseData: PropTypes.func.isRequired,
   removeExpense: PropTypes.func.isRequired,
   isExpenseRequired: PropTypes.bool.isRequired,
+  isExpenseModifiabale: PropTypes.bool,
 };
 
 export default Expenses;

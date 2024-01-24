@@ -21,25 +21,15 @@ const makeSelectAvanceCaisse = () =>
 const makeSelectChangePageContent = () =>
   createSelector(selectAvanceCaisseDomain, (substate) => substate.pageContent);
 
-const makeSelectCleanupStore = () =>
-  createSelector(selectAvanceCaisseDomain, (substate) => substate.storeCleanup);
-
-const makeSelectAvanceCaisseDetails = () =>
+const makeSelectAvanceCaisseIdentity = () =>
   createSelector(
     selectAvanceCaisseDomain,
-    (substate) => substate.avanceCaisseDetails,
+    (substate) => substate.avanceCaisseIdentity,
   );
 
-const makeSelectErrorLoadingAvanceCaisseDetails = () =>
-  createSelector(
-    selectAvanceCaisseDomain,
-    (substate) => substate.errorLoadingAvanceCaisseDetails,
-  );
 export default makeSelectAvanceCaisse;
 export {
-  makeSelectAvanceCaisseDetails,
-  makeSelectErrorLoadingAvanceCaisseDetails,
   selectAvanceCaisseDomain,
   makeSelectChangePageContent,
-  makeSelectCleanupStore,
+  makeSelectAvanceCaisseIdentity,
 };

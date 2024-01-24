@@ -20,19 +20,17 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import CloseIcon from '@mui/icons-material/Close';
 import HistoryIcon from '@mui/icons-material/History';
 import FormLabel from '@mui/material/FormLabel';
-import {
-  Alert,
-  Autocomplete,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  IconButton,
-  Snackbar,
-  Typography,
-} from '@mui/material';
+import Alert from '@mui/material/Alert';
+import Autocomplete from '@mui/material/Autocomplete';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import IconButton from '@mui/material/IconButton';
+import Snackbar from '@mui/material/Snackbar';
+import Typography from '@mui/material/Typography';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -46,7 +44,7 @@ import { setOrdreMissionStatusAction } from 'containers/OrdreMissionTable/action
 import DisplayUserinfo from 'components/DisplayUserinfo';
 
 import CustomizedTimeLine from 'components/CustomizedTimeLine';
-import { Timeline } from '@mui/icons-material';
+import Timeline from '@mui/icons-material/Timeline';
 import { makeSelectOrdreMissionIdentity } from 'pages/OrdreMission/selectors';
 import saga from './saga';
 import reducer from './reducer';
@@ -114,7 +112,7 @@ export function OrdreMissionForm({ state }) {
       arrivalDate: dayjs(new Date('2025-01-11T00:00:00.000Z')),
       transportationMethod: 'Train',
       unit: 'MAD',
-      value: 9,
+      value: 99.9,
       highwayFee: 0,
     },
     {
@@ -125,7 +123,7 @@ export function OrdreMissionForm({ state }) {
       arrivalDate: dayjs(new Date('2025-01-13T00:00:00.000Z')),
       transportationMethod: 'Train',
       unit: 'MAD',
-      value: 9,
+      value: 99.9,
       highwayFee: 0,
     },
   ]);
@@ -171,7 +169,7 @@ export function OrdreMissionForm({ state }) {
 
   // Load the data
   useEffect(() => {
-    if (errorLoadingOrdreMissionDetails === null) {
+    if (state !== 'ADD' && errorLoadingOrdreMissionDetails === null) {
       dispatch(loadOrdreMissionDetailsAction(ordreMissionIdentity));
     }
   }, [errorLoadingOrdreMissionDetails]);
@@ -186,30 +184,6 @@ export function OrdreMissionForm({ state }) {
         );
         dispatch(SelectAbroadAction(ordreMissionDetails?.abroad.toString()));
         if (ordreMissionDetails?.requesterInfo !== null) {
-          // updateActualRequesterData(
-          //   'firstName',
-          //   ordreMissionDetails?.requesterInfo?.firstName,
-          // );
-          // updateActualRequesterData(
-          //   'lastName',
-          //   ordreMissionDetails?.requesterInfo?.lastName,
-          // );
-          // updateActualRequesterData(
-          //   'registrationNumber',
-          //   ordreMissionDetails?.requesterInfo?.registrationNumber,
-          // );
-          // updateActualRequesterData(
-          //   'jobTitle',
-          //   ordreMissionDetails?.requesterInfo?.jobTitle,
-          // );
-          // updateActualRequesterData(
-          //   'managerUserName',
-          //   ordreMissionDetails?.requesterInfo?.managerUserName,
-          // );
-          // updateActualRequesterData(
-          //   'department',
-          //   ordreMissionDetails?.requesterInfo?.department,
-          // );
           setActualRequester(ordreMissionDetails?.requesterInfo);
         }
 
@@ -300,7 +274,7 @@ export function OrdreMissionForm({ state }) {
       dispatch(ChangePageContentAction('CONFIRM'));
       setSavedSnackbarVisibility(true);
     }
-  }, [errorLoadingOrdreMissionDetails]);
+  }, [buttonClicked]);
 
   // Listen to Submit/Resubmit
   useEffect(() => {
@@ -319,6 +293,7 @@ export function OrdreMissionForm({ state }) {
   useEffect(
     () => () => {
       dispatch(cleanupOrdreMissionFormPageAction());
+      dispatch(cleanupParentOrdreMissionPageAction());
     },
     [],
   );
@@ -460,6 +435,11 @@ export function OrdreMissionForm({ state }) {
       setModalSevirity('error');
       setModalVisibility(true);
       return false;
+    }
+
+    // if on behalf is false -> set actual requester to null
+    if (data.onBehalf === false) {
+      setActualRequester(null);
     }
 
     // Description
@@ -874,7 +854,7 @@ export function OrdreMissionForm({ state }) {
                   disablePortal
                   id="combo-box-demo"
                   options={staticData.jobTitles}
-                  sx={{ width: 222 }}
+                  sx={{ width: 224 }}
                   value={actualRequester.jobTitle}
                   onChange={(e, newValue) =>
                     updateActualRequesterData('jobTitle', newValue)
@@ -889,7 +869,7 @@ export function OrdreMissionForm({ state }) {
                   disablePortal
                   id="combo-box-demo"
                   options={staticData.departments}
-                  sx={{ width: 222 }}
+                  sx={{ width: 224 }}
                   value={actualRequester.department}
                   onChange={(e, newValue) =>
                     updateActualRequesterData('department', newValue)
@@ -904,7 +884,7 @@ export function OrdreMissionForm({ state }) {
                   disablePortal
                   id="combo-box-demo"
                   options={staticData.managersUsernames}
-                  sx={{ width: 222 }}
+                  sx={{ width: 224 }}
                   value={actualRequester.managerUserName}
                   onChange={(e, newValue) =>
                     updateActualRequesterData('managerUserName', newValue)

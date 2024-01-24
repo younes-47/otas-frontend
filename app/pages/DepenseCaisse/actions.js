@@ -8,34 +8,12 @@ import {
   CHANGE_PAGE_CONTENT_ACTION,
   CLEANUP_STORE_ACTION,
   DEFAULT_ACTION,
-  LOAD_DEPENSE_CAISSE_DETAILS,
-  LOAD_DEPENSE_CAISSE_DETAILS_ERROR,
-  LOAD_DEPENSE_CAISSE_DETAILS_SUCCESS,
+  DEPENSE_CAISSE_IDENTITY,
 } from './constants';
 
 export function defaultAction() {
   return {
     type: DEFAULT_ACTION,
-  };
-}
-
-export function loadDepenseCaisseDetailsAction(id) {
-  return {
-    type: LOAD_DEPENSE_CAISSE_DETAILS,
-    id,
-  };
-}
-export function loadDepenseCaisseDetailsSuccessAction(data) {
-  return {
-    type: LOAD_DEPENSE_CAISSE_DETAILS_SUCCESS,
-    data,
-  };
-}
-
-export function loadDepenseCaisseDetailsErrorAction(error) {
-  return {
-    type: LOAD_DEPENSE_CAISSE_DETAILS_ERROR,
-    error,
   };
 }
 
@@ -46,8 +24,15 @@ export function changePageContentAction(pageContent) {
   };
 }
 
-export function cleanupDepesneCaisseParentPageStoreAction() {
+export function cleanupDepenseCaisseParentPageStoreAction() {
   return {
     type: CLEANUP_STORE_ACTION,
+  };
+}
+
+export function setDepenseCaisseIdentityAction(id) {
+  return {
+    type: DEPENSE_CAISSE_IDENTITY,
+    id,
   };
 }

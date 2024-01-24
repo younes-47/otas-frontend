@@ -25,7 +25,6 @@ import {
   DialogTitle,
   Divider,
   FormControlLabel,
-  FormLabel,
   IconButton,
   Radio,
   RadioGroup,
@@ -41,19 +40,18 @@ import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import dayjs from 'dayjs';
 import {
   changePageContentAction,
-  cleanupDepesneCaisseParentPageStoreAction,
+  cleanupDepenseCaisseParentPageStoreAction,
 } from 'pages/DepenseCaisse/actions';
 import DisplayUserinfo from 'components/DisplayUserinfo';
 import { setDepenseCaisseStatusAction } from 'containers/DepenseCaisseTable/actions';
-import {
-  makeSelectDepenseCaisseDetails,
-  makeSelectErrorLoadingDepenseCaisseDetails,
-} from 'pages/DepenseCaisse/selectors';
 import { Timeline } from '@mui/lab';
 import CustomizedTimeLine from 'components/CustomizedTimeLine';
+import { makeSelectDepenseCaisseIdentity } from 'pages/DepenseCaisse/selectors';
 import Expenses from './Expenses';
 import {
   makeSelectAddDepenseCaisse,
+  makeSelectDepenseCaisseDetails,
+  makeSelectErrorLoadingDepenseCaisseDetails,
   makeSelectErrorLoadingStaticData,
   makeSelectErrorSubmittingDepenseCaisse,
   makeSelectErrorUpdatingDepenseCaisse,
@@ -68,6 +66,7 @@ import {
   SelectOnBehalfAction,
   UpdateDepenseCaisseAction,
   cleanupDepenseCaisseFormPageStoreAction,
+  loadDepenseCaisseDetailsAction,
   submitDepenseCaisseAction,
 } from './actions';
 
@@ -82,6 +81,7 @@ const mapStateToProps = createStructuredSelector({
     makeSelectErrorLoadingDepenseCaisseDetails(),
   staticData: makeSelectStaticData(),
   depenseCaisseDetails: makeSelectDepenseCaisseDetails(),
+  depenseCaisseIdentity: makeSelectDepenseCaisseIdentity(),
 });
 
 export function DepenseCaisseForm({ state }) {
@@ -98,6 +98,7 @@ export function DepenseCaisseForm({ state }) {
     isSideBarVisible,
     onBehalfSelection,
     errorAddingDepenseCaisse,
+    depenseCaisseIdentity,
   } = useSelector(mapStateToProps);
 
   const [currency, setCurrency] = useState('MAD');
@@ -106,8 +107,6 @@ export function DepenseCaisseForm({ state }) {
   const [description, setDescription] = useState('');
   const [receiptsFile, setReceiptsFile] = useState('');
   const [receiptsFileName, setReceiptsFileName] = useState('');
-  const [inputError, setInputError] = useState('');
-
   const [modalVisibility, setModalVisibility] = useState(false);
   const [modalBody, setModalBody] = useState('');
   const [modalHeader, setModalHeader] = useState('');
@@ -128,7 +127,7 @@ export function DepenseCaisseForm({ state }) {
     registrationNumber: '',
     jobTitle: '',
     department: '',
-    manager: '',
+    managerUserName: '',
   });
   const action = (
     <IconButton
@@ -150,6 +149,13 @@ export function DepenseCaisseForm({ state }) {
     }
   }, [staticData]);
 
+  // Load the data
+  useEffect(() => {
+    if (state !== 'ADD' && errorLoadingDepenseCaisseDetails === null) {
+      dispatch(loadDepenseCaisseDetailsAction(depenseCaisseIdentity));
+    }
+  }, [errorLoadingDepenseCaisseDetails]);
+
   // Fill the data in case of editing/modifying
   useEffect(() => {
     if (state === 'EDIT' || state === 'MODIFY') {
@@ -159,30 +165,7 @@ export function DepenseCaisseForm({ state }) {
           SelectOnBehalfAction(depenseCaisseDetails?.onBehalf.toString()),
         );
         if (depenseCaisseDetails?.requesterInfo !== null) {
-          updateActualRequesterData(
-            'firstName',
-            depenseCaisseDetails?.requesterInfo?.firstName,
-          );
-          updateActualRequesterData(
-            'lastName',
-            depenseCaisseDetails?.requesterInfo?.lastName,
-          );
-          updateActualRequesterData(
-            'registrationNumber',
-            depenseCaisseDetails?.requesterInfo?.registrationNumber,
-          );
-          updateActualRequesterData(
-            'jobTitle',
-            depenseCaisseDetails?.requesterInfo?.jobTitle,
-          );
-          updateActualRequesterData(
-            'managerUserName',
-            depenseCaisseDetails?.requesterInfo?.managerUserName,
-          );
-          updateActualRequesterData(
-            'department',
-            depenseCaisseDetails?.requesterInfo?.department,
-          );
+          setActualRequester(depenseCaisseDetails?.requesterInfo);
         }
 
         setExpenses([]);
@@ -208,13 +191,13 @@ export function DepenseCaisseForm({ state }) {
     if (errorAddingDepenseCaisse === false) {
       if (buttonClicked === 'SAVE-AS-DRAFT') {
         dispatch(setDepenseCaisseStatusAction('SAVED'));
-        dispatch(cleanupDepesneCaisseParentPageStoreAction());
+        dispatch(cleanupDepenseCaisseParentPageStoreAction());
       }
     }
     if (errorUpdatingDepenseCaisse === false) {
       if (buttonClicked === 'SAVE-AS-DRAFT') {
         dispatch(setDepenseCaisseStatusAction('UPDATED'));
-        dispatch(cleanupDepesneCaisseParentPageStoreAction());
+        dispatch(cleanupDepenseCaisseParentPageStoreAction());
       }
     }
   }, [errorAddingDepenseCaisse, errorUpdatingDepenseCaisse]);
@@ -225,7 +208,7 @@ export function DepenseCaisseForm({ state }) {
       dispatch(changePageContentAction('CONFIRM'));
       setSavedSnackbarVisibility(true);
     }
-  }, [errorLoadingDepenseCaisseDetails]);
+  }, [buttonClicked]);
 
   // Listen to Submit/Resubmit
   useEffect(() => {
@@ -237,7 +220,7 @@ export function DepenseCaisseForm({ state }) {
         dispatch(setDepenseCaisseStatusAction('RESUBMITTED'));
       }
 
-      dispatch(cleanupDepesneCaisseParentPageStoreAction());
+      dispatch(cleanupDepenseCaisseParentPageStoreAction());
     }
   }, [errorSubmittingDepenseCaisse]);
 
@@ -245,7 +228,7 @@ export function DepenseCaisseForm({ state }) {
   useEffect(
     () => () => {
       dispatch(cleanupDepenseCaisseFormPageStoreAction());
-      dispatch(cleanupDepesneCaisseParentPageStoreAction());
+      dispatch(cleanupDepenseCaisseParentPageStoreAction());
     },
     [],
   );
@@ -341,7 +324,7 @@ export function DepenseCaisseForm({ state }) {
         !actualRequester.registrationNumber ||
         !actualRequester.jobTitle ||
         !actualRequester.department ||
-        !actualRequester.manager)
+        !actualRequester.managerUserName)
     ) {
       setModalHeader('Invalid Information!');
       setModalBody(
@@ -350,6 +333,11 @@ export function DepenseCaisseForm({ state }) {
       setModalSevirity('error');
       setModalVisibility(true);
       return false;
+    }
+
+    // if on behalf is false -> set actual requester to null
+    if (data.onBehalf === false) {
+      setActualRequester(null);
     }
 
     // Description
@@ -386,7 +374,7 @@ export function DepenseCaisseForm({ state }) {
       if (expense.estimatedFee === '') {
         setModalHeader('Invalid Information!');
         setModalBody(
-          'Invalid Total value! Please review your trajectories and/or expenses fee/Mileage values and try again',
+          'Invalid Total value! Please review your expenses fee values and try again',
         );
         setModalSevirity('error');
         setModalVisibility(true);
@@ -411,9 +399,12 @@ export function DepenseCaisseForm({ state }) {
 
     // Receipts file
     if (data.receiptsFile === '' || !data.receiptsFile) {
-      setInputError(
+      setModalHeader('Invalid Information!');
+
+      setModalBody(
         'Please upload your receipts! Or wait wait for them while are being uploaded',
       );
+      setModalSevirity('error');
       setModalVisibility(true);
       isAllGood = false;
     }
@@ -435,7 +426,7 @@ export function DepenseCaisseForm({ state }) {
   // Handle on buttons click
   const handleOnReturnButtonClick = () => {
     dispatch(cleanupDepenseCaisseFormPageStoreAction());
-    dispatch(cleanupDepesneCaisseParentPageStoreAction());
+    dispatch(cleanupDepenseCaisseParentPageStoreAction());
   };
 
   const handleOnSaveAsDraftClick = () => {
@@ -709,7 +700,7 @@ export function DepenseCaisseForm({ state }) {
                 disablePortal
                 id="combo-box-demo"
                 options={staticData.jobTitles}
-                sx={{ width: 222 }}
+                sx={{ width: 224 }}
                 value={actualRequester.jobTitle}
                 onChange={(e, newValue) =>
                   updateActualRequesterData('jobTitle', newValue)
@@ -724,7 +715,7 @@ export function DepenseCaisseForm({ state }) {
                 disablePortal
                 id="combo-box-demo"
                 options={staticData.departments}
-                sx={{ width: 222 }}
+                sx={{ width: 224 }}
                 value={actualRequester.department}
                 onChange={(e, newValue) =>
                   updateActualRequesterData('department', newValue)
@@ -739,7 +730,7 @@ export function DepenseCaisseForm({ state }) {
                 disablePortal
                 id="combo-box-demo"
                 options={staticData.managersUsernames}
-                sx={{ width: 222 }}
+                sx={{ width: 224 }}
                 value={actualRequester.managerUserName}
                 onChange={(e, newValue) =>
                   updateActualRequesterData('managerUserName', newValue)
@@ -776,7 +767,7 @@ export function DepenseCaisseForm({ state }) {
             flexDirection="column"
           >
             <Typography variant="subtitle1">
-              Please choose ethe currency*
+              Please choose the currency*
             </Typography>
           </Box>
           <RadioGroup
@@ -880,6 +871,7 @@ export function DepenseCaisseForm({ state }) {
               updateExpenseData={updateExpenseData}
               expenseData={expense}
               isExpenseRequired={expense.id === 0}
+              isExpenseModifiabale={readOnly === false}
             />
           </div>
         </Box>
@@ -1022,7 +1014,7 @@ export function DepenseCaisseForm({ state }) {
         )}
       </Stack>
 
-      {/* This dialog appears only when submitting a bad request */}
+      {/* dialog */}
       <Dialog
         open={modalVisibility}
         keepMounted

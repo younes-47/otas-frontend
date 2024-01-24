@@ -32,6 +32,8 @@ import { changePageContentAction } from 'pages/AvanceVoyage/actions';
 import CustomizedTimeLine from 'components/CustomizedTimeLine';
 import Timeline from '@mui/lab/Timeline';
 import DisplayUserinfo from 'components/DisplayUserinfo';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import DescriptionIcon from '@mui/icons-material/Description';
 import { makeSelectUserInfo } from 'pages/MyRequests/selectors';
 import makeSelectAvanceVoyageView, {
   makeSelectAvanceVoyageDetails,
@@ -116,14 +118,18 @@ export function AvanceVoyageView() {
         justifyContent="center"
         textAlign="center"
         marginBottom={2}
+        gap={3}
       >
         <Button
-          variant="contained"
+          // variant="contained"
           color="warning"
           onClick={() => setStatusHistoryDialogVisibility(true)}
           startIcon={<HistoryIcon />}
         >
           Status History
+        </Button>
+        <Button color="secondary" size="large" startIcon={<DescriptionIcon />}>
+          Download Document
         </Button>
       </Box>
 

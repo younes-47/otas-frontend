@@ -11,6 +11,9 @@ import {
   CHANGE_ONBEHALF_SELECTION_ACTION,
   CLEANUP_STORE_ACTION,
   DEFAULT_ACTION,
+  LOAD_DEPENSE_CAISSE_DETAILS,
+  LOAD_DEPENSE_CAISSE_DETAILS_ERROR,
+  LOAD_DEPENSE_CAISSE_DETAILS_SUCCESS,
   LOAD_STATIC_DATA,
   LOAD_STATIC_DATA_ERROR,
   LOAD_STATIC_DATA_SUCCESS,
@@ -27,6 +30,27 @@ export function defaultAction() {
     type: DEFAULT_ACTION,
   };
 }
+
+export function loadDepenseCaisseDetailsAction(id) {
+  return {
+    type: LOAD_DEPENSE_CAISSE_DETAILS,
+    id,
+  };
+}
+export function loadDepenseCaisseDetailsSuccessAction(data) {
+  return {
+    type: LOAD_DEPENSE_CAISSE_DETAILS_SUCCESS,
+    data,
+  };
+}
+
+export function loadDepenseCaisseDetailsErrorAction(error) {
+  return {
+    type: LOAD_DEPENSE_CAISSE_DETAILS_ERROR,
+    error,
+  };
+}
+
 export function SelectOnBehalfAction(selection) {
   return {
     type: CHANGE_ONBEHALF_SELECTION_ACTION,
@@ -54,10 +78,10 @@ export function LoadStaticDataErrorAction(error) {
   };
 }
 
-export function AddDepenseCaisseAction(data) {
+export function AddDepenseCaisseAction(form) {
   return {
     type: ADD_DEPENSE_CAISSE,
-    data,
+    form,
   };
 }
 

@@ -11,6 +11,9 @@ import {
   CHANGE_ONBEHALF_SELECTION_ACTION,
   CLEANUP_STORE_ACTION,
   DEFAULT_ACTION,
+  LOAD_DEPENSE_CAISSE_DETAILS,
+  LOAD_DEPENSE_CAISSE_DETAILS_ERROR,
+  LOAD_DEPENSE_CAISSE_DETAILS_SUCCESS,
   LOAD_STATIC_DATA,
   LOAD_STATIC_DATA_ERROR,
   LOAD_STATIC_DATA_SUCCESS,
@@ -33,6 +36,9 @@ export const initialState = {
   errorUpdatingDepenseCaisse: null,
   submittingDepenseCaisse: false,
   errorSubmittingDepenseCaisse: null,
+  loadingDepenseCaisseDetails: false,
+  errorLoadingDepenseCaisseDetails: null,
+  depenseCaisseDetails: null,
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -40,6 +46,19 @@ const depenseCaisseFormReducer = (state = initialState, action) =>
   produce(state, (draft) => {
     switch (action.type) {
       case DEFAULT_ACTION:
+        break;
+      case LOAD_DEPENSE_CAISSE_DETAILS:
+        draft.loadingDepenseCaisseDetails = true;
+        draft.errorLoadingDepenseCaisseDetails = null;
+        break;
+      case LOAD_DEPENSE_CAISSE_DETAILS_SUCCESS:
+        draft.loadingDepenseCaisseDetails = false;
+        draft.errorLoadingDepenseCaisseDetails = false;
+        draft.depenseCaisseDetails = action.data;
+        break;
+      case LOAD_DEPENSE_CAISSE_DETAILS_ERROR:
+        draft.loadingDepenseCaisseDetails = false;
+        draft.errorLoadingDepenseCaisseDetails = true;
         break;
       case LOAD_STATIC_DATA:
         draft.loadingStaticData = true;
@@ -104,6 +123,9 @@ const depenseCaisseFormReducer = (state = initialState, action) =>
         draft.errorUpdatingDepenseCaisse = null;
         draft.submittingDepenseCaisse = false;
         draft.errorSubmittingDepenseCaisse = null;
+        draft.loadingDepenseCaisseDetails = false;
+        draft.errorLoadingDepenseCaisseDetails = null;
+        draft.depenseCaisseDetails = null;
         break;
     }
   });

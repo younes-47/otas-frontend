@@ -1,5 +1,6 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 import request from 'utils/request';
+import { setOrdreMissionIdentityAction } from 'pages/OrdreMission/actions';
 import {
   ADD_ORDRE_MISSION,
   LOAD_ORDRE_MISSION_DETAILS,
@@ -47,7 +48,7 @@ export function* AddOrdreMission({ form }) {
       },
     );
     yield put(AddOrdreMissionSuccessAction());
-    yield put(loadOrdreMissionDetailsAction(data)); // data is ID
+    yield put(setOrdreMissionIdentityAction(data)); // data is ID
   } catch (error) {
     yield put(AddOrdreMissionErrorAction(error));
   }
@@ -66,7 +67,7 @@ export function* UpdateOrdreMission({ form }) {
       },
     );
     yield put(UpdateOrdreMissionSuccessAction());
-    yield put(loadOrdreMissionDetailsAction(data)); // data is ID
+    yield put(setOrdreMissionIdentityAction(data)); // data is ID
   } catch (error) {
     yield put(UpdateOrdreMissionErrorAction(error));
   }
