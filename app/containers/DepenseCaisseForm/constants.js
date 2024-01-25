@@ -40,14 +40,15 @@ export const ADD_DEPENSE_CAISSE_ERROR =
   'app/DepenseCaisseForm/ADD_DEPENSE_CAISSE_ERROR';
 
 export const CHANGE_ONBEHALF_SELECTION_ACTION =
-  'app/OrdreMission/ON_BEHALF_SELECTION';
+  'app/DepenseCaisseForm/ON_BEHALF_SELECTION';
 
 export const CLEANUP_STORE_ACTION =
   'app/DepenseCaisseForm/CLEANUP_STORE_ACTION';
 
 export const webService = {
   ADD_DEPENSE_CAISSE: '/DepenseCaisse/Create',
+  LOAD_DEPENSE_CAISSE_DETAILS: '/DepenseCaisse/View',
   UPDATE_DEPENSE_CAISSE: '/DepenseCaisse/Modify',
-  SUBMIT_DEPENSE_CAISSE: '',
+  SUBMIT_DEPENSE_CAISSE: '/DepenseCaisse/Submit',
   LOAD_STATIC_DATA: '/User/ActualRequesterStaticInfo/All',
 };

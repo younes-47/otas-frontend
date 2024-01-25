@@ -12,7 +12,3 @@ export const CHANGE_PAGE_CONTENT_ACTION =
 export const AVANCE_CAISSE_IDENTITY = 'app/AvanceCaisse/AVANCE_CAISSE_IDENTITY';
 
 export const CLEANUP_STORE_ACTION = 'app/AvanceCaisse/CLEANUP_STORE_ACTION';
-
-export const webService = {
-  LOAD_AVANCE_CAISSE_DETAILS: '/AvanceCaisse/View',
-};

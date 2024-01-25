@@ -11,30 +11,33 @@ import PropTypes from 'prop-types';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
-import Box from '@mui/material/Box';
-import Divider from '@mui/material/Divider';
-import TextField from '@mui/material/TextField';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
+import { Stack, Box } from '@mui/system';
+import {
+  Alert,
+  Autocomplete,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Divider,
+  FormControlLabel,
+  IconButton,
+  Link,
+  Radio,
+  RadioGroup,
+  Snackbar,
+  TextField,
+  Typography,
+  Grid,
+} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import HistoryIcon from '@mui/icons-material/History';
-import FormLabel from '@mui/material/FormLabel';
-import Alert from '@mui/material/Alert';
-import Autocomplete from '@mui/material/Autocomplete';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import IconButton from '@mui/material/IconButton';
-import Snackbar from '@mui/material/Snackbar';
-import Typography from '@mui/material/Typography';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import { Stack } from '@mui/system';
+
 import dayjs from 'dayjs';
 import {
   ChangePageContentAction,
@@ -44,8 +47,11 @@ import { setOrdreMissionStatusAction } from 'containers/OrdreMissionTable/action
 import DisplayUserinfo from 'components/DisplayUserinfo';
 
 import CustomizedTimeLine from 'components/CustomizedTimeLine';
-import Timeline from '@mui/icons-material/Timeline';
+import { Timeline } from '@mui/lab';
 import { makeSelectOrdreMissionIdentity } from 'pages/OrdreMission/selectors';
+import ActualRequesterInputs from 'components/ActualRequesterInputs';
+import { ValidateInputs } from 'utils/Custom/ValidateInputs';
+
 import saga from './saga';
 import reducer from './reducer';
 import {
@@ -147,6 +153,7 @@ export function OrdreMissionForm({ state }) {
   const [modalSevirity, setModalSevirity] = useState('');
   const [buttonClicked, setButtonClicked] = useState(''); // this state is used to track which button has been clicked
   const [savedSnackbarVisibility, setSavedSnackbarVisibility] = useState(false);
+  const [fullPageModalVisibility, setFullPageModalVisibility] = useState(false);
   const action = (
     <IconButton
       size="small"
@@ -169,10 +176,10 @@ export function OrdreMissionForm({ state }) {
 
   // Load the data
   useEffect(() => {
-    if (state !== 'ADD' && errorLoadingOrdreMissionDetails === null) {
+    if (state !== 'ADD') {
       dispatch(loadOrdreMissionDetailsAction(ordreMissionIdentity));
     }
-  }, [errorLoadingOrdreMissionDetails]);
+  }, []);
 
   // Fill the loaded data in case of editing/modifying
   useEffect(() => {
@@ -252,12 +259,15 @@ export function OrdreMissionForm({ state }) {
     setTotalEUR(Number(TOTAL_EUR.toFixed(2)));
   }, [trips, expenses]);
 
-  // Listen to adding & updating --> when saving as draft
+  // Listen to adding & updating
   useEffect(() => {
     if (errorAddingOrdreMission === false) {
       if (buttonClicked === 'SAVE-AS-DRAFT') {
         dispatch(cleanupParentOrdreMissionPageAction());
         dispatch(setOrdreMissionStatusAction('SAVED'));
+      }
+      if (buttonClicked === 'CONFIRM') {
+        dispatch(loadOrdreMissionDetailsAction(ordreMissionIdentity));
       }
     }
     if (errorUpdatingOrdreMission === false) {
@@ -265,16 +275,24 @@ export function OrdreMissionForm({ state }) {
         dispatch(cleanupParentOrdreMissionPageAction());
         dispatch(setOrdreMissionStatusAction('UPDATED'));
       }
+      if (buttonClicked === 'CONFIRM') {
+        dispatch(loadOrdreMissionDetailsAction(ordreMissionIdentity));
+      }
     }
   }, [errorAddingOrdreMission, errorUpdatingOrdreMission]);
 
-  // Listen to loading --> when confirming adding or updating
+  // Change PAGE CONTENT TO CONFIRMATION PAGE when the object is loaded and the button clicked is CONFIRM
   useEffect(() => {
-    if (buttonClicked === 'CONFIRM') {
+    if (
+      buttonClicked === 'CONFIRM' &&
+      errorLoadingOrdreMissionDetails === false
+    ) {
+      dispatch(cleanupParentOrdreMissionPageAction());
       dispatch(ChangePageContentAction('CONFIRM'));
+      setFullPageModalVisibility(true);
       setSavedSnackbarVisibility(true);
     }
-  }, [buttonClicked]);
+  }, [errorLoadingOrdreMissionDetails]);
 
   // Listen to Submit/Resubmit
   useEffect(() => {
@@ -395,209 +413,22 @@ export function OrdreMissionForm({ state }) {
     actualRequester,
   };
 
-  const ValidateInputs = () => {
-    // Invalid on behalf selection
-    if (data.onBehalf !== true && data.onBehalf !== false) {
-      setModalHeader('Invalid Information!');
-      setModalBody(
-        'Could not figure out whether you are filling this request on behalf of someone else or not! Please select "Yes" or "No".',
-      );
-      setModalSevirity('error');
-      setModalVisibility(true);
-      return false;
-    }
-
-    // on behalf of someone + missing actual requester info
-    if (
-      data.onBehalf === true &&
-      (!actualRequester.firstName ||
-        !actualRequester.lastName ||
-        !actualRequester.registrationNumber ||
-        !actualRequester.jobTitle ||
-        !actualRequester.department ||
-        !actualRequester.managerUserName)
-    ) {
-      setModalHeader('Invalid Information!');
-      setModalBody(
-        'You must fill all actual requester information if you are filling this request on behalf of someone else!',
-      );
-      setModalSevirity('error');
-      setModalVisibility(true);
-      return false;
-    }
-
-    // invalid abroad selection
-    if (data.Abroad !== true && data.Abroad !== false) {
-      setModalHeader('Invalid Information!');
-      setModalBody(
-        'Could not figure out whether this request is abroad or not! Please select "Yes" or "No".',
-      );
-      setModalSevirity('error');
-      setModalVisibility(true);
-      return false;
-    }
-
-    // if on behalf is false -> set actual requester to null
-    if (data.onBehalf === false) {
-      setActualRequester(null);
-    }
-
-    // Description
-    if (data.description === '') {
-      setModalHeader('Invalid Information!');
-      setModalBody('You must provide a description for the mission!');
-      setModalSevirity('error');
-      setModalVisibility(true);
-      return false;
-    }
-
-    // Trips
-    const copiedTrips = [...trips];
-    const sortedTrips = copiedTrips.sort(
-      (a, b) => new Date(a.departureDate) - new Date(b.departureDate),
-    );
-    let isAllGood = true;
-    sortedTrips.forEach((trip) => {
-      // Blank input
-      if (
-        trip.departurePlace === '' ||
-        trip.destination === '' ||
-        trip.departureDate === '' ||
-        trip.arrivalDate === '' ||
-        trip.transportationMethod === '' ||
-        trip.unit === ''
-      ) {
-        setModalHeader('Invalid Information!');
-        setModalBody(
-          "One of the trajectories' required information is missing! Please review your trajectories and fill all necessary information",
-        );
-        setModalSevirity('error');
-        setModalVisibility(true);
-        isAllGood = false;
-      }
-
-      // value = 0
-      if (trip.value <= 0 || trip.value === '0') {
-        setModalHeader('Invalid Information!');
-        setModalBody(
-          "A trajectory's fee or mileage cannot be 0 or negative! Please review your trajectories information and try again",
-        );
-        setModalSevirity('error');
-        setModalVisibility(true);
-        isAllGood = false;
-      }
-
-      // value is blank
-      if (
-        trip.value === '' ||
-        totalMAD.isNaN === true ||
-        totalEUR.isNaN === true
-      ) {
-        setModalHeader('Invalid Information!');
-        setModalBody(
-          'Invalid Total value! Please review your trajectories and/or expenses fee/Mileage values and try again',
-        );
-        setModalSevirity('error');
-        setModalVisibility(true);
-        isAllGood = false;
-      }
-
-      // ArrivalDate < DepartureDate
-      if (trip.departureDate > trip.arrivalDate) {
-        setModalHeader('Invalid Information!');
-        setModalBody(
-          'Arrival date cannot be earlier than the departure date! Please review your trajectories information and try again',
-        );
-        setModalSevirity('error');
-        setModalVisibility(true);
-        isAllGood = false;
-      }
-
-      // Arrival date of current trip shouldn't be bigger than the departuredate of the next trip
-      // Prevent out of range index exception
-      if (trip !== sortedTrips.at(sortedTrips.length - 1)) {
-        if (
-          trip.arrivalDate >
-          sortedTrips.at(sortedTrips.length - 1).departureDate
-        ) {
-          setModalHeader('Invalid Information!');
-          setModalBody(
-            'Trips dates do not make sense! You cannot start another trip before you arrive from the previous one.',
-          );
-          setModalSevirity('error');
-          setModalVisibility(true);
-          isAllGood = false;
-        }
-      }
-    });
-
-    data.expenses.forEach((expense) => {
-      if (
-        expense.description === '' ||
-        (expense.currency !== 'MAD' && expense.currency !== 'EUR')
-      ) {
-        setModalHeader('Invalid Information!');
-        setModalBody(
-          'One of the expenses required information is missing! Please review your expenses and fill all necessary information.',
-        );
-        setModalSevirity('error');
-        setModalVisibility(true);
-        isAllGood = false;
-      }
-      // fee = 0
-      if (expense.estimatedFee <= 0 || expense.estimatedFee === '0') {
-        setModalHeader('Invalid Information!');
-        setModalBody(
-          'Expense fee cannot be 0 or negative! Please review your expenses information and try again.',
-        );
-        setModalSevirity('error');
-        setModalVisibility(true);
-        isAllGood = false;
-      }
-      // value is blank
-      if (
-        expense.estimatedFee === '' ||
-        totalMAD.isNaN === true ||
-        totalEUR.isNaN === true
-      ) {
-        setModalHeader('Invalid Information!');
-        setModalBody(
-          'Invalid Total value! Please review your trajectories and/or expenses fee/Mileage values and try again',
-        );
-        setModalSevirity('error');
-        setModalVisibility(true);
-        isAllGood = false;
-      }
-      // expense date is invalid
-      if (
-        expense.expenseDate === null ||
-        expense.expenseDate === '' ||
-        !expense.expenseDate
-      ) {
-        setModalHeader('Invalid Information!');
-
-        setModalBody(
-          "One of the expenses' date is not set yet! Please review your expenses information and try again.",
-        );
-        setModalSevirity('error');
-        setModalVisibility(true);
-        isAllGood = false;
-      }
-    });
-    if (isAllGood === false) {
-      return false;
-    }
-
-    return true;
-  };
-
   // Handle on buttons click
   const handleOnReturnButtonClick = () => {
     dispatch(cleanupOrdreMissionFormPageAction());
     dispatch(cleanupParentOrdreMissionPageAction());
   };
   const handleOnSaveAsDraftClick = () => {
-    const result = ValidateInputs();
+    const result = ValidateInputs(
+      setModalVisibility,
+      setModalBody,
+      setModalHeader,
+      setModalSevirity,
+      data,
+      setActualRequester,
+      totalMAD,
+      totalEUR,
+    );
     if (result === true) {
       if (state === 'ADD') {
         dispatch(AddOrdreMissionAction(data));
@@ -612,7 +443,16 @@ export function OrdreMissionForm({ state }) {
   };
 
   const handleOnConfirmButtonClick = () => {
-    const result = ValidateInputs();
+    const result = ValidateInputs(
+      setModalVisibility,
+      setModalBody,
+      setModalHeader,
+      setModalSevirity,
+      data,
+      setActualRequester,
+      totalMAD,
+      totalEUR,
+    );
     if (result === true) {
       if (state === 'ADD') {
         dispatch(AddOrdreMissionAction(data));
@@ -642,7 +482,16 @@ export function OrdreMissionForm({ state }) {
 
   const handleOnSubmitModificationsConfirmationButtonClick = () => {
     // This button is in the modal
-    const result = ValidateInputs();
+    const result = ValidateInputs(
+      setModalVisibility,
+      setModalBody,
+      setModalHeader,
+      setModalSevirity,
+      data,
+      setActualRequester,
+      totalMAD,
+      totalEUR,
+    );
     if (result === true) {
       dispatch(UpdateOrdreMissionAction(data));
       setButtonClicked('SUBMIT-MODIFICATIONS');
@@ -789,118 +638,14 @@ export function OrdreMissionForm({ state }) {
         )}
 
         {onBehalfSelection &&
-        onBehalfSelection.toString() === 'true' &&
-        !readOnly ? (
-          <>
-            <Box
-              display="flex"
-              justifyContent="center"
-              textAlign="center"
-              marginBottom={2}
-            >
-              <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                Please fill the actual requester information*
-              </Typography>
-            </Box>
-
-            <Box justifyContent="center" textAlign="center" marginBottom={3}>
-              <Box
-                display="flex"
-                justifyContent="center"
-                gap={2}
-                marginBottom={2}
-              >
-                <TextField
-                  id="outlined-basic"
-                  label="First Name"
-                  variant="outlined"
-                  value={actualRequester.firstName}
-                  onChange={(e) =>
-                    updateActualRequesterData('firstName', e.target.value)
-                  }
-                  required
-                />
-                <TextField
-                  id="outlined-basic"
-                  label="Last Name"
-                  variant="outlined"
-                  value={actualRequester.lastName}
-                  onChange={(e) =>
-                    updateActualRequesterData('lastName', e.target.value)
-                  }
-                  required
-                />
-                <TextField
-                  id="outlined-basic"
-                  label="Registration Number"
-                  variant="outlined"
-                  value={actualRequester.registrationNumber}
-                  onChange={(e) =>
-                    updateActualRequesterData(
-                      'registrationNumber',
-                      e.target.value,
-                    )
-                  }
-                  required
-                />
-              </Box>
-              <Box
-                display="flex"
-                justifyContent="center"
-                gap={2}
-                marginBottom={2}
-              >
-                <Autocomplete
-                  disablePortal
-                  id="combo-box-demo"
-                  options={staticData.jobTitles}
-                  sx={{ width: 224 }}
-                  value={actualRequester.jobTitle}
-                  onChange={(e, newValue) =>
-                    updateActualRequesterData('jobTitle', newValue)
-                  }
-                  required
-                  renderInput={(params) => (
-                    // eslint-disable-next-line react/jsx-props-no-spreading
-                    <TextField {...params} label="Job Title" />
-                  )}
-                />
-                <Autocomplete
-                  disablePortal
-                  id="combo-box-demo"
-                  options={staticData.departments}
-                  sx={{ width: 224 }}
-                  value={actualRequester.department}
-                  onChange={(e, newValue) =>
-                    updateActualRequesterData('department', newValue)
-                  }
-                  required
-                  renderInput={(params) => (
-                    // eslint-disable-next-line react/jsx-props-no-spreading
-                    <TextField {...params} label="Department" />
-                  )}
-                />
-                <Autocomplete
-                  disablePortal
-                  id="combo-box-demo"
-                  options={staticData.managersUsernames}
-                  sx={{ width: 224 }}
-                  value={actualRequester.managerUserName}
-                  onChange={(e, newValue) =>
-                    updateActualRequesterData('managerUserName', newValue)
-                  }
-                  required
-                  renderInput={(params) => (
-                    // eslint-disable-next-line react/jsx-props-no-spreading
-                    <TextField {...params} label="Manager" />
-                  )}
-                />
-              </Box>
-            </Box>
-          </>
-        ) : (
-          <></>
-        )}
+          onBehalfSelection.toString() === 'true' &&
+          !readOnly && (
+            <ActualRequesterInputs
+              actualRequester={actualRequester}
+              updateActualRequesterData={updateActualRequesterData}
+              staticData={staticData}
+            />
+          )}
 
         {/* DIVIDER */}
         <Box
@@ -975,7 +720,7 @@ export function OrdreMissionForm({ state }) {
             multiline
             minRows={3}
             label="Mission description"
-            value={readOnly ? ordreMissionDetails?.description : description}
+            value={description}
             onChange={(e) => updateDescriptionData(e.target.value)}
             required
             sx={{ width: '50%' }}
@@ -1207,6 +952,48 @@ export function OrdreMissionForm({ state }) {
           </DialogActions>
         </Dialog>
 
+        {/* Confirmation Modal */}
+        <Dialog
+          fullScreen
+          open={fullPageModalVisibility}
+          onScroll={() => setFullPageModalVisibility(false)}
+          PaperProps={{
+            style: {
+              backgroundColor: '#e3faff',
+            },
+          }}
+        >
+          <Grid
+            container
+            spacing={0}
+            direction="column"
+            alignItems="center"
+            justifyContent="center"
+            sx={{ minHeight: '100vh' }}
+          >
+            <Grid item xs={1.5} justifyContent="center">
+              <Alert variant="outlined" severity="info" icon={false}>
+                <Typography variant="h4">
+                  Please Review your information before submitting
+                </Typography>
+              </Alert>
+            </Grid>
+            <Grid item justifyContent="center">
+              <Button
+                variant="contained"
+                color="success"
+                // endIcon={<ThumbUpOffAltIcon />}
+                onClick={() => setFullPageModalVisibility(false)}
+                aria-label="close"
+                size="large"
+              >
+                OK
+              </Button>
+            </Grid>
+          </Grid>
+        </Dialog>
+
+        {/* Notification Bar */}
         <Snackbar
           open={savedSnackbarVisibility}
           autoHideDuration={3000}

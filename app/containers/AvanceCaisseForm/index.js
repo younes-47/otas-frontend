@@ -47,6 +47,8 @@ import { setAvanceCaisseStatusAction } from 'containers/AvanceCaisseTable/action
 import { makeSelectAvanceCaisseIdentity } from 'pages/AvanceCaisse/selectors';
 import { Timeline } from '@mui/lab';
 import CustomizedTimeLine from 'components/CustomizedTimeLine';
+import ActualRequesterInputs from 'components/ActualRequesterInputs';
+import { ValidateInputs } from 'utils/Custom/ValidateInputs';
 import {
   makeSelectAddAvanceCaisse,
   makeSelectAvanceCaisseDetails,
@@ -147,10 +149,10 @@ export function AvanceCaisseForm({ state }) {
 
   // Load the data
   useEffect(() => {
-    if (state !== 'ADD' && errorloadingAvanceCaisseDetails === null) {
+    if (state !== 'ADD') {
       dispatch(loadAvanceCaisseDetailsAction(avanceCaisseIdentity));
     }
-  }, [errorloadingAvanceCaisseDetails]);
+  }, []);
 
   // Fill the loaded data in case of editing/modifying
   useEffect(() => {
@@ -184,12 +186,15 @@ export function AvanceCaisseForm({ state }) {
     }
   }, [avanceCaisseDetails]);
 
-  // Listen to adding & updating --> when saving as draft
+  // Listen to adding & updating
   useEffect(() => {
     if (errorAddingAvanceCaisse === false) {
       if (buttonClicked === 'SAVE-AS-DRAFT') {
         dispatch(cleanupAvanceCaisseParentPageStoreAction());
         dispatch(setAvanceCaisseStatusAction('SAVED'));
+      }
+      if (buttonClicked === 'CONFIRM') {
+        dispatch(loadAvanceCaisseDetailsAction(avanceCaisseIdentity));
       }
     }
     if (errorUpdatingAvanceCaisse === false) {
@@ -197,16 +202,23 @@ export function AvanceCaisseForm({ state }) {
         dispatch(cleanupAvanceCaisseParentPageStoreAction());
         dispatch(setAvanceCaisseStatusAction('UPDATED'));
       }
+      if (buttonClicked === 'CONFIRM') {
+        dispatch(loadAvanceCaisseDetailsAction(avanceCaisseIdentity));
+      }
     }
   }, [errorAddingAvanceCaisse, errorUpdatingAvanceCaisse]);
 
-  // Listen to loading --> when confirming adding or updating
+  // Change PAGE CONTENT TO CONFIRMATION PAGE when the object is loaded and the button clicked is CONFIRM
   useEffect(() => {
-    if (buttonClicked === 'CONFIRM') {
+    if (
+      buttonClicked === 'CONFIRM' &&
+      errorloadingAvanceCaisseDetails === false
+    ) {
+      dispatch(cleanupAvanceCaisseParentPageStoreAction());
       dispatch(changePageContentAction('CONFIRM'));
       setSavedSnackbarVisibility(true);
     }
-  }, [buttonClicked]);
+  }, [errorloadingAvanceCaisseDetails]);
 
   // Listen to Submit/Resubmit
   useEffect(() => {
@@ -283,105 +295,6 @@ export function AvanceCaisseForm({ state }) {
     );
     setExpenses(updatedExpenses);
   };
-  const ValidateInputs = () => {
-    // Invalid on behalf selection
-    if (data.onBehalf !== true && data.onBehalf !== false) {
-      setModalHeader('Invalid Information!');
-      setModalBody(
-        'Could not figure out whether you are filling this request on behalf of someone else or not! Please select "Yes" or "No".',
-      );
-      setModalSevirity('error');
-      setModalVisibility(true);
-      return false;
-    }
-
-    // on behalf of someone + missing actual requester info
-    if (
-      data.onBehalf === true &&
-      (!actualRequester.firstName ||
-        !actualRequester.lastName ||
-        !actualRequester.registrationNumber ||
-        !actualRequester.jobTitle ||
-        !actualRequester.department ||
-        !actualRequester.managerUserName)
-    ) {
-      setModalHeader('Invalid Information!');
-      setModalBody(
-        'You must fill all actual requester information if you are filling this request on behalf of someone else!',
-      );
-      setModalSevirity('error');
-      setModalVisibility(true);
-      return false;
-    }
-
-    // if on behalf is false -> set actual requester to null
-    if (data.onBehalf === false) {
-      setActualRequester(null);
-    }
-
-    // Description
-    if (data.description === '') {
-      setModalHeader('Invalid Information!');
-      setModalBody('You must provide a description for the request!');
-      setModalSevirity('error');
-      setModalVisibility(true);
-      return false;
-    }
-
-    let isAllGood = true;
-
-    // expenses
-    data.expenses.forEach((expense) => {
-      if (expense.description === '') {
-        setModalHeader('Invalid Information!');
-        setModalBody('You must provide a description for your expenses');
-        setModalSevirity('error');
-        setModalVisibility(true);
-        isAllGood = false;
-      }
-      // fee = 0
-      if (expense.estimatedFee <= 0 || expense.estimatedFee === '0') {
-        setModalHeader('Invalid Information!');
-        setModalBody(
-          'Expense fee cannot be 0 or negative! Please review your expenses information and try again.',
-        );
-        setModalSevirity('error');
-        setModalVisibility(true);
-        isAllGood = false;
-      }
-      // value is blank
-      if (expense.estimatedFee === '') {
-        setModalHeader('Invalid Information!');
-        setModalBody(
-          'Invalid Total value! Please review your expenses fee values and try again',
-        );
-        setModalSevirity('error');
-        setModalVisibility(true);
-        isAllGood = false;
-      }
-      // expense date is invalid
-      if (
-        expense.expenseDate === null ||
-        expense.expenseDate === '' ||
-        !expense.expenseDate
-      ) {
-        setModalHeader('Invalid Information!');
-
-        setModalBody(
-          "One of the expenses' date is not set yet! Please review your expenses information and try again.",
-        );
-        setModalSevirity('error');
-        setModalVisibility(true);
-        isAllGood = false;
-      }
-    });
-
-    if (isAllGood === false) {
-      return false;
-    }
-
-    return true;
-  };
 
   const getAction = () => {
     let requestAction = '';
@@ -398,7 +311,14 @@ export function AvanceCaisseForm({ state }) {
   };
 
   const handleOnSaveAsDraftClick = () => {
-    const result = ValidateInputs();
+    const result = ValidateInputs(
+      setModalVisibility,
+      setModalBody,
+      setModalHeader,
+      setModalSevirity,
+      data,
+      setActualRequester,
+    );
     if (result === true) {
       if (state === 'ADD') {
         dispatch(AddAvanceCaisseAction(data));
@@ -413,7 +333,14 @@ export function AvanceCaisseForm({ state }) {
   };
 
   const handleOnConfirmButtonClick = () => {
-    const result = ValidateInputs();
+    const result = ValidateInputs(
+      setModalVisibility,
+      setModalBody,
+      setModalHeader,
+      setModalSevirity,
+      data,
+      setActualRequester,
+    );
     if (result === true) {
       if (state === 'ADD') {
         dispatch(AddAvanceCaisseAction(data));
@@ -443,7 +370,14 @@ export function AvanceCaisseForm({ state }) {
 
   const handleOnSubmitModificationsConfirmationButtonClick = () => {
     // This button is in the modal
-    const result = ValidateInputs();
+    const result = ValidateInputs(
+      setModalVisibility,
+      setModalBody,
+      setModalHeader,
+      setModalSevirity,
+      data,
+      setActualRequester,
+    );
     if (result === true) {
       dispatch(UpdateAvanceCaisseAction(data));
       setButtonClicked('SUBMIT-MODIFICATIONS');
@@ -601,118 +535,14 @@ export function AvanceCaisseForm({ state }) {
       )}
 
       {onBehalfSelection &&
-      onBehalfSelection.toString() === 'true' &&
-      !readOnly ? (
-        <>
-          <Box
-            display="flex"
-            justifyContent="center"
-            textAlign="center"
-            marginBottom={2}
-          >
-            <h1 style={{ fontSize: '18px' }}>
-              Please fill the actual requester information*
-            </h1>
-          </Box>
-
-          <Box justifyContent="center" textAlign="center" marginBottom={3}>
-            <Box
-              display="flex"
-              justifyContent="center"
-              gap={2}
-              marginBottom={2}
-            >
-              <TextField
-                id="outlined-basic"
-                label="First Name"
-                variant="outlined"
-                value={actualRequester.firstName}
-                onChange={(e) =>
-                  updateActualRequesterData('firstName', e.target.value)
-                }
-                required
-              />
-              <TextField
-                id="outlined-basic"
-                label="Last Name"
-                variant="outlined"
-                value={actualRequester.lastName}
-                onChange={(e) =>
-                  updateActualRequesterData('lastName', e.target.value)
-                }
-                required
-              />
-              <TextField
-                id="outlined-basic"
-                label="Registration Number"
-                variant="outlined"
-                value={actualRequester.registrationNumber}
-                onChange={(e) =>
-                  updateActualRequesterData(
-                    'registrationNumber',
-                    e.target.value,
-                  )
-                }
-                required
-              />
-            </Box>
-            <Box
-              display="flex"
-              justifyContent="center"
-              gap={2}
-              marginBottom={2}
-            >
-              <Autocomplete
-                disablePortal
-                id="combo-box-demo"
-                options={staticData.jobTitles}
-                sx={{ width: 224 }}
-                value={actualRequester.jobTitle}
-                onChange={(e, newValue) =>
-                  updateActualRequesterData('jobTitle', newValue)
-                }
-                required
-                renderInput={(params) => (
-                  // eslint-disable-next-line react/jsx-props-no-spreading
-                  <TextField {...params} label="Job Title" />
-                )}
-              />
-              <Autocomplete
-                disablePortal
-                id="combo-box-demo"
-                options={staticData.departments}
-                sx={{ width: 224 }}
-                value={actualRequester.department}
-                onChange={(e, newValue) =>
-                  updateActualRequesterData('department', newValue)
-                }
-                required
-                renderInput={(params) => (
-                  // eslint-disable-next-line react/jsx-props-no-spreading
-                  <TextField {...params} label="Department" />
-                )}
-              />
-              <Autocomplete
-                disablePortal
-                id="combo-box-demo"
-                options={staticData.managersUsernames}
-                sx={{ width: 224 }}
-                value={actualRequester.managerUserName}
-                onChange={(e, newValue) =>
-                  updateActualRequesterData('managerUserName', newValue)
-                }
-                required
-                renderInput={(params) => (
-                  // eslint-disable-next-line react/jsx-props-no-spreading
-                  <TextField {...params} label="Manager" />
-                )}
-              />
-            </Box>
-          </Box>
-        </>
-      ) : (
-        <></>
-      )}
+        onBehalfSelection.toString() === 'true' &&
+        !readOnly && (
+          <ActualRequesterInputs
+            actualRequester={actualRequester}
+            updateActualRequesterData={updateActualRequesterData}
+            staticData={staticData}
+          />
+        )}
 
       {/* DIVIDER */}
       <Box

@@ -3,7 +3,7 @@
  * DepenseCaisseForm reducer
  *
  */
-import produce, { finishDraft } from 'immer';
+import produce from 'immer';
 import {
   ADD_DEPENSE_CAISSE,
   ADD_DEPENSE_CAISSE_ERROR,

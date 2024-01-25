@@ -9,7 +9,6 @@ import Box from '@mui/material/Box';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
-import axios from 'axios';
 import {
   Alert,
   Button,
@@ -92,33 +91,32 @@ export function DepenseCaisseTable() {
     </IconButton>
   );
 
+  // Download file
   useEffect(() => {
     if (errorDownloadingDepenseCaisseReceiptsFile === false) {
-      const filename =
-        downloadDepenseCaisseReceiptsFileResponse.content.headers[0].value[0].split(
-          'filename=',
-        )[1];
-
-      const blob = new Blob(
-        [downloadDepenseCaisseReceiptsFileResponse.content.headers],
-        { type: 'application/octet-stream' },
+      const binaryString = atob(
+        downloadDepenseCaisseReceiptsFileResponse.fileContents,
       );
+      const bytes = new Uint8Array(binaryString.length);
+
+      for (let i = 0; i < binaryString.length; i += 1) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      const blob = new Blob([bytes.buffer], {
+        type: 'application/pdf',
+      });
 
       const blobUrl = window.URL.createObjectURL(blob);
-      axios({
-        url: blobUrl,
-        method: 'GET',
-        responseType: 'blob',
-      }).then((response) => {
-        // Create a download link
-        const link = document.createElement('a');
-        link.href = window.URL.createObjectURL(new Blob([response.data]));
-        link.download = filename;
 
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      });
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download =
+        downloadDepenseCaisseReceiptsFileResponse.fileDownloadName;
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
   }, [errorDownloadingDepenseCaisseReceiptsFile]);
 

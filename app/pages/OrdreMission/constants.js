@@ -12,7 +12,3 @@ export const CHANGE_PAGE_CONTENT_ACTION =
 export const ORDRE_MISSION_IDENTITY = 'app/OrdreMission/ORDRE_MISSION_IDENTITY';
 
 export const CLEANUP_STORE_ACTION = 'app/OrdreMission/CLEANUP_STORE_ACTION';
-
-export const webService = {
-  LOAD_ORDRE_MISSION_DETAILS: '/OrdreMission/View',
-};

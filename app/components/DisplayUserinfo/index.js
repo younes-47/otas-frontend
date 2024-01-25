@@ -6,8 +6,10 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
-import { Box, Paper, Typography } from '@mui/material';
+import FormattedMessage from 'react-intl';
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
 import messages from './messages';
 
 function DisplayUserinfo({ userData = null }) {
@@ -16,13 +18,14 @@ function DisplayUserinfo({ userData = null }) {
       ? userData?.managerUserName
       : localStorage.getItem('managerUserName');
   return (
-    <div
+    <Box
       style={{
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'column',
       }}
+      marginBottom={4}
     >
       <Typography variant="h6" align="left" gutterBottom>
         Requester Information
@@ -184,7 +187,7 @@ function DisplayUserinfo({ userData = null }) {
           </Box>
         </Box>
       </Paper>
-    </div>
+    </Box>
   );
 }
 

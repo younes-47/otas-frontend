@@ -12,7 +12,8 @@ import PropTypes from 'prop-types';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
-import { DropzoneArea } from 'material-ui-dropzone';
+import DropzoneArea from 'material-ui-dropzone';
+import FilePresentIcon from '@mui/icons-material/FilePresent';
 import HistoryIcon from '@mui/icons-material/History';
 import {
   Alert,
@@ -26,6 +27,7 @@ import {
   Divider,
   FormControlLabel,
   IconButton,
+  Link,
   Radio,
   RadioGroup,
   Snackbar,
@@ -47,6 +49,8 @@ import { setDepenseCaisseStatusAction } from 'containers/DepenseCaisseTable/acti
 import { Timeline } from '@mui/lab';
 import CustomizedTimeLine from 'components/CustomizedTimeLine';
 import { makeSelectDepenseCaisseIdentity } from 'pages/DepenseCaisse/selectors';
+import ActualRequesterInputs from 'components/ActualRequesterInputs';
+import { ValidateInputs } from 'utils/Custom/ValidateInputs';
 import Expenses from './Expenses';
 import {
   makeSelectAddDepenseCaisse,
@@ -151,10 +155,10 @@ export function DepenseCaisseForm({ state }) {
 
   // Load the data
   useEffect(() => {
-    if (state !== 'ADD' && errorLoadingDepenseCaisseDetails === null) {
+    if (state !== 'ADD') {
       dispatch(loadDepenseCaisseDetailsAction(depenseCaisseIdentity));
     }
-  }, [errorLoadingDepenseCaisseDetails]);
+  }, []);
 
   // Fill the data in case of editing/modifying
   useEffect(() => {
@@ -168,6 +172,7 @@ export function DepenseCaisseForm({ state }) {
           setActualRequester(depenseCaisseDetails?.requesterInfo);
         }
 
+        setReceiptsFile(depenseCaisseDetails?.receiptsFile);
         setExpenses([]);
 
         depenseCaisseDetails?.expenses?.forEach((expense) => {
@@ -186,12 +191,15 @@ export function DepenseCaisseForm({ state }) {
     }
   }, [depenseCaisseDetails]);
 
-  // Listen to adding & updating --> when saving as draft
+  // Listen to adding & updating
   useEffect(() => {
     if (errorAddingDepenseCaisse === false) {
       if (buttonClicked === 'SAVE-AS-DRAFT') {
         dispatch(setDepenseCaisseStatusAction('SAVED'));
         dispatch(cleanupDepenseCaisseParentPageStoreAction());
+      }
+      if (buttonClicked === 'CONFIRM') {
+        dispatch(loadDepenseCaisseDetailsAction(depenseCaisseIdentity));
       }
     }
     if (errorUpdatingDepenseCaisse === false) {
@@ -199,16 +207,23 @@ export function DepenseCaisseForm({ state }) {
         dispatch(setDepenseCaisseStatusAction('UPDATED'));
         dispatch(cleanupDepenseCaisseParentPageStoreAction());
       }
+      if (buttonClicked === 'CONFIRM') {
+        dispatch(loadDepenseCaisseDetailsAction(depenseCaisseIdentity));
+      }
     }
   }, [errorAddingDepenseCaisse, errorUpdatingDepenseCaisse]);
 
-  // Listen to loading --> when confirming adding or updating
+  // Change PAGE CONTENT TO CONFIRMATION PAGE when the object is loaded and the button clicked is CONFIRM
   useEffect(() => {
-    if (buttonClicked === 'CONFIRM') {
+    if (
+      buttonClicked === 'CONFIRM' &&
+      errorLoadingDepenseCaisseDetails === false
+    ) {
+      dispatch(cleanupDepenseCaisseParentPageStoreAction());
       dispatch(changePageContentAction('CONFIRM'));
       setSavedSnackbarVisibility(true);
     }
-  }, [buttonClicked]);
+  }, [errorLoadingDepenseCaisseDetails]);
 
   // Listen to Submit/Resubmit
   useEffect(() => {
@@ -304,117 +319,6 @@ export function DepenseCaisseForm({ state }) {
     }
   };
 
-  const ValidateInputs = () => {
-    // Invalid on behalf selection
-    if (data.onBehalf !== true && data.onBehalf !== false) {
-      setModalHeader('Invalid Information!');
-      setModalBody(
-        'Could not figure out whether you are filling this request on behalf of someone else or not! Please select "Yes" or "No".',
-      );
-      setModalSevirity('error');
-      setModalVisibility(true);
-      return false;
-    }
-
-    // on behalf of someone + missing actual requester info
-    if (
-      data.onBehalf === true &&
-      (!actualRequester.firstName ||
-        !actualRequester.lastName ||
-        !actualRequester.registrationNumber ||
-        !actualRequester.jobTitle ||
-        !actualRequester.department ||
-        !actualRequester.managerUserName)
-    ) {
-      setModalHeader('Invalid Information!');
-      setModalBody(
-        'You must fill all actual requester information if you are filling this request on behalf of someone else!',
-      );
-      setModalSevirity('error');
-      setModalVisibility(true);
-      return false;
-    }
-
-    // if on behalf is false -> set actual requester to null
-    if (data.onBehalf === false) {
-      setActualRequester(null);
-    }
-
-    // Description
-    if (data.description === '') {
-      setModalHeader('Invalid Information!');
-      setModalBody('You must provide a description for the mission!');
-      setModalSevirity('error');
-      setModalVisibility(true);
-      return false;
-    }
-
-    let isAllGood = true;
-
-    // expenses
-    data.expenses.forEach((expense) => {
-      if (expense.description === '') {
-        setModalHeader('Invalid Information!');
-        setModalBody('You must provide a description for your expenses');
-        setModalSevirity('error');
-        setModalVisibility(true);
-        isAllGood = false;
-      }
-      // fee = 0
-      if (expense.estimatedFee <= 0 || expense.estimatedFee === '0') {
-        setModalHeader('Invalid Information!');
-        setModalBody(
-          'Expense fee cannot be 0 or negative! Please review your expenses information and try again.',
-        );
-        setModalSevirity('error');
-        setModalVisibility(true);
-        isAllGood = false;
-      }
-      // value is blank
-      if (expense.estimatedFee === '') {
-        setModalHeader('Invalid Information!');
-        setModalBody(
-          'Invalid Total value! Please review your expenses fee values and try again',
-        );
-        setModalSevirity('error');
-        setModalVisibility(true);
-        isAllGood = false;
-      }
-      // expense date is invalid
-      if (
-        expense.expenseDate === null ||
-        expense.expenseDate === '' ||
-        !expense.expenseDate
-      ) {
-        setModalHeader('Invalid Information!');
-
-        setModalBody(
-          "One of the expenses' date is not set yet! Please review your expenses information and try again.",
-        );
-        setModalSevirity('error');
-        setModalVisibility(true);
-        isAllGood = false;
-      }
-    });
-
-    // Receipts file
-    if (data.receiptsFile === '' || !data.receiptsFile) {
-      setModalHeader('Invalid Information!');
-
-      setModalBody(
-        'Please upload your receipts! Or wait wait for them while are being uploaded',
-      );
-      setModalSevirity('error');
-      setModalVisibility(true);
-      isAllGood = false;
-    }
-    if (isAllGood === false) {
-      return false;
-    }
-
-    return true;
-  };
-
   const getAction = () => {
     let requestAction = '';
     if (depenseCaisseDetails !== null) {
@@ -430,7 +334,14 @@ export function DepenseCaisseForm({ state }) {
   };
 
   const handleOnSaveAsDraftClick = () => {
-    const result = ValidateInputs();
+    const result = ValidateInputs(
+      setModalVisibility,
+      setModalBody,
+      setModalHeader,
+      setModalSevirity,
+      data,
+      setActualRequester,
+    );
     if (result === true) {
       if (state === 'ADD') {
         dispatch(AddDepenseCaisseAction(data));
@@ -445,7 +356,14 @@ export function DepenseCaisseForm({ state }) {
   };
 
   const handleOnConfirmButtonClick = () => {
-    const result = ValidateInputs();
+    const result = ValidateInputs(
+      setModalVisibility,
+      setModalBody,
+      setModalHeader,
+      setModalSevirity,
+      data,
+      setActualRequester,
+    );
     if (result === true) {
       if (state === 'ADD') {
         dispatch(AddDepenseCaisseAction(data));
@@ -475,11 +393,41 @@ export function DepenseCaisseForm({ state }) {
 
   const handleOnSubmitModificationsConfirmationButtonClick = () => {
     // This button is in the modal
-    const result = ValidateInputs();
+    const result = ValidateInputs(
+      setModalVisibility,
+      setModalBody,
+      setModalHeader,
+      setModalSevirity,
+      data,
+      setActualRequester,
+    );
     if (result === true) {
       dispatch(UpdateDepenseCaisseAction(data));
       setButtonClicked('SUBMIT-MODIFICATIONS');
     }
+  };
+
+  const handleOnFileButtonClick = () => {
+    const binaryString = atob(depenseCaisseDetails?.receiptsFile);
+    const bytes = new Uint8Array(binaryString.length);
+
+    for (let i = 0; i < binaryString.length; i += 1) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+
+    const blob = new Blob([bytes.buffer], {
+      type: 'application/pdf',
+    });
+
+    const blobUrl = window.URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = blobUrl;
+    link.download = depenseCaisseDetails?.receiptsFileName;
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const data = {
@@ -487,7 +435,8 @@ export function DepenseCaisseForm({ state }) {
     action: getAction(),
     onBehalf: onBehalfSelection === 'true',
     description,
-    receiptsFile,
+    receiptsFile:
+      depenseCaisseDetails?.receiptsFile === receiptsFile ? null : receiptsFile,
     currency,
     actualRequester,
     expenses,
@@ -634,119 +583,14 @@ export function DepenseCaisseForm({ state }) {
       )}
 
       {onBehalfSelection &&
-      onBehalfSelection.toString() === 'true' &&
-      !readOnly ? (
-        <>
-          <Box
-            display="flex"
-            justifyContent="center"
-            textAlign="center"
-            marginBottom={2}
-          >
-            <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-              Please fill the actual requester information*
-            </Typography>
-          </Box>
-
-          <Box justifyContent="center" textAlign="center" marginBottom={3}>
-            <Box
-              display="flex"
-              justifyContent="center"
-              gap={2}
-              marginBottom={2}
-            >
-              <TextField
-                id="outlined-basic"
-                label="First Name"
-                variant="outlined"
-                value={actualRequester.firstName}
-                onChange={(e) =>
-                  updateActualRequesterData('firstName', e.target.value)
-                }
-                required
-              />
-              <TextField
-                id="outlined-basic"
-                label="Last Name"
-                variant="outlined"
-                value={actualRequester.lastName}
-                onChange={(e) =>
-                  updateActualRequesterData('lastName', e.target.value)
-                }
-                required
-              />
-              <TextField
-                id="outlined-basic"
-                label="Registration Number"
-                variant="outlined"
-                value={actualRequester.registrationNumber}
-                onChange={(e) =>
-                  updateActualRequesterData(
-                    'registrationNumber',
-                    e.target.value,
-                  )
-                }
-                required
-              />
-            </Box>
-
-            <Box
-              display="flex"
-              justifyContent="center"
-              gap={2}
-              marginBottom={2}
-            >
-              <Autocomplete
-                disablePortal
-                id="combo-box-demo"
-                options={staticData.jobTitles}
-                sx={{ width: 224 }}
-                value={actualRequester.jobTitle}
-                onChange={(e, newValue) =>
-                  updateActualRequesterData('jobTitle', newValue)
-                }
-                required
-                renderInput={(params) => (
-                  // eslint-disable-next-line react/jsx-props-no-spreading
-                  <TextField {...params} label="Job Title" />
-                )}
-              />
-              <Autocomplete
-                disablePortal
-                id="combo-box-demo"
-                options={staticData.departments}
-                sx={{ width: 224 }}
-                value={actualRequester.department}
-                onChange={(e, newValue) =>
-                  updateActualRequesterData('department', newValue)
-                }
-                required
-                renderInput={(params) => (
-                  // eslint-disable-next-line react/jsx-props-no-spreading
-                  <TextField {...params} label="Department" />
-                )}
-              />
-              <Autocomplete
-                disablePortal
-                id="combo-box-demo"
-                options={staticData.managersUsernames}
-                sx={{ width: 224 }}
-                value={actualRequester.managerUserName}
-                onChange={(e, newValue) =>
-                  updateActualRequesterData('managerUserName', newValue)
-                }
-                required
-                renderInput={(params) => (
-                  // eslint-disable-next-line react/jsx-props-no-spreading
-                  <TextField {...params} label="Manager" />
-                )}
-              />
-            </Box>
-          </Box>
-        </>
-      ) : (
-        <></>
-      )}
+        onBehalfSelection.toString() === 'true' &&
+        !readOnly && (
+          <ActualRequesterInputs
+            actualRequester={actualRequester}
+            updateActualRequesterData={updateActualRequesterData}
+            staticData={staticData}
+          />
+        )}
 
       {/* DIVIDER */}
       <Box
@@ -811,7 +655,7 @@ export function DepenseCaisseForm({ state }) {
       >
         <TextField
           variant={readOnly ? 'filled' : 'outlined'}
-          value={readOnly ? depenseCaisseDetails?.description : description}
+          value={description}
           multiline
           minRows={3}
           label="Description"
@@ -887,26 +731,75 @@ export function DepenseCaisseForm({ state }) {
         <Divider style={{ width: '60%', opacity: 0.7 }} />
       </Box>
 
-      <Box
-        display="flex"
-        justifyContent="center"
-        textAlign="center"
-        marginBottom={2}
-      >
-        <Box
-          display="flex"
-          flexDirection="column"
-          alignItems="flex-start"
-          width="40rem"
-        >
-          <h1 style={{ fontSize: '18px' }}>Receipts*</h1>
-          <Typography variant="caption" sx={{ color: 'error.main' }}>
-            Please upload your receipts in a single pdf file.
-          </Typography>
+      {state !== 'ADD' && (
+        <>
+          <Box
+            display="flex"
+            justifyContent="center"
+            textAlign="center"
+            marginBottom={2}
+            gap={10}
+          >
+            <Box alignItems="flex-start" width="40rem">
+              <Typography variant="h6">
+                {state !== 'CONFIRM' && 'Old'} Receipts File:
+              </Typography>
 
-          {/* The dropzonearea component sill has some side effects */}
-          {/* https://yuvaleros.github.io/material-ui-dropzone/ */}
-          {/* <DropzoneArea
+              <Button
+                color="secondary"
+                size="large"
+                startIcon={<FilePresentIcon />}
+                onClick={() => handleOnFileButtonClick()}
+              >
+                PDF
+              </Button>
+            </Box>
+          </Box>
+        </>
+      )}
+
+      {!readOnly && (
+        <Box display="flex" justifyContent="center" marginBottom={2}>
+          <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="flex-start"
+            width="40rem"
+          >
+            {state === 'ADD' && <h1 style={{ fontSize: '18px' }}>Receipts*</h1>}
+            {(state === 'CONFIRM' || state === 'VIEW') && (
+              <h1 style={{ fontSize: '18px' }}>Receipts*</h1>
+            )}
+            {(state === 'EDIT' || state === 'MODIFY') && (
+              <h1 style={{ fontSize: '18px' }}>
+                Update your receipts&nbsp;
+                <Typography variant="caption">(optional)</Typography>
+              </h1>
+            )}
+            {(state === 'EDIT' || state === 'MODIFY') && (
+              <Alert severity="warning" textAlign="left">
+                <Typography variant="p">
+                  <Typography sx={{ fontWeight: 'bold' }}>
+                    Please note:
+                  </Typography>
+                  uploading a new file will override the old one. You may want
+                  to attach your previously uploaded receipts in case you still
+                  want to include them.
+                </Typography>
+              </Alert>
+            )}
+
+            <Typography
+              variant="caption"
+              sx={{ color: 'error.main' }}
+              marginTop={3}
+            >
+              Please upload your receipts in a single pdf file.
+            </Typography>
+
+            {/* The dropzonearea component sill has some side effects */}
+            {/* https://yuvaleros.github.io/material-ui-dropzone/ */}
+            {/* <DropzoneArea
             acceptedFiles={['application/pdf']}
             dropzoneText="Drag and drop a PDF file here, or click to select"
             maxFileSize={3145728} // 3MB
@@ -916,28 +809,30 @@ export function DepenseCaisseForm({ state }) {
             onChange={(e) => updateReceiptsFileData(e)}
           /> */}
 
-          <Button
-            component="label"
-            variant="outlined"
-            color="warning"
-            startIcon={<FileUploadIcon />}
-            fullWidth
-          >
-            Upload file
-            <input
-              type="file"
-              accept="application/pdf"
-              hidden
-              onChange={(e) => updateReceiptsFileData(e)}
-            ></input>
-          </Button>
-          {receiptsFileName && (
-            <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-              Selected file: {receiptsFileName}
-            </Typography>
-          )}
+            <Button
+              component="label"
+              variant="outlined"
+              color="warning"
+              startIcon={<FileUploadIcon />}
+              fullWidth
+            >
+              Upload file
+              <input
+                type="file"
+                accept="application/pdf"
+                hidden
+                onChange={(e) => updateReceiptsFileData(e)}
+              ></input>
+            </Button>
+            {receiptsFileName && (
+              <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
+                Selected file: {receiptsFileName}
+              </Typography>
+            )}
+          </Box>
         </Box>
-      </Box>
+      )}
+
       {/* DIVIDER */}
       <Box
         display="flex"
