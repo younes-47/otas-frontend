@@ -19,6 +19,7 @@ import {
   Alert,
   Autocomplete,
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -46,7 +47,7 @@ import {
 } from 'pages/DepenseCaisse/actions';
 import DisplayUserinfo from 'components/DisplayUserinfo';
 import { setDepenseCaisseStatusAction } from 'containers/DepenseCaisseTable/actions';
-import { Timeline } from '@mui/lab';
+import { LoadingButton, Timeline } from '@mui/lab';
 import CustomizedTimeLine from 'components/CustomizedTimeLine';
 import { makeSelectDepenseCaisseIdentity } from 'pages/DepenseCaisse/selectors';
 import ActualRequesterInputs from 'components/ActualRequesterInputs';
@@ -117,6 +118,7 @@ export function DepenseCaisseForm({ state }) {
   const [modalSevirity, setModalSevirity] = useState('');
   const [buttonClicked, setButtonClicked] = useState(''); // this state is used to track which button has been clicked
   const [savedSnackbarVisibility, setSavedSnackbarVisibility] = useState(false);
+  const [loadingButton, setLoadingButton] = useState(false);
   const [expenses, setExpenses] = useState([
     {
       id: 0,
@@ -289,8 +291,9 @@ export function DepenseCaisseForm({ state }) {
   };
 
   const updateReceiptsFileData = async (e) => {
+    setLoadingButton(true);
     const file = e.target.files[0];
-    setReceiptsFileName(file.name);
+
     const binaryData = new Promise((resolve, reject) => {
       const reader = new FileReader();
 
@@ -307,6 +310,8 @@ export function DepenseCaisseForm({ state }) {
     const response = await binaryData;
     const base64data = response.split(',')[1];
     setReceiptsFile(base64data);
+    setReceiptsFileName(file.name);
+    setLoadingButton(false);
   };
 
   const handlecurrencyChange = (event) => {
@@ -808,15 +813,38 @@ export function DepenseCaisseForm({ state }) {
             fileObjects={receiptsFile}
             onChange={(e) => updateReceiptsFileData(e)}
           /> */}
-
-            <Button
-              component="label"
-              variant="outlined"
-              color="warning"
+            {/* <LoadingButton
+              color="secondary"
+              loading={loadingButton}
+              loadingPosition="start"
               startIcon={<FileUploadIcon />}
+              variant="outlined"
               fullWidth
             >
-              Upload file
+              <span> Upload file</span>
+              <input
+                type="file"
+                accept="application/pdf"
+                hidden
+                onChange={(e) => updateReceiptsFileData(e)}
+              ></input>
+            </LoadingButton> */}
+            <Button
+              component="label"
+              variant={loadingButton ? 'contained' : 'outlined'}
+              color="warning"
+              startIcon={
+                loadingButton ? (
+                  <CircularProgress size={20} color="inherit" />
+                ) : (
+                  <FileUploadIcon />
+                )
+              }
+              fullWidth
+              disabled={loadingButton}
+            >
+              {!loadingButton ? <>Upload file</> : <>Uploading...</>}
+
               <input
                 type="file"
                 accept="application/pdf"

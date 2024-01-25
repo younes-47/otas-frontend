@@ -32,6 +32,7 @@ import {
   Typography,
   Grid,
 } from '@mui/material';
+import LinearProgress from '@mui/material/LinearProgress';
 import CloseIcon from '@mui/icons-material/Close';
 import HistoryIcon from '@mui/icons-material/History';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -538,11 +539,14 @@ export function OrdreMissionForm({ state }) {
             </h1>
           )}
           {state === 'CONFIRM' && (
-            <h1 style={{ fontSize: '30px' }}>
-              <Typography variant="h5" marginTop={3} gutterBottom>
+            <Box>
+              <Typography variant="h4" marginTop={3} gutterBottom>
                 Please Review your information before submitting
               </Typography>
-            </h1>
+              <Box sx={{ width: '100%' }}>
+                <LinearProgress color="info" value={40} />
+              </Box>
+            </Box>
           )}
         </Box>
         {state === 'CONFIRM' && (
@@ -787,12 +791,16 @@ export function OrdreMissionForm({ state }) {
         >
           <Box display="flex" justifyContent="flex-start" width="40rem">
             <h1 style={{ fontSize: '18px' }}>
-              Other expenses&nbsp;
-              {state !== 'CONFIRM' && state !== 'VIEW' && (
+              {readOnly && expenses.length === 0 ? (
+                <>No Expenses</>
+              ) : (
+                <>Other expenses&nbsp;</>
+              )}
+              {!readOnly && (
                 <Typography variant="caption">(optional)</Typography>
               )}
             </h1>
-            {state !== 'CONFIRM' && state !== 'VIEW' && (
+            {!readOnly && (
               <IconButton onClick={addExpense}>
                 <AddCircleIcon
                   sx={{ color: 'chocolate', fontSize: '30px' }}
@@ -852,15 +860,6 @@ export function OrdreMissionForm({ state }) {
               )}
             </Box>
           </Box>
-        </Box>
-        {/* DIVIDER */}
-        <Box
-          display="flex"
-          justifyContent="center"
-          textAlign="center"
-          marginBottom={1}
-        >
-          <Divider style={{ width: '60%', opacity: 0.7 }} />
         </Box>
 
         <Stack
@@ -959,7 +958,7 @@ export function OrdreMissionForm({ state }) {
           onScroll={() => setFullPageModalVisibility(false)}
           PaperProps={{
             style: {
-              backgroundColor: '#e3faff',
+              backgroundColor: '#f2f2f2',
             },
           }}
         >
@@ -972,16 +971,19 @@ export function OrdreMissionForm({ state }) {
             sx={{ minHeight: '100vh' }}
           >
             <Grid item xs={1.5} justifyContent="center">
-              <Alert variant="outlined" severity="info" icon={false}>
+              <Box>
                 <Typography variant="h4">
                   Please Review your information before submitting
                 </Typography>
-              </Alert>
+                <Box sx={{ width: '100%' }}>
+                  <LinearProgress color="info" value={40} />
+                </Box>
+              </Box>
             </Grid>
             <Grid item justifyContent="center">
               <Button
                 variant="contained"
-                color="success"
+                color="info"
                 // endIcon={<ThumbUpOffAltIcon />}
                 onClick={() => setFullPageModalVisibility(false)}
                 aria-label="close"
