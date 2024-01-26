@@ -18,31 +18,19 @@ import reducer from './reducer';
 import saga from './saga';
 import messages from './messages';
 
-export function DecideOnOrdreMissionForm() {
+export function DecideOnOrdreMissionForm(state) {
   useInjectReducer({ key: 'decideOnOrdreMissionForm', reducer });
   useInjectSaga({ key: 'decideOnOrdreMissionForm', saga });
 
-  return (
-    <div>
-      <FormattedMessage {...messages.header} />
-    </div>
-  );
+  return <div></div>;
 }
 
 DecideOnOrdreMissionForm.propTypes = {
-  dispatch: PropTypes.func.isRequired,
+  // dispatch: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({
-  decideOnOrdreMissionForm: makeSelectDecideOnOrdreMissionForm(),
+  // decideOnOrdreMissionForm: makeSelectDecideOnOrdreMissionForm(),
 });
 
-function mapDispatchToProps(dispatch) {
-  return {
-    dispatch,
-  };
-}
-
-const withConnect = connect(mapStateToProps, mapDispatchToProps);
-
-export default compose(withConnect)(DecideOnOrdreMissionForm);
+export default DecideOnOrdreMissionForm;

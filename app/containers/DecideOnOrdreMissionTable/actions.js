@@ -5,10 +5,12 @@
  */
 
 import {
+  CLEANUP_STORE_ACTION,
   DEFAULT_ACTION,
   LOAD_ORDRE_MISSIONS,
   LOAD_ORDRE_MISSIONS_ERROR,
   LOAD_ORDRE_MISSIONS_SUCCESS,
+  STATUS_ORDRE_MISSION,
 } from './constants';
 
 export function defaultAction() {
@@ -34,5 +36,18 @@ export function loadOrdreMissionErrorAction(error) {
   return {
     type: LOAD_ORDRE_MISSIONS_ERROR,
     error,
+  };
+}
+
+export function cleanupDecideOnOrdreMissionTableStoreAction() {
+  return {
+    type: CLEANUP_STORE_ACTION,
+  };
+}
+
+export function setOrdreMissionStatusAction(data) {
+  return {
+    type: STATUS_ORDRE_MISSION,
+    data,
   };
 }

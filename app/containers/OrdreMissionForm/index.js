@@ -168,59 +168,58 @@ export function OrdreMissionForm({ state }) {
 
   const readOnly = state === 'VIEW' || state === 'CONFIRM';
 
-  // Load JobTitles, Managerusernames, departments
+  // Scroll to top
   useEffect(() => {
-    if (errorLoadingStaticData === null) {
-      dispatch(LoadStaticDataAction());
+    if (buttonClicked === 'CONFIRM') {
+      window.scrollTo(0, 0);
     }
-  }, [staticData]);
+  }, [buttonClicked]);
 
-  // Load the data
+  // Load the data => object details and static data
   useEffect(() => {
     if (state !== 'ADD') {
       dispatch(loadOrdreMissionDetailsAction(ordreMissionIdentity));
+    }
+    if (!readOnly) {
+      dispatch(LoadStaticDataAction());
     }
   }, []);
 
   // Fill the loaded data in case of editing/modifying
   useEffect(() => {
-    if (state === 'EDIT' || state === 'MODIFY') {
-      if (ordreMissionDetails !== null) {
-        updateDescriptionData(ordreMissionDetails?.description);
-        dispatch(
-          SelectOnBehalfAction(ordreMissionDetails?.onBehalf.toString()),
-        );
-        dispatch(SelectAbroadAction(ordreMissionDetails?.abroad.toString()));
-        if (ordreMissionDetails?.requesterInfo !== null) {
-          setActualRequester(ordreMissionDetails?.requesterInfo);
-        }
-
-        setTrips([]);
-
-        ordreMissionDetails?.avanceVoyagesDetails?.forEach((avanceDetails) => {
-          avanceDetails?.trips?.forEach((trip) => {
-            const formattedDateTrip = {
-              ...trip,
-              departureDate: dayjs(new Date(trip.departureDate)),
-              arrivalDate: dayjs(new Date(trip.arrivalDate)),
-            };
-            setTrips((prevTrips) => [...prevTrips, formattedDateTrip]);
-          });
-          avanceDetails?.expenses?.forEach((expense) => {
-            const formattedDateExpense = {
-              id: expense.id,
-              currency: expense.currency,
-              description: expense.description,
-              expenseDate: dayjs(new Date(expense.expenseDate)),
-              estimatedFee: expense.estimatedFee,
-            };
-            setExpenses((prevExpenses) => [
-              ...prevExpenses,
-              formattedDateExpense,
-            ]);
-          });
-        });
+    if (ordreMissionDetails !== null) {
+      updateDescriptionData(ordreMissionDetails?.description);
+      dispatch(SelectOnBehalfAction(ordreMissionDetails?.onBehalf.toString()));
+      dispatch(SelectAbroadAction(ordreMissionDetails?.abroad.toString()));
+      if (ordreMissionDetails?.requesterInfo !== null) {
+        setActualRequester(ordreMissionDetails?.requesterInfo);
       }
+
+      setTrips([]);
+
+      ordreMissionDetails?.avanceVoyagesDetails?.forEach((avanceDetails) => {
+        avanceDetails?.trips?.forEach((trip) => {
+          const formattedDateTrip = {
+            ...trip,
+            departureDate: dayjs(new Date(trip.departureDate)),
+            arrivalDate: dayjs(new Date(trip.arrivalDate)),
+          };
+          setTrips((prevTrips) => [...prevTrips, formattedDateTrip]);
+        });
+        avanceDetails?.expenses?.forEach((expense) => {
+          const formattedDateExpense = {
+            id: expense.id,
+            currency: expense.currency,
+            description: expense.description,
+            expenseDate: dayjs(new Date(expense.expenseDate)),
+            estimatedFee: expense.estimatedFee,
+          };
+          setExpenses((prevExpenses) => [
+            ...prevExpenses,
+            formattedDateExpense,
+          ]);
+        });
+      });
     }
   }, [ordreMissionDetails]);
 
@@ -356,6 +355,32 @@ export function OrdreMissionForm({ state }) {
   };
 
   const updateTripData = (tripId, field, value) => {
+    if (
+      field === 'transportationMethod' &&
+      (value === 'Personal Vehicule' || value === "Company's Vehicule")
+    ) {
+      setTrips((prevTrips) =>
+        prevTrips.map((trip) =>
+          trip.id === tripId ? { ...trip, unit: 'KM' } : trip,
+        ),
+      );
+    }
+
+    if (
+      field === 'transportationMethod' &&
+      value !== 'Personal Vehicule' &&
+      value !== "Company's Vehicule"
+    ) {
+      const tripToUpdate = trips.find((trip) => trip.id === tripId);
+      if (tripToUpdate.unit === 'KM') {
+        setTrips((prevTrips) =>
+          prevTrips.map((trip) =>
+            trip.id === tripId ? { ...trip, unit: 'MAD' } : trip,
+          ),
+        );
+      }
+    }
+
     setTrips((prevTrips) =>
       prevTrips.map((trip) =>
         trip.id === tripId ? { ...trip, [field]: value } : trip,
@@ -643,7 +668,8 @@ export function OrdreMissionForm({ state }) {
 
         {onBehalfSelection &&
           onBehalfSelection.toString() === 'true' &&
-          !readOnly && (
+          !readOnly &&
+          staticData && (
             <ActualRequesterInputs
               actualRequester={actualRequester}
               updateActualRequesterData={updateActualRequesterData}

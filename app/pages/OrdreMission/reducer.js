@@ -13,7 +13,6 @@ import {
 
 export const initialState = {
   pageContent: 'TABLE',
-
   ordreMissionIdentity: null,
 };
 

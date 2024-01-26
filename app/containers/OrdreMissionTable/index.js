@@ -25,11 +25,9 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import {
   ChangePageContentAction,
-  loadOrdreMissionDetailsAction,
   setOrdreMissionIdentityAction,
 } from 'pages/OrdreMission/actions';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
-import { makeSelectErrorLoadingOrdreMissionDetails } from 'pages/OrdreMission/selectors';
 import saga from './saga';
 import reducer from './reducer';
 import {
@@ -126,6 +124,11 @@ export function OrdreMissionTable() {
   const handleOnEditButtonClick = (id) => {
     dispatch(setOrdreMissionIdentityAction(id));
     dispatch(ChangePageContentAction('EDIT'));
+  };
+
+  const handleOnViewButtonClick = (id) => {
+    dispatch(setOrdreMissionIdentityAction(id));
+    dispatch(ChangePageContentAction('VIEW'));
   };
 
   const handleOnModifyButtonClick = (id) => {
@@ -310,6 +313,9 @@ export function OrdreMissionTable() {
             variant="contained"
             color="primary"
             startIcon={<VisibilityIcon />}
+            onClick={() => {
+              handleOnViewButtonClick(id);
+            }}
           >
             View
           </Button>

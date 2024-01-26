@@ -46,16 +46,9 @@ const makeSelectStatusOrdreMission = () =>
     (substate) => substate.statusOrdreMission,
   );
 
-const makeSelectCleanupStore = () =>
-  createSelector(
-    selectOrdreMissionTableDomain,
-    (substate) => substate.storeCleanup,
-  );
-
 export default makeSelectOrdreMissionTable;
 export {
   makeSelectStatusOrdreMission,
-  makeSelectCleanupStore,
   selectOrdreMissionTableDomain,
   makeSelectOrdreMissions,
   makeSelectLoadingOrdreMissions,

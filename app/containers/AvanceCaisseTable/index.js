@@ -126,6 +126,11 @@ export function AvanceCaisseTable() {
     dispatch(changePageContentAction('EDIT'));
   };
 
+  const handleOnViewButtonClick = (id) => {
+    dispatch(setAvanceCaisseIdentityAction(id));
+    dispatch(changePageContentAction('VIEW'));
+  };
+
   const handleOnModifyButtonClick = (id) => {
     dispatch(setAvanceCaisseIdentityAction(id));
     dispatch(changePageContentAction('MODIFY'));
@@ -314,6 +319,9 @@ export function AvanceCaisseTable() {
             variant="contained"
             color="primary"
             startIcon={<VisibilityIcon />}
+            onClick={() => {
+              handleOnViewButtonClick(id);
+            }}
           >
             View
           </Button>

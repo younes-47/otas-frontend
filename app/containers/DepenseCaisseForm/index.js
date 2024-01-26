@@ -148,48 +148,37 @@ export function DepenseCaisseForm({ state }) {
 
   const readOnly = state === 'VIEW' || state === 'CONFIRM';
 
-  // Load JobTitles, Managerusernames, departments
-  useEffect(() => {
-    if (errorLoadingStaticData === null) {
-      dispatch(LoadStaticDataAction());
-    }
-  }, [staticData]);
-
-  // Load the data
+  // Load the data => object details and static data
   useEffect(() => {
     if (state !== 'ADD') {
       dispatch(loadDepenseCaisseDetailsAction(depenseCaisseIdentity));
+    }
+    if (!readOnly) {
+      dispatch(LoadStaticDataAction());
     }
   }, []);
 
   // Fill the data in case of editing/modifying
   useEffect(() => {
-    if (state === 'EDIT' || state === 'MODIFY') {
-      if (depenseCaisseDetails !== null) {
-        setDescription(depenseCaisseDetails?.description);
-        dispatch(
-          SelectOnBehalfAction(depenseCaisseDetails?.onBehalf.toString()),
-        );
-        if (depenseCaisseDetails?.requesterInfo !== null) {
-          setActualRequester(depenseCaisseDetails?.requesterInfo);
-        }
-
-        setReceiptsFile(depenseCaisseDetails?.receiptsFile);
-        setExpenses([]);
-
-        depenseCaisseDetails?.expenses?.forEach((expense) => {
-          const formattedDateExpense = {
-            id: expense.id,
-            description: expense.description,
-            expenseDate: dayjs(new Date(expense.expenseDate)),
-            estimatedFee: expense.estimatedFee,
-          };
-          setExpenses((prevExpenses) => [
-            ...prevExpenses,
-            formattedDateExpense,
-          ]);
-        });
+    if (depenseCaisseDetails !== null) {
+      setDescription(depenseCaisseDetails?.description);
+      dispatch(SelectOnBehalfAction(depenseCaisseDetails?.onBehalf.toString()));
+      if (depenseCaisseDetails?.requesterInfo !== null) {
+        setActualRequester(depenseCaisseDetails?.requesterInfo);
       }
+
+      setReceiptsFile(depenseCaisseDetails?.receiptsFile);
+      setExpenses([]);
+
+      depenseCaisseDetails?.expenses?.forEach((expense) => {
+        const formattedDateExpense = {
+          id: expense.id,
+          description: expense.description,
+          expenseDate: dayjs(new Date(expense.expenseDate)),
+          estimatedFee: expense.estimatedFee,
+        };
+        setExpenses((prevExpenses) => [...prevExpenses, formattedDateExpense]);
+      });
     }
   }, [depenseCaisseDetails]);
 
@@ -589,7 +578,8 @@ export function DepenseCaisseForm({ state }) {
 
       {onBehalfSelection &&
         onBehalfSelection.toString() === 'true' &&
-        !readOnly && (
+        !readOnly &&
+        staticData && (
           <ActualRequesterInputs
             actualRequester={actualRequester}
             updateActualRequesterData={updateActualRequesterData}

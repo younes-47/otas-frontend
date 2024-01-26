@@ -37,8 +37,15 @@ const makeSelectOrdreMissions = () =>
     (substate) => substate.ordreMissions,
   );
 
+const makeSelectStatusOrdreMission = () =>
+  createSelector(
+    selectDecideOnOrdreMissionTableDomain,
+    (substate) => substate.statusOrdreMission,
+  );
+
 export default makeSelectDecideOnOrdreMissionTable;
 export {
+  makeSelectStatusOrdreMission,
   makeSelectOrdreMissions,
   makeSelectErrorLoadingOrdreMissions,
   makeSelectLoadingOrdreMissions,

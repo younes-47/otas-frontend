@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 // import styled from 'styled-components';
 
 import { FormattedMessage } from 'react-intl';
-import { Autocomplete, Box, TextField } from '@mui/material';
+import { Autocomplete, Box, Paper, TextField } from '@mui/material';
 import messages from './messages';
 
 function ActualRequesterInputs({
@@ -17,6 +17,10 @@ function ActualRequesterInputs({
   actualRequester,
   updateActualRequesterData,
 }) {
+  const CustomPaper = React.forwardRef((props, ref) => (
+    // eslint-disable-next-line react/jsx-props-no-spreading
+    <Paper ref={ref} {...props} sx={{ textAlign: 'left' }} />
+  ));
   return (
     <>
       <Box
@@ -68,12 +72,13 @@ function ActualRequesterInputs({
             freeSolo
             disablePortal
             id="combo-box-demo"
-            options={staticData.jobTitles}
+            options={staticData?.jobTitles}
             sx={{ width: 224 }}
             value={actualRequester.jobTitle}
             onChange={(e, newValue) =>
               updateActualRequesterData('jobTitle', newValue)
             }
+            PaperComponent={CustomPaper}
             required
             renderInput={(params) => (
               // eslint-disable-next-line react/jsx-props-no-spreading
@@ -89,6 +94,7 @@ function ActualRequesterInputs({
             onChange={(e, newValue) =>
               updateActualRequesterData('department', newValue)
             }
+            PaperComponent={CustomPaper}
             required
             renderInput={(params) => (
               // eslint-disable-next-line react/jsx-props-no-spreading
@@ -101,6 +107,7 @@ function ActualRequesterInputs({
             options={staticData.managersUsernames}
             sx={{ width: 224 }}
             value={actualRequester.managerUserName}
+            PaperComponent={CustomPaper}
             onChange={(e, newValue) =>
               updateActualRequesterData('managerUserName', newValue)
             }

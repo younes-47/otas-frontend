@@ -6,7 +6,7 @@ import {
 } from './actions';
 import { LOAD_ORDRE_MISSIONS, webService } from './constants';
 
-export function* loadOrdreMission() {
+export function* loadOrdreMissions() {
   try {
     const { data } = yield call(
       request.get,
@@ -25,5 +25,5 @@ export function* loadOrdreMission() {
 
 // Individual exports for testing
 export default function* decideOnOrdreMissionTableSaga() {
-  yield takeLatest(LOAD_ORDRE_MISSIONS, loadOrdreMission);
+  yield takeLatest(LOAD_ORDRE_MISSIONS, loadOrdreMissions);
 }

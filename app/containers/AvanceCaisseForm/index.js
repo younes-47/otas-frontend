@@ -140,49 +140,38 @@ export function AvanceCaisseForm({ state }) {
 
   const readOnly = state === 'VIEW' || state === 'CONFIRM';
 
-  // Load JobTitles, Managerusernames, departments
-  useEffect(() => {
-    if (errorLoadingStaticData === null) {
-      dispatch(LoadStaticDataAction());
-    }
-  }, [staticData]);
-
-  // Load the data
+  // Load the data => object details and static data
   useEffect(() => {
     if (state !== 'ADD') {
       dispatch(loadAvanceCaisseDetailsAction(avanceCaisseIdentity));
+    }
+    if (!readOnly) {
+      dispatch(LoadStaticDataAction());
     }
   }, []);
 
   // Fill the loaded data in case of editing/modifying
   useEffect(() => {
-    if (state === 'EDIT' || state === 'MODIFY') {
-      if (avanceCaisseDetails !== null) {
-        setDescription(avanceCaisseDetails?.description);
-        dispatch(
-          SelectOnBehalfAction(avanceCaisseDetails?.onBehalf.toString()),
-        );
+    if (avanceCaisseDetails !== null) {
+      setDescription(avanceCaisseDetails?.description);
+      dispatch(SelectOnBehalfAction(avanceCaisseDetails?.onBehalf.toString()));
 
-        if (avanceCaisseDetails?.requesterInfo !== null) {
-          setActualRequester(avanceCaisseDetails?.requesterInfo);
-        }
-
-        setExpenses([]);
-
-        avanceCaisseDetails?.expenses?.forEach((expense) => {
-          const formattedDateExpense = {
-            id: expense.id,
-            currency: expense.currency,
-            description: expense.description,
-            expenseDate: dayjs(new Date(expense.expenseDate)),
-            estimatedFee: expense.estimatedFee,
-          };
-          setExpenses((prevExpenses) => [
-            ...prevExpenses,
-            formattedDateExpense,
-          ]);
-        });
+      if (avanceCaisseDetails?.requesterInfo !== null) {
+        setActualRequester(avanceCaisseDetails?.requesterInfo);
       }
+
+      setExpenses([]);
+
+      avanceCaisseDetails?.expenses?.forEach((expense) => {
+        const formattedDateExpense = {
+          id: expense.id,
+          currency: expense.currency,
+          description: expense.description,
+          expenseDate: dayjs(new Date(expense.expenseDate)),
+          estimatedFee: expense.estimatedFee,
+        };
+        setExpenses((prevExpenses) => [...prevExpenses, formattedDateExpense]);
+      });
     }
   }, [avanceCaisseDetails]);
 
@@ -236,6 +225,7 @@ export function AvanceCaisseForm({ state }) {
 
   useEffect(
     () => () => {
+      console.log('##########');
       dispatch(cleanupAvanceCaisseFormPageStoreAction());
       dispatch(cleanupAvanceCaisseParentPageStoreAction());
     },
@@ -536,7 +526,8 @@ export function AvanceCaisseForm({ state }) {
 
       {onBehalfSelection &&
         onBehalfSelection.toString() === 'true' &&
-        !readOnly && (
+        !readOnly &&
+        staticData && (
           <ActualRequesterInputs
             actualRequester={actualRequester}
             updateActualRequesterData={updateActualRequesterData}
@@ -607,7 +598,7 @@ export function AvanceCaisseForm({ state }) {
       >
         <TextField
           variant={readOnly ? 'filled' : 'outlined'}
-          value={readOnly ? avanceCaisseDetails?.description : description}
+          value={description}
           multiline
           minRows={3}
           label="Description"

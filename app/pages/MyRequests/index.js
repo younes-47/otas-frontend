@@ -11,12 +11,14 @@ import { compose } from 'redux';
 import Box from '@mui/material/Box';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
-
+import Typography from '@mui/joy/Typography';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import { createStructuredSelector } from 'reselect';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import Stack from '@mui/material/Stack';
 import { Link, useHistory, useLocation } from 'react-router-dom';
-import { Alert } from '@mui/material';
+import { Alert, Container, Grid } from '@mui/material';
+import { Card, CardContent } from '@mui/joy';
 import saga from './saga';
 import reducer from './reducer';
 import { cleanupStoreAction, loadUserInfoAction } from './actions';
@@ -76,27 +78,96 @@ export default function MyRequests() {
     >
       <Box display="flex" justifyContent="center" textAlign="center">
         <Stack>
-          <h1 style={{ fontSize: '65px', marginBottom: '10px' }}>
+          <Typography
+            level="h1"
+            sx={{ fontSize: '50px', marginBottom: '10px', marginTop: '20px' }}
+          >
             Welcome{' '}
             {localStorage.getItem('firstName') !== null
               ? `${localStorage.getItem('firstName')} ${localStorage.getItem(
                   'lastName',
                 )}`
               : `${userInfo?.firstName} ${userInfo?.lastName}`}
-          </h1>
+          </Typography>
+
           <Alert
             severity="info"
             style={{
               fontSize: '20px',
-              marginBottom: '30px',
+              marginBottom: '60px',
               textAlign: 'center',
             }}
           >
-            This is my Requests section, where you can access or place your
-            requests.
+            This is the section, where you can access or place your requests.
           </Alert>
         </Stack>
       </Box>
+      <Container maxWidth="sm">
+        <Typography
+          level="h3"
+          textAlign="center"
+          // sx={{ fontSize: '50px', marginBottom: '10px', marginTop: '20px' }}
+        >
+          Statistics <TrendingUpIcon />
+        </Typography>
+        <Grid
+          container
+          spacing={4}
+          alignItems="center"
+          justifyContent="center"
+          marginTop={0.5}
+        >
+          <Grid item xs={6}>
+            <Card variant="outlined">
+              <CardContent>
+                <Typography level="h1" variant="plain" color="primary">
+                  5
+                </Typography>
+                <Typography level="title-md">
+                  Requests are in the process of approval.
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={6}>
+            <Card variant="outlined">
+              <CardContent>
+                <Typography level="h1" variant="plain" color="success">
+                  89
+                </Typography>
+                <Typography level="title-md">
+                  requests have been created so far!
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={6}>
+            <Card variant="outlined">
+              <CardContent>
+                <Typography level="h1" variant="plain" color="success">
+                  70%
+                </Typography>
+                <Typography level="title-md">
+                  of requests have been approved!
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={6}>
+            <Card variant="outlined">
+              <CardContent>
+                <Typography level="h1" variant="plain" color="danger">
+                  0
+                </Typography>
+                <Typography level="title-md">
+                  Requests have been rejected.
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          {/* Add more Grid items as needed */}
+        </Grid>
+      </Container>
     </Box>
   );
 }

@@ -23,7 +23,7 @@ export function changePageContentAction(pageContent) {
   };
 }
 
-export function cleanupStoreAction() {
+export function cleanupParentDecideOnOrdreMissionPageAction() {
   return {
     type: CLEANUP_STORE_ACTION,
   };

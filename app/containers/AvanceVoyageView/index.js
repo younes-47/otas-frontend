@@ -10,12 +10,17 @@ import { connect, useDispatch, useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
-
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import HistoryIcon from '@mui/icons-material/History';
+
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Alert,
   Button,
   Dialog,
   DialogActions,
@@ -24,6 +29,9 @@ import {
   DialogTitle,
   Divider,
   FormLabel,
+  Link,
+  List,
+  ListSubheader,
   Slide,
   Typography,
 } from '@mui/material';
@@ -35,6 +43,8 @@ import DisplayUserinfo from 'components/DisplayUserinfo';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import DescriptionIcon from '@mui/icons-material/Description';
 import { makeSelectUserInfo } from 'pages/MyRequests/selectors';
+import { setOrdreMissionIdentityAction } from 'pages/OrdreMission/actions';
+import OrdreMissionForm from 'containers/OrdreMissionForm';
 import makeSelectAvanceVoyageView, {
   makeSelectAvanceVoyageDetails,
   makeSelectAvanceVoyageIdentity,
@@ -47,6 +57,8 @@ import {
   cleanupAvanceVoyageViewStoreAction,
   loadAvanceVoyageAction,
 } from './actions';
+import DisplayTrips from './DisplayTrips';
+import DisplayExpenses from './DisplayExpenses';
 
 const mapStateToProps = createStructuredSelector({
   avanceVoyageView: makeSelectAvanceVoyageView(),
@@ -79,6 +91,13 @@ export function AvanceVoyageView() {
   const handleOnReturnButtonClick = () => {
     dispatch(cleanupAvanceVoyageViewStoreAction());
     dispatch(changePageContentAction('TABLE'));
+  };
+
+  const handleOnOrdreMissionLinkClick = () => {
+    dispatch(
+      setOrdreMissionIdentityAction(avanceVoyageDetails?.ordreMissionId),
+    );
+    return <OrdreMissionForm state="EDIT" />; // Does not work
   };
 
   return (
@@ -162,6 +181,108 @@ export function AvanceVoyageView() {
       >
         <Divider style={{ width: '60%', opacity: 0.7 }} />
       </Box>
+      <Box
+        key={avanceVoyageDetails?.id}
+        display="flex"
+        justifyContent="center"
+        marginBottom={3}
+        marginTop={3}
+      >
+        <Accordion sx={{ width: '50%' }}>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1bh-content"
+            id="panel1bh-header"
+          >
+            <Typography
+              variant="h6"
+              sx={{ width: '33%', flexShrink: 0, fontWeight: 'bold' }}
+            >
+              More Details
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Alert severity="info">
+              <Typography variant="P">
+                This Avance Voyage is Linked to&nbsp;
+              </Typography>
+              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+              <Link
+                component="button"
+                variant="p"
+                onClick={() => handleOnOrdreMissionLinkClick()}
+              >
+                Ordre Mission #{avanceVoyageDetails?.ordreMissionId}
+              </Link>
+            </Alert>
+            <Box
+              key={avanceVoyageDetails?.id}
+              display="flex"
+              justifyContent="center"
+              marginBottom={3}
+              marginTop={3}
+            >
+              <List
+                sx={{
+                  width: '100%',
+                  maxWidth: 360,
+                  bgcolor: 'background.paper',
+                }}
+                component="nav"
+                aria-labelledby="nested-list-subheader"
+                subheader={
+                  <ListSubheader
+                    sx={{ fontSize: '20px' }}
+                    component="div"
+                    id="nested-list-subheader"
+                  >
+                    Trajectories
+                  </ListSubheader>
+                }
+              >
+                {avanceVoyageDetails?.trips.map((trip) => (
+                  <div key={trip.id}>
+                    <DisplayTrips tripData={trip} />
+                  </div>
+                ))}
+              </List>
+              <List
+                sx={{
+                  width: '100%',
+                  maxWidth: 360,
+                  bgcolor: 'background.paper',
+                }}
+                component="nav"
+                aria-labelledby="nested-list-subheader"
+                subheader={
+                  <ListSubheader
+                    sx={{ fontSize: '20px' }}
+                    component="div"
+                    id="nested-list-subheader"
+                  >
+                    Expenses
+                  </ListSubheader>
+                }
+              >
+                {avanceVoyageDetails?.expenses.map((expense) => (
+                  <div key={expense.id}>
+                    <DisplayExpenses expenseData={expense} />
+                  </div>
+                ))}
+              </List>
+            </Box>
+          </AccordionDetails>
+        </Accordion>
+      </Box>
+      {/* DIVIDER */}
+      <Box
+        display="flex"
+        justifyContent="center"
+        textAlign="center"
+        marginBottom={1}
+      >
+        <Divider style={{ width: '60%', opacity: 0.7 }} />
+      </Box>
 
       {/* Calculated Total */}
       <Box display="flex" justifyContent="center">
@@ -217,7 +338,10 @@ export function AvanceVoyageView() {
           </Timeline>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setStatusHistoryDialogVisibility(false)}>
+          <Button
+            variant="contained"
+            onClick={() => setStatusHistoryDialogVisibility(false)}
+          >
             Close
           </Button>
         </DialogActions>

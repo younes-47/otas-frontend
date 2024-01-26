@@ -25,15 +25,15 @@ const makeSelectChangePageContent = () =>
     (substate) => substate.pageContent,
   );
 
-const makeSelectCleanupStore = () =>
+const makeSelectOrdreMissionIdentity = () =>
   createSelector(
     selectDecideOnOrdreMissionDomain,
-    (substate) => substate.storeCleanup,
+    (substate) => substate.ordreMissionIdentity,
   );
 
 export default makeSelectDecideOnOrdreMission;
 export {
+  makeSelectOrdreMissionIdentity,
   selectDecideOnOrdreMissionDomain,
   makeSelectChangePageContent,
-  makeSelectCleanupStore,
 };
