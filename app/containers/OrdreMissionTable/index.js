@@ -16,6 +16,7 @@ import {
   DialogTitle,
   IconButton,
   Snackbar,
+  Tooltip,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import Tables from 'components/Tables';
@@ -23,6 +24,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { DateTimeFormater } from 'utils/Custom/stringManipulation';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
+import Typography from '@mui/joy/Typography';
 import {
   ChangePageContentAction,
   setOrdreMissionIdentityAction,
@@ -152,6 +154,16 @@ export function OrdreMissionTable() {
       hide: false,
       headerName: 'Description',
       flex: 1,
+      renderCell: (params) => {
+        const { description } = params.row;
+        return (
+          <Tooltip title={description}>
+            <Typography level="title-md" variant="plain">
+              {description}
+            </Typography>
+          </Tooltip>
+        );
+      },
     },
     {
       field: 'latestStatus',

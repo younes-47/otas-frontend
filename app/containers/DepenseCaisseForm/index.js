@@ -52,6 +52,7 @@ import CustomizedTimeLine from 'components/CustomizedTimeLine';
 import { makeSelectDepenseCaisseIdentity } from 'pages/DepenseCaisse/selectors';
 import ActualRequesterInputs from 'components/ActualRequesterInputs';
 import { ValidateInputs } from 'utils/Custom/ValidateInputs';
+import FileUploadForm from 'components/FileUploadForm';
 import Expenses from './Expenses';
 import {
   makeSelectAddDepenseCaisse,
@@ -784,13 +785,13 @@ export function DepenseCaisseForm({ state }) {
               </Alert>
             )}
 
-            <Typography
+            {/* <Typography
               variant="caption"
               sx={{ color: 'error.main' }}
               marginTop={3}
             >
               Please upload your receipts in a single pdf file.
-            </Typography>
+            </Typography> */}
 
             {/* The dropzonearea component sill has some side effects */}
             {/* https://yuvaleros.github.io/material-ui-dropzone/ */}
@@ -819,7 +820,8 @@ export function DepenseCaisseForm({ state }) {
                 onChange={(e) => updateReceiptsFileData(e)}
               ></input>
             </LoadingButton> */}
-            <Button
+
+            {/* <Button
               component="label"
               variant={loadingButton ? 'contained' : 'outlined'}
               color="warning"
@@ -846,7 +848,11 @@ export function DepenseCaisseForm({ state }) {
               <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
                 Selected file: {receiptsFileName}
               </Typography>
-            )}
+            )} */}
+            <FileUploadForm
+              loading={loadingButton}
+              updateFunction={updateReceiptsFileData}
+            />
           </Box>
         </Box>
       )}

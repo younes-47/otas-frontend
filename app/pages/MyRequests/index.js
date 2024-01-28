@@ -17,8 +17,9 @@ import { createStructuredSelector } from 'reselect';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import Stack from '@mui/material/Stack';
 import { Link, useHistory, useLocation } from 'react-router-dom';
-import { Alert, Container, Grid } from '@mui/material';
+import { Alert, Container, Grid, Grow } from '@mui/material';
 import { Card, CardContent } from '@mui/joy';
+import CountUp from 'react-countup/build/CountUp';
 import saga from './saga';
 import reducer from './reducer';
 import { cleanupStoreAction, loadUserInfoAction } from './actions';
@@ -117,55 +118,65 @@ export default function MyRequests() {
           justifyContent="center"
           marginTop={0.5}
         >
-          <Grid item xs={6}>
-            <Card variant="outlined">
-              <CardContent>
-                <Typography level="h1" variant="plain" color="primary">
-                  5
-                </Typography>
-                <Typography level="title-md">
-                  Requests are in the process of approval.
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={6}>
-            <Card variant="outlined">
-              <CardContent>
-                <Typography level="h1" variant="plain" color="success">
-                  89
-                </Typography>
-                <Typography level="title-md">
-                  requests have been created so far!
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={6}>
-            <Card variant="outlined">
-              <CardContent>
-                <Typography level="h1" variant="plain" color="success">
-                  70%
-                </Typography>
-                <Typography level="title-md">
-                  of requests have been approved!
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={6}>
-            <Card variant="outlined">
-              <CardContent>
-                <Typography level="h1" variant="plain" color="danger">
-                  0
-                </Typography>
-                <Typography level="title-md">
-                  Requests have been rejected.
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          {/* Add more Grid items as needed */}
+          <Grow>
+            <Grid item xs={6}>
+              <Card variant="outlined">
+                <CardContent>
+                  <Typography level="h1" variant="plain" color="primary">
+                    5
+                  </Typography>
+                  <Typography level="title-md">
+                    Requests are in the process of approval.
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grow>
+
+          <Grow timeout={1000}>
+            <Grid item xs={6}>
+              <Card variant="outlined">
+                <CardContent>
+                  <Typography level="h1" variant="plain" color="success">
+                    <CountUp delay={0} start={0} end={89} duration={2.75} />
+                  </Typography>
+                  <Typography level="title-md">
+                    requests have been created so far!
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grow>
+
+          <Grow timeout={2000}>
+            <Grid item xs={6}>
+              <Card variant="outlined">
+                <CardContent>
+                  <Typography level="h1" variant="plain" color="success">
+                    70%
+                  </Typography>
+                  <Typography level="title-md">
+                    of requests have been approved!
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grow>
+
+          <Grow timeout={3000}>
+            <Grid item xs={6}>
+              <Card variant="outlined">
+                <CardContent>
+                  <Typography level="h1" variant="plain" color="danger">
+                    0
+                  </Typography>
+                  <Typography level="title-md">
+                    Requests have been rejected.
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grow>
         </Grid>
       </Container>
     </Box>
