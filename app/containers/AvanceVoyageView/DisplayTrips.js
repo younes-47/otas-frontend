@@ -128,8 +128,12 @@ const DisplayTrips = ({ tripData }) => {
           <ListItemText primary={transportationMethod} />
           <ListItemText primary={arrivalDate} />
           <ListItemText primary={unit} />
-          <ListItemText primary={value} />
-          <ListItemText primary={highwayFee} />
+          {tripData.unit === 'KM' && (
+            <>
+              <ListItemText primary={value} />
+              <ListItemText primary={highwayFee} />
+            </>
+          )}
           <ListItemText primary={estimatedFee} />
         </List>
       </Collapse>

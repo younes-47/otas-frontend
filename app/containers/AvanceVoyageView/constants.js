@@ -12,9 +12,6 @@ export const LOAD_AVANCE_VOYAGE_SUCCESS =
 export const LOAD_AVANCE_VOYAGE_ERROR =
   'app/AvanceVoyageView/LOAD_AVANCE_VOYAGE_ERROR';
 
-export const AVANCE_VOYAGE_IDENTITY =
-  'app/AvanceVoyageView/AVANCE_VOYAGE_IDENTITY';
-
 export const CLEANUP_STORE_ACTION = 'app/AvanceVoyageView/CLEANUP_STORE_ACTION';
 
 export const webService = {

@@ -13,11 +13,13 @@ import { useHistory } from 'react-router-dom';
 // import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-
+import './raw.css';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import { StyledBox } from 'components/GlobalComponents/StyledBox';
 import { StyledSubmitButton } from 'components/GlobalComponents/StyledSubmitButton';
+import { Box, borderRadius } from '@mui/system';
+import { Alert, Button, TextField, Typography } from '@mui/material';
 import makeSelectLoginPage, {
   makeSelectToken,
   makeSelectUsername,
@@ -39,6 +41,8 @@ import TextInput from './TextInput';
 // import logo from '/app/images/logo-512x512.png';
 // eslint-disable-next-line import/no-unresolved
 import otasLoginImage from '/app/images/OTAS_login_image-634×360.png';
+import userIcon from '/app/images/user-circle-svgrepo-com.png';
+import passwordIcon from '/app/images/password-svgrepo-com.png';
 
 const mapStateToProps = createStructuredSelector({
   loginPage: makeSelectLoginPage(),
@@ -98,66 +102,49 @@ export function LoginPage() {
     }
   };
   return (
-    <StyledBox
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-      height="100vh"
-      backgroundColor="#f2f2f2"
-    >
-      <StyledBox
-        sx={{
-          background:
-            'radial-gradient(circle at 50% -50%,#ffffff 10%,#ffffff 60%,#ffffff00 65%),radial-gradient(circle at 50% 65%,#ffffff 1%,#ffffff 20%,#f6f6f6 40%,#f2f2f2 45%)',
-          padding: '20px',
-          paddingX: '40px',
-          borderRadius: '25px',
-        }}
-        error={error !== true && error}
-      >
-        <StyledBox
-          component="img"
-          sx={{
-            alignSelf: 'center',
-            height: 180,
-            width: 317,
-            margin: '10px',
-            marginBottom: '24px',
-          }}
-          alt="Dicastal Logo"
-          src={otasLoginImage}
-        />
-        <StyledBox
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          flexDirection="column"
-          loading={loading}
-        >
-          <TextInput
-            value={username}
-            disabled={loading}
-            label="Username"
-            onChange={onChangeUsername}
-            onKeyRelease={handleKeypress}
-          />
-          <PasswordInput
-            value={password}
-            disabled={loading}
-            onChange={onChangePassword}
-            onKeyRelease={handleKeypress}
-          />
-          <StyledSubmitButton
-            sx={{ textTransform: 'none', width: '222px' }}
-            variant="contained"
-            disabled={!(username && password) || loading}
-            onClick={onSubmitForm}
-          >
-            Log In
-          </StyledSubmitButton>
+    <div className="parent">
+      <div className="form">
+        <StyledBox loading={loading}>
+          <div className="content">
+            <img src={otasLoginImage} alt="OTAS" border="0"></img>
+            <div className="form_front">
+              <input
+                type="text"
+                placeholder="Username"
+                className="input"
+                id="username_input"
+                value={username}
+                disabled={loading}
+                onChange={onChangeUsername}
+                onKeyUp={handleKeypress}
+              ></input>
+              <input
+                value={password}
+                disabled={loading}
+                onChange={onChangePassword}
+                onKeyUp={handleKeypress}
+                type="password"
+                placeholder="Password"
+                className="input"
+                id="password_input"
+              ></input>
+            </div>
+            {error !== true && error && (
+              <Alert severity="error">Wrong credentials</Alert>
+            )}
+            <Button
+              variant="outlined"
+              type="submit"
+              className="btn"
+              disabled={!(username && password) || loading}
+              onClick={onSubmitForm}
+            >
+              Login
+            </Button>
+          </div>
         </StyledBox>
-      </StyledBox>
-    </StyledBox>
+      </div>
+    </div>
   );
 }
 

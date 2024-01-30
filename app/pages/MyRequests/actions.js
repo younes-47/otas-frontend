@@ -6,6 +6,9 @@
 
 import {
   DEFAULT_ACTION,
+  LOAD_REQUESTER_STATS,
+  LOAD_REQUESTER_STATS_ERROR,
+  LOAD_REQUESTER_STATS_SUCCESS,
   LOAD_USER_INFO,
   LOAD_USER_INFO_ERROR,
   LOAD_USER_INFO_SUCCESS,
@@ -32,6 +35,23 @@ export function loadUserInfoSuccessAction(data) {
 export function loadUserInfoErrorAction(error) {
   return {
     type: LOAD_USER_INFO_ERROR,
+    error,
+  };
+}
+export function loadRequesterStatsAction() {
+  return {
+    type: LOAD_REQUESTER_STATS,
+  };
+}
+export function loadRequesterStatsSuccessAction(data) {
+  return {
+    type: LOAD_REQUESTER_STATS_SUCCESS,
+    data,
+  };
+}
+export function loadRequesterStatsErrorAction(error) {
+  return {
+    type: LOAD_REQUESTER_STATS_ERROR,
     error,
   };
 }

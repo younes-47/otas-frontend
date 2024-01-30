@@ -29,12 +29,13 @@ import {
   DialogTitle,
   Divider,
   FormLabel,
-  Link,
   List,
   ListSubheader,
   Slide,
   Typography,
 } from '@mui/material';
+import InsertLinkIcon from '@mui/icons-material/InsertLink';
+import { Link } from '@mui/joy';
 import { Box, Stack } from '@mui/system';
 import { changePageContentAction } from 'pages/AvanceVoyage/actions';
 import CustomizedTimeLine from 'components/CustomizedTimeLine';
@@ -43,11 +44,15 @@ import DisplayUserinfo from 'components/DisplayUserinfo';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import DescriptionIcon from '@mui/icons-material/Description';
 import { makeSelectUserInfo } from 'pages/MyRequests/selectors';
-import { setOrdreMissionIdentityAction } from 'pages/OrdreMission/actions';
+import {
+  ChangePageContentAction,
+  setOrdreMissionIdentityAction,
+} from 'pages/OrdreMission/actions';
 import OrdreMissionForm from 'containers/OrdreMissionForm';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { makeSelectAvanceVoyageIdentity } from 'pages/AvanceVoyage/selectors';
 import makeSelectAvanceVoyageView, {
   makeSelectAvanceVoyageDetails,
-  makeSelectAvanceVoyageIdentity,
   makeSelectErrorLoadingAvanceVoyage,
 } from './selectors';
 import reducer from './reducer';
@@ -78,14 +83,22 @@ export function AvanceVoyageView() {
     avanceVoyageIdentity,
   } = useSelector(mapStateToProps);
   const dispatch = useDispatch();
+  const history = useHistory();
   const [statusHistoryDialogVisibility, setStatusHistoryDialogVisibility] =
     useState(false);
 
   useEffect(() => {
-    if (errorLoadingAvanceVoyage === null && avanceVoyageIdentity !== null) {
+    if (errorLoadingAvanceVoyage == null) {
       dispatch(loadAvanceVoyageAction(avanceVoyageIdentity));
     }
-  }, [avanceVoyageIdentity]);
+  }, [errorLoadingAvanceVoyage]);
+
+  useEffect(
+    () => () => {
+      dispatch(cleanupAvanceVoyageViewStoreAction());
+    },
+    [],
+  );
 
   // Handle on buttons click
   const handleOnReturnButtonClick = () => {
@@ -97,7 +110,8 @@ export function AvanceVoyageView() {
     dispatch(
       setOrdreMissionIdentityAction(avanceVoyageDetails?.ordreMissionId),
     );
-    return <OrdreMissionForm state="EDIT" />; // Does not work
+    dispatch(ChangePageContentAction('VIEW'));
+    history.push('/my-requests/ordre-mission');
   };
 
   return (
@@ -208,11 +222,12 @@ export function AvanceVoyageView() {
               </Typography>
               {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
               <Link
-                component="button"
-                variant="p"
+                level="title-sm"
+                underline="always"
                 onClick={() => handleOnOrdreMissionLinkClick()}
               >
-                Ordre Mission #{avanceVoyageDetails?.ordreMissionId}
+                Ordre Mission #{avanceVoyageDetails?.ordreMissionId}&nbsp;
+                <InsertLinkIcon fontSize="small" />
               </Link>
             </Alert>
             <Box

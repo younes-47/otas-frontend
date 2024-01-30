@@ -48,8 +48,8 @@ export function* AddAvanceCaisse({ form }) {
         },
       },
     );
-    yield put(AddAvanceCaisseSuccessAction());
     yield put(setAvanceCaisseIdentityAction(data)); // data is id
+    yield put(AddAvanceCaisseSuccessAction());
   } catch (error) {
     yield put(AddAvanceCaisseErrorAction(error));
   }
@@ -67,8 +67,8 @@ export function* UpdateAvanceCaisse({ form }) {
         },
       },
     );
-    yield put(UpdateAvanceCaisseSuccessAction());
     yield put(setAvanceCaisseIdentityAction(data)); // data is ID
+    yield put(UpdateAvanceCaisseSuccessAction());
   } catch (error) {
     yield put(UpdateAvanceCaisseErrorAction(error));
   }

@@ -9,28 +9,48 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
-import { Box, Button, IconButton } from '@mui/material';
+import AutorenewIcon from '@mui/icons-material/Autorenew';
+import {
+  Alert,
+  Box,
+  Button,
+  IconButton,
+  Snackbar,
+  Tooltip,
+} from '@mui/material';
 import Tables from 'components/Tables';
 import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import DeleteIcon from '@mui/icons-material/Delete';
+import InfoIcon from '@mui/icons-material/Info';
+import BeenhereIcon from '@mui/icons-material/Beenhere';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { DateTimeFormater } from 'utils/Custom/stringManipulation';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
+import { Typography } from '@mui/joy';
+import {
+  changePageContentAction,
+  setOrdreMissionIdentityAction,
+} from 'pages/DecideOnOrdreMission/actions';
 import makeSelectDecideOnOrdreMissionTable, {
   makeSelectErrorLoadingOrdreMissions,
   makeSelectLoadingOrdreMissions,
   makeSelectOrdreMissions,
+  makeSelectStatusOrdreMission,
 } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
-import { loadOrdreMissionAction } from './actions';
+import {
+  cleanupDecideOnOrdreMissionTableStoreAction,
+  loadOrdreMissionAction,
+} from './actions';
 
 const mapStateToProps = createStructuredSelector({
   isSideBarVisible: makeSelectIsSideBarVisible(),
   ordreMissions: makeSelectOrdreMissions(),
   loadingOrdreMissions: makeSelectLoadingOrdreMissions(),
   errorLoadingOrdreMissions: makeSelectErrorLoadingOrdreMissions(),
+  statusOrdreMission: makeSelectStatusOrdreMission(),
 });
 
 export function DecideOnOrdreMissionTable() {
@@ -43,10 +63,11 @@ export function DecideOnOrdreMissionTable() {
     loadingOrdreMissions,
     errorLoadingOrdreMissions,
     isSideBarVisible,
+    statusOrdreMission,
   } = useSelector(mapStateToProps);
-  const [modalVisibility, setModalVisibility] = useState(false);
   const [snackbarVisibility, setSnackbarVisibility] = useState(false);
   const [snackbarAlertSeverity, setSnackbarAlertSeverity] = useState('');
+
   const action = (
     <IconButton
       size="small"
@@ -57,43 +78,144 @@ export function DecideOnOrdreMissionTable() {
       <CloseIcon fontSize="small" />
     </IconButton>
   );
+
   const ordreMissionColumns = [
     {
       field: 'id',
       hide: false,
       width: 20,
       headerName: '#',
+      renderCell: (params) => {
+        const { id } = params.row;
+        return (
+          <Tooltip title={id} placement="bottom-start">
+            <Typography level="title-sm" variant="soft">
+              {id}
+            </Typography>
+          </Tooltip>
+        );
+      },
     },
     {
       field: 'description',
       hide: false,
       headerName: 'Description',
       flex: 1,
+      renderCell: (params) => {
+        const { description } = params.row;
+        return (
+          <Tooltip title={description} placement="bottom-start">
+            <Typography level="title-md" variant="plain">
+              {description}
+            </Typography>
+          </Tooltip>
+        );
+      },
     },
     {
       field: 'estimatedTotal',
       hide: false,
-      headerName: 'Estimated Total',
+      headerName: 'Requested Amount',
       flex: 1,
+      renderCell: (params) => {
+        const { requestedAmountMAD, requestedAmountEUR } = params.row;
+        const toolTipTitle = (
+          <>
+            <Typography level="title-md" color="success" variant="soft">
+              {requestedAmountMAD} MAD
+            </Typography>
+            <Typography level="title-md" color="success" variant="soft">
+              {requestedAmountEUR} EUR
+            </Typography>
+          </>
+        );
+        if (requestedAmountMAD > 0 && requestedAmountEUR > 0) {
+          return (
+            <Tooltip title={toolTipTitle} placement="right">
+              <InfoIcon fontSize="small" color="primary" />
+            </Tooltip>
+          );
+        }
+        if (requestedAmountMAD > 0) {
+          return (
+            <Typography level="title-md" color="success">
+              {requestedAmountMAD} MAD
+            </Typography>
+          );
+        }
+        return (
+          <Typography level="title-md" color="success">
+            {requestedAmountEUR} EUR
+          </Typography>
+        );
+      },
     },
     {
-      field: 'currency',
+      field: 'missionDuration',
       hide: false,
-      headerName: 'Currency',
+      headerName: 'Mission Duration',
       flex: 1,
+      renderCell: (params) => {
+        const { departureDate, returnDate } = params.row;
+        const departureDateObject = new Date(departureDate);
+        const returnDateObject = new Date(returnDate);
+        const durationInMilliseconds = returnDateObject - departureDateObject;
+        const durationInDays = Math.ceil(
+          durationInMilliseconds / (1000 * 60 * 60 * 24),
+        );
+        return (
+          <Typography variant="plain" level="title-md" color="warning">
+            {durationInDays} Days
+          </Typography>
+        );
+      },
     },
 
     {
-      field: 'latestStatus',
+      field: 'status',
       hide: false,
-      headerName: 'Latest Status',
+      headerName: 'Status',
       flex: 1,
+      renderCell: (params) => {
+        const { nextDeciderUserName } = params.row;
+        if (nextDeciderUserName === localStorage.getItem('username')) {
+          return (
+            <Alert
+              icon={false}
+              severity="info"
+              variant="outlined"
+              style={{
+                paddingBottom: '0.3px',
+                paddingTop: '0.3px',
+                borderRadius: '40px',
+              }}
+            >
+              <AutorenewIcon fontSize="small" /> Pending
+            </Alert>
+          );
+        }
+
+        return (
+          <Alert
+            icon={false}
+            severity="success"
+            variant="outlined"
+            style={{
+              paddingBottom: '0.3px',
+              paddingTop: '0.3px',
+              borderRadius: '40px',
+            }}
+          >
+            <BeenhereIcon fontSize="small" /> Decided Upon
+          </Alert>
+        );
+      },
     },
     {
-      field: 'onBehalf',
+      field: 'abroad',
       hide: false,
+      headerName: 'Abroad',
       type: 'boolean',
-      headerName: 'onBehalf',
       flex: 1,
     },
     {
@@ -101,7 +223,14 @@ export function DecideOnOrdreMissionTable() {
       hide: false,
       headerName: 'Created On',
       flex: 1,
-      valueFormatter: ({ value }) => DateTimeFormater(value),
+      renderCell: (params) => {
+        const { createDate } = params.row;
+        return (
+          <Typography level="title-md" variant="plain">
+            {DateTimeFormater(createDate)}
+          </Typography>
+        );
+      },
     },
     {
       field: '',
@@ -109,54 +238,31 @@ export function DecideOnOrdreMissionTable() {
       headerName: 'Actions',
       flex: 1,
       renderCell: (params) => {
-        const { id, latestStatus } = params.row;
-        if (latestStatus === 'Draft') {
+        const { id, nextDeciderUserName } = params.row;
+        if (nextDeciderUserName === localStorage.getItem('username')) {
           return (
-            <Box>
-              <Button
-                variant="contained"
-                color="warning"
-                sx={{ mr: '10px' }}
-                startIcon={<EditIcon />}
-              >
-                Edit
-              </Button>
-              <Button
-                variant="contained"
-                color="error"
-                startIcon={<DeleteIcon />}
-                onClick={() => {
-                  setOrdreMissionToDeleteId(id);
-                  setModalVisibility(true);
-                }}
-              >
-                Delete
-              </Button>
-            </Box>
+            <Button
+              variant="contained"
+              color="success"
+              sx={{ mr: '10px' }}
+              startIcon={<EditIcon />}
+              onClick={() => {
+                handleOnDecideButtonClick(id);
+              }}
+            >
+              Decide
+            </Button>
           );
         }
-        if (
-          latestStatus === 'Returned' ||
-          latestStatus === 'Returned for missing evidences'
-        ) {
-          return (
-            <Box>
-              <Button
-                variant="contained"
-                color="warning"
-                sx={{ mr: '10px' }}
-                startIcon={<EditIcon />}
-              >
-                Edit
-              </Button>
-            </Box>
-          );
-        }
+
         return (
           <Button
             variant="contained"
             color="primary"
             startIcon={<VisibilityIcon />}
+            onClick={() => {
+              handleOnViewButtonClick(id);
+            }}
           >
             View
           </Button>
@@ -176,8 +282,42 @@ export function DecideOnOrdreMissionTable() {
   useEffect(() => {
     if (errorLoadingOrdreMissions === null) {
       dispatch(loadOrdreMissionAction());
+      if (statusOrdreMission !== '') {
+        switch (statusOrdreMission) {
+          case 'APPROVED':
+            setSnackbarAlertSeverity('success');
+            break;
+          case 'REJECTED':
+            setSnackbarAlertSeverity('error');
+            break;
+          case 'RETURNED':
+            setSnackbarAlertSeverity('warning');
+            break;
+          default:
+            setSnackbarAlertSeverity('success');
+        }
+        setSnackbarVisibility(true);
+      }
     }
   }, [ordreMissions]);
+
+  useEffect(
+    () => () => {
+      dispatch(cleanupDecideOnOrdreMissionTableStoreAction());
+    },
+    [],
+  );
+
+  // handle buttons
+  const handleOnDecideButtonClick = (id) => {
+    dispatch(setOrdreMissionIdentityAction(id));
+    dispatch(changePageContentAction('DECIDE'));
+  };
+
+  const handleOnViewButtonClick = (id) => {
+    dispatch(setOrdreMissionIdentityAction(id));
+    dispatch(changePageContentAction('VIEW'));
+  };
 
   return (
     <Box
@@ -213,6 +353,22 @@ export function DecideOnOrdreMissionTable() {
       ) : (
         <></>
       )}
+
+      <Snackbar
+        open={snackbarVisibility}
+        autoHideDuration={3000}
+        onClose={() => setSnackbarVisibility(false)}
+        action={action}
+      >
+        <Alert
+          onClose={() => setSnackbarVisibility(false)}
+          severity={snackbarAlertSeverity}
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          Request has been {statusOrdreMission} successfully!
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }

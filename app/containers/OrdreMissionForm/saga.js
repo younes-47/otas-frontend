@@ -47,8 +47,8 @@ export function* AddOrdreMission({ form }) {
         },
       },
     );
-    yield put(AddOrdreMissionSuccessAction());
     yield put(setOrdreMissionIdentityAction(data)); // data is ID
+    yield put(AddOrdreMissionSuccessAction());
   } catch (error) {
     yield put(AddOrdreMissionErrorAction(error));
   }
@@ -66,8 +66,8 @@ export function* UpdateOrdreMission({ form }) {
         },
       },
     );
-    yield put(UpdateOrdreMissionSuccessAction());
     yield put(setOrdreMissionIdentityAction(data)); // data is ID
+    yield put(UpdateOrdreMissionSuccessAction());
   } catch (error) {
     yield put(UpdateOrdreMissionErrorAction(error));
   }

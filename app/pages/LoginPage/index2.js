@@ -18,8 +18,6 @@ import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import { StyledBox } from 'components/GlobalComponents/StyledBox';
 import { StyledSubmitButton } from 'components/GlobalComponents/StyledSubmitButton';
-import { Box, borderRadius } from '@mui/system';
-import { Alert, Button, TextField, Typography } from '@mui/material';
 import makeSelectLoginPage, {
   makeSelectToken,
   makeSelectUsername,
@@ -41,8 +39,6 @@ import TextInput from './TextInput';
 // import logo from '/app/images/logo-512x512.png';
 // eslint-disable-next-line import/no-unresolved
 import otasLoginImage from '/app/images/OTAS_login_image-634×360.png';
-import userIcon from '/app/images/user-circle-svgrepo-com.png';
-import passwordIcon from '/app/images/password-svgrepo-com.png';
 
 const mapStateToProps = createStructuredSelector({
   loginPage: makeSelectLoginPage(),
@@ -102,35 +98,34 @@ export function LoginPage() {
     }
   };
   return (
-    <Box
-      component="form"
-      className="form"
-      sx={{
-        backgroundColor: 'white',
-        padding: '3.125em',
-        borderRadius: '10px',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        boxShadow: '3px 13px 46px -12px rgba(200,15,23,0.79)',
-        webkitBoxShadow: '3px 13px 46px -12px rgba(200,15,23,0.79)',
-        mozBoxShadow: '3px 13px 46px -12px rgba(200,15,23,0.79)',
-      }}
+    <StyledBox
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      height="100vh"
+      backgroundColor="#f2f2f2"
     >
       <StyledBox
-        // sx={{
-        //   background:
-        //     'radial-gradient(circle at 50% -50%,#ffffff 10%,#ffffff 60%,#ffffff00 65%),radial-gradient(circle at 50% 65%,#ffffff 1%,#ffffff 20%,#f6f6f6 40%,#f2f2f2 45%)',
-        //   padding: '20px',
-        //   paddingX: '40px',
-        //   borderRadius: '25px',
-        // }}
+        sx={{
+          background:
+            'radial-gradient(circle at 50% -50%,#ffffff 10%,#ffffff 60%,#ffffff00 65%),radial-gradient(circle at 50% 65%,#ffffff 1%,#ffffff 20%,#f6f6f6 40%,#f2f2f2 45%)',
+          padding: '20px',
+          paddingX: '40px',
+          borderRadius: '25px',
+        }}
         error={error !== true && error}
       >
-        <img
+        <StyledBox
+          component="img"
+          sx={{
+            alignSelf: 'center',
+            height: 180,
+            width: 317,
+            margin: '10px',
+            marginBottom: '24px',
+          }}
+          alt="Dicastal Logo"
           src={otasLoginImage}
-          alt="OTAS"
-          style={{ height: '150px', marginBottom: '30px' }}
         />
         <StyledBox
           display="flex"
@@ -139,99 +134,30 @@ export function LoginPage() {
           flexDirection="column"
           loading={loading}
         >
-          <TextField
+          <TextInput
             value={username}
             disabled={loading}
+            label="Username"
             onChange={onChangeUsername}
             onKeyRelease={handleKeypress}
-            type="text"
-            placeholder="Username"
-            className="input"
-            id="username_input"
-            InputProps={{
-              startAdornment: (
-                <img
-                  src={userIcon}
-                  alt="user-icon"
-                  style={{ marginLeft: '12px', marginRight: '11px' }}
-                />
-              ),
-            }}
           />
-          <TextField
+          <PasswordInput
             value={password}
             disabled={loading}
             onChange={onChangePassword}
             onKeyRelease={handleKeypress}
-            type="password"
-            placeholder="Password"
-            className="input"
-            id="password_input"
-            InputProps={{
-              startAdornment: (
-                <img
-                  src={passwordIcon}
-                  alt="password-icon"
-                  style={{ marginLeft: '12px', marginRight: '11px' }}
-                />
-              ),
-            }}
           />
-
-          <Button
+          <StyledSubmitButton
+            sx={{ textTransform: 'none', width: '222px' }}
+            variant="contained"
             disabled={!(username && password) || loading}
             onClick={onSubmitForm}
-            variant="outlined"
-            className="btn"
-            sx={{
-              marginTop: '10px',
-              fontSize: '15px',
-              textTransform: 'uppercase',
-              textDecoration: 'none',
-              padding: '0.5em 2em',
-              borderRadius: '6em',
-              transition: 'all .2s',
-              borderWidth: '0.5 px',
-              borderStyle: 'solid',
-              borderColor: '#c80f17',
-              fontWeight: '600',
-              color: '#c80f17',
-              backgroundColor: 'white',
-              '&:hover': {
-                transform: 'translateY(-3px)',
-                boxShadow: '0 10px 20px rgba(0, 0, 0, 0.2)',
-                color: 'white',
-                backgroundColor: '#c80f17',
-                cursor: 'pointer',
-              },
-              '&:active': {
-                transform: 'translateY(-1px)',
-                boxShadow: '0 5px 10px rgba(0, 0, 0, 0.2)',
-              },
-              '&::after': {
-                content: '""',
-                display: 'inline-block',
-                height: '100%',
-                width: '100%',
-                borderRadius: '100px',
-                position: 'absolute',
-                top: '0',
-                left: '0',
-                zIndex: '-1',
-                transition: 'all .4s',
-                backgroundColor: '#f79292',
-              },
-              '&:hover::after': {
-                transform: 'scaleX(1.4) scaleY(1.6)',
-                opacity: '0',
-              },
-            }}
           >
-            Login
-          </Button>
+            Log In
+          </StyledSubmitButton>
         </StyledBox>
       </StyledBox>
-    </Box>
+    </StyledBox>
   );
 }
 

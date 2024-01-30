@@ -5,6 +5,7 @@
  */
 
 import {
+  AVANCE_VOYAGE_IDENTITY,
   CHANGE_PAGE_CONTENT_ACTION,
   CLEANUP_STORE_ACTION,
   DEFAULT_ACTION,
@@ -16,15 +17,22 @@ export function defaultAction() {
   };
 }
 
-export function changePageContentAction(pageContent) {
+export function changeDecideOnAvanceVoyagePageContentAction(pageContent) {
   return {
     type: CHANGE_PAGE_CONTENT_ACTION,
     pageContent,
   };
 }
 
-export function cleanupStoreAction() {
+export function cleanupParentDecideOnAvanceVoyageStoreAction() {
   return {
     type: CLEANUP_STORE_ACTION,
+  };
+}
+
+export function setAvanceVoyageIdentityAction(id) {
+  return {
+    type: AVANCE_VOYAGE_IDENTITY,
+    id,
   };
 }

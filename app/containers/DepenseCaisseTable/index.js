@@ -19,6 +19,7 @@ import {
   DialogTitle,
   IconButton,
   Snackbar,
+  Tooltip,
 } from '@mui/material';
 import Tables from 'components/Tables';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
@@ -29,6 +30,7 @@ import {
 } from 'pages/DepenseCaisse/actions';
 import CloseIcon from '@mui/icons-material/Close';
 import { FilePresent } from '@mui/icons-material';
+import { Typography } from '@mui/joy';
 import saga from './saga';
 import reducer from './reducer';
 import {
@@ -181,12 +183,32 @@ export function DepenseCaisseTable() {
       hide: false,
       width: 20,
       headerName: '#',
+      renderCell: (params) => {
+        const { id } = params.row;
+        return (
+          <Tooltip title={id} placement="bottom-start">
+            <Typography level="title-sm" variant="soft">
+              {id}
+            </Typography>
+          </Tooltip>
+        );
+      },
     },
     {
       field: 'description',
       hide: false,
       headerName: 'Description',
       flex: 1,
+      renderCell: (params) => {
+        const { description } = params.row;
+        return (
+          <Tooltip title={description} placement="bottom-start">
+            <Typography level="title-md" variant="plain">
+              {description}
+            </Typography>
+          </Tooltip>
+        );
+      },
     },
     {
       field: 'total',
@@ -195,7 +217,11 @@ export function DepenseCaisseTable() {
       headerName: 'Total',
       renderCell: (params) => {
         const { total } = params.row;
-        return total.toFixed(2);
+        return (
+          <Typography color="success" level="title-md" variant="plain">
+            {total.toFixed(2)}
+          </Typography>
+        );
       },
     },
     {
@@ -203,6 +229,14 @@ export function DepenseCaisseTable() {
       hide: false,
       headerName: 'Currency',
       width: 150,
+      renderCell: (params) => {
+        const { currency } = params.row;
+        return (
+          <Typography level="title-md" variant="plain">
+            {currency}
+          </Typography>
+        );
+      },
     },
     {
       field: 'latestStatus',
@@ -309,7 +343,14 @@ export function DepenseCaisseTable() {
       hide: false,
       headerName: 'Created On',
       flex: 1,
-      valueFormatter: ({ value }) => DateTimeFormater(value),
+      renderCell: (params) => {
+        const { createDate } = params.row;
+        return (
+          <Typography level="title-md" variant="plain">
+            {DateTimeFormater(createDate)}
+          </Typography>
+        );
+      },
     },
     {
       field: '',

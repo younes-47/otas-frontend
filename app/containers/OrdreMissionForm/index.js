@@ -12,6 +12,7 @@ import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import { Stack, Box } from '@mui/system';
+
 import {
   Alert,
   Autocomplete,
@@ -493,6 +494,15 @@ export function OrdreMissionForm({ state }) {
   };
 
   const handleOnSubmitButtonClick = () => {
+    setModalHeader('Submit');
+    setModalBody(
+      'By submitting this request, you acknowledge that all provided information is correct.',
+    );
+    setModalSevirity('info');
+    setModalVisibility(true);
+  };
+
+  const handleOnSubmitConfirmationButtonClick = () => {
     dispatch(submitOrdreMissionAction(ordreMissionDetails?.id));
     setButtonClicked('SUBMIT');
   };
@@ -970,6 +980,16 @@ export function OrdreMissionForm({ state }) {
               <Button
                 color="success"
                 onClick={handleOnSubmitModificationsConfirmationButtonClick}
+                variant="contained"
+              >
+                Submit
+              </Button>
+            )}
+            {modalHeader === 'Submit' && (
+              <Button
+                color="success"
+                onClick={handleOnSubmitConfirmationButtonClick}
+                variant="contained"
               >
                 Submit
               </Button>

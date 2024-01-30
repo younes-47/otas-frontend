@@ -78,12 +78,6 @@ const makeSelectTransportationMethodSelector = () =>
     (substate) => substate.transportationMethodSelector,
   );
 
-const makeSelectCleanupStore = () =>
-  createSelector(
-    selectOrdreMissionFormDomain,
-    (substate) => substate.storeCleanup,
-  );
-
 export default makeSelectOrdreMissionForm;
 export {
   makeSelectOrdreMissionDetails,
@@ -96,6 +90,5 @@ export {
   selectOrdreMissionFormDomain,
   makeSelectOnBehalf,
   makeSelectAbroad,
-  makeSelectCleanupStore,
   makeSelectTransportationMethodSelector,
 };

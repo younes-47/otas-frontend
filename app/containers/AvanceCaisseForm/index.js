@@ -25,6 +25,7 @@ import {
   Divider,
   FormControlLabel,
   FormLabel,
+  Grid,
   IconButton,
   Paper,
   Radio,
@@ -49,6 +50,7 @@ import { Timeline } from '@mui/lab';
 import CustomizedTimeLine from 'components/CustomizedTimeLine';
 import ActualRequesterInputs from 'components/ActualRequesterInputs';
 import { ValidateInputs } from 'utils/Custom/ValidateInputs';
+import LinearProgress from '@mui/material/LinearProgress';
 import {
   makeSelectAddAvanceCaisse,
   makeSelectAvanceCaisseDetails,
@@ -127,6 +129,8 @@ export function AvanceCaisseForm({ state }) {
   const [modalSevirity, setModalSevirity] = useState('');
   const [buttonClicked, setButtonClicked] = useState(''); // this state is used to track which button has been clicked
   const [savedSnackbarVisibility, setSavedSnackbarVisibility] = useState(false);
+  const [fullPageModalVisibility, setFullPageModalVisibility] = useState(false);
+
   const action = (
     <IconButton
       size="small"
@@ -205,6 +209,7 @@ export function AvanceCaisseForm({ state }) {
     ) {
       dispatch(cleanupAvanceCaisseParentPageStoreAction());
       dispatch(changePageContentAction('CONFIRM'));
+      setFullPageModalVisibility(true);
       setSavedSnackbarVisibility(true);
     }
   }, [errorloadingAvanceCaisseDetails]);
@@ -225,7 +230,6 @@ export function AvanceCaisseForm({ state }) {
 
   useEffect(
     () => () => {
-      console.log('##########');
       dispatch(cleanupAvanceCaisseFormPageStoreAction());
       dispatch(cleanupAvanceCaisseParentPageStoreAction());
     },
@@ -345,6 +349,15 @@ export function AvanceCaisseForm({ state }) {
   };
 
   const handleOnSubmitButtonClick = () => {
+    setModalHeader('Submit');
+    setModalBody(
+      'By submitting this request, you acknowledge that all provided information is correct.',
+    );
+    setModalSevirity('info');
+    setModalVisibility(true);
+  };
+
+  const handleOnSubmitConfirmationButtonClick = () => {
     dispatch(submitAvanceCaisseAction(avanceCaisseDetails?.id));
     setButtonClicked('SUBMIT');
   };
@@ -423,13 +436,14 @@ export function AvanceCaisseForm({ state }) {
           </h1>
         )}
         {state === 'CONFIRM' && (
-          <Paper elevation={3}>
-            <Alert severity="info">
-              <Typography variant="h4" marginTop={3}>
-                Please Review your information before submitting
-              </Typography>
-            </Alert>
-          </Paper>
+          <Box>
+            <Typography variant="h4" marginTop={3} gutterBottom>
+              Please Review your information before submitting
+            </Typography>
+            <Box sx={{ width: '100%' }}>
+              <LinearProgress color="info" value={40} />
+            </Box>
+          </Box>
         )}
       </Box>
       {state === 'CONFIRM' && (
@@ -774,7 +788,60 @@ export function AvanceCaisseForm({ state }) {
               Submit
             </Button>
           )}
+          {modalHeader === 'Submit' && (
+            <Button
+              color="success"
+              onClick={handleOnSubmitConfirmationButtonClick}
+              variant="contained"
+            >
+              Submit
+            </Button>
+          )}
         </DialogActions>
+      </Dialog>
+
+      {/* Confirmation Modal */}
+      <Dialog
+        fullScreen
+        open={fullPageModalVisibility}
+        onScroll={() => setFullPageModalVisibility(false)}
+        PaperProps={{
+          style: {
+            backgroundColor: '#f2f2f2',
+          },
+        }}
+      >
+        <Grid
+          container
+          spacing={0}
+          direction="column"
+          alignItems="center"
+          justifyContent="center"
+          sx={{ minHeight: '100vh' }}
+        >
+          <Grid item xs={1.5} justifyContent="center">
+            <Box>
+              <Typography variant="h4">
+                Please Review your information before submitting
+              </Typography>
+              <Box sx={{ width: '100%' }}>
+                <LinearProgress color="info" value={40} />
+              </Box>
+            </Box>
+          </Grid>
+          <Grid item justifyContent="center">
+            <Button
+              variant="contained"
+              color="info"
+              // endIcon={<ThumbUpOffAltIcon />}
+              onClick={() => setFullPageModalVisibility(false)}
+              aria-label="close"
+              size="large"
+            >
+              OK
+            </Button>
+          </Grid>
+        </Grid>
       </Dialog>
 
       <Snackbar

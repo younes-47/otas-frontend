@@ -47,8 +47,8 @@ export function* AddDepenseCaisse({ form }) {
         },
       },
     );
-    yield put(AddDepenseCaisseSuccessAction());
     yield put(setDepenseCaisseIdentityAction(data)); // data is ID
+    yield put(AddDepenseCaisseSuccessAction());
   } catch (error) {
     yield put(AddDepenseCaisseErrorAction(error));
   }
@@ -66,8 +66,8 @@ export function* UpdateDepenseCaisse({ form }) {
         },
       },
     );
-    yield put(UpdateDepenseCaisseSuccessAction());
     yield put(setDepenseCaisseIdentityAction(data)); // data is ID
+    yield put(UpdateDepenseCaisseSuccessAction());
   } catch (error) {
     yield put(UpdateDepenseCaisseErrorAction(error));
   }

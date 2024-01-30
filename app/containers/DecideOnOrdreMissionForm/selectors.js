@@ -12,6 +12,24 @@ const selectDecideOnOrdreMissionFormDomain = (state) =>
  * Other specific selectors
  */
 
+const makeSelectOrdreMissionDetails = () =>
+  createSelector(
+    selectDecideOnOrdreMissionFormDomain,
+    (substate) => substate.ordreMissionDetails,
+  );
+
+const makeSelectErrorLoadingOrdreMissionDetails = () =>
+  createSelector(
+    selectDecideOnOrdreMissionFormDomain,
+    (substate) => substate.errorLoadingOrdreMissionDetails,
+  );
+
+const makeSelectErrorDecidingOnOrdreMission = () =>
+  createSelector(
+    selectDecideOnOrdreMissionFormDomain,
+    (substate) => substate.errorDecidingOnOrdreMission,
+  );
+
 /**
  * Default selector used by DecideOnOrdreMissionForm
  */
@@ -20,4 +38,9 @@ const makeSelectDecideOnOrdreMissionForm = () =>
   createSelector(selectDecideOnOrdreMissionFormDomain, (substate) => substate);
 
 export default makeSelectDecideOnOrdreMissionForm;
-export { selectDecideOnOrdreMissionFormDomain };
+export {
+  makeSelectErrorDecidingOnOrdreMission,
+  selectDecideOnOrdreMissionFormDomain,
+  makeSelectErrorLoadingOrdreMissionDetails,
+  makeSelectOrdreMissionDetails,
+};

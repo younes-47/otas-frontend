@@ -19,27 +19,49 @@ import Stack from '@mui/material/Stack';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { Alert, Container, Grid, Grow } from '@mui/material';
 import { Card, CardContent } from '@mui/joy';
-import CountUp from 'react-countup/build/CountUp';
+import CountUp from 'react-countup';
+import { PieChart } from '@mui/x-charts';
 import saga from './saga';
 import reducer from './reducer';
-import { cleanupStoreAction, loadUserInfoAction } from './actions';
-import { makeSelectUserInfo } from './selectors';
+import {
+  cleanupStoreAction,
+  loadRequesterStatsAction,
+  loadUserInfoAction,
+} from './actions';
+import {
+  makeSelectErrorLoadingRequesterStats,
+  makeSelectRequesterStats,
+  makeSelectUserInfo,
+} from './selectors';
 
 const mapStateToProps = createStructuredSelector({
   isSideBarVisible: makeSelectIsSideBarVisible(),
   userInfo: makeSelectUserInfo(),
+  errorLoadingRequesterStats: makeSelectErrorLoadingRequesterStats(),
+  requesterStats: makeSelectRequesterStats(),
 });
 
 export default function MyRequests() {
   useInjectReducer({ key: 'myRequests', reducer });
   useInjectSaga({ key: 'myRequests', saga });
   const dispatch = useDispatch();
-  const { isSideBarVisible, userInfo } = useSelector(mapStateToProps);
+  const {
+    isSideBarVisible,
+    userInfo,
+    errorLoadingRequesterStats,
+    requesterStats,
+  } = useSelector(mapStateToProps);
 
   useEffect(() => {
     // only token, username, and role => dispatch to get userInfo
     if (localStorage.length === 3) {
       dispatch(loadUserInfoAction());
+    }
+  }, []);
+
+  useEffect(() => {
+    if (errorLoadingRequesterStats === null) {
+      dispatch(loadRequesterStatsAction());
     }
   }, []);
 
@@ -118,12 +140,12 @@ export default function MyRequests() {
           justifyContent="center"
           marginTop={0.5}
         >
-          <Grow>
+          <Grow in>
             <Grid item xs={6}>
               <Card variant="outlined">
                 <CardContent>
                   <Typography level="h1" variant="plain" color="primary">
-                    5
+                    {requesterStats?.requestsStats?.allOngoingRequestsCount}
                   </Typography>
                   <Typography level="title-md">
                     Requests are in the process of approval.
@@ -132,47 +154,193 @@ export default function MyRequests() {
               </Card>
             </Grid>
           </Grow>
-
-          <Grow timeout={1000}>
+          <Grow in timeout={3200}>
+            <Grid item xs={6}>
+              <Card variant="outlined">
+                <CardContent>
+                  <Typography level="h1" variant="plain" color="warning">
+                    {Math.floor(
+                      requesterStats?.requestsStats
+                        ?.hoursPassedSinceLastRequest / 24,
+                    )}
+                    {/* &nbsp;Days&nbsp; */}
+                    {/* {Math.floor(
+                      requesterStats?.requestsStats
+                        ?.hoursPassedSinceLastRequest,
+                    ) % 24}
+                    &nbsp;Hours */}
+                  </Typography>
+                  <Typography level="title-md">
+                    Days Have been passed since your last request.
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grow>
+          <Grow in timeout={1200}>
             <Grid item xs={6}>
               <Card variant="outlined">
                 <CardContent>
                   <Typography level="h1" variant="plain" color="success">
-                    <CountUp delay={0} start={0} end={89} duration={2.75} />
+                    <CountUp
+                      delay={0}
+                      start={0}
+                      end={requesterStats?.requestsStats?.allTimeCount}
+                      duration={3.2}
+                    />
                   </Typography>
                   <Typography level="title-md">
                     requests have been created so far!
                   </Typography>
+                  {/* <Box display="flex" alignItems="center" > */}
+                  <PieChart
+                    slotProps={{ legend: { hidden: true } }}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      margin: '0',
+                    }}
+                    series={[
+                      {
+                        data: [
+                          {
+                            id: 0,
+                            value:
+                              requesterStats?.requestsStats
+                                ?.ordreMissionsAllTimeCount,
+                            label: 'Ordre Mission',
+                            color: '#ef7765',
+                          },
+                          {
+                            id: 1,
+                            value:
+                              requesterStats?.requestsStats
+                                ?.avanceVoyagesAllTimeCount,
+                            label: 'Avance Voyage',
+                            color: '#00a697',
+                          },
+                          {
+                            id: 2,
+                            value:
+                              requesterStats?.requestsStats
+                                ?.avanceCaissesAllTimeCount,
+                            label: 'Avance Caisse',
+                            color: '#f3bc00',
+                          },
+                          {
+                            id: 3,
+                            value:
+                              requesterStats?.requestsStats
+                                ?.depenseCaissesAllTimeCount,
+                            label: 'Depense Caisse',
+                            color: '#0075a4',
+                          },
+                        ],
+                      },
+                    ]}
+                    width={226.3}
+                    height={200}
+                  />
+                  {/* </Box> */}
                 </CardContent>
               </Card>
             </Grid>
           </Grow>
 
-          <Grow timeout={2000}>
+          <Grow in timeout={2200}>
             <Grid item xs={6}>
               <Card variant="outlined">
                 <CardContent>
-                  <Typography level="h1" variant="plain" color="success">
-                    70%
+                  <Typography level="h3" variant="plain" color="success">
+                    <CountUp
+                      delay={0}
+                      start={0}
+                      end={requesterStats?.moneyStats?.allTimeAmountMAD}
+                      duration={3.2}
+                    />
+                    &nbsp;MAD
+                  </Typography>
+                  <Typography level="h3" variant="plain" color="success">
+                    <CountUp
+                      delay={0}
+                      start={0}
+                      end={requesterStats?.moneyStats?.allTimeAmountEUR}
+                      duration={3.2}
+                    />
+                    &nbsp;EUR
                   </Typography>
                   <Typography level="title-md">
-                    of requests have been approved!
+                    have been requested so far!
                   </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          </Grow>
-
-          <Grow timeout={3000}>
-            <Grid item xs={6}>
-              <Card variant="outlined">
-                <CardContent>
-                  <Typography level="h1" variant="plain" color="danger">
-                    0
-                  </Typography>
-                  <Typography level="title-md">
-                    Requests have been rejected.
-                  </Typography>
+                  <PieChart
+                    slotProps={{ legend: { hidden: true } }}
+                    height={200}
+                    width={226.3}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                    series={[
+                      {
+                        data: [
+                          {
+                            id: 0,
+                            value:
+                              requesterStats?.moneyStats
+                                ?.avanceVoyagesAllTimeAmountMAD,
+                            label: 'Avance Voyage MAD',
+                            color: '#00a697',
+                          },
+                          {
+                            id: 1,
+                            value:
+                              requesterStats?.moneyStats
+                                ?.avanceCaissesAllTimeAmountMAD,
+                            label: 'Avance Caisse MAD',
+                            color: '#f3bc00',
+                          },
+                          {
+                            id: 2,
+                            value:
+                              requesterStats?.moneyStats
+                                ?.depenseCaissesAllTimeAmountMAD,
+                            label: 'Depense Caisse MAD',
+                            color: '#0075a4',
+                          },
+                        ],
+                        outerRadius: 50,
+                      },
+                      {
+                        data: [
+                          {
+                            id: 0,
+                            value:
+                              requesterStats?.moneyStats
+                                ?.avanceVoyagesAllTimeAmountEUR,
+                            label: 'Avance Voyage EUR',
+                            color: '#00a697',
+                          },
+                          {
+                            id: 1,
+                            value:
+                              requesterStats?.moneyStats
+                                ?.avanceCaissesAllTimeAmountEUR,
+                            label: 'Avance Caisse EUR',
+                            color: '#f3bc00',
+                          },
+                          {
+                            id: 2,
+                            value:
+                              requesterStats?.moneyStats
+                                ?.depenseCaissesAllTimeAmountEUR,
+                            label: 'Depense Caisse EUR',
+                            color: '#0075a4',
+                          },
+                        ],
+                        innerRadius: 40,
+                      },
+                    ]}
+                  />
                 </CardContent>
               </Card>
             </Grid>

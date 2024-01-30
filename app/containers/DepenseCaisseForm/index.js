@@ -27,7 +27,9 @@ import {
   DialogTitle,
   Divider,
   FormControlLabel,
+  Grid,
   IconButton,
+  LinearProgress,
   Link,
   Radio,
   RadioGroup,
@@ -119,6 +121,7 @@ export function DepenseCaisseForm({ state }) {
   const [modalSevirity, setModalSevirity] = useState('');
   const [buttonClicked, setButtonClicked] = useState(''); // this state is used to track which button has been clicked
   const [savedSnackbarVisibility, setSavedSnackbarVisibility] = useState(false);
+  const [fullPageModalVisibility, setFullPageModalVisibility] = useState(false);
   const [loadingButton, setLoadingButton] = useState(false);
   const [expenses, setExpenses] = useState([
     {
@@ -213,6 +216,7 @@ export function DepenseCaisseForm({ state }) {
     ) {
       dispatch(cleanupDepenseCaisseParentPageStoreAction());
       dispatch(changePageContentAction('CONFIRM'));
+      setFullPageModalVisibility(true);
       setSavedSnackbarVisibility(true);
     }
   }, [errorLoadingDepenseCaisseDetails]);
@@ -373,6 +377,15 @@ export function DepenseCaisseForm({ state }) {
   };
 
   const handleOnSubmitButtonClick = () => {
+    setModalHeader('Submit');
+    setModalBody(
+      'By submitting this request, you acknowledge that all provided information is correct.',
+    );
+    setModalSevirity('info');
+    setModalVisibility(true);
+  };
+
+  const handleOnSubmitConfirmationButtonClick = () => {
     dispatch(submitDepenseCaisseAction(depenseCaisseDetails?.id));
     setButtonClicked('SUBMIT');
   };
@@ -477,11 +490,14 @@ export function DepenseCaisseForm({ state }) {
           </h1>
         )}
         {state === 'CONFIRM' && (
-          <h1 style={{ fontSize: '30px' }}>
-            <Typography variant="h5" marginTop={3} gutterBottom>
+          <Box>
+            <Typography variant="h4" marginTop={3} gutterBottom>
               Please Review your information before submitting
             </Typography>
-          </h1>
+            <Box sx={{ width: '100%' }}>
+              <LinearProgress color="info" value={40} />
+            </Box>
+          </Box>
         )}
       </Box>
       {state === 'CONFIRM' && (
@@ -785,13 +801,13 @@ export function DepenseCaisseForm({ state }) {
               </Alert>
             )}
 
-            {/* <Typography
+            <Typography
               variant="caption"
               sx={{ color: 'error.main' }}
               marginTop={3}
             >
               Please upload your receipts in a single pdf file.
-            </Typography> */}
+            </Typography>
 
             {/* The dropzonearea component sill has some side effects */}
             {/* https://yuvaleros.github.io/material-ui-dropzone/ */}
@@ -804,24 +820,8 @@ export function DepenseCaisseForm({ state }) {
             fileObjects={receiptsFile}
             onChange={(e) => updateReceiptsFileData(e)}
           /> */}
-            {/* <LoadingButton
-              color="secondary"
-              loading={loadingButton}
-              loadingPosition="start"
-              startIcon={<FileUploadIcon />}
-              variant="outlined"
-              fullWidth
-            >
-              <span> Upload file</span>
-              <input
-                type="file"
-                accept="application/pdf"
-                hidden
-                onChange={(e) => updateReceiptsFileData(e)}
-              ></input>
-            </LoadingButton> */}
 
-            {/* <Button
+            <Button
               component="label"
               variant={loadingButton ? 'contained' : 'outlined'}
               color="warning"
@@ -848,11 +848,11 @@ export function DepenseCaisseForm({ state }) {
               <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
                 Selected file: {receiptsFileName}
               </Typography>
-            )} */}
-            <FileUploadForm
+            )}
+            {/* <FileUploadForm
               loading={loadingButton}
               updateFunction={updateReceiptsFileData}
-            />
+            /> */}
           </Box>
         </Box>
       )}
@@ -967,7 +967,60 @@ export function DepenseCaisseForm({ state }) {
               Submit
             </Button>
           )}
+          {modalHeader === 'Submit' && (
+            <Button
+              color="success"
+              onClick={handleOnSubmitConfirmationButtonClick}
+              variant="contained"
+            >
+              Submit
+            </Button>
+          )}
         </DialogActions>
+      </Dialog>
+
+      {/* Confirmation Modal */}
+      <Dialog
+        fullScreen
+        open={fullPageModalVisibility}
+        onScroll={() => setFullPageModalVisibility(false)}
+        PaperProps={{
+          style: {
+            backgroundColor: '#f2f2f2',
+          },
+        }}
+      >
+        <Grid
+          container
+          spacing={0}
+          direction="column"
+          alignItems="center"
+          justifyContent="center"
+          sx={{ minHeight: '100vh' }}
+        >
+          <Grid item xs={1.5} justifyContent="center">
+            <Box>
+              <Typography variant="h4">
+                Please Review your information before submitting
+              </Typography>
+              <Box sx={{ width: '100%' }}>
+                <LinearProgress color="info" value={40} />
+              </Box>
+            </Box>
+          </Grid>
+          <Grid item justifyContent="center">
+            <Button
+              variant="contained"
+              color="info"
+              // endIcon={<ThumbUpOffAltIcon />}
+              onClick={() => setFullPageModalVisibility(false)}
+              aria-label="close"
+              size="large"
+            >
+              OK
+            </Button>
+          </Grid>
+        </Grid>
       </Dialog>
 
       <Snackbar

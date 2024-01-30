@@ -5,7 +5,6 @@
  */
 import produce from 'immer';
 import {
-  AVANCE_VOYAGE_IDENTITY,
   CLEANUP_STORE_ACTION,
   DEFAULT_ACTION,
   LOAD_AVANCE_VOYAGE,
@@ -17,7 +16,6 @@ export const initialState = {
   loadingAvanceVoyage: false,
   errorLoadingAvanceVoyage: null,
   avanceVoyageDetails: null,
-  avanceVoyageIdentity: null,
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -39,14 +37,10 @@ const avanceVoyageViewReducer = (state = initialState, action) =>
         draft.errorLoadingAvanceVoyage = false;
         draft.avanceVoyageDetails = action.data;
         break;
-      case AVANCE_VOYAGE_IDENTITY:
-        draft.avanceVoyageIdentity = action.data;
-        break;
       case CLEANUP_STORE_ACTION:
         draft.loadingAvanceVoyage = false;
         draft.errorLoadingAvanceVoyage = null;
         draft.avanceVoyageDetails = null;
-        draft.avanceVoyageIdentity = null;
         break;
     }
   });

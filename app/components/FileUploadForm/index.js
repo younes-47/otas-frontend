@@ -7,9 +7,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 // import styled from 'styled-components';
-
+import './raw.css';
 import { Box } from '@mui/system';
-import { CircularProgress, Input, Typography } from '@mui/material';
+import { CircularProgress, Input } from '@mui/material';
+import { Typography } from '@mui/joy';
 
 function FileUploadForm({ loading, updateFunction }) {
   return (
@@ -25,14 +26,7 @@ function FileUploadForm({ loading, updateFunction }) {
       maxWidth="320px"
     >
       {!loading ? (
-        <Typography
-          className="form-title"
-          color="#000000"
-          fontSize="1.8rem"
-          fontWeight="500"
-        >
-          Upload your Receipts file
-        </Typography>
+        <Typography level="h3">Upload your Receipts file</Typography>
       ) : (
         <>
           <Typography
@@ -44,24 +38,19 @@ function FileUploadForm({ loading, updateFunction }) {
             <CircularProgress size={20} color="inherit" />
             Uploading...
           </Typography>
-          <Typography
-            variant="caption"
-            sx={{ color: 'primary.main' }}
-            marginTop={3}
-          >
-            Please wait.
-          </Typography>
+          <Typography level="body-mg">Please wait.</Typography>
         </>
       )}
 
       {!loading && (
         <>
           <Typography
-            variant="caption"
-            sx={{ color: 'error.main' }}
-            marginTop={3}
+            color="danger"
+            level="body-sm"
+            variant="plain"
+            marginTop={2}
           >
-            Please upload your receipts in a single pdf file.
+            *Please upload your receipts in a single pdf file.
           </Typography>
           <label htmlFor="file-input" className="drop-container">
             <Typography
@@ -74,35 +63,13 @@ function FileUploadForm({ loading, updateFunction }) {
               Drop files here
             </Typography>
             or
-            <Input
+            <input
               type="file"
               accept="application/pdf"
               required
               id="file-input"
-              sx={{
-                width: '350px',
-                maxWidth: '100%',
-                color: '#444',
-                padding: '2px',
-                background: '#fff',
-                borderRadius: '10px',
-                border: '1px solid rgba(8, 8, 8, 0.288)',
-                '&::file-selector-button': {
-                  marginRight: '20px',
-                  border: 'none',
-                  background: '#084cdf',
-                  padding: '10px 20px',
-                  borderRadius: '10px',
-                  color: '#fff',
-                  cursor: 'pointer',
-                  transition: 'background .2s ease-in-out',
-                  '&:hover': {
-                    background: '#0d45a5',
-                  },
-                },
-              }}
               onChange={(e) => updateFunction(e)}
-            />
+            ></input>
           </label>
         </>
       )}

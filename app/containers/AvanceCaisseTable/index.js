@@ -22,12 +22,14 @@ import {
   DialogTitle,
   IconButton,
   Snackbar,
+  Tooltip,
 } from '@mui/material';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import {
   changePageContentAction,
   setAvanceCaisseIdentityAction,
 } from 'pages/AvanceCaisse/actions';
+import { Typography } from '@mui/joy';
 import saga from './saga';
 import reducer from './reducer';
 import {
@@ -146,24 +148,60 @@ export function AvanceCaisseTable() {
       hide: false,
       width: 20,
       headerName: '#',
+      renderCell: (params) => {
+        const { id } = params.row;
+        return (
+          <Tooltip title={id} placement="bottom-start">
+            <Typography level="title-sm" variant="soft">
+              {id}
+            </Typography>
+          </Tooltip>
+        );
+      },
     },
     {
       field: 'description',
       hide: false,
       headerName: 'Description',
       flex: 1,
+      renderCell: (params) => {
+        const { description } = params.row;
+        return (
+          <Tooltip title={description} placement="bottom-start">
+            <Typography level="title-md" variant="plain">
+              {description}
+            </Typography>
+          </Tooltip>
+        );
+      },
     },
     {
       field: 'estimatedTotal',
       hide: false,
       headerName: 'Estimated Total',
       flex: 1,
+      renderCell: (params) => {
+        const { estimatedTotal } = params.row;
+        return (
+          <Typography color="success" level="title-md" variant="plain">
+            {estimatedTotal.toFixed(2)}
+          </Typography>
+        );
+      },
     },
     {
       field: 'currency',
       hide: false,
       headerName: 'Currency',
       flex: 1,
+      renderCell: (params) => {
+        const { currency } = params.row;
+        return (
+          <Typography level="title-md" variant="plain">
+            {currency}
+          </Typography>
+        );
+      },
     },
 
     {
@@ -257,7 +295,14 @@ export function AvanceCaisseTable() {
       hide: false,
       headerName: 'Created On',
       flex: 1,
-      valueFormatter: ({ value }) => DateTimeFormater(value),
+      renderCell: (params) => {
+        const { createDate } = params.row;
+        return (
+          <Typography level="title-md" variant="plain">
+            {DateTimeFormater(createDate)}
+          </Typography>
+        );
+      },
     },
     {
       field: '',

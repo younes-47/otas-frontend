@@ -25,15 +25,15 @@ const makeSelectChangePageContent = () =>
     (substate) => substate.pageContent,
   );
 
-const makeSelectCleanupStore = () =>
+const makeSelectAvanceVoyageIdentity = () =>
   createSelector(
     selectDecideOnAvanceVoyageDomain,
-    (substate) => substate.storeCleanup,
+    (substate) => substate.avanceVoyageIdentity,
   );
 
 export default makeSelectDecideOnAvanceVoyage;
 export {
   selectDecideOnAvanceVoyageDomain,
-  makeSelectCleanupStore,
   makeSelectChangePageContent,
+  makeSelectAvanceVoyageIdentity,
 };

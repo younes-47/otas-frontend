@@ -7,7 +7,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import { DecideOnAvanceCaisseForm } from 'containers/DecideOnAvanceCaisseForm';
@@ -38,9 +37,9 @@ export function DecideOnOrdreMission() {
 
   switch (pageContent) {
     case 'DECIDE':
-      return <DecideOnOrdreMissionForm />;
+      return <DecideOnOrdreMissionForm state="DECIDE" />;
     case 'VIEW':
-      return <DecideOnOrdreMissionForm />;
+      return <DecideOnOrdreMissionForm state="VIEW" />;
     default:
       return <DecideOnOrdreMissionTable />;
   }

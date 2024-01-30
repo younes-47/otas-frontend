@@ -5,15 +5,14 @@
  */
 import produce from 'immer';
 import {
+  AVANCE_VOYAGE_IDENTITY,
   CHANGE_PAGE_CONTENT_ACTION,
   CLEANUP_STORE_ACTION,
   DEFAULT_ACTION,
 } from './constants';
 
 export const initialState = {
-  loadingAvanceVoyages: false,
-  errorLoadingAvanceVoyages: null,
-  avanceVoyages: [],
+  avanceVoyageIdentity: null,
   pageContent: 'TABLE',
 };
 
@@ -26,11 +25,12 @@ const decideOnAvanceVoyageReducer = (state = initialState, action) =>
       case CHANGE_PAGE_CONTENT_ACTION:
         draft.pageContent = action.pageContent;
         break;
+      case AVANCE_VOYAGE_IDENTITY:
+        draft.avanceVoyageIdentity = action.id;
+        break;
       case CLEANUP_STORE_ACTION:
-        draft.loadingAvanceVoyages = false;
-        draft.errorLoadingAvanceVoyages = null;
-        draft.avanceVoyages = [];
         draft.pageContent = 'TABLE';
+        draft.avanceVoyageIdentity = null;
     }
   });
 

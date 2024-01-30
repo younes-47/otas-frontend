@@ -148,6 +148,16 @@ export function OrdreMissionTable() {
       hide: false,
       width: 20,
       headerName: '#',
+      renderCell: (params) => {
+        const { id } = params.row;
+        return (
+          <Tooltip title={id} placement="bottom-start">
+            <Typography level="title-sm" variant="soft">
+              {id}
+            </Typography>
+          </Tooltip>
+        );
+      },
     },
     {
       field: 'description',
@@ -157,7 +167,7 @@ export function OrdreMissionTable() {
       renderCell: (params) => {
         const { description } = params.row;
         return (
-          <Tooltip title={description}>
+          <Tooltip title={description} placement="bottom-start">
             <Typography level="title-md" variant="plain">
               {description}
             </Typography>
@@ -263,7 +273,15 @@ export function OrdreMissionTable() {
       hide: false,
       headerName: 'Created On',
       flex: 1,
-      valueFormatter: ({ value }) => DateTimeFormater(value),
+      renderCell: (params) => {
+        const { createDate } = params.row;
+        return (
+          <Typography level="title-md" variant="plain">
+            {DateTimeFormater(createDate)}
+          </Typography>
+        );
+      },
+      // valueFormatter: ({ value }) => DateTimeFormater(value),
     },
     {
       field: '',

@@ -5,10 +5,19 @@
   display: flex;
   flex-direction: column;
   align-items: center;
- box-shadow: 3px 13px 46px -12px rgba(200,15,23,0.79);
--webkit-box-shadow: 3px 13px 46px -12px rgba(200,15,23,0.79);
--moz-box-shadow: 3px 13px 46px -12px rgba(200,15,23,0.79);
+  justify-content: center;
+  box-shadow: 5px -3px 54px -22px rgba(200,15,23,0.72);
+  -webkit-box-shadow: 5px -3px 54px -22px rgba(200,15,23,0.72);
+  -moz-box-shadow: 5px -3px 54px -22px rgba(200,15,23,0.72);
+    width:400px; 
+  margin:0 auto;
+}
 
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .form img {
@@ -16,7 +25,12 @@ height: 150px;
 margin-bottom: 30px;
 }
 
-
+.parent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
 
 
 .input {
@@ -33,17 +47,17 @@ margin-bottom: 30px;
 
 
 #password_input{
-background: url(https://i.ibb.co/xFVKjDJ/password-svgrepo-com.png) no-repeat scroll 12px 11px;
+background: url(../../images/password-svgrepo-com.png) no-repeat scroll 12px 11px;
 padding-left: 45px;
 background-size: 21px;
-background-color: #faebeb;
+/* background-color: #faebeb; */
 }
 
 #username_input{
-background: url(https://i.ibb.co/QKg6Ck2/user-circle-svgrepo-com.png) no-repeat 12px 11px;
+background: url(../../images/user-circle-svgrepo-com.png) no-repeat 12px 11px;
 padding-left: 45px;
 background-size: 21px;
-background-color: #faebeb;
+/* background-color: #faebeb; */
 }
 
 .input::placeholder {
@@ -74,7 +88,7 @@ background-color: #faebeb;
 }
 
 .btn {
-margin-top: 10px;
+  margin-top: 10px;
  position: relative;
  font-size: 15px;
  text-transform: uppercase;
@@ -89,6 +103,7 @@ margin-top: 10px;
  font-weight: 600;
  color: #c80f17;
  background-color: white;
+ width: 50%;
 }
 
 .btn:hover {
@@ -96,6 +111,9 @@ margin-top: 10px;
  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
  color: white;
   background-color: #c80f17;
+  border-width: 0.5 px;
+  border-style: solid;
+  border-color: #c80f17;
   cursor: pointer;
 }
 

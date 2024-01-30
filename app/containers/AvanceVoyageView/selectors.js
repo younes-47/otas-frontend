@@ -31,12 +31,6 @@ const makeSelectErrorLoadingAvanceVoyage = () =>
     (substate) => substate.errorLoadingAvanceVoyage,
   );
 
-const makeSelectAvanceVoyageIdentity = () =>
-  createSelector(
-    selectAvanceVoyageViewDomain,
-    (substate) => substate.avanceVoyageIdentity,
-  );
-
 const makeSelectAvanceVoyageDetails = () =>
   createSelector(
     selectAvanceVoyageViewDomain,
@@ -49,5 +43,4 @@ export {
   selectAvanceVoyageViewDomain,
   makeSelectLoadingAvanceVoyage,
   makeSelectErrorLoadingAvanceVoyage,
-  makeSelectAvanceVoyageIdentity,
 };

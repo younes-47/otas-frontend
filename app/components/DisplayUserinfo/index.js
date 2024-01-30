@@ -12,7 +12,7 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import messages from './messages';
 
-function DisplayUserinfo({ userData = null }) {
+function DisplayUserinfo({ userData = null, isActualRequester = true }) {
   const managerUsername =
     userData !== null
       ? userData?.managerUserName
@@ -27,10 +27,14 @@ function DisplayUserinfo({ userData = null }) {
       }}
       marginBottom={4}
     >
-      <Typography variant="h6" align="left" gutterBottom>
-        Requester Information
-      </Typography>
-      {userData !== null && (
+      {(userData === null && isActualRequester === true) ||
+        (userData !== null && isActualRequester === false && (
+          <Typography variant="h6" align="left" gutterBottom>
+            Requester Information
+          </Typography>
+        ))}
+
+      {userData !== null && isActualRequester === true && (
         <Typography variant="caption" align="left" gutterBottom>
           *This request has been created on behalf of someone whose information
           is specified below
@@ -193,6 +197,7 @@ function DisplayUserinfo({ userData = null }) {
 
 DisplayUserinfo.propTypes = {
   userData: PropTypes.object,
+  isActualRequester: PropTypes.bool,
 };
 
 export default DisplayUserinfo;

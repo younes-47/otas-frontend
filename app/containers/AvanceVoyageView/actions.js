@@ -5,7 +5,6 @@
  */
 
 import {
-  AVANCE_VOYAGE_IDENTITY,
   CLEANUP_STORE_ACTION,
   DEFAULT_ACTION,
   LOAD_AVANCE_VOYAGE,
@@ -37,13 +36,6 @@ export function loadAvanceVoyageErrorAction(error) {
   return {
     type: LOAD_AVANCE_VOYAGE_ERROR,
     error,
-  };
-}
-
-export function setAvanceVoyageIdentityAction(data) {
-  return {
-    type: AVANCE_VOYAGE_IDENTITY,
-    data,
   };
 }
 
