@@ -28,7 +28,6 @@ import {
   Link,
   Radio,
   RadioGroup,
-  Snackbar,
   TextField,
   Typography,
   Grid,
@@ -54,6 +53,7 @@ import { makeSelectOrdreMissionIdentity } from 'pages/OrdreMission/selectors';
 import ActualRequesterInputs from 'components/ActualRequesterInputs';
 import { ValidateInputs } from 'utils/Custom/ValidateInputs';
 
+import { Snackbar } from '@mui/joy';
 import saga from './saga';
 import reducer from './reducer';
 import {
@@ -156,23 +156,13 @@ export function OrdreMissionForm({ state }) {
   const [buttonClicked, setButtonClicked] = useState(''); // this state is used to track which button has been clicked
   const [savedSnackbarVisibility, setSavedSnackbarVisibility] = useState(false);
   const [fullPageModalVisibility, setFullPageModalVisibility] = useState(false);
-  const action = (
-    <IconButton
-      size="small"
-      aria-label="close"
-      color="inherit"
-      onClick={() => setSavedSnackbarVisibility(false)}
-    >
-      <CloseIcon fontSize="small" />
-    </IconButton>
-  );
 
   const readOnly = state === 'VIEW' || state === 'CONFIRM';
 
   // Scroll to top
   useEffect(() => {
     if (buttonClicked === 'CONFIRM') {
-      window.scrollTo(0, 0);
+      document.getElementById('main-box').scrollTop = 0;
     }
   }, [buttonClicked]);
 
@@ -197,6 +187,7 @@ export function OrdreMissionForm({ state }) {
       }
 
       setTrips([]);
+      setExpenses([]);
 
       ordreMissionDetails?.avanceVoyagesDetails?.forEach((avanceDetails) => {
         avanceDetails?.trips?.forEach((trip) => {
@@ -535,6 +526,7 @@ export function OrdreMissionForm({ state }) {
   };
   return (
     <Box
+      id="main-box"
       position="fixed"
       top={64}
       bottom={0}
@@ -1045,17 +1037,27 @@ export function OrdreMissionForm({ state }) {
         <Snackbar
           open={savedSnackbarVisibility}
           autoHideDuration={3000}
-          onClose={() => setSavedSnackbarVisibility(false)}
-          action={action}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+          size="lg"
+          onClose={(event, reason) => {
+            if (reason === 'timeout' || reason === 'escapeKeyDown') {
+              setSavedSnackbarVisibility(false);
+            }
+          }}
+          endDecorator={
+            <IconButton
+              size="small"
+              aria-label="close"
+              color="inherit"
+              onClick={() => setSavedSnackbarVisibility(false)}
+            >
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          }
+          color="primary"
+          variant="solid"
         >
-          <Alert
-            onClose={() => setSavedSnackbarVisibility(false)}
-            severity="info"
-            variant="filled"
-            sx={{ width: '100%' }}
-          >
-            Request has been saved!
-          </Alert>
+          Request has been saved!
         </Snackbar>
       </LocalizationProvider>
     </Box>

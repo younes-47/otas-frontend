@@ -21,6 +21,10 @@ import { Alert, Container, Grid, Grow } from '@mui/material';
 import { Card, CardContent } from '@mui/joy';
 import CountUp from 'react-countup';
 import { PieChart } from '@mui/x-charts';
+import {
+  FormatNumber,
+  parseDecimalFromString,
+} from 'utils/Custom/stringManipulation';
 import saga from './saga';
 import reducer from './reducer';
 import {
@@ -72,6 +76,7 @@ export default function MyRequests() {
       localStorage.setItem('registrationNumber', userInfo.registrationNumber);
       localStorage.setItem('jobTitle', userInfo.jobTitle);
       localStorage.setItem('department', userInfo.department);
+      localStorage.setItem('preferredLanguage', userInfo.preferredLanguage);
       localStorage.setItem('managerUserName', userInfo.managerUserName);
       localStorage.setItem('level', userInfo.level);
     }
@@ -83,6 +88,8 @@ export default function MyRequests() {
     },
     [],
   );
+
+  console.log(FormatNumber(requesterStats?.moneyStats?.allTimeAmountMAD));
 
   return (
     <Box
@@ -154,7 +161,7 @@ export default function MyRequests() {
               </Card>
             </Grid>
           </Grow>
-          <Grow in timeout={3200}>
+          <Grow in timeout={1200}>
             <Grid item xs={6}>
               <Card variant="outlined">
                 <CardContent>
@@ -177,7 +184,7 @@ export default function MyRequests() {
               </Card>
             </Grid>
           </Grow>
-          <Grow in timeout={1200}>
+          <Grow in timeout={2200}>
             <Grid item xs={6}>
               <Card variant="outlined">
                 <CardContent>
@@ -247,7 +254,7 @@ export default function MyRequests() {
             </Grid>
           </Grow>
 
-          <Grow in timeout={2200}>
+          <Grow in timeout={3200}>
             <Grid item xs={6}>
               <Card variant="outlined">
                 <CardContent>
@@ -256,6 +263,17 @@ export default function MyRequests() {
                       delay={0}
                       start={0}
                       end={requesterStats?.moneyStats?.allTimeAmountMAD}
+                      separator={
+                        localStorage.getItem('preferredLanguage') === 'en'
+                          ? ','
+                          : ' '
+                      }
+                      decimal={
+                        localStorage.getItem('preferredLanguage') === 'en'
+                          ? '.'
+                          : ','
+                      }
+                      decimals={2}
                       duration={3.2}
                     />
                     &nbsp;MAD
@@ -265,6 +283,17 @@ export default function MyRequests() {
                       delay={0}
                       start={0}
                       end={requesterStats?.moneyStats?.allTimeAmountEUR}
+                      separator={
+                        localStorage.getItem('preferredLanguage') === 'en'
+                          ? ','
+                          : ' '
+                      }
+                      decimal={
+                        localStorage.getItem('preferredLanguage') === 'en'
+                          ? '.'
+                          : ','
+                      }
+                      decimals={2}
                       duration={3.2}
                     />
                     &nbsp;EUR
@@ -288,6 +317,7 @@ export default function MyRequests() {
                             value:
                               requesterStats?.moneyStats
                                 ?.avanceVoyagesAllTimeAmountMAD,
+
                             label: 'Avance Voyage MAD',
                             color: '#00a697',
                           },
@@ -296,6 +326,7 @@ export default function MyRequests() {
                             value:
                               requesterStats?.moneyStats
                                 ?.avanceCaissesAllTimeAmountMAD,
+
                             label: 'Avance Caisse MAD',
                             color: '#f3bc00',
                           },
@@ -304,6 +335,7 @@ export default function MyRequests() {
                             value:
                               requesterStats?.moneyStats
                                 ?.depenseCaissesAllTimeAmountMAD,
+
                             label: 'Depense Caisse MAD',
                             color: '#0075a4',
                           },
@@ -317,6 +349,7 @@ export default function MyRequests() {
                             value:
                               requesterStats?.moneyStats
                                 ?.avanceVoyagesAllTimeAmountEUR,
+
                             label: 'Avance Voyage EUR',
                             color: '#00a697',
                           },
@@ -325,6 +358,7 @@ export default function MyRequests() {
                             value:
                               requesterStats?.moneyStats
                                 ?.avanceCaissesAllTimeAmountEUR,
+
                             label: 'Avance Caisse EUR',
                             color: '#f3bc00',
                           },
@@ -333,6 +367,7 @@ export default function MyRequests() {
                             value:
                               requesterStats?.moneyStats
                                 ?.depenseCaissesAllTimeAmountEUR,
+
                             label: 'Depense Caisse EUR',
                             color: '#0075a4',
                           },

@@ -16,7 +16,7 @@ export function* loadAvanceVoyageDetailsSaga({ id }) {
   try {
     const { data } = yield call(
       request.get,
-      `${webService.LOAD_ORDRE_MISSION_DETAILS}?Id=${id}`,
+      `${webService.LOAD_AVANCE_VOYAGE_DETAILS}?Id=${id}`,
       {
         headers: {
           'Content-Type': 'application/json',
@@ -31,7 +31,7 @@ export function* loadAvanceVoyageDetailsSaga({ id }) {
 
 export function* decideOnAvanceVoyageSaga({ data }) {
   try {
-    yield call(request.put, webService.DECIDE_ON_ORDRE_MISSION, data, {
+    yield call(request.put, webService.DECIDE_ON_AVANCE_VOYAGE, data, {
       headers: {
         'Content-Type': 'application/json',
       },

@@ -5,10 +5,12 @@
  */
 
 import {
+  CLEANUP_STORE_ACTION,
   DEFAULT_ACTION,
   LOAD_AVANCE_VOYAGES,
   LOAD_AVANCE_VOYAGES_ERROR,
   LOAD_AVANCE_VOYAGES_SUCCESS,
+  STATUS_AVANCE_VOYAGE,
 } from './constants';
 
 export function defaultAction() {
@@ -34,5 +36,18 @@ export function loadAvanceVoyageErrorAction(error) {
   return {
     type: LOAD_AVANCE_VOYAGES_ERROR,
     error,
+  };
+}
+
+export function cleanupDecideOnAvanceVoyageTableStoreAction() {
+  return {
+    type: CLEANUP_STORE_ACTION,
+  };
+}
+
+export function setAvanceVoyageStatusAction(data) {
+  return {
+    type: STATUS_AVANCE_VOYAGE,
+    data,
   };
 }

@@ -18,7 +18,6 @@ import {
   DialogContentText,
   DialogTitle,
   IconButton,
-  Snackbar,
   Tooltip,
 } from '@mui/material';
 import Tables from 'components/Tables';
@@ -30,7 +29,7 @@ import {
 } from 'pages/DepenseCaisse/actions';
 import CloseIcon from '@mui/icons-material/Close';
 import { FilePresent } from '@mui/icons-material';
-import { Typography } from '@mui/joy';
+import { Snackbar, Typography } from '@mui/joy';
 import saga from './saga';
 import reducer from './reducer';
 import {
@@ -82,16 +81,6 @@ export function DepenseCaisseTable() {
   const [depenseCaisseToDeleteId, setDepenseCaisseToDeleteId] = useState();
   const [snackbarVisibility, setSnackbarVisibility] = useState(false);
   const [snackbarAlertSeverity, setSnackbarAlertSeverity] = useState('');
-  const action = (
-    <IconButton
-      size="small"
-      aria-label="close"
-      color="inherit"
-      onClick={() => setSnackbarVisibility(false)}
-    >
-      <CloseIcon fontSize="small" />
-    </IconButton>
-  );
 
   // Download file
   useEffect(() => {
@@ -128,10 +117,10 @@ export function DepenseCaisseTable() {
       if (statusDepenseCaisse !== '') {
         switch (statusDepenseCaisse) {
           case 'SAVED':
-            setSnackbarAlertSeverity('info');
+            setSnackbarAlertSeverity('primary');
             break;
           case 'UPDATED':
-            setSnackbarAlertSeverity('info');
+            setSnackbarAlertSeverity('primary');
             break;
           default:
             setSnackbarAlertSeverity('success');
@@ -144,7 +133,7 @@ export function DepenseCaisseTable() {
   useEffect(() => {
     if (errorDeletingDepenseCaisse === false) {
       dispatch(setDepenseCaisseStatusAction('DELETED'));
-      setSnackbarAlertSeverity('error');
+      setSnackbarAlertSeverity('danger');
       setSnackbarVisibility(true);
       dispatch(nullifyErrorDeletingDepenseCaisseAction());
     }
@@ -513,19 +502,29 @@ export function DepenseCaisseTable() {
       </Dialog>
 
       <Snackbar
+        variant="solid"
         open={snackbarVisibility}
         autoHideDuration={3000}
-        onClose={() => setSnackbarVisibility(false)}
-        action={action}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        size="lg"
+        onClose={(event, reason) => {
+          if (reason === 'timeout' || reason === 'escapeKeyDown') {
+            setSnackbarVisibility(false);
+          }
+        }}
+        endDecorator={
+          <IconButton
+            size="small"
+            aria-label="close"
+            color="inherit"
+            onClick={() => setSnackbarVisibility(false)}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        }
+        color={snackbarAlertSeverity}
       >
-        <Alert
-          onClose={() => setSnackbarVisibility(false)}
-          severity={snackbarAlertSeverity}
-          variant="filled"
-          sx={{ width: '100%' }}
-        >
-          Request has been {statusDepenseCaisse} successfully!
-        </Alert>
+        Request has been {statusDepenseCaisse} successfully!
       </Snackbar>
     </Box>
   );

@@ -21,7 +21,6 @@ import {
   DialogContentText,
   DialogTitle,
   IconButton,
-  Snackbar,
   Tooltip,
 } from '@mui/material';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
@@ -29,7 +28,7 @@ import {
   changePageContentAction,
   setAvanceCaisseIdentityAction,
 } from 'pages/AvanceCaisse/actions';
-import { Typography } from '@mui/joy';
+import { Snackbar, Typography } from '@mui/joy';
 import saga from './saga';
 import reducer from './reducer';
 import {
@@ -72,16 +71,6 @@ export function AvanceCaisseTable() {
   const [avanceCaisseToDeleteId, setAvanceCaisseToDeleteId] = useState();
   const [snackbarVisibility, setSnackbarVisibility] = useState(false);
   const [snackbarAlertSeverity, setSnackbarAlertSeverity] = useState('');
-  const action = (
-    <IconButton
-      size="small"
-      aria-label="close"
-      color="inherit"
-      onClick={() => setSnackbarVisibility()}
-    >
-      <CloseIcon fontSize="small" />
-    </IconButton>
-  );
 
   useEffect(() => {
     if (errorLoadingAvanceCaisses === null) {
@@ -89,10 +78,10 @@ export function AvanceCaisseTable() {
       if (statusAvanceCaisse !== '') {
         switch (statusAvanceCaisse) {
           case 'SAVED':
-            setSnackbarAlertSeverity('info');
+            setSnackbarAlertSeverity('primary');
             break;
           case 'UPDATED':
-            setSnackbarAlertSeverity('info');
+            setSnackbarAlertSeverity('primary');
             break;
           default:
             setSnackbarAlertSeverity('success');
@@ -469,19 +458,29 @@ export function AvanceCaisseTable() {
       </Dialog>
 
       <Snackbar
+        variant="solid"
         open={snackbarVisibility}
         autoHideDuration={3000}
-        onClose={() => setSnackbarVisibility(false)}
-        action={action}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        size="lg"
+        onClose={(event, reason) => {
+          if (reason === 'timeout' || reason === 'escapeKeyDown') {
+            setSnackbarVisibility(false);
+          }
+        }}
+        endDecorator={
+          <IconButton
+            size="small"
+            aria-label="close"
+            color="inherit"
+            onClick={() => setSnackbarVisibility(false)}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        }
+        color={snackbarAlertSeverity}
       >
-        <Alert
-          onClose={() => setSnackbarVisibility(false)}
-          severity={snackbarAlertSeverity}
-          variant="filled"
-          sx={{ width: '100%' }}
-        >
-          Request has been {statusAvanceCaisse} successfully!
-        </Alert>
+        Request has been {statusAvanceCaisse} successfully!
       </Snackbar>
     </Box>
   );

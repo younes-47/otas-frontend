@@ -30,7 +30,6 @@ import {
   Paper,
   Radio,
   RadioGroup,
-  Snackbar,
   TextField,
   Typography,
 } from '@mui/material';
@@ -51,6 +50,7 @@ import CustomizedTimeLine from 'components/CustomizedTimeLine';
 import ActualRequesterInputs from 'components/ActualRequesterInputs';
 import { ValidateInputs } from 'utils/Custom/ValidateInputs';
 import LinearProgress from '@mui/material/LinearProgress';
+import { Snackbar } from '@mui/joy';
 import {
   makeSelectAddAvanceCaisse,
   makeSelectAvanceCaisseDetails,
@@ -130,17 +130,6 @@ export function AvanceCaisseForm({ state }) {
   const [buttonClicked, setButtonClicked] = useState(''); // this state is used to track which button has been clicked
   const [savedSnackbarVisibility, setSavedSnackbarVisibility] = useState(false);
   const [fullPageModalVisibility, setFullPageModalVisibility] = useState(false);
-
-  const action = (
-    <IconButton
-      size="small"
-      aria-label="close"
-      color="inherit"
-      onClick={() => setSavedSnackbarVisibility(false)}
-    >
-      <CloseIcon fontSize="small" />
-    </IconButton>
-  );
 
   const readOnly = state === 'VIEW' || state === 'CONFIRM';
 
@@ -845,19 +834,29 @@ export function AvanceCaisseForm({ state }) {
       </Dialog>
 
       <Snackbar
-        open={savedSnackbarVisibility}
         autoHideDuration={3000}
-        onClose={() => setSavedSnackbarVisibility(false)}
-        action={action}
+        variant="solid"
+        open={savedSnackbarVisibility}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        size="lg"
+        onClose={(event, reason) => {
+          if (reason === 'timeout' || reason === 'escapeKeyDown') {
+            setSavedSnackbarVisibility(false);
+          }
+        }}
+        endDecorator={
+          <IconButton
+            size="small"
+            aria-label="close"
+            color="inherit"
+            onClick={() => setSavedSnackbarVisibility(false)}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        }
+        color="success"
       >
-        <Alert
-          onClose={() => setSavedSnackbarVisibility(false)}
-          severity="info"
-          variant="filled"
-          sx={{ width: '100%' }}
-        >
-          Request has been saved!
-        </Alert>
+        Request has been saved!
       </Snackbar>
     </Box>
   );

@@ -66,12 +66,15 @@ const CustomizedTimeLine = ({ statusHistory, lastOne }) => (
         {lastOne === false && <TimelineConnector />}
       </TimelineSeparator>
       <TimelineContent>
-        {statusHistory.status}{' '}
+        {statusHistory.deciderFirstName !== 'system' &&
+          `${statusHistory.status} `}
         {statusHistory.deciderLevel !== null &&
-          (statusHistory.status === 'Approved' ||
-            statusHistory.status === 'Returned' ||
-            statusHistory.status === 'Rejected') &&
-          `by ${statusHistory.deciderFirstName} ${statusHistory.deciderLastName}`}
+        (statusHistory.status === 'Approved' ||
+          statusHistory.status === 'Returned' ||
+          statusHistory.status === 'Rejected') &&
+        statusHistory.deciderFirstName !== 'system'
+          ? `by ${statusHistory.deciderFirstName} ${statusHistory.deciderLastName}`
+          : statusHistory.deciderComment}
       </TimelineContent>
     </TimelineItem>
   </>

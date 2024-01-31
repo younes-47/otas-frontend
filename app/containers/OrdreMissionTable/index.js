@@ -6,18 +6,16 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import Box from '@mui/material/Box';
-import {
-  Alert,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  IconButton,
-  Snackbar,
-  Tooltip,
-} from '@mui/material';
+import Alert from '@mui/material/Alert';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+
 import CloseIcon from '@mui/icons-material/Close';
 import Tables from 'components/Tables';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -30,6 +28,7 @@ import {
   setOrdreMissionIdentityAction,
 } from 'pages/OrdreMission/actions';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
+import { Snackbar } from '@mui/joy';
 import saga from './saga';
 import reducer from './reducer';
 import {
@@ -72,16 +71,6 @@ export function OrdreMissionTable() {
   const [ordreMissionToDeleteId, setOrdreMissionToDeleteId] = useState();
   const [snackbarVisibility, setSnackbarVisibility] = useState(false);
   const [snackbarAlertSeverity, setSnackbarAlertSeverity] = useState('');
-  const action = (
-    <IconButton
-      size="small"
-      aria-label="close"
-      color="inherit"
-      onClick={() => setSnackbarVisibility(false)}
-    >
-      <CloseIcon fontSize="small" />
-    </IconButton>
-  );
 
   useEffect(() => {
     if (errorLoadingOrdreMissions === null) {
@@ -89,10 +78,10 @@ export function OrdreMissionTable() {
       if (statusOrdreMission !== '') {
         switch (statusOrdreMission) {
           case 'SAVED':
-            setSnackbarAlertSeverity('info');
+            setSnackbarAlertSeverity('primary');
             break;
           case 'UPDATED':
-            setSnackbarAlertSeverity('info');
+            setSnackbarAlertSeverity('primary');
             break;
           default:
             setSnackbarAlertSeverity('success');
@@ -105,7 +94,7 @@ export function OrdreMissionTable() {
   useEffect(() => {
     if (errorDeletingOrdreMission === false) {
       dispatch(setOrdreMissionStatusAction('DELETED'));
-      setSnackbarAlertSeverity('error');
+      setSnackbarAlertSeverity('danger');
       setSnackbarVisibility(true);
       dispatch(nullifyErrorDeletingOrdreMissionAction());
     }
@@ -448,19 +437,29 @@ export function OrdreMissionTable() {
       </Dialog>
 
       <Snackbar
+        variant="solid"
         open={snackbarVisibility}
         autoHideDuration={3000}
-        onClose={() => setSnackbarVisibility(false)}
-        action={action}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        size="lg"
+        onClose={(event, reason) => {
+          if (reason === 'timeout' || reason === 'escapeKeyDown') {
+            setSnackbarVisibility(false);
+          }
+        }}
+        endDecorator={
+          <IconButton
+            size="small"
+            aria-label="close"
+            color="inherit"
+            onClick={() => setSnackbarVisibility(false)}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        }
+        color={snackbarAlertSeverity}
       >
-        <Alert
-          onClose={() => setSnackbarVisibility(false)}
-          severity={snackbarAlertSeverity}
-          variant="filled"
-          sx={{ width: '100%' }}
-        >
-          Request has been {statusOrdreMission} successfully!
-        </Alert>
+        Request has been {statusOrdreMission} successfully!
       </Snackbar>
     </Box>
   );

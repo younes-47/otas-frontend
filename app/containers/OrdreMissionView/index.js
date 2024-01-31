@@ -29,7 +29,6 @@ import {
   IconButton,
   List,
   ListSubheader,
-  Snackbar,
   Stack,
   Typography,
 } from '@mui/material';
@@ -39,6 +38,7 @@ import CustomizedTimeLine from 'components/CustomizedTimeLine';
 import { cleanupParentOrdreMissionPageAction } from 'pages/OrdreMission/actions';
 import { setOrdreMissionStatusAction } from 'containers/OrdreMissionTable/actions';
 import { cleanupOrdreMissionFormPageAction } from 'containers/OrdreMissionForm/actions';
+import { Snackbar } from '@mui/joy';
 import reducer from './reducer';
 import saga from './saga';
 import {
@@ -350,19 +350,29 @@ export function OrdreMissionView({ state }) {
       </Dialog>
 
       <Snackbar
+        variant="solid"
         open={savedSnackbarVisibility}
         autoHideDuration={3000}
-        onClose={() => setSavedSnackbarVisibility(false)}
-        action={action}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        size="lg"
+        onClose={(event, reason) => {
+          if (reason === 'timeout' || reason === 'escapeKeyDown') {
+            setSavedSnackbarVisibility(false);
+          }
+        }}
+        endDecorator={
+          <IconButton
+            size="small"
+            aria-label="close"
+            color="inherit"
+            onClick={() => setSavedSnackbarVisibility(false)}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        }
+        color="primary"
       >
-        <Alert
-          onClose={() => setSavedSnackbarVisibility(false)}
-          severity="info"
-          variant="filled"
-          sx={{ width: '100%' }}
-        >
-          Request has been saved as a darft!
-        </Alert>
+        Request has been saved as a darft!
       </Snackbar>
     </Box>
   );

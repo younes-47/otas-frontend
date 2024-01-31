@@ -13,6 +13,8 @@ import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import { makeSelectOrdreMissionIdentity } from 'pages/DecideOnOrdreMission/selectors';
 import { Box } from '@mui/system';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 import {
   Alert,
   Card,
@@ -37,6 +39,14 @@ import DisplayUserinfo from 'components/DisplayUserinfo';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import { cleanupParentDecideOnOrdreMissionPageAction } from 'pages/DecideOnOrdreMission/actions';
 import {
+  DateTimeFormater,
+  FormatNumber,
+} from 'utils/Custom/stringManipulation';
+import SimpleTripsTable from 'components/SimpleTripsTable';
+import SimpleExpensesTable from 'components/SimpleExpensesTable';
+import { setOrdreMissionStatusAction } from 'containers/DecideOnOrdreMissionTable/actions';
+import {
+  makeSelectErrorDecidingOnOrdreMission,
   makeSelectErrorLoadingOrdreMissionDetails,
   makeSelectOrdreMissionDetails,
 } from './selectors';
@@ -53,6 +63,7 @@ const mapStateToProps = createStructuredSelector({
   ordreMissionIdentity: makeSelectOrdreMissionIdentity(),
   errorLoadingOrdreMissionDetails: makeSelectErrorLoadingOrdreMissionDetails(),
   ordreMissionDetails: makeSelectOrdreMissionDetails(),
+  errorDecidingOnOrdreMission: makeSelectErrorDecidingOnOrdreMission(),
 });
 
 export function DecideOnOrdreMissionForm({ state }) {
@@ -64,8 +75,8 @@ export function DecideOnOrdreMissionForm({ state }) {
     isSideBarVisible,
     errorLoadingOrdreMissionDetails,
     ordreMissionDetails,
-    errorSubmittingOrdreMission,
     ordreMissionIdentity,
+    errorDecidingOnOrdreMission,
   } = useSelector(mapStateToProps);
 
   // Control data
@@ -74,6 +85,10 @@ export function DecideOnOrdreMissionForm({ state }) {
   const [returnedToFMByTR, setReturnedToFMByTR] = useState(false);
   const [returnedToTRByFM, setReturnedToTRByFM] = useState(false);
   const [returnedToRequesterByTR, setReturnedToRequesterByTR] = useState(false);
+
+  // Trips & expenses
+  const [trips, setTrips] = useState([]);
+  const [expesnes, setExpenses] = useState([]);
 
   // Control modal content
   const [modalBody, setModalBody] = useState('');
@@ -97,6 +112,60 @@ export function DecideOnOrdreMissionForm({ state }) {
     dispatch(loadOrdreMissionDetailsAction(ordreMissionIdentity));
   }, []);
 
+  useEffect(() => {
+    if (errorLoadingOrdreMissionDetails === false) {
+      ordreMissionDetails?.avanceVoyagesDetails?.forEach((avanceDetails) => {
+        avanceDetails?.trips?.forEach((trip) => {
+          const formattedDateTrip = {
+            ...trip,
+            departureDate: DateTimeFormater(new Date(trip.departureDate)),
+            arrivalDate: DateTimeFormater(new Date(trip.arrivalDate)),
+          };
+          setTrips((prevTrips) => [...prevTrips, formattedDateTrip]);
+        });
+        avanceDetails?.expenses?.forEach((expense) => {
+          const formattedDateExpense = {
+            ...expense,
+            expenseDate: DateTimeFormater(new Date(expense.expenseDate)),
+          };
+          setExpenses((prevExpenses) => [
+            ...prevExpenses,
+            formattedDateExpense,
+          ]);
+        });
+      });
+    }
+  }, [errorLoadingOrdreMissionDetails]);
+
+  useEffect(() => {
+    if (decisionString !== null) {
+      dispatch(decideOnOrdreMissionAction(data));
+    }
+  }, [decisionString]);
+
+  useEffect(() => {
+    if (errorDecidingOnOrdreMission === false) {
+      if (decisionString === 'aprrove')
+        dispatch(setOrdreMissionStatusAction('signed and approved'));
+      if (decisionString === 'return')
+        dispatch(setOrdreMissionStatusAction('returned'));
+      if (decisionString === 'reject')
+        dispatch(setOrdreMissionStatusAction('rejected'));
+
+      dispatch(cleanupDecideOnOrdreMissionFormPageAction());
+      dispatch(cleanupParentDecideOnOrdreMissionPageAction());
+    }
+  }, [errorDecidingOnOrdreMission]);
+
+  // Cleanup store
+  useEffect(
+    () => () => {
+      dispatch(cleanupDecideOnOrdreMissionFormPageAction());
+      dispatch(cleanupParentDecideOnOrdreMissionPageAction());
+    },
+    [],
+  );
+
   const handleOnReturnButtonClick = () => {
     dispatch(cleanupDecideOnOrdreMissionFormPageAction());
     dispatch(cleanupParentDecideOnOrdreMissionPageAction());
@@ -109,7 +178,6 @@ export function DecideOnOrdreMissionForm({ state }) {
     );
     setModalSevirity('primary');
     setModalVisibility(true);
-    setDecisionString('approve');
   };
   const handleOnRejectRequestButtonClick = () => {
     setModalHeader('Reject the request?');
@@ -118,7 +186,6 @@ export function DecideOnOrdreMissionForm({ state }) {
     );
     setModalSevirity('danger');
     setModalVisibility(true);
-    setDecisionString('reject');
   };
   const handleOnReturnRequestButtonClick = () => {
     setModalHeader('Return the request?');
@@ -127,7 +194,6 @@ export function DecideOnOrdreMissionForm({ state }) {
     );
     setModalSevirity('warning');
     setModalVisibility(true);
-    setDecisionString('return');
   };
 
   const handleOnApproveRequestConfirmationButtonClick = () => {
@@ -139,12 +205,6 @@ export function DecideOnOrdreMissionForm({ state }) {
   const handleOnReturnRequestConfirmationButtonClick = () => {
     setDecisionString('return');
   };
-
-  useEffect(() => {
-    if (decisionString !== null) {
-      dispatch(decideOnOrdreMissionAction(data));
-    }
-  }, [decisionString]);
 
   return (
     <Box
@@ -274,6 +334,71 @@ export function DecideOnOrdreMissionForm({ state }) {
         marginBottom={3}
       >
         <Divider style={{ width: '60%', opacity: 0.7 }} />
+      </Box>
+      <Box
+        textAlign="center"
+        display="flex"
+        justifyContent="center"
+        marginBottom={2}
+      >
+        <Typography level="h4" display="flex">
+          Trajectories
+        </Typography>
+      </Box>
+
+      <Box display="flex" justifyContent="center" marginBottom={5}>
+        <SimpleTripsTable tripsData={trips} />
+      </Box>
+
+      {expesnes.length > 0 && (
+        <>
+          <Box
+            textAlign="center"
+            display="flex"
+            justifyContent="center"
+            marginBottom={2}
+          >
+            <Typography level="h4" display="flex">
+              Expenses
+            </Typography>
+          </Box>
+          <Box display="flex" justifyContent="center" marginBottom={3}>
+            <SimpleExpensesTable expensesData={expesnes} />
+          </Box>
+        </>
+      )}
+
+      {/* DIVIDER */}
+      <Box
+        display="flex"
+        justifyContent="center"
+        textAlign="center"
+        marginBottom={3}
+      >
+        <Divider style={{ width: '60%', opacity: 0.7 }} />
+      </Box>
+
+      <Box display="flex" justifyContent="center" marginBottom={3}>
+        <Box width="60%" display="flex" justifyContent="flex-end">
+          {ordreMissionDetails?.avanceVoyagesDetails.map((av) => {
+            if (av.currency === 'MAD') {
+              return (
+                <Typography level="h4">
+                  Total MAD:&nbsp;
+                  <Typography color="success">
+                    {FormatNumber(av.estimatedTotal)}
+                  </Typography>
+                </Typography>
+              );
+            }
+            return (
+              <Typography level="h4">
+                Total EUR:&nbsp;
+                <Typography color="success">{av.estimatedTotal}</Typography>
+              </Typography>
+            );
+          })}
+        </Box>
       </Box>
 
       {/* Buttons */}

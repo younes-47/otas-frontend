@@ -14,14 +14,7 @@ import { compose } from 'redux';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
-import {
-  Alert,
-  Box,
-  Button,
-  IconButton,
-  Snackbar,
-  Tooltip,
-} from '@mui/material';
+import { Alert, Box, Button, IconButton, Tooltip } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -44,7 +37,10 @@ import {
 import reducer from './reducer';
 import saga from './saga';
 import messages from './messages';
-import { loadAvanceVoyageAction } from './actions';
+import {
+  cleanupDecideOnAvanceVoyageTableStoreAction,
+  loadAvanceVoyageAction,
+} from './actions';
 import {
   makeSelectAvanceVoyages,
   makeSelectErrorLoadingAvanceVoyages,
@@ -72,16 +68,6 @@ export function DecideOnAvanceVoyageTable() {
 
   const [snackbarVisibility, setSnackbarVisibility] = useState(false);
   const [snackbarAlertSeverity, setSnackbarAlertSeverity] = useState('');
-  const action = (
-    <IconButton
-      size="small"
-      aria-label="close"
-      color="inherit"
-      onClick={() => setSnackbarVisibility(false)}
-    >
-      <CloseIcon fontSize="small" />
-    </IconButton>
-  );
 
   const avanceVoyageColumns = [
     {
@@ -279,6 +265,13 @@ export function DecideOnAvanceVoyageTable() {
     },
   };
 
+  useEffect(
+    () => () => {
+      dispatch(cleanupDecideOnAvanceVoyageTableStoreAction());
+    },
+    [],
+  );
+
   useEffect(() => {
     if (errorLoadingAvanceVoyages === null) {
       dispatch(loadAvanceVoyageAction());
@@ -296,7 +289,7 @@ export function DecideOnAvanceVoyageTable() {
   };
 
   const handleOnViewButtonClick = (id) => {
-    dispatch(setOrdreMissionIdentityAction(id));
+    dispatch(setAvanceVoyageIdentityAction(id));
     dispatch(changeDecideOnAvanceVoyagePageContentAction('VIEW'));
   };
   return (

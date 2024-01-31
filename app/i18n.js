@@ -4,7 +4,7 @@
  * This will setup the i18n language files and locale data for your app.
  *
  *   IMPORTANT: This file is used by the internal build
- *   script `extract-intl`, and must use CommonJS module syntax
+ *   script extract-intl, and must use CommonJS module syntax
  *   You CANNOT use import/export in this file.
  */
 
@@ -18,13 +18,16 @@ require('@formatjs/intl-pluralrules/polyfill');
 const enTranslationMessages = require('./translations/en.json');
 const frTranslationMessages = require('./translations/fr.json');
 
-const DEFAULT_LOCALE = 'en';
-
 // prettier-ignore
 const appLocales = [
   'en',
   'fr'
 ];
+
+const DEFAULT_LOCALE = 'en';
+// const LSlocale = localStorage.getItem('preferredLanguage');
+// const DEFAULT_LOCALE =
+//   LSlocale && appLocales.includes(LSlocale) ? LSlocale : 'en';
 
 const formatTranslationMessages = (locale, messages) => {
   const defaultFormattedMessages =

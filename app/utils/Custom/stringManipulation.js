@@ -23,4 +23,34 @@ const DateTimeFormater = (DT) => {
     .padStart(2, '0')}`;
   return `${formattedDate} ${formattedTime}`;
 };
-export { camelToKebab, kebabToCamel, camelToTitle, DateTimeFormater };
+
+const FormatNumber = (number) => {
+  const preferredLanguage = localStorage.getItem('preferredLanguage');
+
+  let formattedNumber;
+  if (preferredLanguage === 'en') {
+    formattedNumber = number?.toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+      useGrouping: true,
+      minimumIntegerDigits: 1,
+    });
+  } else {
+    formattedNumber = number?.toLocaleString('fr-FR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+      useGrouping: true,
+      minimumIntegerDigits: 1,
+    });
+  }
+
+  return formattedNumber;
+};
+
+export {
+  camelToKebab,
+  kebabToCamel,
+  camelToTitle,
+  DateTimeFormater,
+  FormatNumber,
+};

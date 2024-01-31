@@ -7,7 +7,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 // import styled from 'styled-components';
-import './raw.css';
+import './fileUploadRaw.css';
 import { Box } from '@mui/system';
 import { CircularProgress, Input } from '@mui/material';
 import { Typography } from '@mui/joy';

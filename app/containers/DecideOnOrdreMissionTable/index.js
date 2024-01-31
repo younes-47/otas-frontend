@@ -10,14 +10,7 @@ import { createStructuredSelector } from 'reselect';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
-import {
-  Alert,
-  Box,
-  Button,
-  IconButton,
-  Snackbar,
-  Tooltip,
-} from '@mui/material';
+import { Alert, Box, Button, IconButton, Tooltip } from '@mui/material';
 import Tables from 'components/Tables';
 import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
@@ -27,7 +20,7 @@ import BeenhereIcon from '@mui/icons-material/Beenhere';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { DateTimeFormater } from 'utils/Custom/stringManipulation';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
-import { Typography } from '@mui/joy';
+import { Snackbar, Typography } from '@mui/joy';
 import {
   changePageContentAction,
   setOrdreMissionIdentityAction,
@@ -67,17 +60,6 @@ export function DecideOnOrdreMissionTable() {
   } = useSelector(mapStateToProps);
   const [snackbarVisibility, setSnackbarVisibility] = useState(false);
   const [snackbarAlertSeverity, setSnackbarAlertSeverity] = useState('');
-
-  const action = (
-    <IconButton
-      size="small"
-      aria-label="close"
-      color="inherit"
-      onClick={() => setSnackbarVisibility(false)}
-    >
-      <CloseIcon fontSize="small" />
-    </IconButton>
-  );
 
   const ordreMissionColumns = [
     {
@@ -288,7 +270,7 @@ export function DecideOnOrdreMissionTable() {
             setSnackbarAlertSeverity('success');
             break;
           case 'REJECTED':
-            setSnackbarAlertSeverity('error');
+            setSnackbarAlertSeverity('danger');
             break;
           case 'RETURNED':
             setSnackbarAlertSeverity('warning');
@@ -357,17 +339,26 @@ export function DecideOnOrdreMissionTable() {
       <Snackbar
         open={snackbarVisibility}
         autoHideDuration={3000}
-        onClose={() => setSnackbarVisibility(false)}
-        action={action}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        size="lg"
+        onClose={(event, reason) => {
+          if (reason === 'timeout' || reason === 'escapeKeyDown') {
+            setSnackbarVisibility(false);
+          }
+        }}
+        endDecorator={
+          <IconButton
+            size="small"
+            aria-label="close"
+            color="inherit"
+            onClick={() => setSnackbarVisibility(false)}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        }
+        color={snackbarAlertSeverity}
       >
-        <Alert
-          onClose={() => setSnackbarVisibility(false)}
-          severity={snackbarAlertSeverity}
-          variant="filled"
-          sx={{ width: '100%' }}
-        >
-          Request has been {statusOrdreMission} successfully!
-        </Alert>
+        Request has been {statusOrdreMission} successfully!
       </Snackbar>
     </Box>
   );

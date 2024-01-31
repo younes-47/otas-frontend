@@ -33,7 +33,6 @@ import {
   Link,
   Radio,
   RadioGroup,
-  Snackbar,
   TextField,
   Typography,
 } from '@mui/material';
@@ -55,6 +54,7 @@ import { makeSelectDepenseCaisseIdentity } from 'pages/DepenseCaisse/selectors';
 import ActualRequesterInputs from 'components/ActualRequesterInputs';
 import { ValidateInputs } from 'utils/Custom/ValidateInputs';
 import FileUploadForm from 'components/FileUploadForm';
+import { Snackbar } from '@mui/joy';
 import Expenses from './Expenses';
 import {
   makeSelectAddDepenseCaisse,
@@ -139,16 +139,6 @@ export function DepenseCaisseForm({ state }) {
     department: '',
     managerUserName: '',
   });
-  const action = (
-    <IconButton
-      size="small"
-      aria-label="close"
-      color="inherit"
-      onClick={() => setSavedSnackbarVisibility(false)}
-    >
-      <CloseIcon fontSize="small" />
-    </IconButton>
-  );
 
   const readOnly = state === 'VIEW' || state === 'CONFIRM';
 
@@ -1024,19 +1014,29 @@ export function DepenseCaisseForm({ state }) {
       </Dialog>
 
       <Snackbar
+        variant="solid"
         open={savedSnackbarVisibility}
         autoHideDuration={3000}
-        onClose={() => setSavedSnackbarVisibility(false)}
-        action={action}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        size="lg"
+        onClose={(event, reason) => {
+          if (reason === 'timeout' || reason === 'escapeKeyDown') {
+            setSavedSnackbarVisibility(false);
+          }
+        }}
+        endDecorator={
+          <IconButton
+            size="small"
+            aria-label="close"
+            color="inherit"
+            onClick={() => setSavedSnackbarVisibility(false)}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        }
+        color="primary"
       >
-        <Alert
-          onClose={() => setSavedSnackbarVisibility(false)}
-          severity="info"
-          variant="filled"
-          sx={{ width: '100%' }}
-        >
-          Request has been saved!
-        </Alert>
+        Request has been saved!
       </Snackbar>
     </Box>
   );

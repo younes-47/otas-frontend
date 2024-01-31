@@ -17,7 +17,7 @@ export const initialState = {
   loadingOrdreMissions: false,
   errorLoadingOrdreMissions: null,
   ordreMissions: [],
-  statusOrdreMission: '', // This state is used to show action notification in table page (add/submit)
+  statusOrdreMission: '', // This state is used to show action notification in table page (Decision)
 };
 
 /* eslint-disable default-case, no-param-reassign */
