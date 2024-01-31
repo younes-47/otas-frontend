@@ -5,15 +5,14 @@
  */
 import produce from 'immer';
 import {
+  AVANCE_CAISSE_IDENTITY,
   CHANGE_PAGE_CONTENT_ACTION,
   CLEANUP_STORE_ACTION,
   DEFAULT_ACTION,
 } from './constants';
 
 export const initialState = {
-  loadingAvanceCaisses: false,
-  errorLoadingAvanceCaisses: null,
-  avanceCaisses: [],
+  avanceCaisseIdentity: null,
   pageContent: 'TABLE',
 };
 
@@ -26,11 +25,12 @@ const decideOnAvanceCaisseReducer = (state = initialState, action) =>
       case CHANGE_PAGE_CONTENT_ACTION:
         draft.pageContent = action.pageContent;
         break;
+      case AVANCE_CAISSE_IDENTITY:
+        draft.avanceCaisseIdentity = action.id;
+        break;
       case CLEANUP_STORE_ACTION:
-        draft.loadingAvanceCaisses = false;
-        draft.errorLoadingAvanceCaisses = null;
-        draft.avanceCaisses = [];
         draft.pageContent = 'TABLE';
+        draft.avanceCaisseIdentity = null;
     }
   });
 

@@ -143,6 +143,7 @@ export function DecideOnOrdreMissionForm({ state }) {
     }
   }, [decisionString]);
 
+  // Set request status for snakcbar message in table
   useEffect(() => {
     if (errorDecidingOnOrdreMission === false) {
       if (decisionString === 'aprrove')
@@ -380,24 +381,14 @@ export function DecideOnOrdreMissionForm({ state }) {
 
       <Box display="flex" justifyContent="center" marginBottom={3}>
         <Box width="60%" display="flex" justifyContent="flex-end">
-          {ordreMissionDetails?.avanceVoyagesDetails.map((av) => {
-            if (av.currency === 'MAD') {
-              return (
-                <Typography level="h4">
-                  Total MAD:&nbsp;
-                  <Typography color="success">
-                    {FormatNumber(av.estimatedTotal)}
-                  </Typography>
-                </Typography>
-              );
-            }
-            return (
-              <Typography level="h4">
-                Total EUR:&nbsp;
-                <Typography color="success">{av.estimatedTotal}</Typography>
+          {ordreMissionDetails?.avanceVoyagesDetails.map((av) => (
+            <Typography level="h4">
+              Total {av?.currency}:&nbsp;
+              <Typography color="success">
+                {FormatNumber(av.estimatedTotal)}
               </Typography>
-            );
-          })}
+            </Typography>
+          ))}
         </Box>
       </Box>
 
@@ -485,7 +476,7 @@ export function DecideOnOrdreMissionForm({ state }) {
                     placeholder="Your Comment..."
                     variant="outlined"
                     onChange={(e) => setDeciderComment(e.target.value)}
-                    inputProps={{ maxLength: 350 }}
+                    inputProps={{ maxLength: 255 }}
                   />
                 </>
               )}

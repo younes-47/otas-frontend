@@ -17,9 +17,7 @@ import { DecideOnAvanceCaisseForm } from 'containers/DecideOnAvanceCaisseForm';
 import { DecideOnAvanceCaisseTable } from 'containers/DecideOnAvanceCaisseTable';
 import { makeSelectChangePageContent } from './selectors';
 import reducer from './reducer';
-import saga from './saga';
-import messages from './messages';
-import { cleanupStoreAction } from './actions';
+import { cleanupParentDecideOnAvanceCaisseStoreAction } from './actions';
 
 const mapStateToProps = createStructuredSelector({
   pageContent: makeSelectChangePageContent(),
@@ -27,22 +25,26 @@ const mapStateToProps = createStructuredSelector({
 
 export function DecideOnAvanceCaisse() {
   useInjectReducer({ key: 'decideOnAvanceCaisse', reducer });
-  useInjectSaga({ key: 'decideOnAvanceCaisse', saga });
+  // useInjectSaga({ key: 'decideOnAvanceCaisse', saga });
 
   const dispatch = useDispatch();
   const { pageContent } = useSelector(mapStateToProps);
 
-  useEffect(
-    () => () => {
-      dispatch(cleanupStoreAction());
-    },
-    [],
-  );
+  // useEffect(
+  //   () => () => {
+  //     dispatch(cleanupParentDecideOnAvanceCaisseStoreAction());
+  //   },
+  //   [],
+  // );
 
-  if (pageContent === 'DECIDE') {
-    return <DecideOnAvanceCaisseForm></DecideOnAvanceCaisseForm>;
+  switch (pageContent) {
+    case 'DECIDE':
+      return <DecideOnAvanceCaisseForm state="DECIDE" />;
+    case 'VIEW':
+      return <DecideOnAvanceCaisseForm state="VIEW" />;
+    default:
+      return <DecideOnAvanceCaisseTable />;
   }
-  return <DecideOnAvanceCaisseTable></DecideOnAvanceCaisseTable>;
 }
 
 DecideOnAvanceCaisse.propTypes = {

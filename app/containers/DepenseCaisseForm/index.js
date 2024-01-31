@@ -142,6 +142,13 @@ export function DepenseCaisseForm({ state }) {
 
   const readOnly = state === 'VIEW' || state === 'CONFIRM';
 
+  // Scroll to top
+  useEffect(() => {
+    if (buttonClicked === 'CONFIRM') {
+      document.getElementById('main-box').scrollTop = 0;
+    }
+  }, [buttonClicked]);
+
   // Load the data => object details and static data
   useEffect(() => {
     if (state !== 'ADD') {
@@ -442,6 +449,7 @@ export function DepenseCaisseForm({ state }) {
 
   return (
     <Box
+      id="main-box"
       position="fixed"
       top={64}
       bottom={0}

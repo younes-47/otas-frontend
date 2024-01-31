@@ -100,7 +100,7 @@ function DisplayUserinfo({ userData = null, isActualRequester = true }) {
             </Box>
           </Box>
           <Box>
-            <Typography variant="overline">Registration Number</Typography>
+            <Typography variant="overline">Employee ID</Typography>
             <Box
               sx={{
                 bgcolor: 'grey.200',

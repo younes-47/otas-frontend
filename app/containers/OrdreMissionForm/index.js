@@ -759,6 +759,16 @@ export function OrdreMissionForm({ state }) {
             InputProps={{
               readOnly,
             }}
+            // eslint-disable-next-line react/jsx-no-duplicate-props
+            inputProps={{
+              maxLength: 500,
+            }}
+            // onInput={(e) => {
+            //   // eslint-disable-next-line radix
+            //   e.target.value = Math.max(0, parseInt(e.target.value))
+            //     .toString()
+            //     .slice(0, 12);
+            // }}
           />
         </Box>
 

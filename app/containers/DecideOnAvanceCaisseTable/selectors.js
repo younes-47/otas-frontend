@@ -37,10 +37,17 @@ const makeSelectAvanceCaisses = () =>
     (substate) => substate.avanceCaisses,
   );
 
+const makeSelectStatusAvanceCaisse = () =>
+  createSelector(
+    selectDecideOnAvanceCaisseTableDomain,
+    (substate) => substate.statusAvanceCaisse,
+  );
+
 export default makeSelectDecideOnAvanceCaisseTable;
 export {
   selectDecideOnAvanceCaisseTableDomain,
   makeSelectAvanceCaisses,
   makeSelectErrorLoadingAvanceCaisses,
   makeSelectLoadingAvanceCaisses,
+  makeSelectStatusAvanceCaisse,
 };

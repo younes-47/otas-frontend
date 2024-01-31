@@ -25,15 +25,15 @@ const makeSelectChangePageContent = () =>
     (substate) => substate.pageContent,
   );
 
-const makeSelectCleanupStore = () =>
+const makeSelectAvanceCaisseIdentity = () =>
   createSelector(
     selectDecideOnAvanceCaisseDomain,
-    (substate) => substate.storeCleanup,
+    (substate) => substate.avanceCaisseIdentity,
   );
 
 export default makeSelectDecideOnAvanceCaisse;
 export {
   selectDecideOnAvanceCaisseDomain,
   makeSelectChangePageContent,
-  makeSelectCleanupStore,
+  makeSelectAvanceCaisseIdentity,
 };

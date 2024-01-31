@@ -37,10 +37,17 @@ const makeSelectAvanceVoyages = () =>
     (substate) => substate.avanceVoyages,
   );
 
+const makeSelectStatusAvanceVoyage = () =>
+  createSelector(
+    selectDecideOnAvanceVoyageTableDomain,
+    (substate) => substate.statusAvanceVoyage,
+  );
+
 export default makeSelectDecideOnAvanceVoyageTable;
 export {
   selectDecideOnAvanceVoyageTableDomain,
   makeSelectAvanceVoyages,
   makeSelectErrorLoadingAvanceVoyages,
   makeSelectLoadingAvanceVoyages,
+  makeSelectStatusAvanceVoyage,
 };

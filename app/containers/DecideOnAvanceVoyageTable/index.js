@@ -7,10 +7,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect, useDispatch, useSelector } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
 import { createStructuredSelector } from 'reselect';
-import { compose } from 'redux';
-
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
@@ -23,7 +20,7 @@ import BeenhereIcon from '@mui/icons-material/Beenhere';
 import InsertLinkIcon from '@mui/icons-material/InsertLink';
 import Tables from 'components/Tables';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
-import { Link, Typography } from '@mui/joy';
+import { Link, Snackbar, Typography } from '@mui/joy';
 import { DateTimeFormater } from 'utils/Custom/stringManipulation';
 import {
   changePageContentAction,
@@ -45,6 +42,7 @@ import {
   makeSelectAvanceVoyages,
   makeSelectErrorLoadingAvanceVoyages,
   makeSelectLoadingAvanceVoyages,
+  makeSelectStatusAvanceVoyage,
 } from './selectors';
 
 const mapStateToProps = createStructuredSelector({
@@ -52,6 +50,7 @@ const mapStateToProps = createStructuredSelector({
   loadingAvanceVoyages: makeSelectLoadingAvanceVoyages(),
   errorLoadingAvanceVoyages: makeSelectErrorLoadingAvanceVoyages(),
   isSideBarVisible: makeSelectIsSideBarVisible(),
+  statusAvanceVoyage: makeSelectStatusAvanceVoyage(),
 });
 
 export function DecideOnAvanceVoyageTable() {
@@ -64,6 +63,7 @@ export function DecideOnAvanceVoyageTable() {
     loadingAvanceVoyages,
     errorLoadingAvanceVoyages,
     isSideBarVisible,
+    statusAvanceVoyage,
   } = useSelector(mapStateToProps);
 
   const [snackbarVisibility, setSnackbarVisibility] = useState(false);
@@ -275,6 +275,22 @@ export function DecideOnAvanceVoyageTable() {
   useEffect(() => {
     if (errorLoadingAvanceVoyages === null) {
       dispatch(loadAvanceVoyageAction());
+      if (statusAvanceVoyage !== '') {
+        switch (statusAvanceVoyage) {
+          case 'signed and approved':
+            setSnackbarAlertSeverity('success');
+            break;
+          case 'rejected':
+            setSnackbarAlertSeverity('danger');
+            break;
+          case 'returned':
+            setSnackbarAlertSeverity('warning');
+            break;
+          default:
+            setSnackbarAlertSeverity('success');
+        }
+        setSnackbarVisibility(true);
+      }
     }
   }, [avanceVoyages]);
 
@@ -293,42 +309,65 @@ export function DecideOnAvanceVoyageTable() {
     dispatch(changeDecideOnAvanceVoyagePageContentAction('VIEW'));
   };
   return (
-    <div>
-      <Box
-        position="fixed"
-        top={64}
-        bottom={0}
-        left={isSideBarVisible ? 200 : 0}
-        right={0}
-        m={1}
-        sx={{
-          overflowY: 'scroll',
-          '&::-webkit-scrollbar': { display: 'flex' },
-          msOverflowStyle: 'none',
-          scrollbarWidth: '2',
-          overflow: 'auto',
+    <Box
+      position="fixed"
+      top={64}
+      bottom={0}
+      left={isSideBarVisible ? 200 : 0}
+      right={0}
+      m={1}
+      sx={{
+        overflowY: 'scroll',
+        '&::-webkit-scrollbar': { display: 'flex' },
+        msOverflowStyle: 'none',
+        scrollbarWidth: '2',
+        overflow: 'auto',
+      }}
+    >
+      {!errorLoadingAvanceVoyages ? (
+        <div style={{ height: '85%', width: '100%' }}>
+          <Tables
+            getRowId={(row) => row.id}
+            disableRowSelectionOnClick
+            top={10}
+            bottom={10}
+            left={0}
+            right={0}
+            loading={loadingAvanceVoyages}
+            rows={avanceVoyages}
+            columns={avanceVoyageColumns}
+            initialState={avanceVoyageInitialState}
+          />
+        </div>
+      ) : (
+        <></>
+      )}
+
+      <Snackbar
+        open={snackbarVisibility}
+        autoHideDuration={3000}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        size="lg"
+        onClose={(event, reason) => {
+          if (reason === 'timeout' || reason === 'escapeKeyDown') {
+            setSnackbarVisibility(false);
+          }
         }}
+        endDecorator={
+          <IconButton
+            size="small"
+            aria-label="close"
+            color="inherit"
+            onClick={() => setSnackbarVisibility(false)}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        }
+        color={snackbarAlertSeverity}
       >
-        {!errorLoadingAvanceVoyages ? (
-          <div style={{ height: '85%', width: '100%' }}>
-            <Tables
-              getRowId={(row) => row.id}
-              disableRowSelectionOnClick
-              top={10}
-              bottom={10}
-              left={0}
-              right={0}
-              loading={loadingAvanceVoyages}
-              rows={avanceVoyages}
-              columns={avanceVoyageColumns}
-              initialState={avanceVoyageInitialState}
-            />
-          </div>
-        ) : (
-          <></>
-        )}
-      </Box>
-    </div>
+        Request has been {statusAvanceVoyage} successfully!
+      </Snackbar>
+    </Box>
   );
 }
 

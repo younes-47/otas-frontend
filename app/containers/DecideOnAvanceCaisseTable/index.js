@@ -3,41 +3,44 @@
  * DecideOnAvanceCaisseTable
  *
  */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { connect, useDispatch, useSelector } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
+import { useDispatch, useSelector } from 'react-redux';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import { createStructuredSelector } from 'reselect';
-import { compose } from 'redux';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
 import EditIcon from '@mui/icons-material/Edit';
-
+import BeenhereIcon from '@mui/icons-material/Beenhere';
+import AutorenewIcon from '@mui/icons-material/Autorenew';
 import { DateTimeFormater } from 'utils/Custom/stringManipulation';
-import { changePageContentAction } from 'pages/AvanceCaisse/actions';
 import { Box } from '@mui/system';
-import { Button, IconButton } from '@mui/material';
+import { Alert, Button, IconButton } from '@mui/material';
 import Tables from 'components/Tables';
-import { makeSelectUserInfo } from 'pages/MyRequests/selectors';
-import { loadUserInfoAction } from 'pages/MyRequests/actions';
+import CloseIcon from '@mui/icons-material/Close';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
-import { loadAvanceCaisseAction } from './actions';
-import messages from './messages';
+import { Snackbar, Tooltip, Typography } from '@mui/joy';
+import { setAvanceCaisseIdentityAction } from 'pages/AvanceCaisse/actions';
+import { changeDecideOnAvanceCaissePageContentAction } from 'pages/DecideOnAvanceCaisse/actions';
+import {
+  cleanupDecideOnAvanceCaisseTableStoreAction,
+  loadAvanceCaisseAction,
+} from './actions';
 import saga from './saga';
 import reducer from './reducer';
 import {
   makeSelectAvanceCaisses,
   makeSelectErrorLoadingAvanceCaisses,
   makeSelectLoadingAvanceCaisses,
+  makeSelectStatusAvanceCaisse,
 } from './selectors';
 
 const mapStateToProps = createStructuredSelector({
-  userInfo: makeSelectUserInfo(),
   avanceCaisses: makeSelectAvanceCaisses(),
   loadingAvanceCaisses: makeSelectLoadingAvanceCaisses(),
   errorLoadingAvanceCaisses: makeSelectErrorLoadingAvanceCaisses(),
   isSideBarVisible: makeSelectIsSideBarVisible(),
+  statusAvanceCaisse: makeSelectStatusAvanceCaisse(),
 });
 
 export function DecideOnAvanceCaisseTable() {
@@ -49,38 +52,113 @@ export function DecideOnAvanceCaisseTable() {
     loadingAvanceCaisses,
     errorLoadingAvanceCaisses,
     isSideBarVisible,
+    statusAvanceCaisse,
   } = useSelector(mapStateToProps);
+
+  const [snackbarVisibility, setSnackbarVisibility] = useState(false);
+  const [snackbarAlertSeverity, setSnackbarAlertSeverity] = useState('');
+
   const avanceCaisseColumns = [
     {
       field: 'id',
       hide: false,
       width: 20,
       headerName: '#',
+      renderCell: (params) => {
+        const { id } = params.row;
+        return (
+          <Tooltip title={id} placement="bottom-start">
+            <Typography level="title-sm" variant="soft">
+              {id}
+            </Typography>
+          </Tooltip>
+        );
+      },
     },
     {
       field: 'description',
       hide: false,
       headerName: 'Description',
       flex: 1,
+      renderCell: (params) => {
+        const { ordreMissionDescription } = params.row;
+        return (
+          <Tooltip title={ordreMissionDescription} placement="bottom-start">
+            <Typography level="title-md" variant="plain">
+              {ordreMissionDescription}
+            </Typography>
+          </Tooltip>
+        );
+      },
     },
     {
       field: 'estimatedTotal',
       hide: false,
       headerName: 'Estimated Total',
       flex: 1,
+      renderCell: (params) => {
+        const { estimatedTotal } = params.row;
+        return (
+          <Typography level="title-md" color="success">
+            {estimatedTotal}
+          </Typography>
+        );
+      },
     },
     {
       field: 'currency',
       hide: false,
       headerName: 'Currency',
       flex: 1,
+      renderCell: (params) => {
+        const { currency } = params.row;
+        return (
+          <Typography level="title-md" variant="plain">
+            {currency}
+          </Typography>
+        );
+      },
     },
 
     {
-      field: 'latestStatus',
+      field: 'status',
       hide: false,
-      headerName: 'Latest Status',
+      headerName: 'Status',
       flex: 1,
+      renderCell: (params) => {
+        const { nextDeciderUserName } = params.row;
+        if (nextDeciderUserName === localStorage.getItem('username')) {
+          return (
+            <Alert
+              icon={false}
+              severity="info"
+              variant="outlined"
+              style={{
+                paddingBottom: '0.3px',
+                paddingTop: '0.3px',
+                borderRadius: '40px',
+              }}
+            >
+              <AutorenewIcon fontSize="small" /> Pending
+            </Alert>
+          );
+        }
+
+        return (
+          <Alert
+            icon={false}
+            severity="success"
+            variant="outlined"
+            style={{
+              paddingBottom: '0.3px',
+              paddingTop: '0.3px',
+              borderRadius: '40px',
+            }}
+          >
+            <BeenhereIcon fontSize="small" /> Decided Upon
+          </Alert>
+        );
+      },
     },
     {
       field: 'onBehalf',
@@ -94,7 +172,14 @@ export function DecideOnAvanceCaisseTable() {
       hide: false,
       headerName: 'Created On',
       flex: 1,
-      valueFormatter: ({ value }) => DateTimeFormater(value),
+      renderCell: (params) => {
+        const { createDate } = params.row;
+        return (
+          <Typography level="title-md" variant="plain">
+            {DateTimeFormater(createDate)}
+          </Typography>
+        );
+      },
     },
     {
       field: '',
@@ -102,54 +187,31 @@ export function DecideOnAvanceCaisseTable() {
       headerName: 'Actions',
       flex: 1,
       renderCell: (params) => {
-        const { id, latestStatus } = params.row;
-        if (latestStatus === 'Draft') {
+        const { id, nextDeciderUserName } = params.row;
+        if (nextDeciderUserName === localStorage.getItem('username')) {
           return (
-            <Box>
-              <Button
-                variant="contained"
-                color="warning"
-                sx={{ mr: '10px' }}
-                startIcon={<EditIcon />}
-              >
-                Edit
-              </Button>
-              <Button
-                variant="contained"
-                color="error"
-                startIcon={<DeleteIcon />}
-                onClick={() => {
-                  setOrdreMissionToDeleteId(id);
-                  setModalVisibility(true);
-                }}
-              >
-                Delete
-              </Button>
-            </Box>
+            <Button
+              variant="contained"
+              color="success"
+              sx={{ mr: '10px' }}
+              startIcon={<EditIcon />}
+              onClick={() => {
+                handleOnDecideButtonClick(id);
+              }}
+            >
+              Decide
+            </Button>
           );
         }
-        if (
-          latestStatus === 'Returned' ||
-          latestStatus === 'Returned for missing evidences'
-        ) {
-          return (
-            <Box>
-              <Button
-                variant="contained"
-                color="warning"
-                sx={{ mr: '10px' }}
-                startIcon={<EditIcon />}
-              >
-                Edit
-              </Button>
-            </Box>
-          );
-        }
+
         return (
           <Button
             variant="contained"
             color="primary"
             startIcon={<VisibilityIcon />}
+            onClick={() => {
+              handleOnViewButtonClick(id);
+            }}
           >
             View
           </Button>
@@ -169,9 +231,41 @@ export function DecideOnAvanceCaisseTable() {
   useEffect(() => {
     if (errorLoadingAvanceCaisses === null) {
       dispatch(loadAvanceCaisseAction());
+      if (statusAvanceCaisse !== '') {
+        switch (statusAvanceCaisse) {
+          case 'signed and approved':
+            setSnackbarAlertSeverity('success');
+            break;
+          case 'rejected':
+            setSnackbarAlertSeverity('danger');
+            break;
+          case 'returned':
+            setSnackbarAlertSeverity('warning');
+            break;
+          default:
+            setSnackbarAlertSeverity('success');
+        }
+        setSnackbarVisibility(true);
+      }
     }
   }, [avanceCaisses]);
 
+  useEffect(
+    () => () => {
+      dispatch(cleanupDecideOnAvanceCaisseTableStoreAction());
+    },
+    [],
+  );
+
+  const handleOnDecideButtonClick = (id) => {
+    dispatch(setAvanceCaisseIdentityAction(id));
+    dispatch(changeDecideOnAvanceCaissePageContentAction('DECIDE'));
+  };
+
+  const handleOnViewButtonClick = (id) => {
+    dispatch(setAvanceCaisseIdentityAction(id));
+    dispatch(changeDecideOnAvanceCaissePageContentAction('VIEW'));
+  };
   return (
     <Box
       position="fixed"
@@ -206,6 +300,31 @@ export function DecideOnAvanceCaisseTable() {
       ) : (
         <></>
       )}
+
+      <Snackbar
+        open={snackbarVisibility}
+        autoHideDuration={3000}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        size="lg"
+        onClose={(event, reason) => {
+          if (reason === 'timeout' || reason === 'escapeKeyDown') {
+            setSnackbarVisibility(false);
+          }
+        }}
+        endDecorator={
+          <IconButton
+            size="small"
+            aria-label="close"
+            color="inherit"
+            onClick={() => setSnackbarVisibility(false)}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        }
+        color={snackbarAlertSeverity}
+      >
+        Request has been {statusAvanceCaisse} successfully!
+      </Snackbar>
     </Box>
   );
 }

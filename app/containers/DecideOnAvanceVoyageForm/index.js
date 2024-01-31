@@ -43,10 +43,13 @@ import {
   changePageContentAction,
   setOrdreMissionIdentityAction,
 } from 'pages/DecideOnOrdreMission/actions';
+import { setAvanceVoyageStatusAction } from 'containers/DecideOnAvanceVoyageTable/actions';
+import { FormatNumber } from 'utils/Custom/stringManipulation';
 import reducer from './reducer';
 import saga from './saga';
 import {
   makeSelectAvanceVoyageDetails,
+  makeSelectErrorDecidingOnAvanceVoyage,
   makeSelectErrorLoadingAvanceVoyageDetails,
 } from './selectors';
 import {
@@ -59,6 +62,7 @@ const mapStateToProps = createStructuredSelector({
   isSideBarVisible: makeSelectIsSideBarVisible(),
   avanceVoyageIdentity: makeSelectAvanceVoyageIdentity(),
   errorLoadingAvanceVoyageDetails: makeSelectErrorLoadingAvanceVoyageDetails(),
+  errorDecidingOnAvanceVoyage: makeSelectErrorDecidingOnAvanceVoyage(),
   avanceVoyageDetails: makeSelectAvanceVoyageDetails(),
 });
 
@@ -72,6 +76,7 @@ export function DecideOnAvanceVoyageForm({ state }) {
   const {
     isSideBarVisible,
     errorLoadingAvanceVoyageDetails,
+    errorDecidingOnAvanceVoyage,
     avanceVoyageDetails,
     avanceVoyageIdentity,
   } = useSelector(mapStateToProps);
@@ -111,6 +116,21 @@ export function DecideOnAvanceVoyageForm({ state }) {
       dispatch(decideOnAvanceVoyageAction(data));
     }
   }, [decisionString]);
+
+  // Set request status for snakcbar message in table
+  useEffect(() => {
+    if (errorDecidingOnAvanceVoyage === false) {
+      if (decisionString === 'aprrove')
+        dispatch(setAvanceVoyageStatusAction('signed and approved'));
+      if (decisionString === 'return')
+        dispatch(setAvanceVoyageStatusAction('returned'));
+      if (decisionString === 'reject')
+        dispatch(setAvanceVoyageStatusAction('rejected'));
+
+      dispatch(cleanupDecideOnAvanceVoyageFormPageAction());
+      dispatch(cleanupParentDecideOnAvanceVoyageStoreAction());
+    }
+  }, [errorDecidingOnAvanceVoyage]);
 
   // Cleanup Store
   useEffect(
@@ -307,6 +327,17 @@ export function DecideOnAvanceVoyageForm({ state }) {
         <Divider style={{ width: '60%', opacity: 0.7 }} />
       </Box>
 
+      <Box display="flex" justifyContent="center" marginBottom={3}>
+        <Box width="60%" display="flex" justifyContent="flex-end">
+          <Typography level="h4">
+            Total {avanceVoyageDetails?.currency}:&nbsp;
+            <Typography color="success">
+              {FormatNumber(avanceVoyageDetails?.estimatedTotal)}
+            </Typography>
+          </Typography>
+        </Box>
+      </Box>
+
       {/* Buttons */}
       <Stack
         direction="row"
@@ -391,7 +422,7 @@ export function DecideOnAvanceVoyageForm({ state }) {
                     placeholder="Your Comment..."
                     variant="outlined"
                     onChange={(e) => setDeciderComment(e.target.value)}
-                    inputProps={{ maxLength: 350 }}
+                    inputProps={{ maxLength: 255 }}
                   />
                 </>
               )}

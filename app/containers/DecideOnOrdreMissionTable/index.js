@@ -266,13 +266,13 @@ export function DecideOnOrdreMissionTable() {
       dispatch(loadOrdreMissionAction());
       if (statusOrdreMission !== '') {
         switch (statusOrdreMission) {
-          case 'APPROVED':
+          case 'signed and approved':
             setSnackbarAlertSeverity('success');
             break;
-          case 'REJECTED':
+          case 'rejected':
             setSnackbarAlertSeverity('danger');
             break;
-          case 'RETURNED':
+          case 'returned':
             setSnackbarAlertSeverity('warning');
             break;
           default:

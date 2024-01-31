@@ -5,16 +5,19 @@
  */
 import produce from 'immer';
 import {
+  CLEANUP_STORE_ACTION,
   DEFAULT_ACTION,
   LOAD_AVANCE_CAISSES,
   LOAD_AVANCE_CAISSES_ERROR,
   LOAD_AVANCE_CAISSES_SUCCESS,
+  STATUS_AVANCE_CAISSE,
 } from './constants';
 
 export const initialState = {
   loadingAvanceCaisses: false,
   errorLoadingAvanceCaisses: null,
   avanceCaisses: [],
+  statusAvanceVoyage: '', // This state is used to show action notification in table page (Decision)
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -35,6 +38,15 @@ const decideOnAvanceCaisseTableReducer = (state = initialState, action) =>
         draft.loadingAvanceCaisses = false;
         draft.errorLoadingAvanceCaisses = false;
         draft.avanceCaisses = action.data;
+        break;
+      case STATUS_AVANCE_CAISSE:
+        draft.statusAvanceVoyage = action.data;
+        break;
+      case CLEANUP_STORE_ACTION:
+        draft.loadingAvanceCaisses = false;
+        draft.errorLoadingAvanceCaisses = null;
+        draft.avanceVoyages = [];
+        draft.statusAvanceVoyage = '';
         break;
     }
   });
