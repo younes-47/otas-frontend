@@ -90,6 +90,7 @@ const depenseCaisseReducer = (state = initialState, action) =>
         draft.errorDeletingDepenseCaisse = null;
         draft.downloadingDepenseCaisseReceiptsFile = false;
         draft.errorDownloadingDepenseCaisseReceiptsFile = null;
+        draft.downloadDepenseCaisseReceiptsFileResponse = null;
         draft.statusDepenseCaisse = '';
         break;
     }

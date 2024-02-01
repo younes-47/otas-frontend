@@ -126,7 +126,7 @@ const Trips = ({
           onChange={(e) => {
             handleTripDates(id, 'departureDate', e);
           }}
-          disablePast
+          disablePast={isTripModifiabale}
           format="DD/MM/YYYY HH:mm"
           fontSize={2}
         />
@@ -140,7 +140,7 @@ const Trips = ({
           onChange={(e) => {
             handleTripDates(id, 'arrivalDate', e);
           }}
-          disablePast
+          disablePast={isTripModifiabale}
           format="DD/MM/YYYY"
         />
 

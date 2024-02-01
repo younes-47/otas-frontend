@@ -66,7 +66,7 @@ const Expenses = ({
             onChange={(e) => handleExpenseDate(e, id)}
             required
             label="Expense Date"
-            disableFuture
+            disablePast={isExpenseModifiabale}
             format="DD/MM/YYYY"
           />
         </LocalizationProvider>

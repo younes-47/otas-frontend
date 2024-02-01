@@ -28,8 +28,9 @@ import {
   setDepenseCaisseIdentityAction,
 } from 'pages/DepenseCaisse/actions';
 import CloseIcon from '@mui/icons-material/Close';
-import { FilePresent } from '@mui/icons-material';
-import { Snackbar, Typography } from '@mui/joy';
+import FilePresent from '@mui/icons-material/FilePresent';
+import Typography from '@mui/joy/Typography';
+import Snackbar from '@mui/joy/Snackbar';
 import saga from './saga';
 import reducer from './reducer';
 import {
@@ -157,6 +158,11 @@ export function DepenseCaisseTable() {
   const handleOnModifyButtonClick = (id) => {
     dispatch(setDepenseCaisseIdentityAction(id));
     dispatch(changePageContentAction('MODIFY'));
+  };
+
+  const handleOnViewButtonClick = (id) => {
+    dispatch(setDepenseCaisseIdentityAction(id));
+    dispatch(changePageContentAction('VIEW'));
   };
 
   const handleOnConfirmDeletionButtonClick = (id) => {
@@ -401,6 +407,9 @@ export function DepenseCaisseTable() {
             variant="contained"
             color="primary"
             startIcon={<VisibilityIcon />}
+            onClick={() => {
+              handleOnViewButtonClick(id);
+            }}
           >
             View
           </Button>

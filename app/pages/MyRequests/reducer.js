@@ -59,7 +59,7 @@ const overviewReducer = (state = initialState, action) =>
       case STORE_CLEANUP:
         draft.loadingUserInfo = false;
         draft.errorUserInfo = true;
-        draft.userInfo = null;
+        // draft.userInfo = null;
         draft.loadingRequesterStats = false;
         draft.errorLoadingRequesterStats = null;
         draft.requesterStats = null;

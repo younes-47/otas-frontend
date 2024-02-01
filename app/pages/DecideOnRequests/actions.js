@@ -6,9 +6,9 @@
 
 import {
   DEFAULT_ACTION,
-  LOAD_USER_INFO,
-  LOAD_USER_INFO_ERROR,
-  LOAD_USER_INFO_SUCCESS,
+  LOAD_DECIDER_LEVELS,
+  LOAD_DECIDER_LEVELS_ERROR,
+  LOAD_DECIDER_LEVELS_SUCCESS,
   STORE_CLEANUP,
 } from './constants';
 
@@ -18,25 +18,28 @@ export function defaultAction() {
   };
 }
 
-export function loadUserInfoAction() {
-  return {
-    type: LOAD_USER_INFO,
-  };
-}
-export function loadUserInfoSuccessAction(data) {
-  return {
-    type: LOAD_USER_INFO_SUCCESS,
-    data,
-  };
-}
-export function loadUserInfoErrorAction(error) {
-  return {
-    type: LOAD_USER_INFO_ERROR,
-    error,
-  };
-}
 export function cleanupStoreAction() {
   return {
     type: STORE_CLEANUP,
+  };
+}
+
+export function loadDeciderLevelsAction() {
+  return {
+    type: LOAD_DECIDER_LEVELS,
+  };
+}
+
+export function loadDeciderLevelsSuccessAction(data) {
+  return {
+    type: LOAD_DECIDER_LEVELS_SUCCESS,
+    data,
+  };
+}
+
+export function loadDeciderLevelsErrorAction(error) {
+  return {
+    type: LOAD_DECIDER_LEVELS_ERROR,
+    error,
   };
 }

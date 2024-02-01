@@ -2,25 +2,28 @@
 
 import request from 'utils/request';
 import { call, put, takeLatest } from 'redux-saga/effects';
-import { LOAD_USER_INFO, WebService } from './constants';
-import { loadUserInfoErrorAction, loadUserInfoSuccessAction } from './actions';
+import { LOAD_DECIDER_LEVELS, WebService } from './constants';
+import {
+  loadDeciderLevelsErrorAction,
+  loadDeciderLevelsSuccessAction,
+} from './actions';
 
 // UserInfo
-export function* loadUserInfo() {
+export function* loadDeciderLevels() {
   const token = localStorage.getItem('token');
   try {
-    const { data } = yield call(request.get, WebService.GET_USER_INFO, {
+    const { data } = yield call(request.get, WebService.LOAD_DECIDER_LEVELS, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
     });
-    yield put(loadUserInfoSuccessAction(data)); // success action
+    yield put(loadDeciderLevelsSuccessAction(data));
   } catch (error) {
-    yield put(loadUserInfoErrorAction(error)); // error action
+    yield put(loadDeciderLevelsErrorAction(error));
   }
 }
 
 export default function* decideOnRequestsSaga() {
-  yield takeLatest(LOAD_USER_INFO, loadUserInfo);
+  yield takeLatest(LOAD_DECIDER_LEVELS, loadDeciderLevels);
 }

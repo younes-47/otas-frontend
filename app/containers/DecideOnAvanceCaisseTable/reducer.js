@@ -17,7 +17,7 @@ export const initialState = {
   loadingAvanceCaisses: false,
   errorLoadingAvanceCaisses: null,
   avanceCaisses: [],
-  statusAvanceVoyage: '', // This state is used to show action notification in table page (Decision)
+  statusAvanceCaisse: '', // This state is used to show action notification in table page (Decision)
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -40,12 +40,12 @@ const decideOnAvanceCaisseTableReducer = (state = initialState, action) =>
         draft.avanceCaisses = action.data;
         break;
       case STATUS_AVANCE_CAISSE:
-        draft.statusAvanceVoyage = action.data;
+        draft.statusAvanceCaisse = action.data;
         break;
       case CLEANUP_STORE_ACTION:
         draft.loadingAvanceCaisses = false;
         draft.errorLoadingAvanceCaisses = null;
-        draft.avanceVoyages = [];
+        draft.avanceCaisses = [];
         draft.statusAvanceVoyage = '';
         break;
     }

@@ -54,7 +54,7 @@ function DisplayUserinfo({ userData = null, isActualRequester = true }) {
           marginBottom={3}
           gap={3}
         >
-          <Box>
+          <Box minWidth={150}>
             <Typography variant="overline">First Name</Typography>
             <Box
               sx={{

@@ -11,7 +11,23 @@ const selectDecideOnAvanceCaisseFormDomain = (state) =>
 /**
  * Other specific selectors
  */
+const makeSelectAvanceCaisseDetails = () =>
+  createSelector(
+    selectDecideOnAvanceCaisseFormDomain,
+    (substate) => substate.avanceCaisseDetails,
+  );
 
+const makeSelectErrorLoadingAvanceCaisseDetails = () =>
+  createSelector(
+    selectDecideOnAvanceCaisseFormDomain,
+    (substate) => substate.errorLoadingAvanceCaisseDetails,
+  );
+
+const makeSelectErrorDecidingOnAvanceCaisse = () =>
+  createSelector(
+    selectDecideOnAvanceCaisseFormDomain,
+    (substate) => substate.errorDecidingOnAvanceCaisse,
+  );
 /**
  * Default selector used by DecideOnAvanceCaisseForm
  */
@@ -20,4 +36,9 @@ const makeSelectDecideOnAvanceCaisseForm = () =>
   createSelector(selectDecideOnAvanceCaisseFormDomain, (substate) => substate);
 
 export default makeSelectDecideOnAvanceCaisseForm;
-export { selectDecideOnAvanceCaisseFormDomain };
+export {
+  selectDecideOnAvanceCaisseFormDomain,
+  makeSelectErrorDecidingOnAvanceCaisse,
+  makeSelectErrorLoadingAvanceCaisseDetails,
+  makeSelectAvanceCaisseDetails,
+};

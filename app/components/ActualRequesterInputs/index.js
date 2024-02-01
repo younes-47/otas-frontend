@@ -4,7 +4,7 @@
  *
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 // import styled from 'styled-components';
 
@@ -17,6 +17,14 @@ function ActualRequesterInputs({
   actualRequester,
   updateActualRequesterData,
 }) {
+  let uniqueId = 0;
+
+  const mappedJobTitles = staticData?.jobTitles.map((value) => ({
+    // eslint-disable-next-line no-plusplus
+    id: uniqueId++,
+    label: value,
+  }));
+
   const CustomPaper = React.forwardRef((props, ref) => (
     // eslint-disable-next-line react/jsx-props-no-spreading
     <Paper ref={ref} {...props} sx={{ textAlign: 'left' }} />
@@ -58,7 +66,7 @@ function ActualRequesterInputs({
           />
           <TextField
             id="outlined-basic"
-            label="Registration Number"
+            label="Employee ID"
             variant="outlined"
             value={actualRequester.registrationNumber}
             onChange={(e) =>
@@ -72,17 +80,27 @@ function ActualRequesterInputs({
             freeSolo
             disablePortal
             id="combo-box-demo"
-            options={staticData?.jobTitles}
+            options={mappedJobTitles}
             sx={{ width: 224 }}
             value={actualRequester.jobTitle}
-            onChange={(e, newValue) =>
-              updateActualRequesterData('jobTitle', newValue)
-            }
             PaperComponent={CustomPaper}
             required
+            onChange={(e, newValue) =>
+              updateActualRequesterData(
+                'jobTitle',
+                newValue?.label ? newValue?.label : '',
+              )
+            }
+            getOptionKey={(option) => option.id}
             renderInput={(params) => (
-              // eslint-disable-next-line react/jsx-props-no-spreading
-              <TextField {...params} label="Job Title" />
+              <TextField
+                // eslint-disable-next-line react/jsx-props-no-spreading
+                {...params}
+                label="Job Title"
+                onChange={(e) =>
+                  updateActualRequesterData('jobTitle', e.target.value)
+                }
+              />
             )}
           />
           <Autocomplete

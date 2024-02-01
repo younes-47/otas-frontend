@@ -12,12 +12,10 @@ import PropTypes from 'prop-types';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
-import DropzoneArea from 'material-ui-dropzone';
 import FilePresentIcon from '@mui/icons-material/FilePresent';
 import HistoryIcon from '@mui/icons-material/History';
 import {
   Alert,
-  Autocomplete,
   Button,
   CircularProgress,
   Dialog,
@@ -30,7 +28,6 @@ import {
   Grid,
   IconButton,
   LinearProgress,
-  Link,
   Radio,
   RadioGroup,
   TextField,
@@ -48,13 +45,12 @@ import {
 } from 'pages/DepenseCaisse/actions';
 import DisplayUserinfo from 'components/DisplayUserinfo';
 import { setDepenseCaisseStatusAction } from 'containers/DepenseCaisseTable/actions';
-import { LoadingButton, Timeline } from '@mui/lab';
+import { Timeline } from '@mui/lab';
 import CustomizedTimeLine from 'components/CustomizedTimeLine';
 import { makeSelectDepenseCaisseIdentity } from 'pages/DepenseCaisse/selectors';
 import ActualRequesterInputs from 'components/ActualRequesterInputs';
 import { ValidateInputs } from 'utils/Custom/ValidateInputs';
-import FileUploadForm from 'components/FileUploadForm';
-import { Snackbar } from '@mui/joy';
+import { Card, CardContent, Snackbar } from '@mui/joy';
 import Expenses from './Expenses';
 import {
   makeSelectAddDepenseCaisse,
@@ -533,6 +529,25 @@ export function DepenseCaisseForm({ state }) {
         </Box>
       )}
 
+      {state === 'MODIFY' && (
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          marginBottom={3}
+        >
+          <Card color="warning" variant="soft" icon={false}>
+            <CardContent sx={{ textAlign: 'center', marginBottom: '1em' }}>
+              This request has been returned. <br /> Please refer to the comment
+              below and apply the necessary changes.
+            </CardContent>
+            <Card variant="outlined">
+              {depenseCaisseDetails?.deciderComment}
+            </Card>
+          </Card>
+        </Box>
+      )}
+
       {/* DIVIDER */}
       <Box
         display="flex"
@@ -674,6 +689,10 @@ export function DepenseCaisseForm({ state }) {
           onChange={(e) => setDescription(e.target.value)}
           InputProps={{
             readOnly,
+          }}
+          // eslint-disable-next-line react/jsx-no-duplicate-props
+          inputProps={{
+            maxLength: 500,
           }}
         />
       </Box>

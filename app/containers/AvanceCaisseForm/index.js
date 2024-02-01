@@ -50,7 +50,7 @@ import CustomizedTimeLine from 'components/CustomizedTimeLine';
 import ActualRequesterInputs from 'components/ActualRequesterInputs';
 import { ValidateInputs } from 'utils/Custom/ValidateInputs';
 import LinearProgress from '@mui/material/LinearProgress';
-import { Snackbar } from '@mui/joy';
+import { Card, CardContent, Snackbar } from '@mui/joy';
 import {
   makeSelectAddAvanceCaisse,
   makeSelectAvanceCaisseDetails,
@@ -477,6 +477,26 @@ export function AvanceCaisseForm({ state }) {
           </Button>
         </Box>
       )}
+
+      {state === 'MODIFY' && (
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          marginBottom={3}
+        >
+          <Card color="warning" variant="soft" icon={false}>
+            <CardContent sx={{ textAlign: 'center', marginBottom: '1em' }}>
+              This request has been returned. <br /> Please refer to the comment
+              below and apply the necessary changes.
+            </CardContent>
+            <Card variant="outlined">
+              {avanceCaisseDetails?.deciderComment}
+            </Card>
+          </Card>
+        </Box>
+      )}
+
       {/* DIVIDER */}
       <Box
         display="flex"
@@ -618,6 +638,10 @@ export function AvanceCaisseForm({ state }) {
           onChange={(e) => setDescription(e.target.value)}
           InputProps={{
             readOnly,
+          }}
+          // eslint-disable-next-line react/jsx-no-duplicate-props
+          inputProps={{
+            maxLength: 500,
           }}
         />
       </Box>
@@ -779,6 +803,7 @@ export function AvanceCaisseForm({ state }) {
           <Button onClick={() => setModalVisibility(false)}>Close</Button>
           {modalHeader === 'Confirmation' && (
             <Button
+              variant="contained"
               color="success"
               onClick={handleOnSubmitModificationsConfirmationButtonClick}
             >

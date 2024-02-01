@@ -89,8 +89,6 @@ export default function MyRequests() {
     [],
   );
 
-  console.log(FormatNumber(requesterStats?.moneyStats?.allTimeAmountMAD));
-
   return (
     <Box
       position="fixed"

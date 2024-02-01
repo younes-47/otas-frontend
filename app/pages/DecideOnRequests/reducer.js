@@ -6,20 +6,16 @@
 import produce from 'immer';
 import {
   DEFAULT_ACTION,
-  LOAD_USER_INFO,
-  LOAD_USER_INFO_ERROR,
-  LOAD_USER_INFO_SUCCESS,
+  LOAD_DECIDER_LEVELS,
+  LOAD_DECIDER_LEVELS_ERROR,
+  LOAD_DECIDER_LEVELS_SUCCESS,
   STORE_CLEANUP,
 } from './constants';
 
 export const initialState = {
-  loadingUserInfo: false,
-  errorUserInfo: true,
-  userInfo: {
-    firstName: '',
-    lastName: '',
-    level: '',
-  },
+  loadingDeciderLevels: false,
+  errorLoadingDeciderLevels: null,
+  deciderLevels: null,
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -28,28 +24,24 @@ const decideOnRequestsReducer = (state = initialState, action) =>
     switch (action.type) {
       case DEFAULT_ACTION:
         break;
-      case LOAD_USER_INFO:
-        draft.loadingUserInfo = true;
-        draft.errorUserInfo = false;
+      case LOAD_DECIDER_LEVELS:
+        draft.loadingDeciderLevels = true;
+        draft.errorLoadingDeciderLevels = null;
         break;
-      case LOAD_USER_INFO_SUCCESS:
-        draft.loadingUserInfo = false;
-        draft.errorUserInfo = false;
-        draft.userInfo.firstName = action.data.firstName;
-        draft.userInfo.lastName = action.data.lastName;
-        draft.userInfo.level = action.data.level;
+      case LOAD_DECIDER_LEVELS_SUCCESS:
+        draft.loadingDeciderLevels = false;
+        draft.errorLoadingDeciderLevels = false;
+        draft.deciderLevels = action.data;
         break;
-      case LOAD_USER_INFO_ERROR:
-        draft.loadingUserInfo = false;
-        draft.errorUserInfo = true;
+      case LOAD_DECIDER_LEVELS_ERROR:
+        draft.loadingDeciderLevels = false;
+        draft.errorLoadingDeciderLevels = true;
         // draft.errorUserInfo = action.error;
         break;
       case STORE_CLEANUP:
-        draft.loadingUserInfo = false;
-        draft.errorUserInfo = true;
-        draft.userInfo.firstName = '';
-        draft.userInfo.lastName = '';
-        draft.userInfo.level = '';
+        draft.loadingDeciderLevels = false;
+        draft.errorLoadingDeciderLevels = null;
+        draft.deciderLevels = action.data;
         break;
     }
   });

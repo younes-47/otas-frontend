@@ -15,7 +15,6 @@ import { Stack, Box } from '@mui/system';
 
 import {
   Alert,
-  Autocomplete,
   Button,
   Dialog,
   DialogActions,
@@ -25,12 +24,12 @@ import {
   Divider,
   FormControlLabel,
   IconButton,
-  Link,
   Radio,
   RadioGroup,
   TextField,
   Typography,
   Grid,
+  AlertTitle,
 } from '@mui/material';
 import LinearProgress from '@mui/material/LinearProgress';
 import CloseIcon from '@mui/icons-material/Close';
@@ -53,7 +52,7 @@ import { makeSelectOrdreMissionIdentity } from 'pages/OrdreMission/selectors';
 import ActualRequesterInputs from 'components/ActualRequesterInputs';
 import { ValidateInputs } from 'utils/Custom/ValidateInputs';
 
-import { Snackbar } from '@mui/joy';
+import { Card, CardContent, Snackbar } from '@mui/joy';
 import saga from './saga';
 import reducer from './reducer';
 import {
@@ -269,6 +268,10 @@ export function OrdreMissionForm({ state }) {
       }
       if (buttonClicked === 'CONFIRM') {
         dispatch(loadOrdreMissionDetailsAction(ordreMissionIdentity));
+      }
+      if (buttonClicked === 'SUBMIT-MODIFICATIONS') {
+        dispatch(cleanupParentOrdreMissionPageAction());
+        dispatch(setOrdreMissionStatusAction('RESUBMITTED'));
       }
     }
   }, [errorAddingOrdreMission, errorUpdatingOrdreMission]);
@@ -524,6 +527,7 @@ export function OrdreMissionForm({ state }) {
       setButtonClicked('SUBMIT-MODIFICATIONS');
     }
   };
+
   return (
     <Box
       id="main-box"
@@ -610,6 +614,26 @@ export function OrdreMissionForm({ state }) {
             </Button>
           </Box>
         )}
+
+        {state === 'MODIFY' && (
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            marginBottom={3}
+          >
+            <Card color="warning" variant="soft" icon={false}>
+              <CardContent sx={{ textAlign: 'center', marginBottom: '1em' }}>
+                This request has been returned. <br /> Please refer to the
+                comment below and apply the necessary changes.
+              </CardContent>
+              <Card variant="outlined">
+                {ordreMissionDetails?.deciderComment}
+              </Card>
+            </Card>
+          </Box>
+        )}
+
         {/* DIVIDER */}
         <Box
           display="flex"
@@ -763,12 +787,6 @@ export function OrdreMissionForm({ state }) {
             inputProps={{
               maxLength: 500,
             }}
-            // onInput={(e) => {
-            //   // eslint-disable-next-line radix
-            //   e.target.value = Math.max(0, parseInt(e.target.value))
-            //     .toString()
-            //     .slice(0, 12);
-            // }}
           />
         </Box>
 
@@ -984,7 +1002,7 @@ export function OrdreMissionForm({ state }) {
                 onClick={handleOnSubmitModificationsConfirmationButtonClick}
                 variant="contained"
               >
-                Submit
+                Resubmit
               </Button>
             )}
             {modalHeader === 'Submit' && (

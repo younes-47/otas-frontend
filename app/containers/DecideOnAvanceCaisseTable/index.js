@@ -20,8 +20,10 @@ import Tables from 'components/Tables';
 import CloseIcon from '@mui/icons-material/Close';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import { Snackbar, Tooltip, Typography } from '@mui/joy';
-import { setAvanceCaisseIdentityAction } from 'pages/AvanceCaisse/actions';
-import { changeDecideOnAvanceCaissePageContentAction } from 'pages/DecideOnAvanceCaisse/actions';
+import {
+  changeDecideOnAvanceCaissePageContentAction,
+  setAvanceCaisseIdentityAction,
+} from 'pages/DecideOnAvanceCaisse/actions';
 import {
   cleanupDecideOnAvanceCaisseTableStoreAction,
   loadAvanceCaisseAction,
@@ -322,6 +324,7 @@ export function DecideOnAvanceCaisseTable() {
           </IconButton>
         }
         color={snackbarAlertSeverity}
+        variant="solid"
       >
         Request has been {statusAvanceCaisse} successfully!
       </Snackbar>

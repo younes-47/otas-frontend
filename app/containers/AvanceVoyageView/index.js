@@ -195,6 +195,22 @@ export function AvanceVoyageView() {
       >
         <Divider style={{ width: '60%', opacity: 0.7 }} />
       </Box>
+
+      <Box display="flex" justifyContent="center" marginTop={3}>
+        <Alert severity="info">
+          <Typography variant="P">This request is Linked to&nbsp;</Typography>
+          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+          <Link
+            level="title-sm"
+            underline="always"
+            onClick={() => handleOnOrdreMissionLinkClick()}
+          >
+            Ordre Mission #{avanceVoyageDetails?.ordreMissionId}&nbsp;
+            <InsertLinkIcon fontSize="small" />
+          </Link>
+        </Alert>
+      </Box>
+
       <Box
         key={avanceVoyageDetails?.id}
         display="flex"
@@ -216,20 +232,6 @@ export function AvanceVoyageView() {
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <Alert severity="info">
-              <Typography variant="P">
-                This Avance Voyage is Linked to&nbsp;
-              </Typography>
-              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-              <Link
-                level="title-sm"
-                underline="always"
-                onClick={() => handleOnOrdreMissionLinkClick()}
-              >
-                Ordre Mission #{avanceVoyageDetails?.ordreMissionId}&nbsp;
-                <InsertLinkIcon fontSize="small" />
-              </Link>
-            </Alert>
             <Box
               key={avanceVoyageDetails?.id}
               display="flex"

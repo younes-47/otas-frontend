@@ -357,6 +357,7 @@ export function DecideOnOrdreMissionTable() {
           </IconButton>
         }
         color={snackbarAlertSeverity}
+        variant="solid"
       >
         Request has been {statusOrdreMission} successfully!
       </Snackbar>

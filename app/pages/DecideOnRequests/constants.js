@@ -5,11 +5,14 @@
  */
 
 export const DEFAULT_ACTION = 'app/DecideOnRequests/DEFAULT_ACTION';
-export const LOAD_USER_INFO = 'app/DecideOnRequests/LOAD_USER_INFO';
-export const LOAD_USER_INFO_SUCCESS =
-  'app/DecideOnRequests/LOAD_USER_INFO_SUCCESS';
-export const LOAD_USER_INFO_ERROR = 'app/DecideOnRequests/LOAD_USER_INFO_ERROR';
+
+export const LOAD_DECIDER_LEVELS = 'app/DecideOnRequests/LOAD_DECIDER_LEVELS';
+export const LOAD_DECIDER_LEVELS_SUCCESS =
+  'app/DecideOnRequests/LOAD_DECIDER_LEVELS_SUCCESS';
+export const LOAD_DECIDER_LEVELS_ERROR =
+  'app/DecideOnRequests/LOAD_DECIDER_LEVELS_ERROR';
+
 export const STORE_CLEANUP = 'app/DecideOnRequests/STORE_CLEANUP';
 export const WebService = {
-  GET_USER_INFO: '/User/info/',
+  LOAD_DECIDER_LEVELS: '/User/DeciderLevels/',
 };

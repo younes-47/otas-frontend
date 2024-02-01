@@ -8,12 +8,11 @@ import {
   CHANGE_PAGE_CONTENT_ACTION,
   CLEANUP_STORE_ACTION,
   DEFAULT_ACTION,
+  DEPENSE_CAISSE_IDENTITY,
 } from './constants';
 
 export const initialState = {
-  loadingDepenseCaisses: false,
-  errorLoadingDepenseCaisses: null,
-  depenseCaisses: [],
+  depenseCaisseIdentity: null,
   pageContent: 'TABLE',
 };
 
@@ -26,11 +25,12 @@ const decideOnDepenseCaisseReducer = (state = initialState, action) =>
       case CHANGE_PAGE_CONTENT_ACTION:
         draft.pageContent = action.pageContent;
         break;
+      case DEPENSE_CAISSE_IDENTITY:
+        draft.depenseCaisseIdentity = action.id;
+        break;
       case CLEANUP_STORE_ACTION:
-        draft.loadingDepenseCaisses = false;
-        draft.errorLoadingDepenseCaisses = null;
-        draft.depenseCaisses = [];
         draft.pageContent = 'TABLE';
+        draft.depenseCaisseIdentity = null;
     }
   });
 

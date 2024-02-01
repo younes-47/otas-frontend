@@ -83,7 +83,7 @@ const Expenses = ({
           sx={{ maxWidth: 170 }}
           required
           label="Expense Date"
-          disablePast
+          disablePast={!isExpenseRequired}
           format="DD/MM/YYYY"
         />
 

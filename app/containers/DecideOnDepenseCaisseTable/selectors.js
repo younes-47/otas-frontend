@@ -40,8 +40,29 @@ const makeSelectDepenseCaisses = () =>
     (substate) => substate.depenseCaisses,
   );
 
+const makeSelectStatusDepenseCaisse = () =>
+  createSelector(
+    selectDecideOnDepenseCaisseTableDomain,
+    (substate) => substate.statusDepenseCaisse,
+  );
+
+const makeSelectErrorDownloadingDepenseCaisseReceiptsFile = () =>
+  createSelector(
+    selectDecideOnDepenseCaisseTableDomain,
+    (substate) => substate.errorDownloadingDepenseCaisseReceiptsFile,
+  );
+
+const makeSelectDepenseCaisseReceiptsFileDownloadResponse = () =>
+  createSelector(
+    selectDecideOnDepenseCaisseTableDomain,
+    (substate) => substate.downloadDepenseCaisseReceiptsFileResponse,
+  );
+
 export default makeSelectDecideOnDepenseCaisseTable;
 export {
+  makeSelectDepenseCaisseReceiptsFileDownloadResponse,
+  makeSelectErrorDownloadingDepenseCaisseReceiptsFile,
+  makeSelectStatusDepenseCaisse,
   makeSelectDepenseCaisses,
   makeSelectErrorLoadingDepenseCaisses,
   makeSelectLoadingDepenseCaisses,

@@ -4,7 +4,7 @@
  *
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
@@ -16,25 +16,34 @@ import { Box, Stack } from '@mui/system';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import { Alert } from '@mui/material';
 import { Card, CardContent, Container, Grid } from '@mui/joy';
-import { makeSelectUserInfo } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
-import { cleanupStoreAction, loadUserInfoAction } from './actions';
+import { cleanupStoreAction, loadDeciderLevelsAction } from './actions';
+import {
+  makeSelectDeciderLevels,
+  makeSelectErrorLoadingDeciderLevels,
+} from './selectors';
 
 const mapStateToProps = createStructuredSelector({
   isSideBarVisible: makeSelectIsSideBarVisible(),
-  userInfo: makeSelectUserInfo(),
+  deciderLevels: makeSelectDeciderLevels(),
+  errorLoadingDeciderLevels: makeSelectErrorLoadingDeciderLevels(),
 });
 
 export function DecideOnRequests() {
   useInjectReducer({ key: 'decideOnRequests', reducer });
   useInjectSaga({ key: 'decideOnRequests', saga });
   const dispatch = useDispatch();
-  const { isSideBarVisible, userInfo } = useSelector(mapStateToProps);
+  const { isSideBarVisible, errorLoadingDeciderLevels, deciderLevels } =
+    useSelector(mapStateToProps);
+
+  const [levelsString, setLevelsString] = useState('');
 
   useEffect(() => {
-    dispatch(loadUserInfoAction());
-  }, []);
+    if (errorLoadingDeciderLevels === null) {
+      dispatch(loadDeciderLevelsAction());
+    }
+  }, [errorLoadingDeciderLevels]);
 
   useEffect(
     () => () => {
@@ -42,6 +51,66 @@ export function DecideOnRequests() {
     },
     [],
   );
+
+  useEffect(() => {
+    if (errorLoadingDeciderLevels === false) {
+      let string = '';
+      // eslint-disable-next-line array-callback-return
+      deciderLevels?.map((level, index, arr) => {
+        switch (level) {
+          case 'MG':
+            if (index === 0) {
+              string += 'a Manager of your department';
+            } else {
+              string += 'and Manager of your department';
+            }
+            break;
+          case 'FM':
+            if (index === 0) {
+              string += 'a Finance Manager';
+            } else {
+              string += 'and Finance Manager';
+            }
+            break;
+          case 'HR':
+            if (index === 0) {
+              string += 'an HR Manager';
+            } else {
+              string += 'and HR Manager';
+            }
+            break;
+          case 'TR':
+            if (index === 0) {
+              string += 'a Treasury Manager';
+            } else {
+              string += 'and Treasury Manager';
+            }
+            break;
+          case 'DG':
+            if (index === 0) {
+              string += 'a General Director';
+            } else if (index === arr.length) {
+              string += 'and a General Director';
+            } else {
+              string += ', General Director';
+            }
+            break;
+          case 'VP':
+            if (index === 0) {
+              string += 'a Vice President';
+            } else if (index === arr.length) {
+              string += 'and a Vice President';
+            } else {
+              string += ', Vice President';
+            }
+            break;
+          default:
+            break;
+        }
+      });
+      setLevelsString(string);
+    }
+  }, [errorLoadingDeciderLevels]);
 
   return (
     <Box
@@ -64,12 +133,8 @@ export function DecideOnRequests() {
             level="h1"
             sx={{ fontSize: '50px', marginBottom: '10px', marginTop: '20px' }}
           >
-            Welcome{' '}
-            {localStorage.getItem('firstName') !== null
-              ? `${localStorage.getItem('firstName')} ${localStorage.getItem(
-                  'lastName',
-                )}`
-              : `${userInfo?.firstName} ${userInfo?.lastName}`}
+            Welcome&nbsp;{localStorage.getItem('firstName')}&nbsp;
+            {localStorage.getItem('lastName')}
           </Typography>
           <Alert
             severity="info"
@@ -80,7 +145,7 @@ export function DecideOnRequests() {
             }}
           >
             This is the section where you can access and decide upon requests of
-            others as a {userInfo?.level}
+            others as {levelsString}.
           </Alert>
         </Stack>
       </Box>
