@@ -45,6 +45,7 @@ import {
 import SimpleTripsTable from 'components/SimpleTripsTable';
 import SimpleExpensesTable from 'components/SimpleExpensesTable';
 import { setOrdreMissionStatusAction } from 'containers/DecideOnOrdreMissionTable/actions';
+import { NumericFormat } from 'react-number-format';
 import {
   makeSelectErrorDecidingOnOrdreMission,
   makeSelectErrorLoadingOrdreMissionDetails,
@@ -385,7 +386,24 @@ export function DecideOnOrdreMissionForm({ state }) {
             <Typography level="h4">
               Total {av?.currency}:&nbsp;
               <Typography color="success">
-                {FormatNumber(av.estimatedTotal)}
+                <NumericFormat
+                  displayType="text"
+                  value={av?.estimatedTotal}
+                  fixedDecimalScale
+                  decimalScale={2}
+                  defaultValue="0"
+                  allowNegative={false}
+                  thousandSeparator={
+                    localStorage.getItem('preferredLanguage') === 'en'
+                      ? ','
+                      : ' '
+                  }
+                  decimalSeparator={
+                    localStorage.getItem('preferredLanguage') === 'en'
+                      ? '.'
+                      : ','
+                  }
+                />
               </Typography>
             </Typography>
           ))}

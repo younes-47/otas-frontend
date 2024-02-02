@@ -24,6 +24,7 @@ import {
   changeDecideOnAvanceCaissePageContentAction,
   setAvanceCaisseIdentityAction,
 } from 'pages/DecideOnAvanceCaisse/actions';
+import { NumericFormat } from 'react-number-format';
 import {
   cleanupDecideOnAvanceCaisseTableStoreAction,
   loadAvanceCaisseAction,
@@ -102,7 +103,20 @@ export function DecideOnAvanceCaisseTable() {
         const { estimatedTotal } = params.row;
         return (
           <Typography level="title-md" color="success">
-            {estimatedTotal}
+            <NumericFormat
+              displayType="text"
+              value={estimatedTotal}
+              fixedDecimalScale
+              decimalScale={2}
+              defaultValue="0"
+              allowNegative={false}
+              thousandSeparator={
+                localStorage.getItem('preferredLanguage') === 'en' ? ',' : ' '
+              }
+              decimalSeparator={
+                localStorage.getItem('preferredLanguage') === 'en' ? '.' : ','
+              }
+            />
           </Typography>
         );
       },

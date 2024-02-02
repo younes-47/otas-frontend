@@ -31,6 +31,7 @@ import {
   changeDecideOnAvanceVoyagePageContentAction,
   setAvanceVoyageIdentityAction,
 } from 'pages/DecideOnAvanceVoyage/actions';
+import { NumericFormat } from 'react-number-format';
 import reducer from './reducer';
 import saga from './saga';
 import messages from './messages';
@@ -138,7 +139,20 @@ export function DecideOnAvanceVoyageTable() {
         const { estimatedTotal } = params.row;
         return (
           <Typography level="title-md" color="success">
-            {estimatedTotal}
+            <NumericFormat
+              displayType="text"
+              value={estimatedTotal}
+              fixedDecimalScale
+              decimalScale={2}
+              defaultValue="0"
+              allowNegative={false}
+              thousandSeparator={
+                localStorage.getItem('preferredLanguage') === 'en' ? ',' : ' '
+              }
+              decimalSeparator={
+                localStorage.getItem('preferredLanguage') === 'en' ? '.' : ','
+              }
+            />
           </Typography>
         );
       },

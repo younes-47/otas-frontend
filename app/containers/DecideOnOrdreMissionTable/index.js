@@ -25,6 +25,7 @@ import {
   changePageContentAction,
   setOrdreMissionIdentityAction,
 } from 'pages/DecideOnOrdreMission/actions';
+import { NumericFormat } from 'react-number-format';
 import makeSelectDecideOnOrdreMissionTable, {
   makeSelectErrorLoadingOrdreMissions,
   makeSelectLoadingOrdreMissions,
@@ -104,10 +105,38 @@ export function DecideOnOrdreMissionTable() {
         const toolTipTitle = (
           <>
             <Typography level="title-md" color="success" variant="soft">
-              {requestedAmountMAD} MAD
+              <NumericFormat
+                displayType="text"
+                value={requestedAmountMAD}
+                fixedDecimalScale
+                decimalScale={2}
+                defaultValue="0"
+                allowNegative={false}
+                thousandSeparator={
+                  localStorage.getItem('preferredLanguage') === 'en' ? ',' : ' '
+                }
+                decimalSeparator={
+                  localStorage.getItem('preferredLanguage') === 'en' ? '.' : ','
+                }
+              />{' '}
+              MAD
             </Typography>
             <Typography level="title-md" color="success" variant="soft">
-              {requestedAmountEUR} EUR
+              <NumericFormat
+                displayType="text"
+                value={requestedAmountEUR}
+                fixedDecimalScale
+                decimalScale={2}
+                defaultValue="0"
+                allowNegative={false}
+                thousandSeparator={
+                  localStorage.getItem('preferredLanguage') === 'en' ? ',' : ' '
+                }
+                decimalSeparator={
+                  localStorage.getItem('preferredLanguage') === 'en' ? '.' : ','
+                }
+              />{' '}
+              EUR
             </Typography>
           </>
         );
@@ -127,7 +156,21 @@ export function DecideOnOrdreMissionTable() {
         }
         return (
           <Typography level="title-md" color="success">
-            {requestedAmountEUR} EUR
+            <NumericFormat
+              displayType="text"
+              value={requestedAmountEUR}
+              fixedDecimalScale
+              decimalScale={2}
+              defaultValue="0"
+              allowNegative={false}
+              thousandSeparator={
+                localStorage.getItem('preferredLanguage') === 'en' ? ',' : ' '
+              }
+              decimalSeparator={
+                localStorage.getItem('preferredLanguage') === 'en' ? '.' : ','
+              }
+            />{' '}
+            EUR
           </Typography>
         );
       },

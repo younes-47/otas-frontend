@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-
+import { NumericFormat } from 'react-number-format';
 import {
   Divider,
   FormControl,
@@ -111,24 +111,37 @@ const Expenses = ({
             </Select>
           </FormControl>
         </Box>
-        <TextField
+        <NumericFormat
           InputProps={{
             readOnly: isExpenseRequired,
           }}
           required
-          type="number"
-          id="outlined-basic"
           label="Fee"
           value={estimatedFee}
-          onChange={(e) =>
-            updateExpenseData(id, 'estimatedFee', e.target.value)
-          }
+          onValueChange={(values, sourceInfo) => {
+            if (values.value === '') {
+              updateExpenseData(id, 'estimatedFee', 0);
+            } else {
+              updateExpenseData(id, 'estimatedFee', values.floatValue);
+            }
+          }}
           sx={{ maxWidth: 120 }}
           disabled={currency !== 'MAD' && currency !== 'EUR'}
           variant={
             (currency !== 'MAD' && currency !== 'EUR') || isExpenseRequired
               ? 'filled'
               : 'outlined'
+          }
+          fixedDecimalScale
+          decimalScale={2}
+          customInput={TextField}
+          defaultValue="0"
+          allowNegative={false}
+          thousandSeparator={
+            localStorage.getItem('preferredLanguage') === 'en' ? ',' : ' '
+          }
+          decimalSeparator={
+            localStorage.getItem('preferredLanguage') === 'en' ? '.' : ','
           }
         />
       </Box>

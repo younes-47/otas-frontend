@@ -51,6 +51,7 @@ import {
 import OrdreMissionForm from 'containers/OrdreMissionForm';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { makeSelectAvanceVoyageIdentity } from 'pages/AvanceVoyage/selectors';
+import { NumericFormat } from 'react-number-format';
 import makeSelectAvanceVoyageView, {
   makeSelectAvanceVoyageDetails,
   makeSelectErrorLoadingAvanceVoyage,
@@ -312,7 +313,24 @@ export function AvanceVoyageView() {
                   variant="h6"
                   sx={{ color: 'success.main', fontWeight: 'bold' }}
                 >
-                  {avanceVoyageDetails?.estimatedTotal}{' '}
+                  <NumericFormat
+                    displayType="text"
+                    value={avanceVoyageDetails?.estimatedTotal}
+                    fixedDecimalScale
+                    decimalScale={2}
+                    defaultValue="0"
+                    allowNegative={false}
+                    thousandSeparator={
+                      localStorage.getItem('preferredLanguage') === 'en'
+                        ? ','
+                        : ' '
+                    }
+                    decimalSeparator={
+                      localStorage.getItem('preferredLanguage') === 'en'
+                        ? '.'
+                        : ','
+                    }
+                  />{' '}
                   {avanceVoyageDetails?.currency}
                 </Typography>
               </Typography>

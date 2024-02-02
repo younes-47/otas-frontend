@@ -22,6 +22,7 @@ import { createStructuredSelector } from 'reselect';
 import { useSelector } from 'react-redux';
 import { ExpandLess, ExpandMore, StarBorder } from '@mui/icons-material';
 import { DateTimeFormater } from 'utils/Custom/stringManipulation';
+import { NumericFormat } from 'react-number-format';
 import { makeSelectAbroad } from './selectors';
 // import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
@@ -43,7 +44,21 @@ const DisplayExpenses = ({ expenseData }) => {
       <Typography color="warning" level="body-md" variant="soft">
         Amount
       </Typography>
-      &nbsp;{expenseData.estimatedFee}
+      &nbsp;
+      <NumericFormat
+        displayType="text"
+        value={expenseData.estimatedFee}
+        fixedDecimalScale
+        decimalScale={2}
+        defaultValue="0"
+        allowNegative={false}
+        thousandSeparator={
+          localStorage.getItem('preferredLanguage') === 'en' ? ',' : ' '
+        }
+        decimalSeparator={
+          localStorage.getItem('preferredLanguage') === 'en' ? '.' : ','
+        }
+      />
     </Typography>
   );
   const description = (

@@ -25,6 +25,7 @@ import { createStructuredSelector } from 'reselect';
 import { useSelector } from 'react-redux';
 import { ExpandLess, ExpandMore, StarBorder } from '@mui/icons-material';
 import { DateTimeFormater } from 'utils/Custom/stringManipulation';
+import { NumericFormat } from 'react-number-format';
 import { makeSelectAbroad } from './selectors';
 // import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
@@ -86,7 +87,21 @@ const DisplayTrips = ({ tripData }) => {
       <Typography color="primary" level="body-md" variant="soft">
         Amount
       </Typography>
-      &nbsp;{tripData.value}
+      &nbsp;
+      <NumericFormat
+        displayType="text"
+        value={tripData.value}
+        fixedDecimalScale
+        decimalScale={2}
+        defaultValue="0"
+        allowNegative={false}
+        thousandSeparator={
+          localStorage.getItem('preferredLanguage') === 'en' ? ',' : ' '
+        }
+        decimalSeparator={
+          localStorage.getItem('preferredLanguage') === 'en' ? '.' : ','
+        }
+      />
     </Typography>
   );
   const highwayFee = (
@@ -94,7 +109,21 @@ const DisplayTrips = ({ tripData }) => {
       <Typography color="primary" level="body-md" variant="soft">
         HighwayFee
       </Typography>
-      &nbsp;{tripData.highwayFee}
+      &nbsp;
+      <NumericFormat
+        displayType="text"
+        value={tripData.highwayFee}
+        fixedDecimalScale
+        decimalScale={2}
+        defaultValue="0"
+        allowNegative={false}
+        thousandSeparator={
+          localStorage.getItem('preferredLanguage') === 'en' ? ',' : ' '
+        }
+        decimalSeparator={
+          localStorage.getItem('preferredLanguage') === 'en' ? '.' : ','
+        }
+      />
     </Typography>
   );
   const estimatedFee = (
@@ -102,7 +131,21 @@ const DisplayTrips = ({ tripData }) => {
       <Typography color="primary" level="body-md" variant="soft">
         Total (estm.)
       </Typography>
-      &nbsp;{tripData.estimatedFee}
+      &nbsp;
+      <NumericFormat
+        displayType="text"
+        value={tripData.estimatedFee}
+        fixedDecimalScale
+        decimalScale={2}
+        defaultValue="0"
+        allowNegative={false}
+        thousandSeparator={
+          localStorage.getItem('preferredLanguage') === 'en' ? ',' : ' '
+        }
+        decimalSeparator={
+          localStorage.getItem('preferredLanguage') === 'en' ? '.' : ','
+        }
+      />
     </Typography>
   );
   const [open, setOpen] = useState(false);

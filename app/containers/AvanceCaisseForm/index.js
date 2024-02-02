@@ -51,6 +51,7 @@ import ActualRequesterInputs from 'components/ActualRequesterInputs';
 import { ValidateInputs } from 'utils/Custom/ValidateInputs';
 import LinearProgress from '@mui/material/LinearProgress';
 import { Card, CardContent, Snackbar } from '@mui/joy';
+import { NumericFormat } from 'react-number-format';
 import {
   makeSelectAddAvanceCaisse,
   makeSelectAvanceCaisseDetails,
@@ -170,6 +171,7 @@ export function AvanceCaisseForm({ state }) {
           expenseDate: dayjs(new Date(expense.expenseDate)),
           estimatedFee: expense.estimatedFee,
         };
+
         setExpenses((prevExpenses) => [...prevExpenses, formattedDateExpense]);
       });
     }
@@ -239,6 +241,7 @@ export function AvanceCaisseForm({ state }) {
     });
     setTotal(totalExpenses);
   }, [expenses]);
+
   const handleOnBehalfSelectionChange = (event) => {
     if (event.target.value !== String(onBehalfSelection)) {
       dispatch(SelectOnBehalfAction(event.target.value.toString()));
@@ -717,7 +720,26 @@ export function AvanceCaisseForm({ state }) {
               <h1 style={{ fontSize: '1.1rem' }}>
                 Estimated Total in {currency === 'MAD' ? 'MAD' : 'EUR'}
               </h1>
-              <h1 style={{ fontSize: '1.1rem', color: 'green' }}>{total}</h1>
+              <h1 style={{ fontSize: '1.1rem', color: 'green' }}>
+                <NumericFormat
+                  displayType="text"
+                  value={total}
+                  fixedDecimalScale
+                  decimalScale={2}
+                  defaultValue="0"
+                  allowNegative={false}
+                  thousandSeparator={
+                    localStorage.getItem('preferredLanguage') === 'en'
+                      ? ','
+                      : ' '
+                  }
+                  decimalSeparator={
+                    localStorage.getItem('preferredLanguage') === 'en'
+                      ? '.'
+                      : ','
+                  }
+                />
+              </h1>
             </Box>
           </Box>
         </Box>

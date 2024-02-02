@@ -11,6 +11,7 @@ import './SimpleTripsTableStyling.css';
 import { FormattedMessage } from 'react-intl';
 import { Typography } from '@mui/joy';
 import { FormatNumber } from 'utils/Custom/stringManipulation';
+import { NumericFormat } from 'react-number-format';
 import messages from './messages';
 
 function SimpleTripsTable({ tripsData }) {
@@ -55,7 +56,24 @@ function SimpleTripsTable({ tripsData }) {
             <td>
               {trip.unit !== 'KM' ? (
                 <Typography level="body-md">
-                  {FormatNumber(trip.value)}
+                  <NumericFormat
+                    displayType="text"
+                    value={tripsData.value}
+                    fixedDecimalScale
+                    decimalScale={2}
+                    defaultValue="0"
+                    allowNegative={false}
+                    thousandSeparator={
+                      localStorage.getItem('preferredLanguage') === 'en'
+                        ? ','
+                        : ' '
+                    }
+                    decimalSeparator={
+                      localStorage.getItem('preferredLanguage') === 'en'
+                        ? '.'
+                        : ','
+                    }
+                  />
                 </Typography>
               ) : (
                 <Typography level="body-md">{trip.value}</Typography>
@@ -63,12 +81,46 @@ function SimpleTripsTable({ tripsData }) {
             </td>
             <td>
               <Typography level="body-md">
-                {FormatNumber(trip.highwayFee)}
+                <NumericFormat
+                  displayType="text"
+                  value={tripsData.highwayFee}
+                  fixedDecimalScale
+                  decimalScale={2}
+                  defaultValue="0"
+                  allowNegative={false}
+                  thousandSeparator={
+                    localStorage.getItem('preferredLanguage') === 'en'
+                      ? ','
+                      : ' '
+                  }
+                  decimalSeparator={
+                    localStorage.getItem('preferredLanguage') === 'en'
+                      ? '.'
+                      : ','
+                  }
+                />
               </Typography>
             </td>
             <td>
               <Typography level="body-md">
-                {FormatNumber(trip.estimatedFee)}
+                <NumericFormat
+                  displayType="text"
+                  value={tripsData.estimatedFee}
+                  fixedDecimalScale
+                  decimalScale={2}
+                  defaultValue="0"
+                  allowNegative={false}
+                  thousandSeparator={
+                    localStorage.getItem('preferredLanguage') === 'en'
+                      ? ','
+                      : ' '
+                  }
+                  decimalSeparator={
+                    localStorage.getItem('preferredLanguage') === 'en'
+                      ? '.'
+                      : ','
+                  }
+                />
               </Typography>
             </td>
           </tr>

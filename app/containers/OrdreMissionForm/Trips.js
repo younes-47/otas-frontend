@@ -19,6 +19,8 @@ import { Box } from '@mui/system';
 import { DateTimePicker } from '@mui/x-date-pickers';
 import { createStructuredSelector } from 'reselect';
 import { useSelector } from 'react-redux';
+import { NumericFormat } from 'react-number-format';
+import { FormatNumber } from 'utils/Custom/stringManipulation';
 import { makeSelectAbroad } from './selectors';
 // import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
@@ -99,6 +101,7 @@ const Trips = ({
           sx={{ minWidth: 160, maxWidth: 160 }}
           required
         />
+
         <TextField
           id="input-with-icon-textfield"
           label="Destination"
@@ -223,13 +226,10 @@ const Trips = ({
           </FormControl>
         </Box>
 
-        <TextField
+        <NumericFormat
           required
-          id="outlined-required"
-          type="number"
           label={unit === 'KM' ? 'Mileage' : 'Fee'}
           value={value}
-          onChange={(e) => updateTripData(id, 'value', e.target.value)}
           sx={{ maxWidth: 90, minWidth: 90 }}
           variant={
             (unit !== 'KM' && unit !== 'MAD' && unit !== 'EUR') ||
@@ -241,13 +241,30 @@ const Trips = ({
           inputProps={{
             readOnly: !isTripModifiabale,
           }}
+          onValueChange={(values, sourceInfo) => {
+            if (values.value === '') {
+              updateTripData(id, 'value', 0);
+            } else {
+              updateTripData(id, 'value', values.floatValue);
+            }
+          }}
+          fixedDecimalScale
+          decimalScale={2}
+          customInput={TextField}
+          defaultValue="0"
+          allowNegative={false}
+          thousandSeparator={
+            localStorage.getItem('preferredLanguage') === 'en' ? ',' : ' '
+          }
+          decimalSeparator={
+            localStorage.getItem('preferredLanguage') === 'en' ? '.' : ','
+          }
         />
 
         {transportationMethod === transportationMethodOptions[6] ||
         transportationMethod === transportationMethodOptions[7] ? (
-          <TextField
+          <NumericFormat
             required
-            type="number"
             id={
               transportationMethod === transportationMethodOptions[6] ||
               transportationMethod === transportationMethodOptions[7]
@@ -256,24 +273,56 @@ const Trips = ({
             }
             label="Highway"
             value={highwayFee}
-            onChange={(e) => updateTripData(id, 'highwayFee', e.target.value)}
             sx={{ maxWidth: 90, minWidth: 90 }}
             variant={!isTripModifiabale ? 'filled' : undefined}
             inputProps={{
               readOnly: !isTripModifiabale,
             }}
+            onValueChange={(values, sourceInfo) => {
+              if (values.value === '') {
+                updateTripData(id, 'highwayFee', 0);
+              } else {
+                updateTripData(id, 'highwayFee', values.floatValue);
+              }
+            }}
+            fixedDecimalScale
+            decimalScale={2}
+            customInput={TextField}
+            defaultValue="0"
+            allowNegative={false}
+            thousandSeparator={
+              localStorage.getItem('preferredLanguage') === 'en' ? ',' : ' '
+            }
+            decimalSeparator={
+              localStorage.getItem('preferredLanguage') === 'en' ? '.' : ','
+            }
           />
         ) : (
-          <TextField
+          <NumericFormat
             required
             disabled
-            type="number"
-            id="filled-disabled"
             label="Highway"
             value={highwayFee}
-            onChange={(e) => updateTripData(id, 'highwayFee', e.target.value)}
             sx={{ maxWidth: 90, minWidth: 90 }}
             variant="filled"
+            onValueChange={(values, sourceInfo) => {
+              if (values.value === '') {
+                updateTripData(id, 'highwayFee', 0);
+              } else {
+                updateTripData(id, 'highwayFee', values.floatValue);
+              }
+            }}
+            fixedDecimalScale
+            decimalScale={2}
+            customInput={TextField}
+            defaultValue="0"
+            allowNegative={false}
+            thousandSeparator={
+              localStorage.getItem('preferredLanguage') === 'en' ? ',' : ' '
+            }
+            decimalSeparator={
+              localStorage.getItem('preferredLanguage') === 'en' ? '.' : ','
+            }
           />
         )}
 
@@ -285,7 +334,7 @@ const Trips = ({
             // unit === 'EUR'
             //   ? `EUR ${calculatedTripFee}`
             //   : `MAD ${calculatedTripFee}`
-            calculatedTripFee
+            FormatNumber(calculatedTripFee)
           }
           InputProps={{
             readOnly: true,
@@ -294,6 +343,7 @@ const Trips = ({
           color="success"
           focused
         />
+
         {isTripRequired || !isTripModifiabale ? (
           <IconButton sx={{ fontSize: '10px' }} disableRipple>
             <KeyboardArrowLeftIcon></KeyboardArrowLeftIcon>

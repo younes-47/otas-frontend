@@ -28,6 +28,7 @@ import {
   changeDecideOnDepenseCaissePageContentAction,
   setDepenseCaisseIdentityAction,
 } from 'pages/DecideOnDepenseCaisse/actions';
+import { NumericFormat } from 'react-number-format';
 import {
   makeSelectDepenseCaisseReceiptsFileDownloadResponse,
   makeSelectDepenseCaisses,
@@ -174,7 +175,20 @@ export function DecideOnDepenseCaisseTable() {
         const { total } = params.row;
         return (
           <Typography level="title-md" color="success">
-            {total}
+            <NumericFormat
+              displayType="text"
+              value={total}
+              fixedDecimalScale
+              decimalScale={2}
+              defaultValue="0"
+              allowNegative={false}
+              thousandSeparator={
+                localStorage.getItem('preferredLanguage') === 'en' ? ',' : ' '
+              }
+              decimalSeparator={
+                localStorage.getItem('preferredLanguage') === 'en' ? '.' : ','
+              }
+            />
           </Typography>
         );
       },

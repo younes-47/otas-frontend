@@ -8,6 +8,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import { NumericFormat } from 'react-number-format';
 
 // import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
@@ -70,20 +71,33 @@ const Expenses = ({
             format="DD/MM/YYYY"
           />
         </LocalizationProvider>
-        <TextField
+        <NumericFormat
           required
-          id="outlined-basic"
           label="Fee"
           value={estimatedFee}
-          type="number"
-          onChange={(e) =>
-            updateExpenseData(id, 'estimatedFee', e.target.value)
-          }
           variant={isExpenseModifiabale ? 'outlined' : 'filled'}
           sx={{ maxWidth: 120 }}
           InputProps={{
             readOnly: !isExpenseModifiabale,
           }}
+          onValueChange={(values, sourceInfo) => {
+            if (values.value === '') {
+              updateExpenseData(id, 'estimatedFee', 0);
+            } else {
+              updateExpenseData(id, 'estimatedFee', values.floatValue);
+            }
+          }}
+          fixedDecimalScale
+          decimalScale={2}
+          customInput={TextField}
+          defaultValue="0"
+          allowNegative={false}
+          thousandSeparator={
+            localStorage.getItem('preferredLanguage') === 'en' ? ',' : ' '
+          }
+          decimalSeparator={
+            localStorage.getItem('preferredLanguage') === 'en' ? '.' : ','
+          }
         />
       </Box>
     </Box>

@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 import { Typography } from '@mui/joy';
 import './SimpleExpensesTableStyling.css';
 import { numberFormatterEN } from 'utils/Custom/stringManipulation';
+import { NumericFormat } from 'react-number-format';
 
 function SimpleExpensesTable({ expensesData }) {
   return (
@@ -34,7 +35,26 @@ function SimpleExpensesTable({ expensesData }) {
               <Typography level="body-md">{expense.currency}</Typography>
             </td>
             <td>
-              <Typography level="body-md">{expense.estimatedFee}</Typography>
+              <Typography level="body-md">
+                <NumericFormat
+                  displayType="text"
+                  value={expense.estimatedFee}
+                  fixedDecimalScale
+                  decimalScale={2}
+                  defaultValue="0"
+                  allowNegative={false}
+                  thousandSeparator={
+                    localStorage.getItem('preferredLanguage') === 'en'
+                      ? ','
+                      : ' '
+                  }
+                  decimalSeparator={
+                    localStorage.getItem('preferredLanguage') === 'en'
+                      ? '.'
+                      : ','
+                  }
+                />
+              </Typography>
             </td>
           </tr>
         ))}

@@ -45,6 +45,7 @@ import {
 } from 'pages/DecideOnOrdreMission/actions';
 import { setAvanceVoyageStatusAction } from 'containers/DecideOnAvanceVoyageTable/actions';
 import { FormatNumber } from 'utils/Custom/stringManipulation';
+import { NumericFormat } from 'react-number-format';
 import reducer from './reducer';
 import saga from './saga';
 import {
@@ -332,7 +333,20 @@ export function DecideOnAvanceVoyageForm({ state }) {
           <Typography level="h4">
             Total {avanceVoyageDetails?.currency}:&nbsp;
             <Typography color="success">
-              {FormatNumber(avanceVoyageDetails?.estimatedTotal)}
+              <NumericFormat
+                displayType="text"
+                value={avanceVoyageDetails?.estimatedTotal}
+                fixedDecimalScale
+                decimalScale={2}
+                defaultValue="0"
+                allowNegative={false}
+                thousandSeparator={
+                  localStorage.getItem('preferredLanguage') === 'en' ? ',' : ' '
+                }
+                decimalSeparator={
+                  localStorage.getItem('preferredLanguage') === 'en' ? '.' : ','
+                }
+              />
             </Typography>
           </Typography>
         </Box>

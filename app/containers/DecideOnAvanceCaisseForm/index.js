@@ -39,6 +39,7 @@ import {
 } from 'utils/Custom/stringManipulation';
 import DisplayUserinfo from 'components/DisplayUserinfo';
 import SimpleExpensesTable from 'components/SimpleExpensesTable';
+import { NumericFormat } from 'react-number-format';
 import {
   makeSelectAvanceCaisseDetails,
   makeSelectErrorDecidingOnAvanceCaisse,
@@ -327,7 +328,20 @@ export function DecideOnAvanceCaisseForm({ state }) {
           <Typography level="h4">
             Total {avanceCaisseDetails?.currency}:&nbsp;
             <Typography color="success">
-              {FormatNumber(avanceCaisseDetails?.estimatedTotal)}
+              <NumericFormat
+                displayType="text"
+                value={avanceCaisseDetails?.estimatedTotal}
+                fixedDecimalScale
+                decimalScale={2}
+                defaultValue="0"
+                allowNegative={false}
+                thousandSeparator={
+                  localStorage.getItem('preferredLanguage') === 'en' ? ',' : ' '
+                }
+                decimalSeparator={
+                  localStorage.getItem('preferredLanguage') === 'en' ? '.' : ','
+                }
+              />
             </Typography>
           </Typography>
         </Box>

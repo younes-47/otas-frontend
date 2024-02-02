@@ -36,6 +36,7 @@ import { cleanupParentDecideOnDepenseCaisseStoreAction } from 'pages/DecideOnDep
 import { setDepenseCaisseStatusAction } from 'containers/DecideOnDepenseCaisseTable/actions';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import { makeSelectDepenseCaisseIdentity } from 'pages/DecideOnDepenseCaisse/selectors';
+import { NumericFormat } from 'react-number-format';
 import {
   makeSelectDepenseCaisseDetails,
   makeSelectErrorDecidingOnDepenseCaisse,
@@ -381,7 +382,20 @@ export function DecideOnDepenseCaisseForm({ state }) {
           <Typography level="h4">
             Total {depenseCaisseDetails?.currency}:&nbsp;
             <Typography color="success">
-              {FormatNumber(depenseCaisseDetails?.total)}
+              <NumericFormat
+                displayType="text"
+                value={depenseCaisseDetails?.total}
+                fixedDecimalScale
+                decimalScale={2}
+                defaultValue="0"
+                allowNegative={false}
+                thousandSeparator={
+                  localStorage.getItem('preferredLanguage') === 'en' ? ',' : ' '
+                }
+                decimalSeparator={
+                  localStorage.getItem('preferredLanguage') === 'en' ? '.' : ','
+                }
+              />
             </Typography>
           </Typography>
         </Box>

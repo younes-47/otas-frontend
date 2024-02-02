@@ -31,6 +31,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import FilePresent from '@mui/icons-material/FilePresent';
 import Typography from '@mui/joy/Typography';
 import Snackbar from '@mui/joy/Snackbar';
+import { NumericFormat } from 'react-number-format';
 import saga from './saga';
 import reducer from './reducer';
 import {
@@ -214,7 +215,20 @@ export function DepenseCaisseTable() {
         const { total } = params.row;
         return (
           <Typography color="success" level="title-md" variant="plain">
-            {total.toFixed(2)}
+            <NumericFormat
+              displayType="text"
+              value={total}
+              fixedDecimalScale
+              decimalScale={2}
+              defaultValue="0"
+              allowNegative={false}
+              thousandSeparator={
+                localStorage.getItem('preferredLanguage') === 'en' ? ',' : ' '
+              }
+              decimalSeparator={
+                localStorage.getItem('preferredLanguage') === 'en' ? '.' : ','
+              }
+            />
           </Typography>
         );
       },

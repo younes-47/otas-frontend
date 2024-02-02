@@ -53,6 +53,7 @@ import ActualRequesterInputs from 'components/ActualRequesterInputs';
 import { ValidateInputs } from 'utils/Custom/ValidateInputs';
 
 import { Card, CardContent, Snackbar } from '@mui/joy';
+import { NumericFormat } from 'react-number-format';
 import saga from './saga';
 import reducer from './reducer';
 import {
@@ -901,7 +902,24 @@ export function OrdreMissionForm({ state }) {
               <Box display="flex" justifyContent="space-between" gap={5}>
                 <h1 style={{ fontSize: '1.1rem' }}>Estimated Total in MAD:</h1>
                 <h1 style={{ fontSize: '1.1rem', color: 'green' }}>
-                  {totalMAD}
+                  <NumericFormat
+                    displayType="text"
+                    value={totalMAD}
+                    fixedDecimalScale
+                    decimalScale={2}
+                    defaultValue="0"
+                    allowNegative={false}
+                    thousandSeparator={
+                      localStorage.getItem('preferredLanguage') === 'en'
+                        ? ','
+                        : ' '
+                    }
+                    decimalSeparator={
+                      localStorage.getItem('preferredLanguage') === 'en'
+                        ? '.'
+                        : ','
+                    }
+                  />
                 </h1>
               </Box>
               {abroadSelection === 'true' && (
@@ -910,7 +928,24 @@ export function OrdreMissionForm({ state }) {
                     Estimated Total in EUR:
                   </h1>
                   <h1 style={{ fontSize: '1.1rem', color: 'green' }}>
-                    {totalEUR}
+                    <NumericFormat
+                      displayType="text"
+                      value={totalEUR}
+                      fixedDecimalScale
+                      decimalScale={2}
+                      defaultValue="0"
+                      allowNegative={false}
+                      thousandSeparator={
+                        localStorage.getItem('preferredLanguage') === 'en'
+                          ? ','
+                          : ' '
+                      }
+                      decimalSeparator={
+                        localStorage.getItem('preferredLanguage') === 'en'
+                          ? '.'
+                          : ','
+                      }
+                    />
                   </h1>
                 </Box>
               )}

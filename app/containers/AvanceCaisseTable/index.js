@@ -29,6 +29,7 @@ import {
   setAvanceCaisseIdentityAction,
 } from 'pages/AvanceCaisse/actions';
 import { Snackbar, Typography } from '@mui/joy';
+import { NumericFormat } from 'react-number-format';
 import saga from './saga';
 import reducer from './reducer';
 import {
@@ -173,7 +174,20 @@ export function AvanceCaisseTable() {
         const { estimatedTotal } = params.row;
         return (
           <Typography color="success" level="title-md" variant="plain">
-            {estimatedTotal.toFixed(2)}
+            <NumericFormat
+              displayType="text"
+              value={estimatedTotal}
+              fixedDecimalScale
+              decimalScale={2}
+              defaultValue="0"
+              allowNegative={false}
+              thousandSeparator={
+                localStorage.getItem('preferredLanguage') === 'en' ? ',' : ' '
+              }
+              decimalSeparator={
+                localStorage.getItem('preferredLanguage') === 'en' ? '.' : ','
+              }
+            />
           </Typography>
         );
       },
