@@ -150,7 +150,21 @@ export function DecideOnOrdreMissionTable() {
         if (requestedAmountMAD > 0) {
           return (
             <Typography level="title-md" color="success">
-              {requestedAmountMAD} MAD
+              <NumericFormat
+                displayType="text"
+                value={requestedAmountMAD}
+                fixedDecimalScale
+                decimalScale={2}
+                defaultValue="0"
+                allowNegative={false}
+                thousandSeparator={
+                  localStorage.getItem('preferredLanguage') === 'en' ? ',' : ' '
+                }
+                decimalSeparator={
+                  localStorage.getItem('preferredLanguage') === 'en' ? '.' : ','
+                }
+              />{' '}
+              MAD
             </Typography>
           );
         }

@@ -14,6 +14,7 @@ import Stack from '@mui/material/Stack';
 
 import { useInjectReducer } from 'utils/injectReducer';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
+import { Typography } from '@mui/joy';
 import reducer from './reducer';
 
 const mapStateToProps = createStructuredSelector({
@@ -40,18 +41,25 @@ export function Unauthorized() {
     >
       <Box display="flex" justifyContent="center" textAlign="center">
         <Stack>
-          <h1 style={{ fontSize: '48px', marginBottom: '20px' }}>
+          <Typography
+            color="danger"
+            variant="outlined"
+            level="h1"
+            gutterBottom
+            marginTop={5}
+          >
             Unauthorized
-          </h1>
-          <p style={{ fontSize: '24px', marginBottom: '40px' }}>
+          </Typography>
+          <Typography color="danger" variant="soft" level="title-lg">
             You do not have permission to access this Page.
-          </p>
-          <Link
+          </Typography>
+
+          {/* <Link
             to="/my-requests"
             style={{ fontSize: '24px', marginBottom: '40px' }}
           >
             Go to MyRequests
-          </Link>
+          </Link> */}
         </Stack>
       </Box>
     </Box>

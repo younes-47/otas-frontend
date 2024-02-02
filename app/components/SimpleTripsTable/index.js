@@ -58,7 +58,7 @@ function SimpleTripsTable({ tripsData }) {
                 <Typography level="body-md">
                   <NumericFormat
                     displayType="text"
-                    value={tripsData.value}
+                    value={trip.value}
                     fixedDecimalScale
                     decimalScale={2}
                     defaultValue="0"
@@ -83,7 +83,7 @@ function SimpleTripsTable({ tripsData }) {
               <Typography level="body-md">
                 <NumericFormat
                   displayType="text"
-                  value={tripsData.highwayFee}
+                  value={trip.highwayFee}
                   fixedDecimalScale
                   decimalScale={2}
                   defaultValue="0"
@@ -105,7 +105,7 @@ function SimpleTripsTable({ tripsData }) {
               <Typography level="body-md">
                 <NumericFormat
                   displayType="text"
-                  value={tripsData.estimatedFee}
+                  value={trip.estimatedFee}
                   fixedDecimalScale
                   decimalScale={2}
                   defaultValue="0"

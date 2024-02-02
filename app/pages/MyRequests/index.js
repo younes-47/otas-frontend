@@ -78,7 +78,6 @@ export default function MyRequests() {
       localStorage.setItem('department', userInfo.department);
       localStorage.setItem('preferredLanguage', userInfo.preferredLanguage);
       localStorage.setItem('managerUserName', userInfo.managerUserName);
-      localStorage.setItem('level', userInfo.level);
     }
   }, [userInfo]);
 

@@ -12,13 +12,18 @@ import { Box } from '@mui/system';
 import CustomizedTimeLine from 'components/CustomizedTimeLine';
 import HistoryIcon from '@mui/icons-material/History';
 import InsertLinkIcon from '@mui/icons-material/InsertLink';
+import PaymentsIcon from '@mui/icons-material/Payments';
 import {
   Alert,
   Card,
   CardContent,
   Link,
+  List,
+  ListItem,
+  ListItemDecorator,
+  Radio,
+  RadioGroup,
   Stack,
-  Textarea,
   Typography,
 } from '@mui/joy';
 import {
@@ -38,13 +43,13 @@ import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import { makeSelectAvanceVoyageIdentity } from 'pages/DecideOnAvanceVoyage/selectors';
 import { cleanupParentDecideOnAvanceVoyageStoreAction } from 'pages/DecideOnAvanceVoyage/actions';
 import DisplayUserinfo from 'components/DisplayUserinfo';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import {
   changePageContentAction,
   setOrdreMissionIdentityAction,
 } from 'pages/DecideOnOrdreMission/actions';
 import { setAvanceVoyageStatusAction } from 'containers/DecideOnAvanceVoyageTable/actions';
-import { FormatNumber } from 'utils/Custom/stringManipulation';
 import { NumericFormat } from 'react-number-format';
 import reducer from './reducer';
 import saga from './saga';
@@ -85,9 +90,7 @@ export function DecideOnAvanceVoyageForm({ state }) {
   // Control data
   const [deciderComment, setDeciderComment] = useState(null);
   const [decisionString, setDecisionString] = useState(null);
-  const [returnedToFMByTR, setReturnedToFMByTR] = useState(false);
-  const [returnedToTRByFM, setReturnedToTRByFM] = useState(false);
-  const [returnedToRequesterByTR, setReturnedToRequesterByTR] = useState(false);
+  const [methodOfDelivery, setMethodOfDelivery] = useState('CASH');
 
   // Control modal content
   const [modalBody, setModalBody] = useState('');
@@ -101,9 +104,9 @@ export function DecideOnAvanceVoyageForm({ state }) {
     requestId: avanceVoyageDetails !== null && avanceVoyageDetails?.id,
     deciderComment,
     decisionString,
-    returnedToFMByTR,
-    returnedToTRByFM,
-    returnedToRequesterByTR,
+    returnedToFMByTR: false,
+    returnedToTRByFM: false,
+    returnedToRequesterByTR: false,
   };
 
   // Load the data => object details
@@ -163,6 +166,7 @@ export function DecideOnAvanceVoyageForm({ state }) {
     setModalSevirity('danger');
     setModalVisibility(true);
   };
+
   const handleOnReturnRequestButtonClick = () => {
     setModalHeader('Return the request?');
     setModalBody(
@@ -170,6 +174,18 @@ export function DecideOnAvanceVoyageForm({ state }) {
     );
     setModalSevirity('warning');
     setModalVisibility(true);
+  };
+
+  // TR buttons
+  const handleOnMarkFundsAsPreparedButtonClick = () => {
+    setModalHeader('Mark funds as prepared?');
+    setModalBody('Please choose method of delivery.');
+    setModalSevirity('success');
+    setModalVisibility(true);
+  };
+
+  const handleOnMethodOfDeliveryConfirmationButtonClick = () => {
+    // setDecisionString('approve');
   };
 
   const handleOnApproveRequestConfirmationButtonClick = () => {
@@ -189,7 +205,6 @@ export function DecideOnAvanceVoyageForm({ state }) {
     dispatch(changePageContentAction('VIEW'));
     history.push('/decide-on-requests/decide-on-ordre-mission');
   };
-
   return (
     <Box
       position="fixed"
@@ -271,37 +286,41 @@ export function DecideOnAvanceVoyageForm({ state }) {
         <Divider style={{ width: '60%', opacity: 0.7 }} />
       </Box>
 
-      <Box
-        textAlign="center"
-        display="flex"
-        justifyContent="center"
-        marginBottom={3}
-      >
-        <Alert severity="info">
-          <Typography level="title-md" color="neutral">
-            This Avance Voyage is Linked to
-          </Typography>
-          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-          <Link
-            level="title-md"
-            underline="always"
-            onClick={() => handleOnOrdreMissionLinkClick()}
+      {localStorage.getItem('level') !== 'TR' && (
+        <>
+          <Box
+            textAlign="center"
+            display="flex"
+            justifyContent="center"
+            marginBottom={3}
           >
-            Ordre Mission #{avanceVoyageDetails?.ordreMissionId}&nbsp;
-            <InsertLinkIcon fontSize="small" />
-          </Link>
-        </Alert>
-      </Box>
+            <Alert severity="info">
+              <Typography level="title-md" color="neutral">
+                This Avance Voyage is Linked to
+              </Typography>
+              {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+              <Link
+                level="title-md"
+                underline="always"
+                onClick={() => handleOnOrdreMissionLinkClick()}
+              >
+                Ordre Mission #{avanceVoyageDetails?.ordreMissionId}&nbsp;
+                <InsertLinkIcon fontSize="small" />
+              </Link>
+            </Alert>
+          </Box>
 
-      {/* DIVIDER */}
-      <Box
-        display="flex"
-        justifyContent="center"
-        textAlign="center"
-        marginBottom={3}
-      >
-        <Divider style={{ width: '60%', opacity: 0.7 }} />
-      </Box>
+          {/* DIVIDER */}
+          <Box
+            display="flex"
+            justifyContent="center"
+            textAlign="center"
+            marginBottom={3}
+          >
+            <Divider style={{ width: '60%', opacity: 0.7 }} />
+          </Box>
+        </>
+      )}
 
       <Box display="flex" justifyContent="center" marginBottom={3}>
         <Card
@@ -367,7 +386,7 @@ export function DecideOnAvanceVoyageForm({ state }) {
         >
           Return
         </Button>
-        {!readOnly && (
+        {!readOnly && localStorage.getItem('level') !== 'TR' && (
           <>
             <Button
               variant="contained"
@@ -391,6 +410,15 @@ export function DecideOnAvanceVoyageForm({ state }) {
               Sign & Approve
             </Button>
           </>
+        )}
+        {localStorage.getItem('level') === 'TR' && (
+          <Button
+            variant="contained"
+            color="success"
+            onClick={handleOnMarkFundsAsPreparedButtonClick}
+          >
+            Mark funds as prepared
+          </Button>
         )}
       </Stack>
 
@@ -440,6 +468,79 @@ export function DecideOnAvanceVoyageForm({ state }) {
                   />
                 </>
               )}
+              {modalHeader === 'Mark funds as prepared?' && (
+                <RadioGroup
+                  name="delivery-method"
+                  sx={{ margin: '1em' }}
+                  value={methodOfDelivery}
+                  onChange={(e) => setMethodOfDelivery(e.target.value)}
+                >
+                  <List
+                    sx={{
+                      minWidth: 240,
+                      '--List-gap': '0.5rem',
+                      '--ListItem-paddingY': '1rem',
+                      '--ListItem-radius': '8px',
+                      '--ListItemDecorator-size': '32px',
+                    }}
+                  >
+                    <ListItem
+                      variant="outlined"
+                      key="0"
+                      sx={{ boxShadow: 'sm' }}
+                    >
+                      <ListItemDecorator>
+                        <PaymentsIcon color="success" />
+                      </ListItemDecorator>
+                      <Radio
+                        overlay
+                        value="CASH"
+                        label="Cash"
+                        sx={{ flexGrow: 1, flexDirection: 'row-reverse' }}
+                        slotProps={{
+                          action: ({ checked }) => ({
+                            sx: (theme) => ({
+                              ...(checked && {
+                                inset: -1,
+                                border: '2px solid',
+                                borderColor: theme.vars.palette.success[500],
+                              }),
+                            }),
+                          }),
+                        }}
+                        color="success"
+                      />
+                    </ListItem>
+                    <ListItem
+                      variant="outlined"
+                      key="1"
+                      sx={{ boxShadow: 'sm' }}
+                    >
+                      <ListItemDecorator>
+                        <AccountBalanceIcon color="warning" />
+                      </ListItemDecorator>
+                      <Radio
+                        overlay
+                        value="PROVISION"
+                        label="Provision"
+                        sx={{ flexGrow: 1, flexDirection: 'row-reverse' }}
+                        slotProps={{
+                          action: ({ checked }) => ({
+                            sx: (theme) => ({
+                              ...(checked && {
+                                inset: -1,
+                                border: '2px solid',
+                                borderColor: theme.vars.palette.success[500],
+                              }),
+                            }),
+                          }),
+                        }}
+                        color="success"
+                      />
+                    </ListItem>
+                  </List>
+                </RadioGroup>
+              )}
             </DialogContentText>
           )}
         </DialogContent>
@@ -472,6 +573,15 @@ export function DecideOnAvanceVoyageForm({ state }) {
               variant="contained"
             >
               Return the request
+            </Button>
+          )}
+          {modalHeader === 'Mark funds as prepared?' && (
+            <Button
+              color="success"
+              onClick={handleOnMethodOfDeliveryConfirmationButtonClick}
+              variant="contained"
+            >
+              Confirm
             </Button>
           )}
         </DialogActions>

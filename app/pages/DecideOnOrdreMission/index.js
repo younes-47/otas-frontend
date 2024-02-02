@@ -13,6 +13,7 @@ import { DecideOnAvanceCaisseForm } from 'containers/DecideOnAvanceCaisseForm';
 import { DecideOnAvanceCaisseTable } from 'containers/DecideOnAvanceCaisseTable';
 import { DecideOnOrdreMissionForm } from 'containers/DecideOnOrdreMissionForm';
 import DecideOnOrdreMissionTable from 'containers/DecideOnOrdreMissionTable';
+import Unauthorized from 'pages/Unauthorized';
 import { makeSelectChangePageContent } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
@@ -34,7 +35,7 @@ export function DecideOnOrdreMission() {
   //   },
   //   [],
   // );
-
+  if (localStorage.getItem('level') === 'TR') return <Unauthorized />;
   switch (pageContent) {
     case 'DECIDE':
       return <DecideOnOrdreMissionForm state="DECIDE" />;

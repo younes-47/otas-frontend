@@ -85,6 +85,7 @@ export function DecideOnRequests() {
             } else {
               string += 'and Treasury Manager';
             }
+            localStorage.setItem('level', 'TR');
             break;
           case 'DG':
             if (index === 0) {
