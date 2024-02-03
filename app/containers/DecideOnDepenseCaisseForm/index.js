@@ -239,6 +239,12 @@ export function DecideOnDepenseCaisseForm({ state }) {
         textAlign="center"
         marginBottom={2}
       >
+        <Typography color="neutral" level="title-lg" variant="plain">
+          Current Status:{' '}
+          <Typography color="primary" level="title-lg" variant="plain">
+            {depenseCaisseDetails?.latestStatus}
+          </Typography>
+        </Typography>
         <Button
           variant="outlined"
           color="warning"
@@ -250,6 +256,32 @@ export function DecideOnDepenseCaisseForm({ state }) {
         >
           Status History
         </Button>
+      </Box>
+
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        marginBottom={3}
+      >
+        <Card color="primary" variant="soft" icon={false}>
+          <CardContent sx={{ textAlign: 'center', marginBottom: '1em' }}>
+            {depenseCaisseDetails?.latestStatus ===
+              "Pending Manager's Approval" &&
+              'You are deciding upon this request as a Manager of your department'}
+            {depenseCaisseDetails?.latestStatus === "Pending HR's approval" &&
+              'You are deciding upon this request as an HR Manager'}
+            {depenseCaisseDetails?.latestStatus ===
+              "Pending Finance Departement's Approval" &&
+              'You are deciding upon this request as a Finance Manager'}
+            {depenseCaisseDetails?.latestStatus ===
+              "Pending General Director's Approval" &&
+              'You are deciding upon this request as a General Director'}
+            {depenseCaisseDetails?.latestStatus ===
+              "Pending Vice President's Approval" &&
+              'You are deciding upon this request as a Vice President'}
+          </CardContent>
+        </Card>
       </Box>
 
       {/* DIVIDER */}
@@ -437,7 +469,9 @@ export function DecideOnDepenseCaisseForm({ state }) {
               color="success"
               onClick={handleOnApproveRequestButtonClick}
             >
-              Sign & Approve
+              {localStorage.getItem('level') !== 'FM'
+                ? 'Sign and Approve'
+                : 'Approve'}
             </Button>
           </>
         )}

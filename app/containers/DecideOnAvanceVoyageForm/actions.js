@@ -6,6 +6,9 @@
 
 import {
   CLEANUP_STORE_ACTION,
+  CONFIRM_FUNDS_DELIVERY,
+  CONFIRM_FUNDS_DELIVERY_ERROR,
+  CONFIRM_FUNDS_DELIVERY_SUCCESS,
   DECIDE_ON_AVANCE_VOYAGE,
   DECIDE_ON_AVANCE_VOYAGE_ERROR,
   DECIDE_ON_AVANCE_VOYAGE_SUCCESS,
@@ -13,6 +16,9 @@ import {
   LOAD_AVANCE_VOYAGE_DETAILS,
   LOAD_AVANCE_VOYAGE_DETAILS_ERROR,
   LOAD_AVANCE_VOYAGE_DETAILS_SUCCESS,
+  MARK_FUNDS_AS_PREPARED,
+  MARK_FUNDS_AS_PREPARED_ERROR,
+  MARK_FUNDS_AS_PREPARED_SUCCESS,
 } from './constants';
 
 export function defaultAction() {
@@ -56,6 +62,44 @@ export function decideOnAvanceVoyageSuccessAction() {
 export function decideOnAvanceVoyageErrorAction(error) {
   return {
     type: DECIDE_ON_AVANCE_VOYAGE_ERROR,
+    error,
+  };
+}
+
+export function markAvanceVoyageFundsAsPreparedAction(data) {
+  return {
+    type: MARK_FUNDS_AS_PREPARED,
+    data,
+  };
+}
+export function markAvanceVoyageFundsAsPreparedSuccessAction() {
+  return {
+    type: MARK_FUNDS_AS_PREPARED_SUCCESS,
+  };
+}
+
+export function markAvanceVoyageFundsAsPreparedErrorAction(error) {
+  return {
+    type: MARK_FUNDS_AS_PREPARED_ERROR,
+    error,
+  };
+}
+
+export function confirmAvanceVoyageFundsDeliveryAction(data) {
+  return {
+    type: CONFIRM_FUNDS_DELIVERY,
+    data,
+  };
+}
+export function confirmAvanceVoyageFundsDeliverySuccessAction() {
+  return {
+    type: CONFIRM_FUNDS_DELIVERY_SUCCESS,
+  };
+}
+
+export function confirmAvanceVoyageFundsDeliveryErrorAction(error) {
+  return {
+    type: CONFIRM_FUNDS_DELIVERY_ERROR,
     error,
   };
 }

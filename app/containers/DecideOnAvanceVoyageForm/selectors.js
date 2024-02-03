@@ -29,6 +29,24 @@ const makeSelectErrorDecidingOnAvanceVoyage = () =>
     (substate) => substate.errorDecidingOnAvanceVoyage,
   );
 
+const makeSelectErrorMarkingAvanceVoyageFundsAsPrepared = () =>
+  createSelector(
+    selectDecideOnAvanceVoyageFormDomain,
+    (substate) => substate.errorMarkingAvanceVoyageFundsAsPrepared,
+  );
+
+const makeSelectErrorConfirmingAvanceVoyageFundsDelivery = () =>
+  createSelector(
+    selectDecideOnAvanceVoyageFormDomain,
+    (substate) => substate.errorConfirmingAvanceVoyageFundsDelivery,
+  );
+
+const makeSelectConfirmingAvanceVoyageFundsDelivery = () =>
+  createSelector(
+    selectDecideOnAvanceVoyageFormDomain,
+    (substate) => substate.confirmingAvanceVoyageFundsDelivery,
+  );
+
 /**
  * Default selector used by DecideOnAvanceVoyageForm
  */
@@ -38,6 +56,9 @@ const makeSelectDecideOnAvanceVoyageForm = () =>
 
 export default makeSelectDecideOnAvanceVoyageForm;
 export {
+  makeSelectConfirmingAvanceVoyageFundsDelivery,
+  makeSelectErrorConfirmingAvanceVoyageFundsDelivery,
+  makeSelectErrorMarkingAvanceVoyageFundsAsPrepared,
   selectDecideOnAvanceVoyageFormDomain,
   makeSelectErrorDecidingOnAvanceVoyage,
   makeSelectErrorLoadingAvanceVoyageDetails,

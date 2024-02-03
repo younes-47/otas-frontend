@@ -460,13 +460,19 @@ export function AvanceCaisseForm({ state }) {
           </Typography>
         </Box>
       )}
-      {state === 'VIEW' && (
+      {(state === 'VIEW' || state === 'MODIFY') && (
         <Box
           display="flex"
           justifyContent="center"
           textAlign="center"
           marginBottom={2}
         >
+          <Typography color="neutral" level="title-lg" variant="plain">
+            Current Status:{' '}
+            <Typography color="primary" level="title-lg" variant="plain">
+              {avanceCaisseDetails?.latestStatus}
+            </Typography>
+          </Typography>
           <Button
             variant="contained"
             color="warning"

@@ -28,6 +28,24 @@ const makeSelectErrorDecidingOnAvanceCaisse = () =>
     selectDecideOnAvanceCaisseFormDomain,
     (substate) => substate.errorDecidingOnAvanceCaisse,
   );
+
+const makeSelectErrorMarkingAvanceCaisseFundsAsPrepared = () =>
+  createSelector(
+    selectDecideOnAvanceCaisseFormDomain,
+    (substate) => substate.errorMarkingAvanceCaisseFundsAsPrepared,
+  );
+
+const makeSelectErrorConfirmingAvanceCaisseFundsDelivery = () =>
+  createSelector(
+    selectDecideOnAvanceCaisseFormDomain,
+    (substate) => substate.errorConfirmingAvanceCaisseFundsDelivery,
+  );
+
+const makeSelectConfirmingAvanceCaisseFundsDelivery = () =>
+  createSelector(
+    selectDecideOnAvanceCaisseFormDomain,
+    (substate) => substate.confirmingAvanceCaisseFundsDelivery,
+  );
 /**
  * Default selector used by DecideOnAvanceCaisseForm
  */
@@ -37,6 +55,9 @@ const makeSelectDecideOnAvanceCaisseForm = () =>
 
 export default makeSelectDecideOnAvanceCaisseForm;
 export {
+  makeSelectConfirmingAvanceCaisseFundsDelivery,
+  makeSelectErrorConfirmingAvanceCaisseFundsDelivery,
+  makeSelectErrorMarkingAvanceCaisseFundsAsPrepared,
   selectDecideOnAvanceCaisseFormDomain,
   makeSelectErrorDecidingOnAvanceCaisse,
   makeSelectErrorLoadingAvanceCaisseDetails,

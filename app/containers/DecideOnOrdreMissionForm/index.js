@@ -234,6 +234,12 @@ export function DecideOnOrdreMissionForm({ state }) {
         textAlign="center"
         marginBottom={2}
       >
+        <Typography color="neutral" level="title-lg" variant="plain">
+          Current Status:{' '}
+          <Typography color="primary" level="title-lg" variant="plain">
+            {ordreMissionDetails?.latestStatus}
+          </Typography>
+        </Typography>
         <Button
           variant="outlined"
           color="warning"
@@ -245,6 +251,32 @@ export function DecideOnOrdreMissionForm({ state }) {
         >
           Status History
         </Button>
+      </Box>
+
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        marginBottom={3}
+      >
+        <Card color="primary" variant="soft" icon={false}>
+          <CardContent sx={{ textAlign: 'center', marginBottom: '1em' }}>
+            {ordreMissionDetails?.latestStatus ===
+              "Pending Manager's Approval" &&
+              'You are deciding upon this request as a Manager of your department'}
+            {ordreMissionDetails?.latestStatus === "Pending HR's approval" &&
+              'You are deciding upon this request as an HR Manager'}
+            {ordreMissionDetails?.latestStatus ===
+              "Pending Finance Departement's Approval" &&
+              'You are deciding upon this request as a Finance Manager'}
+            {ordreMissionDetails?.latestStatus ===
+              "Pending General Director's Approval" &&
+              'You are deciding upon this request as a General Director'}
+            {ordreMissionDetails?.latestStatus ===
+              "Pending Vice President's Approval" &&
+              'You are deciding upon this request as a Vice President'}
+          </CardContent>
+        </Card>
       </Box>
 
       {/* DIVIDER */}
@@ -446,7 +478,9 @@ export function DecideOnOrdreMissionForm({ state }) {
               color="success"
               onClick={handleOnApproveRequestButtonClick}
             >
-              Sign & Approve
+              {localStorage.getItem('level') !== 'FM'
+                ? 'Sign and Approve'
+                : 'Approve'}
             </Button>
           </>
         )}

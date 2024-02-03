@@ -71,6 +71,7 @@ export function DecideOnRequests() {
             } else {
               string += 'and Finance Manager';
             }
+            localStorage.setItem('level', 'FM');
             break;
           case 'HR':
             if (index === 0) {
