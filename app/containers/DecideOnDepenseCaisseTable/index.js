@@ -15,14 +15,18 @@ import EditIcon from '@mui/icons-material/Edit';
 import BeenhereIcon from '@mui/icons-material/Beenhere';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 import { DateTimeFormater } from 'utils/Custom/stringManipulation';
-import { Box } from '@mui/system';
-import { Alert, Button, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { Snackbar, Tooltip, Typography } from '@mui/joy';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
+import Snackbar from '@mui/joy/Snackbar';
+import Tooltip from '@mui/joy/Tooltip';
+import Typography from '@mui/joy/Typography';
+import Box from '@mui/system/Box';
+import Alert from '@mui/material/Alert';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
 import Tables from 'components/Tables';
-import { FilePresent } from '@mui/icons-material';
+import FilePresent from '@mui/icons-material/FilePresent';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import {
   changeDecideOnDepenseCaissePageContentAction,

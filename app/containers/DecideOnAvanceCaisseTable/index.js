@@ -14,12 +14,16 @@ import EditIcon from '@mui/icons-material/Edit';
 import BeenhereIcon from '@mui/icons-material/Beenhere';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 import { DateTimeFormater } from 'utils/Custom/stringManipulation';
-import { Box } from '@mui/system';
-import { Alert, Button, IconButton } from '@mui/material';
+import Box from '@mui/system/Box';
+import Alert from '@mui/joy/Alert';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import Snackbar from '@mui/joy/Snackbar';
+import Tooltip from '@mui/joy/Tooltip';
+import Typography from '@mui/joy/Typography';
 import Tables from 'components/Tables';
 import CloseIcon from '@mui/icons-material/Close';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
-import { Snackbar, Tooltip, Typography } from '@mui/joy';
 import {
   changeDecideOnAvanceCaissePageContentAction,
   setAvanceCaisseIdentityAction,

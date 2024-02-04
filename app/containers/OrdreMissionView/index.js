@@ -3,7 +3,6 @@
  * OrdreMissionView
  *
  */
-
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,31 +13,28 @@ import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import HistoryIcon from '@mui/icons-material/History';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CloseIcon from '@mui/icons-material/Close';
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Alert,
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Divider,
-  IconButton,
-  List,
-  ListSubheader,
-  Stack,
-  Typography,
-} from '@mui/material';
+import Accordion from '@mui/material/Accordion';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import Box from '@mui/system/Box';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import List from '@mui/material/List';
+import ListSubheader from '@mui/material/ListSubheader';
+import Stack from '@mui/system/Stack';
+import Typography from '@mui/material/Typography';
+import Timeline from '@mui/icons-material/Timeline';
+import Snackbar from '@mui/joy/Snackbar';
 import DisplayUserinfo from 'components/DisplayUserinfo';
-import { Timeline } from '@mui/icons-material';
 import CustomizedTimeLine from 'components/CustomizedTimeLine';
 import { cleanupParentOrdreMissionPageAction } from 'pages/OrdreMission/actions';
 import { setOrdreMissionStatusAction } from 'containers/OrdreMissionTable/actions';
 import { cleanupOrdreMissionFormPageAction } from 'containers/OrdreMissionForm/actions';
-import { Snackbar } from '@mui/joy';
 import reducer from './reducer';
 import saga from './saga';
 import {
@@ -57,16 +53,6 @@ export function OrdreMissionView({ state }) {
   useInjectReducer({ key: 'ordreMissionView', reducer });
   useInjectSaga({ key: 'ordreMissionView', saga });
   const [savedSnackbarVisibility, setSavedSnackbarVisibility] = useState(true);
-  const action = (
-    <IconButton
-      size="small"
-      aria-label="close"
-      color="inherit"
-      onClick={() => setSavedSnackbarVisibility(false)}
-    >
-      <CloseIcon fontSize="small" />
-    </IconButton>
-  );
 
   const { isSideBarVisible, ordreMissionDetails, errorSubmittingOrdreMission } =
     useSelector(mapStateToProps);

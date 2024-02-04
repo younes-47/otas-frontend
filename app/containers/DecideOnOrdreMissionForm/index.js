@@ -12,28 +12,21 @@ import HistoryIcon from '@mui/icons-material/History';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import { makeSelectOrdreMissionIdentity } from 'pages/DecideOnOrdreMission/selectors';
-import { Box } from '@mui/system';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import {
-  Alert,
-  Card,
-  CardContent,
-  Stack,
-  Textarea,
-  Typography,
-} from '@mui/joy';
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Divider,
-  TextField,
-} from '@mui/material';
-import { Timeline } from '@mui/lab';
+import Box from '@mui/system/Box';
+import Alert from '@mui/joy/Alert';
+import Card from '@mui/joy/Card';
+import CardContent from '@mui/joy/CardContent';
+import Stack from '@mui/joy/Stack';
+import Typography from '@mui/joy/Typography';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Divider from '@mui/material/Divider';
+import TextField from '@mui/material/TextField';
+import Timeline from '@mui/lab/Timeline';
 import CustomizedTimeLine from 'components/CustomizedTimeLine';
 import DisplayUserinfo from 'components/DisplayUserinfo';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';

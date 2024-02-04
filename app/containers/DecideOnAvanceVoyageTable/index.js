@@ -6,21 +6,26 @@
 
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { connect, useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
-import { Alert, Box, Button, IconButton, Tooltip } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import InfoIcon from '@mui/icons-material/Info';
 import BeenhereIcon from '@mui/icons-material/Beenhere';
 import InsertLinkIcon from '@mui/icons-material/InsertLink';
 import Tables from 'components/Tables';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
-import { Link, Snackbar, Typography } from '@mui/joy';
+import Alert from '@mui/material/Alert';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+import Link from '@mui/joy/Link';
+import Snackbar from '@mui/joy/Snackbar';
+import Typography from '@mui/joy/Typography';
 import { DateTimeFormater } from 'utils/Custom/stringManipulation';
 import {
   changePageContentAction,
@@ -34,7 +39,6 @@ import {
 import { NumericFormat } from 'react-number-format';
 import reducer from './reducer';
 import saga from './saga';
-import messages from './messages';
 import {
   cleanupDecideOnAvanceVoyageTableStoreAction,
   loadAvanceVoyageAction,

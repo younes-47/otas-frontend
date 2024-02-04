@@ -12,23 +12,22 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Box from '@mui/material/Box';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import CloseIcon from '@mui/icons-material/Close';
-import {
-  Alert,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  IconButton,
-  Tooltip,
-} from '@mui/material';
+import Alert from '@mui/material/Alert';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+import Snackbar from '@mui/joy/Snackbar';
+import Typography from '@mui/joy/Typography';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import {
   changePageContentAction,
   setAvanceCaisseIdentityAction,
 } from 'pages/AvanceCaisse/actions';
-import { Snackbar, Typography } from '@mui/joy';
 import { NumericFormat } from 'react-number-format';
 import saga from './saga';
 import reducer from './reducer';

@@ -13,35 +13,30 @@ import CustomizedTimeLine from 'components/CustomizedTimeLine';
 import HistoryIcon from '@mui/icons-material/History';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import PaymentsIcon from '@mui/icons-material/Payments';
-import { Box } from '@mui/system';
-import {
-  Alert,
-  Card,
-  CardContent,
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Input,
-  List,
-  ListItem,
-  ListItemDecorator,
-  Radio,
-  RadioGroup,
-  Stack,
-  Typography,
-} from '@mui/joy';
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Divider,
-  TextField,
-} from '@mui/material';
-import { Timeline } from '@mui/lab';
-
+import Box from '@mui/system/Box';
+import Alert from '@mui/joy/Alert';
+import Card from '@mui/joy/Card';
+import CardContent from '@mui/joy/CardContent';
+import FormControl from '@mui/joy/FormControl';
+import FormHelperText from '@mui/joy/FormHelperText';
+import FormLabel from '@mui/joy/FormLabel';
+import Input from '@mui/joy/Input';
+import List from '@mui/joy/List';
+import ListItem from '@mui/joy/ListItem';
+import ListItemDecorator from '@mui/joy/ListItemDecorator';
+import Radio from '@mui/joy/Radio';
+import RadioGroup from '@mui/joy/RadioGroup';
+import Stack from '@mui/joy/Stack';
+import Typography from '@mui/joy/Typography';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Divider from '@mui/material/Divider';
+import TextField from '@mui/material/TextField';
+import Timeline from '@mui/lab/Timeline';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';

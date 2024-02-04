@@ -15,12 +15,16 @@ import Tables from 'components/Tables';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import InsertLinkIcon from '@mui/icons-material/InsertLink';
 import { DateTimeFormater } from 'utils/Custom/stringManipulation';
-import { Alert, Button, Tooltip } from '@mui/material';
+import Alert from '@mui/material/Alert';
+import Button from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
+import Link from '@mui/joy/Link';
+import Typography from '@mui/joy/Typography';
 import {
   changePageContentAction,
   setAvanceVoyageIdentityAction,
 } from 'pages/AvanceVoyage/actions';
-import { Link, Typography } from '@mui/joy';
+
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import {
   ChangePageContentAction,

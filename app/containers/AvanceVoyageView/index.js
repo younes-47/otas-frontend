@@ -15,40 +15,32 @@ import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import HistoryIcon from '@mui/icons-material/History';
-
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Alert,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Divider,
-  FormLabel,
-  List,
-  ListSubheader,
-  Slide,
-  Typography,
-} from '@mui/material';
+import Link from '@mui/joy/Link';
+import Box from '@mui/system/Box';
+import Stack from '@mui/system/Stack';
+import Accordion from '@mui/material/Accordion';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import Alert from '@mui/material/Alert';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import Divider from '@mui/material/Divider';
+import List from '@mui/material/List';
+import ListSubheader from '@mui/material/ListSubheader';
+import Typography from '@mui/material/Typography';
 import InsertLinkIcon from '@mui/icons-material/InsertLink';
-import { Link } from '@mui/joy';
-import { Box, Stack } from '@mui/system';
 import { changePageContentAction } from 'pages/AvanceVoyage/actions';
 import CustomizedTimeLine from 'components/CustomizedTimeLine';
 import Timeline from '@mui/lab/Timeline';
 import DisplayUserinfo from 'components/DisplayUserinfo';
-import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import DescriptionIcon from '@mui/icons-material/Description';
-import { makeSelectUserInfo } from 'pages/MyRequests/selectors';
 import {
   ChangePageContentAction,
   setOrdreMissionIdentityAction,
 } from 'pages/OrdreMission/actions';
-import OrdreMissionForm from 'containers/OrdreMissionForm';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { makeSelectAvanceVoyageIdentity } from 'pages/AvanceVoyage/selectors';
 import { NumericFormat } from 'react-number-format';
@@ -58,7 +50,6 @@ import makeSelectAvanceVoyageView, {
 } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
-import messages from './messages';
 import {
   cleanupAvanceVoyageViewStoreAction,
   loadAvanceVoyageAction,
