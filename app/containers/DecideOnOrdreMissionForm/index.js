@@ -76,9 +76,6 @@ export function DecideOnOrdreMissionForm({ state }) {
   // Control data
   const [deciderComment, setDeciderComment] = useState(null);
   const [decisionString, setDecisionString] = useState(null);
-  const [returnedToFMByTR, setReturnedToFMByTR] = useState(false);
-  const [returnedToTRByFM, setReturnedToTRByFM] = useState(false);
-  const [returnedToRequesterByTR, setReturnedToRequesterByTR] = useState(false);
 
   // Trips & expenses
   const [trips, setTrips] = useState([]);
@@ -96,9 +93,9 @@ export function DecideOnOrdreMissionForm({ state }) {
     requestId: ordreMissionDetails !== null && ordreMissionDetails?.id,
     deciderComment,
     decisionString,
-    returnedToFMByTR,
-    returnedToTRByFM,
-    returnedToRequesterByTR,
+    returnedToFMByTR: false,
+    returnedToTRByFM: false,
+    returnedToRequesterByTR: false,
   };
 
   // Load the data => object details
@@ -168,9 +165,18 @@ export function DecideOnOrdreMissionForm({ state }) {
 
   const handleOnApproveRequestButtonClick = () => {
     setModalHeader('Approve the request?');
-    setModalBody(
-      'By Approving the request, you sign it digitally and forward it to the next decider',
-    );
+    if (
+      ordreMissionDetails?.latestStatus ===
+      "Pending Finance Department's Approval"
+    ) {
+      setModalBody(
+        'By Approving the request, you forward it to the next decider',
+      );
+    } else {
+      setModalBody(
+        'By Approving the request, you sign it digitally and forward it to the next decider',
+      );
+    }
     setModalSevirity('primary');
     setModalVisibility(true);
   };
@@ -225,7 +231,7 @@ export function DecideOnOrdreMissionForm({ state }) {
         display="flex"
         justifyContent="center"
         textAlign="center"
-        marginBottom={2}
+        marginBottom={1}
       >
         <Typography color="neutral" level="title-lg" variant="plain">
           Current Status:{' '}
@@ -233,6 +239,14 @@ export function DecideOnOrdreMissionForm({ state }) {
             {ordreMissionDetails?.latestStatus}
           </Typography>
         </Typography>
+      </Box>
+
+      <Box
+        display="flex"
+        justifyContent="center"
+        textAlign="center"
+        marginBottom={2}
+      >
         <Button
           variant="outlined"
           color="warning"
@@ -244,32 +258,6 @@ export function DecideOnOrdreMissionForm({ state }) {
         >
           Status History
         </Button>
-      </Box>
-
-      <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        marginBottom={3}
-      >
-        <Card color="primary" variant="soft" icon={false}>
-          <CardContent sx={{ textAlign: 'center', marginBottom: '1em' }}>
-            {ordreMissionDetails?.latestStatus ===
-              "Pending Manager's Approval" &&
-              'You are deciding upon this request as a Manager of your department'}
-            {ordreMissionDetails?.latestStatus === "Pending HR's approval" &&
-              'You are deciding upon this request as an HR Manager'}
-            {ordreMissionDetails?.latestStatus ===
-              "Pending Finance Departement's Approval" &&
-              'You are deciding upon this request as a Finance Manager'}
-            {ordreMissionDetails?.latestStatus ===
-              "Pending General Director's Approval" &&
-              'You are deciding upon this request as a General Director'}
-            {ordreMissionDetails?.latestStatus ===
-              "Pending Vice President's Approval" &&
-              'You are deciding upon this request as a Vice President'}
-          </CardContent>
-        </Card>
       </Box>
 
       {/* DIVIDER */}

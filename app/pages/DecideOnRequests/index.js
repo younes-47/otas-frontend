@@ -62,14 +62,14 @@ export function DecideOnRequests() {
             if (index === 0) {
               string += 'a Manager of your department';
             } else {
-              string += 'and Manager of your department';
+              string += ' and Manager of your department';
             }
             break;
           case 'FM':
             if (index === 0) {
               string += 'a Finance Manager';
             } else {
-              string += 'and Finance Manager';
+              string += ' and Finance Manager';
             }
             localStorage.setItem('level', 'FM');
             break;
@@ -77,14 +77,14 @@ export function DecideOnRequests() {
             if (index === 0) {
               string += 'an HR Manager';
             } else {
-              string += 'and HR Manager';
+              string += ' and HR Manager';
             }
             break;
           case 'TR':
             if (index === 0) {
-              string += 'a Treasury Manager';
+              string += 'a Treasurer';
             } else {
-              string += 'and Treasury Manager';
+              string += ' and Treasurer';
             }
             localStorage.setItem('level', 'TR');
             break;
@@ -92,7 +92,7 @@ export function DecideOnRequests() {
             if (index === 0) {
               string += 'a General Director';
             } else if (index === arr.length) {
-              string += 'and a General Director';
+              string += ' and a General Director';
             } else {
               string += ', General Director';
             }
@@ -101,7 +101,7 @@ export function DecideOnRequests() {
             if (index === 0) {
               string += 'a Vice President';
             } else if (index === arr.length) {
-              string += 'and a Vice President';
+              string += ' and a Vice President';
             } else {
               string += ', Vice President';
             }

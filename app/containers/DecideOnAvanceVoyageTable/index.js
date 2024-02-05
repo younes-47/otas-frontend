@@ -382,6 +382,7 @@ export function DecideOnAvanceVoyageTable() {
           </IconButton>
         }
         color={snackbarAlertSeverity}
+        variant="solid"
       >
         Request has been {statusAvanceVoyage} successfully!
       </Snackbar>

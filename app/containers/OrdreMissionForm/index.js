@@ -35,6 +35,7 @@ import Snackbar from '@mui/joy/Snackbar';
 import LinearProgress from '@mui/material/LinearProgress';
 import CloseIcon from '@mui/icons-material/Close';
 import HistoryIcon from '@mui/icons-material/History';
+import { Typography as JoyTypography } from '@mui/joy';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -547,7 +548,7 @@ export function OrdreMissionForm({ state }) {
           display="flex"
           justifyContent="center"
           textAlign="center"
-          marginBottom={2}
+          marginBottom={1}
         >
           {state === 'ADD' && (
             <h1 style={{ fontSize: '30px' }}>New Ordre Mission Request</h1>
@@ -593,30 +594,39 @@ export function OrdreMissionForm({ state }) {
           </Box>
         )}
         {(state === 'VIEW' || state === 'MODIFY') && (
-          <Box
-            display="flex"
-            justifyContent="center"
-            textAlign="center"
-            marginBottom={2}
-          >
-            <Typography color="neutral" level="title-lg" variant="plain">
-              Current Status:{' '}
-              <Typography color="primary" level="title-lg" variant="plain">
-                {ordreMissionDetails?.latestStatus}
-              </Typography>
-            </Typography>
-            <Button
-              variant="contained"
-              color="warning"
-              onClick={() => {
-                setModalVisibility(true);
-                setModalHeader('Status History');
-              }}
-              startIcon={<HistoryIcon />}
+          <>
+            <Box
+              display="flex"
+              justifyContent="center"
+              textAlign="center"
+              marginBottom={1}
             >
-              Status History
-            </Button>
-          </Box>
+              <JoyTypography color="neutral" level="title-lg" variant="plain">
+                Current Status:{' '}
+                <JoyTypography color="primary" level="title-lg" variant="plain">
+                  {ordreMissionDetails?.latestStatus}
+                </JoyTypography>
+              </JoyTypography>
+            </Box>
+            <Box
+              display="flex"
+              justifyContent="center"
+              textAlign="center"
+              marginBottom={2}
+            >
+              <Button
+                variant="contained"
+                color="warning"
+                onClick={() => {
+                  setModalVisibility(true);
+                  setModalHeader('Status History');
+                }}
+                startIcon={<HistoryIcon />}
+              >
+                Status History
+              </Button>
+            </Box>
+          </>
         )}
 
         {state === 'MODIFY' && (

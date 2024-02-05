@@ -28,6 +28,7 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import { Typography as JoyTypography } from '@mui/joy';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
@@ -411,7 +412,7 @@ export function AvanceCaisseForm({ state }) {
         display="flex"
         justifyContent="center"
         textAlign="center"
-        marginBottom={2}
+        marginBottom={1}
       >
         {state === 'ADD' && (
           <h1 style={{ fontSize: '30px' }}>New Avance Caisse Request</h1>
@@ -457,30 +458,39 @@ export function AvanceCaisseForm({ state }) {
         </Box>
       )}
       {(state === 'VIEW' || state === 'MODIFY') && (
-        <Box
-          display="flex"
-          justifyContent="center"
-          textAlign="center"
-          marginBottom={2}
-        >
-          <Typography color="neutral" level="title-lg" variant="plain">
-            Current Status:{' '}
-            <Typography color="primary" level="title-lg" variant="plain">
-              {avanceCaisseDetails?.latestStatus}
-            </Typography>
-          </Typography>
-          <Button
-            variant="contained"
-            color="warning"
-            onClick={() => {
-              setModalVisibility(true);
-              setModalHeader('Status History');
-            }}
-            startIcon={<HistoryIcon />}
+        <>
+          <Box
+            display="flex"
+            justifyContent="center"
+            textAlign="center"
+            marginBottom={1}
           >
-            Status History
-          </Button>
-        </Box>
+            <JoyTypography color="neutral" level="title-lg" variant="plain">
+              Current Status:{' '}
+              <JoyTypography color="primary" level="title-lg" variant="plain">
+                {avanceCaisseDetails?.latestStatus}
+              </JoyTypography>
+            </JoyTypography>
+          </Box>
+          <Box
+            display="flex"
+            justifyContent="center"
+            textAlign="center"
+            marginBottom={2}
+          >
+            <Button
+              variant="contained"
+              color="warning"
+              onClick={() => {
+                setModalVisibility(true);
+                setModalHeader('Status History');
+              }}
+              startIcon={<HistoryIcon />}
+            >
+              Status History
+            </Button>
+          </Box>
+        </>
       )}
 
       {state === 'MODIFY' && (

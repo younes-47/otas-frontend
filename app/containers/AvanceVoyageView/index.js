@@ -31,6 +31,7 @@ import Divider from '@mui/material/Divider';
 import List from '@mui/material/List';
 import ListSubheader from '@mui/material/ListSubheader';
 import Typography from '@mui/material/Typography';
+import { Typography as JoyTypography } from '@mui/joy';
 import InsertLinkIcon from '@mui/icons-material/InsertLink';
 import { changePageContentAction } from 'pages/AvanceVoyage/actions';
 import CustomizedTimeLine from 'components/CustomizedTimeLine';
@@ -142,6 +143,20 @@ export function AvanceVoyageView() {
         display="flex"
         justifyContent="center"
         textAlign="center"
+        marginBottom={1}
+      >
+        <JoyTypography color="neutral" level="title-lg" variant="plain">
+          Current Status:{' '}
+          <JoyTypography color="primary" level="title-lg" variant="plain">
+            {avanceVoyageDetails?.latestStatus}
+          </JoyTypography>
+        </JoyTypography>
+      </Box>
+
+      <Box
+        display="flex"
+        justifyContent="center"
+        textAlign="center"
         marginBottom={2}
         gap={3}
       >
@@ -150,10 +165,17 @@ export function AvanceVoyageView() {
           color="warning"
           onClick={() => setStatusHistoryDialogVisibility(true)}
           startIcon={<HistoryIcon />}
+          size="medium"
+          variant="contained"
         >
           Status History
         </Button>
-        <Button color="secondary" size="large" startIcon={<DescriptionIcon />}>
+        <Button
+          variant="contained"
+          color="secondary"
+          size="medium"
+          startIcon={<DescriptionIcon />}
+        >
           Download Document
         </Button>
       </Box>

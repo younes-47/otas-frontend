@@ -37,6 +37,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
 import Timeline from '@mui/lab/Timeline';
+import { PatternFormat, NumericFormat } from 'react-number-format';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
@@ -50,7 +51,6 @@ import {
   setOrdreMissionIdentityAction,
 } from 'pages/DecideOnOrdreMission/actions';
 import { setAvanceVoyageStatusAction } from 'containers/DecideOnAvanceVoyageTable/actions';
-import { NumericFormat } from 'react-number-format';
 import reducer from './reducer';
 import saga from './saga';
 import {
@@ -129,6 +129,11 @@ export function DecideOnAvanceVoyageForm({ state }) {
     advanceOption: methodOfDelivery,
   };
 
+  const confirmFundsDelivery = {
+    requestId: avanceVoyageDetails !== null && avanceVoyageDetails?.id,
+    confirmationNumber,
+  };
+
   // Load the data => object details
   useEffect(() => {
     dispatch(loadAvanceVoyageDetailsAction(avanceVoyageIdentity));
@@ -144,8 +149,16 @@ export function DecideOnAvanceVoyageForm({ state }) {
   // Set request status for snakcbar message in table
   useEffect(() => {
     if (errorDecidingOnAvanceVoyage === false) {
-      if (decisionString === 'aprrove')
-        dispatch(setAvanceVoyageStatusAction('signed and approved'));
+      if (decisionString === 'aprrove') {
+        if (
+          avanceVoyageDetails?.latestStatus ===
+          "Pending Finance Department's Approval"
+        ) {
+          dispatch(setAvanceVoyageStatusAction('approved'));
+        } else {
+          dispatch(setAvanceVoyageStatusAction('signed and approved'));
+        }
+      }
       if (decisionString === 'return')
         dispatch(setAvanceVoyageStatusAction('returned'));
       if (decisionString === 'reject')
@@ -159,7 +172,17 @@ export function DecideOnAvanceVoyageForm({ state }) {
       dispatch(cleanupDecideOnAvanceVoyageFormPageAction());
       dispatch(cleanupParentDecideOnAvanceVoyageStoreAction());
     }
-  }, [errorDecidingOnAvanceVoyage, errorMarkingFundsAsPrepared]);
+
+    if (errorConfirmingAvanceVoyageFundsDelivery === false) {
+      dispatch(setAvanceVoyageStatusAction('confirmed its funds delivery'));
+      dispatch(cleanupDecideOnAvanceVoyageFormPageAction());
+      dispatch(cleanupParentDecideOnAvanceVoyageStoreAction());
+    }
+  }, [
+    errorDecidingOnAvanceVoyage,
+    errorMarkingFundsAsPrepared,
+    errorConfirmingAvanceVoyageFundsDelivery,
+  ]);
 
   // Cleanup Store
   useEffect(
@@ -177,9 +200,18 @@ export function DecideOnAvanceVoyageForm({ state }) {
 
   const handleOnApproveRequestButtonClick = () => {
     setModalHeader('Approve the request?');
-    setModalBody(
-      'By Approving the request, you sign it digitally and forward it to the next decider',
-    );
+    if (
+      avanceVoyageDetails?.latestStatus ===
+      "Pending Finance Department's Approval"
+    ) {
+      setModalBody(
+        'By Approving the request, you forward it to the next decider',
+      );
+    } else {
+      setModalBody(
+        'By Approving the request, you sign it digitally and forward it to the next decider',
+      );
+    }
     setModalSevirity('primary');
     setModalVisibility(true);
   };
@@ -223,7 +255,7 @@ export function DecideOnAvanceVoyageForm({ state }) {
   };
 
   const handleOnConfirmFundsDeliveryConfirmationButtonClick = () => {
-    dispatch(confirmAvanceVoyageFundsDeliveryAction(confirmationNumber));
+    dispatch(confirmAvanceVoyageFundsDeliveryAction(confirmFundsDelivery));
   };
 
   const handleOnApproveRequestConfirmationButtonClick = () => {
@@ -243,6 +275,7 @@ export function DecideOnAvanceVoyageForm({ state }) {
     dispatch(changePageContentAction('VIEW'));
     history.push('/decide-on-requests/decide-on-ordre-mission');
   };
+
   return (
     <Box
       position="fixed"
@@ -267,7 +300,7 @@ export function DecideOnAvanceVoyageForm({ state }) {
         display="flex"
         justifyContent="center"
         textAlign="center"
-        marginBottom={2}
+        marginBottom={1}
       >
         <Typography color="neutral" level="title-lg" variant="plain">
           Current Status:{' '}
@@ -275,6 +308,14 @@ export function DecideOnAvanceVoyageForm({ state }) {
             {avanceVoyageDetails?.latestStatus}
           </Typography>
         </Typography>
+      </Box>
+
+      <Box
+        display="flex"
+        justifyContent="center"
+        textAlign="center"
+        marginBottom={2}
+      >
         <Button
           variant="outlined"
           color="warning"
@@ -286,32 +327,6 @@ export function DecideOnAvanceVoyageForm({ state }) {
         >
           Status History
         </Button>
-      </Box>
-
-      <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        marginBottom={3}
-      >
-        <Card color="primary" variant="soft" icon={false}>
-          <CardContent sx={{ textAlign: 'center', marginBottom: '1em' }}>
-            {avanceVoyageDetails?.latestStatus ===
-              "Pending Manager's Approval" &&
-              'You are deciding upon this request as a Manager of your department'}
-            {avanceVoyageDetails?.latestStatus === "Pending HR's approval" &&
-              'You are deciding upon this request as an HR Manager'}
-            {avanceVoyageDetails?.latestStatus ===
-              "Pending Finance Departement's Approval" &&
-              'You are deciding upon this request as a Finance Manager'}
-            {avanceVoyageDetails?.latestStatus ===
-              "Pending General Director's Approval" &&
-              'You are deciding upon this request as a General Director'}
-            {avanceVoyageDetails?.latestStatus ===
-              "Pending Vice President's Approval" &&
-              'You are deciding upon this request as a Vice President'}
-          </CardContent>
-        </Card>
       </Box>
 
       {/* DIVIDER */}
@@ -481,26 +496,28 @@ export function DecideOnAvanceVoyageForm({ state }) {
             </Button>
           </>
         )}
-        {localStorage.getItem('level') === 'TR' && (
-          <Button
-            variant="contained"
-            color="success"
-            onClick={handleOnMarkFundsAsPreparedButtonClick}
-          >
-            Mark funds as prepared
-          </Button>
-        )}
-        {localStorage.getItem('level') === 'TR' &&
-          avanceVoyageDetails?.latestStatus ===
-            'Funds Prepared'(
-              <Button
-                variant="contained"
-                color="success"
-                onClick={handleOnConfirmFundsDeliveryButtonClick}
-              >
-                Confirm Funds Delivery
-              </Button>,
-            )}
+        {!readOnly &&
+          avanceVoyageDetails?.latestStatus === 'Preparing Funds' &&
+          localStorage.getItem('level') === 'TR' && (
+            <Button
+              variant="contained"
+              color="success"
+              onClick={handleOnMarkFundsAsPreparedButtonClick}
+            >
+              Mark funds as prepared
+            </Button>
+          )}
+        {!readOnly &&
+          localStorage.getItem('level') === 'TR' &&
+          avanceVoyageDetails?.latestStatus === 'Funds Prepared' && (
+            <Button
+              variant="contained"
+              color="success"
+              onClick={handleOnConfirmFundsDeliveryButtonClick}
+            >
+              Confirm Funds Delivery
+            </Button>
+          )}
       </Stack>
 
       {/* THE MODAL */}
@@ -622,23 +639,19 @@ export function DecideOnAvanceVoyageForm({ state }) {
                   </List>
                 </RadioGroup>
               )}
-              {modalHeader === 'Mark funds as prepared?' && (
+              {modalHeader === 'Confirm funds delivery?' && (
                 <>
-                  <FormControl>
+                  <FormControl sx={{ marginTop: '2em' }}>
                     <FormLabel>Confirmation Number</FormLabel>
-                    <NumericFormat
+                    <PatternFormat
                       displayType="input"
-                      placeholder="##-##-##-##-##-##-##-##"
+                      placeholder="##-##-##-##"
                       value={confirmationNumber}
                       onValueChange={(values, sourceInfo) => {
                         setConfirmationNumber(values.value);
                       }}
-                      isAllowed={(values) => {
-                        const { floatValue } = values;
-                        return floatValue < 99999999; // Confirmation number consists of 8 digits
-                      }}
                       decimalScale={0}
-                      format="##-##-##-##-##-##-##-##"
+                      format="##-##-##-##"
                       disabled={confirmingAvanceVoyageFundsDelivery === true}
                       required
                       color="neutral"
@@ -646,6 +659,8 @@ export function DecideOnAvanceVoyageForm({ state }) {
                       variant="outlined"
                       customInput={Input}
                       allowNegative={false}
+                      valueIsNumericString
+                      error={confirmationNumber?.toString().length !== 8}
                     />
                     <FormHelperText>
                       Consists of 8 digits (no letters or special charachters).
@@ -654,11 +669,6 @@ export function DecideOnAvanceVoyageForm({ state }) {
                   {errorConfirmingAvanceVoyageFundsDelivery === true && (
                     <Alert color="danger" size="md" variant="soft">
                       Wrong Confirmation Number. Please try again.
-                    </Alert>
-                  )}
-                  {errorConfirmingAvanceVoyageFundsDelivery === false && (
-                    <Alert color="success" size="md" variant="soft">
-                      Funds has been succefully confirmed.
                     </Alert>
                   )}
                 </>

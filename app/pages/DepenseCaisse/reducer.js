@@ -4,7 +4,6 @@
  *
  */
 import produce from 'immer';
-import { ORDRE_MISSION_IDENTITY } from 'pages/OrdreMission/constants';
 import {
   CHANGE_PAGE_CONTENT_ACTION,
   CLEANUP_STORE_ACTION,
@@ -30,6 +29,7 @@ const depenseCaisseReducer = (state = initialState, action) =>
         break;
       case CLEANUP_STORE_ACTION:
         draft.pageContent = 'TABLE';
+        draft.depenseCaisseIdentity = null;
         break;
     }
   });

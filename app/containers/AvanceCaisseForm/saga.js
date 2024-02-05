@@ -16,7 +16,6 @@ import {
   LoadStaticDataSuccessAction,
   UpdateAvanceCaisseErrorAction,
   UpdateAvanceCaisseSuccessAction,
-  loadAvanceCaisseDetailsAction,
   loadAvanceCaisseDetailsErrorAction,
   loadAvanceCaisseDetailsSuccessAction,
   submitAvanceCaisseErrorAction,

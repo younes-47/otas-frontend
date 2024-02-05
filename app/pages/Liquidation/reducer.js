@@ -8,12 +8,11 @@ import {
   CHANGE_PAGE_CONTENT_ACTION,
   CLEANUP_STORE_ACTION,
   DEFAULT_ACTION,
+  LIQUIDATION_IDENTITY,
 } from './constants';
 
 export const initialState = {
-  loadingLiquidations: false,
-  errorLoadingLiquidations: null,
-  liquidations: [],
+  liquidationIdentity: null,
   pageContent: 'TABLE',
 };
 
@@ -23,13 +22,14 @@ const liquidationReducer = (state = initialState, action) =>
     switch (action.type) {
       case DEFAULT_ACTION:
         break;
+      case LIQUIDATION_IDENTITY:
+        draft.liquidationIdentity = action.id;
+        break;
       case CHANGE_PAGE_CONTENT_ACTION:
         draft.pageContent = action.pageContent;
         break;
       case CLEANUP_STORE_ACTION:
-        draft.loadingLiquidations = false;
-        draft.errorLoadingLiquidations = null;
-        draft.liquidations = [];
+        draft.liquidationIdentity = null;
         draft.pageContent = 'TABLE';
         break;
     }

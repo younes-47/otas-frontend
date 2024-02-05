@@ -25,6 +25,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
+import PersonIcon from '@mui/icons-material/Person';
 import {
   DateTimeFormater,
   FormatNumber,
@@ -39,6 +40,7 @@ import { setDepenseCaisseStatusAction } from 'containers/DecideOnDepenseCaisseTa
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import { makeSelectDepenseCaisseIdentity } from 'pages/DecideOnDepenseCaisse/selectors';
 import { NumericFormat } from 'react-number-format';
+import { List, ListItem, ListItemDecorator, Radio, RadioGroup } from '@mui/joy';
 import {
   makeSelectDepenseCaisseDetails,
   makeSelectErrorDecidingOnDepenseCaisse,
@@ -78,9 +80,8 @@ export function DecideOnDepenseCaisseForm({ state }) {
   // Control data
   const [deciderComment, setDeciderComment] = useState(null);
   const [decisionString, setDecisionString] = useState(null);
-  const [returnedToFMByTR, setReturnedToFMByTR] = useState(false);
-  const [returnedToTRByFM, setReturnedToTRByFM] = useState(false);
-  const [returnedToRequesterByTR, setReturnedToRequesterByTR] = useState(false);
+  const [isReturnedToTRByFM, setReturnedToTRByFM] = useState(false);
+  const [isReturnedToRequesterByTR, setReturnedToRequesterByTR] = useState('');
 
   // Control modal content
   const [modalBody, setModalBody] = useState('');
@@ -90,7 +91,6 @@ export function DecideOnDepenseCaisseForm({ state }) {
 
   const [expenses, setExpenses] = useState([]);
   const [receiptsFile, setReceiptsFile] = useState('');
-  const [receiptsFileName, setReceiptsFileName] = useState('');
 
   const readOnly = state === 'VIEW';
 
@@ -98,9 +98,10 @@ export function DecideOnDepenseCaisseForm({ state }) {
     requestId: depenseCaisseDetails !== null && depenseCaisseDetails?.id,
     deciderComment,
     decisionString,
-    returnedToFMByTR,
-    returnedToTRByFM,
-    returnedToRequesterByTR,
+    returnedToFMByTR: isReturnedToRequesterByTR === 'notReturnedToRequester',
+    returnedToTRByFM: isReturnedToTRByFM,
+    returnedToRequesterByTR:
+      isReturnedToRequesterByTR === 'returnedToRequester',
   };
 
   // Load the data => object details
@@ -132,8 +133,17 @@ export function DecideOnDepenseCaisseForm({ state }) {
   // Set request status for snakcbar message in table
   useEffect(() => {
     if (errorDecidingOnDepenseCaisse === false) {
-      if (decisionString === 'aprrove')
-        dispatch(setDepenseCaisseStatusAction('signed and approved'));
+      if (decisionString === 'aprrove') {
+        if (
+          depenseCaisseDetails?.latestStatus ===
+          "Pending Finance Department's Approval"
+        ) {
+          dispatch(setDepenseCaisseStatusAction('approved'));
+        } else {
+          dispatch(setDepenseCaisseStatusAction('signed and approved'));
+        }
+      }
+
       if (decisionString === 'return')
         dispatch(setDepenseCaisseStatusAction('returned'));
       if (decisionString === 'reject')
@@ -183,9 +193,18 @@ export function DecideOnDepenseCaisseForm({ state }) {
 
   const handleOnApproveRequestButtonClick = () => {
     setModalHeader('Approve the request?');
-    setModalBody(
-      'By Approving the request, you sign it digitally and forward it to the next decider',
-    );
+    if (
+      depenseCaisseDetails?.latestStatus ===
+      "Pending Finance Department's Approval"
+    ) {
+      setModalBody(
+        'By Approving the request, you forward it to the next decider',
+      );
+    } else {
+      setModalBody(
+        'By Approving the request, you sign it digitally and forward it to the next decider',
+      );
+    }
     setModalSevirity('primary');
     setModalVisibility(true);
   };
@@ -206,6 +225,48 @@ export function DecideOnDepenseCaisseForm({ state }) {
     setModalVisibility(true);
   };
 
+  // FM Button
+
+  const handleOnConfirmByFMAfterReturnByTRButtonClick = () => {
+    setModalHeader('Confirm the request?');
+    setModalBody(
+      'By confirming the request again, you acknowledge that all the information are correct. The request will be forwarded to the Treasurer for further inspection.',
+    );
+    setModalSevirity('success');
+    setModalVisibility(true);
+  };
+
+  const handleOnConfirmByFMAfterReturnByTRConfirmationButtonClick = () => {
+    setReturnedToTRByFM(true);
+    setDecisionString('return');
+  };
+
+  // TR buttons
+  const handleOnFinalizeButtonClick = () => {
+    setModalHeader('Finalize the request?');
+    setModalBody(
+      'By fanalizing the request, you approve the request, and a transaction has been initiated to the requester.',
+    );
+    setModalSevirity('success');
+    setModalVisibility(true);
+  };
+
+  const handleOnReturnRequestByTreasuryButtonClick = () => {
+    setModalHeader('Return the request?');
+    setModalBody('Please choose to whom you want to return the request.');
+    setModalSevirity('warning');
+    setModalVisibility(true);
+  };
+
+  const handleOnFinalizeConfirmationButtonClick = () => {
+    setDecisionString('approve');
+  };
+
+  const handleOnReturnRequestByTreasuryConfirmationButtonClick = () => {
+    setDecisionString('return');
+  };
+
+  //
   const handleOnApproveRequestConfirmationButtonClick = () => {
     setDecisionString('approve');
   };
@@ -215,6 +276,7 @@ export function DecideOnDepenseCaisseForm({ state }) {
   const handleOnReturnRequestConfirmationButtonClick = () => {
     setDecisionString('return');
   };
+
   return (
     <Box
       position="fixed"
@@ -239,7 +301,7 @@ export function DecideOnDepenseCaisseForm({ state }) {
         display="flex"
         justifyContent="center"
         textAlign="center"
-        marginBottom={2}
+        marginBottom={1}
       >
         <Typography color="neutral" level="title-lg" variant="plain">
           Current Status:{' '}
@@ -247,6 +309,14 @@ export function DecideOnDepenseCaisseForm({ state }) {
             {depenseCaisseDetails?.latestStatus}
           </Typography>
         </Typography>
+      </Box>
+
+      <Box
+        display="flex"
+        justifyContent="center"
+        textAlign="center"
+        marginBottom={2}
+      >
         <Button
           variant="outlined"
           color="warning"
@@ -260,31 +330,30 @@ export function DecideOnDepenseCaisseForm({ state }) {
         </Button>
       </Box>
 
-      <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        marginBottom={3}
-      >
-        <Card color="primary" variant="soft" icon={false}>
-          <CardContent sx={{ textAlign: 'center', marginBottom: '1em' }}>
-            {depenseCaisseDetails?.latestStatus ===
-              "Pending Manager's Approval" &&
-              'You are deciding upon this request as a Manager of your department'}
-            {depenseCaisseDetails?.latestStatus === "Pending HR's approval" &&
-              'You are deciding upon this request as an HR Manager'}
-            {depenseCaisseDetails?.latestStatus ===
-              "Pending Finance Departement's Approval" &&
-              'You are deciding upon this request as a Finance Manager'}
-            {depenseCaisseDetails?.latestStatus ===
-              "Pending General Director's Approval" &&
-              'You are deciding upon this request as a General Director'}
-            {depenseCaisseDetails?.latestStatus ===
-              "Pending Vice President's Approval" &&
-              'You are deciding upon this request as a Vice President'}
-          </CardContent>
-        </Card>
-      </Box>
+      {depenseCaisseDetails?.latestStatus ===
+        'Returned To Finance Department for missing Information' && (
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          marginBottom={3}
+        >
+          <Card
+            color="warning"
+            variant="soft"
+            icon={false}
+            sx={{ maxWidth: '60%' }}
+          >
+            <CardContent sx={{ textAlign: 'center', marginBottom: '1em' }}>
+              This request has been returned by the treasurer. <br /> Please
+              refer to the comment below.
+            </CardContent>
+            <Card variant="outlined">
+              {depenseCaisseDetails?.deciderComment}
+            </Card>
+          </Card>
+        </Box>
+      )}
 
       {/* DIVIDER */}
       <Box
@@ -450,15 +519,18 @@ export function DecideOnDepenseCaisseForm({ state }) {
         >
           Return
         </Button>
-        {!readOnly && (
+        {!readOnly && localStorage.getItem('level') !== 'TR' && (
           <>
-            <Button
-              variant="contained"
-              color="error"
-              onClick={handleOnRejectRequestButtonClick}
-            >
-              Reject
-            </Button>
+            {depenseCaisseDetails?.latestStatus !==
+              'Returned To Finance Department for missing Information' && (
+              <Button
+                variant="contained"
+                color="error"
+                onClick={handleOnRejectRequestButtonClick}
+              >
+                Reject
+              </Button>
+            )}
             <Button
               variant="contained"
               color="warning"
@@ -466,16 +538,48 @@ export function DecideOnDepenseCaisseForm({ state }) {
             >
               Return the request
             </Button>
-            <Button
-              variant="contained"
-              color="success"
-              onClick={handleOnApproveRequestButtonClick}
-            >
-              {localStorage.getItem('level') !== 'FM'
-                ? 'Sign and Approve'
-                : 'Approve'}
-            </Button>
+            {depenseCaisseDetails?.latestStatus ===
+              'Returned To Finance Department for missing Information' && (
+              <Button
+                variant="contained"
+                color="success"
+                onClick={handleOnConfirmByFMAfterReturnByTRButtonClick}
+              >
+                Confirm
+              </Button>
+            )}
+            {depenseCaisseDetails?.latestStatus !==
+              'Returned To Finance Department for missing Information' && (
+              <Button
+                variant="contained"
+                color="success"
+                onClick={handleOnApproveRequestButtonClick}
+              >
+                {depenseCaisseDetails?.latestStatus ===
+                "Pending Finance Department's Approval"
+                  ? 'Approve'
+                  : 'Sign and Approve'}
+              </Button>
+            )}
           </>
+        )}
+        {!readOnly && localStorage.getItem('level') === 'TR' && (
+          <Button
+            variant="contained"
+            color="warning"
+            onClick={handleOnReturnRequestByTreasuryButtonClick}
+          >
+            Return the request
+          </Button>
+        )}
+        {!readOnly && localStorage.getItem('level') === 'TR' && (
+          <Button
+            variant="contained"
+            color="success"
+            onClick={handleOnFinalizeButtonClick}
+          >
+            Finalize
+          </Button>
         )}
       </Stack>
 
@@ -502,29 +606,129 @@ export function DecideOnDepenseCaisseForm({ state }) {
               <Alert color={modalSevirity} size="lg" variant="soft">
                 {modalBody}
               </Alert>
-              {modalHeader === 'Return the request?' && (
-                <>
-                  <Typography
-                    level="title-md"
-                    color="danger"
-                    marginTop={3}
-                    marginBottom={2}
-                  >
-                    *Please provide a comment on why you are returning this
-                    request (required)
-                  </Typography>
-                  <TextField
-                    sx={{ width: '100%' }}
-                    id="outlined-multiline-static"
-                    multiline
-                    rows={5}
-                    placeholder="Your Comment..."
-                    variant="outlined"
-                    onChange={(e) => setDeciderComment(e.target.value)}
-                    inputProps={{ maxLength: 255 }}
-                  />
-                </>
-              )}
+              {modalHeader === 'Return the request?' &&
+                localStorage.getItem('level') !== 'TR' && (
+                  <>
+                    <Typography
+                      level="title-md"
+                      color="danger"
+                      marginTop={3}
+                      marginBottom={2}
+                    >
+                      *Please provide a comment on why you are returning this
+                      request (required)
+                    </Typography>
+                    <TextField
+                      sx={{ width: '100%' }}
+                      id="outlined-multiline-static"
+                      multiline
+                      rows={5}
+                      placeholder="Your Comment..."
+                      variant="outlined"
+                      onChange={(e) => setDeciderComment(e.target.value)}
+                      inputProps={{ maxLength: 255 }}
+                    />
+                  </>
+                )}
+              {modalHeader === 'Return the request?' &&
+                localStorage.getItem('level') === 'TR' && (
+                  <>
+                    <RadioGroup
+                      name="delivery-method"
+                      sx={{ margin: '1em' }}
+                      value={isReturnedToRequesterByTR}
+                      onChange={(e) =>
+                        setReturnedToRequesterByTR(e.target.value)
+                      }
+                    >
+                      <List
+                        sx={{
+                          minWidth: 240,
+                          '--List-gap': '0.5rem',
+                          '--ListItem-paddingY': '1rem',
+                          '--ListItem-radius': '8px',
+                          '--ListItemDecorator-size': '32px',
+                        }}
+                      >
+                        <ListItem
+                          variant="outlined"
+                          key="0"
+                          sx={{ boxShadow: 'sm' }}
+                        >
+                          <ListItemDecorator>
+                            <PersonIcon />
+                          </ListItemDecorator>
+                          <Radio
+                            overlay
+                            value="returnedToRequester"
+                            label="Return it to the requester for missing evidences"
+                            sx={{ flexGrow: 1, flexDirection: 'row-reverse' }}
+                            slotProps={{
+                              action: ({ checked }) => ({
+                                sx: (theme) => ({
+                                  ...(checked && {
+                                    inset: -1,
+                                    border: '2px solid',
+                                    borderColor:
+                                      theme.vars.palette.warning[500],
+                                  }),
+                                }),
+                              }),
+                            }}
+                            color="warning"
+                          />
+                        </ListItem>
+                        <ListItem
+                          variant="outlined"
+                          key="1"
+                          sx={{ boxShadow: 'sm' }}
+                        >
+                          <ListItemDecorator>
+                            <PersonIcon />
+                          </ListItemDecorator>
+                          <Radio
+                            overlay
+                            value="notReturnedToRequester"
+                            label="Return it to Finance Manager for wrong information"
+                            sx={{ flexGrow: 1, flexDirection: 'row-reverse' }}
+                            slotProps={{
+                              action: ({ checked }) => ({
+                                sx: (theme) => ({
+                                  ...(checked && {
+                                    inset: -1,
+                                    border: '2px solid',
+                                    borderColor:
+                                      theme.vars.palette.warning[500],
+                                  }),
+                                }),
+                              }),
+                            }}
+                            color="warning"
+                          />
+                        </ListItem>
+                      </List>
+                    </RadioGroup>
+                    <Typography
+                      level="title-md"
+                      color="danger"
+                      marginTop={3}
+                      marginBottom={2}
+                    >
+                      *Please provide a comment on why you are returning this
+                      request (required)
+                    </Typography>
+                    <TextField
+                      sx={{ width: '100%' }}
+                      id="outlined-multiline-static"
+                      multiline
+                      rows={5}
+                      placeholder="Your Comment..."
+                      variant="outlined"
+                      onChange={(e) => setDeciderComment(e.target.value)}
+                      inputProps={{ maxLength: 255 }}
+                    />
+                  </>
+                )}
             </DialogContentText>
           )}
         </DialogContent>
@@ -532,13 +736,17 @@ export function DecideOnDepenseCaisseForm({ state }) {
           <Button variant="outlined" onClick={() => setModalVisibility(false)}>
             Close
           </Button>
+          {/* Normal deciders actions */}
           {modalHeader === 'Approve the request?' && (
             <Button
               color="success"
               onClick={handleOnApproveRequestConfirmationButtonClick}
               variant="contained"
             >
-              Sign and Approve
+              {depenseCaisseDetails?.latestStatus ===
+              "Pending Finance Department's Approval"
+                ? 'Approve'
+                : 'Sign and Approve'}
             </Button>
           )}
           {modalHeader === 'Reject the request?' && (
@@ -550,15 +758,50 @@ export function DecideOnDepenseCaisseForm({ state }) {
               Reject
             </Button>
           )}
-          {modalHeader === 'Return the request?' && (
+          {modalHeader === 'Return the request?' &&
+            localStorage.getItem('level') !== 'TR' && (
+              <Button
+                color="warning"
+                onClick={handleOnReturnRequestConfirmationButtonClick}
+                variant="contained"
+              >
+                Return the request
+              </Button>
+            )}
+
+          {/* FM Special action  */}
+          {modalHeader === 'Confirm the request?' && (
             <Button
-              color="warning"
-              onClick={handleOnReturnRequestConfirmationButtonClick}
+              color="success"
+              onClick={
+                handleOnConfirmByFMAfterReturnByTRConfirmationButtonClick
+              }
               variant="contained"
             >
-              Return the request
+              Confirm
             </Button>
           )}
+
+          {/* TR actions */}
+          {modalHeader === 'Finalize the request?' && (
+            <Button
+              color="success"
+              onClick={handleOnFinalizeConfirmationButtonClick}
+              variant="contained"
+            >
+              Finalize the request
+            </Button>
+          )}
+          {modalHeader === 'Return the request?' &&
+            localStorage.getItem('level') === 'TR' && (
+              <Button
+                color="warning"
+                onClick={handleOnReturnRequestByTreasuryConfirmationButtonClick}
+                variant="contained"
+              >
+                Return the request
+              </Button>
+            )}
         </DialogActions>
       </Dialog>
     </Box>

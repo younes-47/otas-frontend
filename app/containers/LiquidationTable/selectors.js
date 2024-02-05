@@ -29,8 +29,43 @@ const makeSelectLiquidations = () =>
     (substate) => substate.liquidations,
   );
 
+const makeSelectDeletingLiquidation = () =>
+  createSelector(
+    selectLiquidationTableDomain,
+    (substate) => substate.deletingLiquidation,
+  );
+
+const makeSelectErrorDeletingLiquidation = () =>
+  createSelector(
+    selectLiquidationTableDomain,
+    (substate) => substate.errorDeletingLiquidation,
+  );
+
+const makeSelectErrorDownloadingLiquidationReceiptsFile = () =>
+  createSelector(
+    selectLiquidationTableDomain,
+    (substate) => substate.errorDownloadingLiquidationReceiptsFile,
+  );
+
+const makeSelectLiquidationReceiptsFileDownloadResponse = () =>
+  createSelector(
+    selectLiquidationTableDomain,
+    (substate) => substate.downloadLiquidationReceiptsFileResponse,
+  );
+
+const makeSelectStatusLiquidation = () =>
+  createSelector(
+    selectLiquidationTableDomain,
+    (substate) => substate.statusLiquidation,
+  );
+
 export default makeSelectLiquidationTable;
 export {
+  makeSelectStatusLiquidation,
+  makeSelectErrorDeletingLiquidation,
+  makeSelectErrorDownloadingLiquidationReceiptsFile,
+  makeSelectLiquidationReceiptsFileDownloadResponse,
+  makeSelectDeletingLiquidation,
   selectLiquidationTableDomain,
   makeSelectLiquidations,
   makeSelectLoadingLiquidations,

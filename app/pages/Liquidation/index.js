@@ -13,7 +13,7 @@ import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeSelectChangePageContent } from './selectors';
 import reducer from './reducer';
-import { cleanupStoreAction } from './actions';
+import { cleanupliquidationParentPageStoreAction } from './actions';
 
 const mapStateToProps = createStructuredSelector({
   pageContent: makeSelectChangePageContent(),
@@ -28,15 +28,25 @@ export function Liquidation() {
 
   useEffect(
     () => () => {
-      disptach(cleanupStoreAction());
+      disptach(cleanupliquidationParentPageStoreAction());
     },
     [],
   );
 
-  if (pageContent === 'ADD') {
-    return <LiquidationForm></LiquidationForm>;
+  switch (pageContent) {
+    case 'ADD':
+      return <LiquidationForm state="ADD" />;
+    case 'VIEW':
+      return <LiquidationForm state="VIEW" />;
+    case 'CONFIRM':
+      return <LiquidationForm state="CONFIRM" />;
+    case 'EDIT':
+      return <LiquidationForm state="EDIT" />;
+    case 'MODIFY': // This case is when the user modifies its request in a returned state, which whill restrict saving it as draft again
+      return <LiquidationForm state="MODIFY" />;
+    default:
+      return <LiquidationTable />;
   }
-  return <LiquidationTable></LiquidationTable>;
 }
 
 Liquidation.propTypes = {

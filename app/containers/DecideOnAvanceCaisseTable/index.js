@@ -15,7 +15,7 @@ import BeenhereIcon from '@mui/icons-material/Beenhere';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 import { DateTimeFormater } from 'utils/Custom/stringManipulation';
 import Box from '@mui/system/Box';
-import Alert from '@mui/joy/Alert';
+import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import Snackbar from '@mui/joy/Snackbar';

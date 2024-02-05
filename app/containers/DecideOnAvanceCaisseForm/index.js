@@ -46,7 +46,7 @@ import { cleanupParentDecideOnAvanceCaisseStoreAction } from 'pages/DecideOnAvan
 import { DateTimeFormater } from 'utils/Custom/stringManipulation';
 import DisplayUserinfo from 'components/DisplayUserinfo';
 import SimpleExpensesTable from 'components/SimpleExpensesTable';
-import { NumericFormat } from 'react-number-format';
+import { NumericFormat, PatternFormat } from 'react-number-format';
 import {
   makeSelectAvanceCaisseDetails,
   makeSelectConfirmingAvanceCaisseFundsDelivery,
@@ -153,8 +153,16 @@ export function DecideOnAvanceCaisseForm({ state }) {
   // Set request status for snakcbar message in table
   useEffect(() => {
     if (errorDecidingOnAvanceCaisse === false) {
-      if (decisionString === 'aprrove')
-        dispatch(setAvanceCaisseStatusAction('signed and approved'));
+      if (decisionString === 'aprrove') {
+        if (
+          avanceCaisseDetails?.latestStatus ===
+          "Pending Finance Department's Approval"
+        ) {
+          dispatch(setAvanceCaisseStatusAction('approved'));
+        } else {
+          dispatch(setAvanceCaisseStatusAction('signed and approved'));
+        }
+      }
       if (decisionString === 'return')
         dispatch(setAvanceCaisseStatusAction('returned'));
       if (decisionString === 'reject')
@@ -187,9 +195,18 @@ export function DecideOnAvanceCaisseForm({ state }) {
 
   const handleOnApproveRequestButtonClick = () => {
     setModalHeader('Approve the request?');
-    setModalBody(
-      'By Approving the request, you sign it digitally and forward it to the next decider',
-    );
+    if (
+      avanceCaisseDetails?.latestStatus ===
+      "Pending Finance Department's Approval"
+    ) {
+      setModalBody(
+        'By Approving the request, you forward it to the next decider',
+      );
+    } else {
+      setModalBody(
+        'By Approving the request, you sign it digitally and forward it to the next decider',
+      );
+    }
     setModalSevirity('primary');
     setModalVisibility(true);
   };
@@ -269,8 +286,7 @@ export function DecideOnAvanceCaisseForm({ state }) {
         display="flex"
         justifyContent="center"
         textAlign="center"
-        marginBottom={2}
-        gap={2}
+        marginBottom={1}
       >
         <Typography color="neutral" level="title-lg" variant="plain">
           Current Status:{' '}
@@ -278,6 +294,15 @@ export function DecideOnAvanceCaisseForm({ state }) {
             {avanceCaisseDetails?.latestStatus}
           </Typography>
         </Typography>
+      </Box>
+
+      <Box
+        display="flex"
+        justifyContent="center"
+        textAlign="center"
+        marginBottom={2}
+        gap={2}
+      >
         <Button
           variant="outlined"
           color="warning"
@@ -289,32 +314,6 @@ export function DecideOnAvanceCaisseForm({ state }) {
         >
           Status History
         </Button>
-      </Box>
-
-      <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        marginBottom={3}
-      >
-        <Card color="primary" variant="soft" icon={false}>
-          <CardContent sx={{ textAlign: 'center', marginBottom: '1em' }}>
-            {avanceCaisseDetails?.latestStatus ===
-              "Pending Manager's Approval" &&
-              'You are deciding upon this request as a Manager of your department'}
-            {avanceCaisseDetails?.latestStatus === "Pending HR's approval" &&
-              'You are deciding upon this request as an HR Manager'}
-            {avanceCaisseDetails?.latestStatus ===
-              "Pending Finance Departement's Approval" &&
-              'You are deciding upon this request as a Finance Manager'}
-            {avanceCaisseDetails?.latestStatus ===
-              "Pending General Director's Approval" &&
-              'You are deciding upon this request as a General Director'}
-            {avanceCaisseDetails?.latestStatus ===
-              "Pending Vice President's Approval" &&
-              'You are deciding upon this request as a Vice President'}
-          </CardContent>
-        </Card>
       </Box>
 
       {/* DIVIDER */}
@@ -348,16 +347,6 @@ export function DecideOnAvanceCaisseForm({ state }) {
           <DisplayUserinfo userData={avanceCaisseDetails?.actualRequester} />
         </>
       )}
-
-      {/* DIVIDER */}
-      <Box
-        display="flex"
-        justifyContent="center"
-        textAlign="center"
-        marginBottom={3}
-      >
-        <Divider style={{ width: '60%', opacity: 0.7 }} />
-      </Box>
 
       {/* DIVIDER */}
       <Box
@@ -476,7 +465,7 @@ export function DecideOnAvanceCaisseForm({ state }) {
             </Button>
           </>
         )}
-        {localStorage.getItem('level') === 'TR' && (
+        {!readOnly && localStorage.getItem('level') === 'TR' && (
           <Button
             variant="contained"
             color="success"
@@ -485,17 +474,17 @@ export function DecideOnAvanceCaisseForm({ state }) {
             Mark funds as prepared
           </Button>
         )}
-        {localStorage.getItem('level') === 'TR' &&
-          avanceCaisseDetails?.latestStatus ===
-            'Funds Prepared'(
-              <Button
-                variant="contained"
-                color="success"
-                onClick={handleOnConfirmFundsDeliveryButtonClick}
-              >
-                Confirm Funds Delivery
-              </Button>,
-            )}
+        {!readOnly &&
+          localStorage.getItem('level') === 'TR' &&
+          avanceCaisseDetails?.latestStatus === 'Funds Prepared' && (
+            <Button
+              variant="contained"
+              color="success"
+              onClick={handleOnConfirmFundsDeliveryButtonClick}
+            >
+              Confirm Funds Delivery
+            </Button>
+          )}
       </Stack>
 
       {/* THE MODAL */}
@@ -617,23 +606,19 @@ export function DecideOnAvanceCaisseForm({ state }) {
                   </List>
                 </RadioGroup>
               )}
-              {modalHeader === 'Mark funds as prepared?' && (
+              {modalHeader === 'Confirm funds delivery?' && (
                 <>
                   <FormControl>
                     <FormLabel>Confirmation Number</FormLabel>
-                    <NumericFormat
+                    <PatternFormat
                       displayType="input"
-                      placeholder="##-##-##-##-##-##-##-##"
+                      placeholder="##-##-##-##"
                       value={confirmationNumber}
                       onValueChange={(values, sourceInfo) => {
                         setConfirmationNumber(values.value);
                       }}
-                      isAllowed={(values) => {
-                        const { floatValue } = values;
-                        return floatValue < 99999999; // Confirmation number consists of 8 digits
-                      }}
                       decimalScale={0}
-                      format="##-##-##-##-##-##-##-##"
+                      format="##-##-##-##"
                       disabled={confirmingAvanceCaisseFundsDelivery === true}
                       required
                       color="neutral"
@@ -641,6 +626,8 @@ export function DecideOnAvanceCaisseForm({ state }) {
                       variant="outlined"
                       customInput={Input}
                       allowNegative={false}
+                      valueIsNumericString
+                      error={confirmationNumber?.toString().length !== 8}
                     />
                     <FormHelperText>
                       Consists of 8 digits (no letters or special charachters).

@@ -8,7 +8,6 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import PropTypes from 'prop-types';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import FilePresentIcon from '@mui/icons-material/FilePresent';
@@ -37,6 +36,7 @@ import Card from '@mui/joy/Card';
 import CardContent from '@mui/joy/CardContent';
 import Snackbar from '@mui/joy/Snackbar';
 import CloseIcon from '@mui/icons-material/Close';
+import { Typography as JoyTypography } from '@mui/joy';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
@@ -136,7 +136,10 @@ export function DepenseCaisseForm({ state }) {
     managerUserName: '',
   });
 
-  const readOnly = state === 'VIEW' || state === 'CONFIRM';
+  const readOnly =
+    state === 'VIEW' ||
+    state === 'CONFIRM' ||
+    depenseCaisseDetails?.latestStatus === 'Returned for missing evidences';
 
   // Scroll to top
   useEffect(() => {
@@ -193,6 +196,10 @@ export function DepenseCaisseForm({ state }) {
     if (errorUpdatingDepenseCaisse === false) {
       if (buttonClicked === 'SAVE-AS-DRAFT') {
         dispatch(setDepenseCaisseStatusAction('UPDATED'));
+        dispatch(cleanupDepenseCaisseParentPageStoreAction());
+      }
+      if (buttonClicked === 'SUBMIT-MODIFICATIONS') {
+        dispatch(setDepenseCaisseStatusAction('RESUBMITTED'));
         dispatch(cleanupDepenseCaisseParentPageStoreAction());
       }
       if (buttonClicked === 'CONFIRM') {
@@ -463,7 +470,7 @@ export function DepenseCaisseForm({ state }) {
         display="flex"
         justifyContent="center"
         textAlign="center"
-        marginBottom={2}
+        marginBottom={1}
       >
         {state === 'ADD' && (
           <h1 style={{ fontSize: '30px' }}>New Depense Caisse Request</h1>
@@ -509,30 +516,39 @@ export function DepenseCaisseForm({ state }) {
         </Box>
       )}
       {(state === 'VIEW' || state === 'MODIFY') && (
-        <Box
-          display="flex"
-          justifyContent="center"
-          textAlign="center"
-          marginBottom={2}
-        >
-          <Typography color="neutral" level="title-lg" variant="plain">
-            Current Status:{' '}
-            <Typography color="primary" level="title-lg" variant="plain">
-              {depenseCaisseDetails?.latestStatus}
-            </Typography>
-          </Typography>
-          <Button
-            variant="contained"
-            color="warning"
-            onClick={() => {
-              setModalVisibility(true);
-              setModalHeader('Status History');
-            }}
-            startIcon={<HistoryIcon />}
+        <>
+          <Box
+            display="flex"
+            justifyContent="center"
+            textAlign="center"
+            marginBottom={1}
           >
-            Status History
-          </Button>
-        </Box>
+            <JoyTypography color="neutral" level="title-lg" variant="plain">
+              Current Status:{' '}
+              <JoyTypography color="primary" level="title-lg" variant="plain">
+                {depenseCaisseDetails?.latestStatus}
+              </JoyTypography>
+            </JoyTypography>
+          </Box>
+          <Box
+            display="flex"
+            justifyContent="center"
+            textAlign="center"
+            marginBottom={2}
+          >
+            <Button
+              variant="contained"
+              color="warning"
+              onClick={() => {
+                setModalVisibility(true);
+                setModalHeader('Status History');
+              }}
+              startIcon={<HistoryIcon />}
+            >
+              Status History
+            </Button>
+          </Box>
+        </>
       )}
 
       {state === 'MODIFY' && (
@@ -793,7 +809,9 @@ export function DepenseCaisseForm({ state }) {
         </>
       )}
 
-      {!readOnly && (
+      {((state !== 'VIEW' && state !== 'CONFIRM') ||
+        depenseCaisseDetails?.latestStatus ===
+          'Returned for missing evidences') && (
         <Box display="flex" justifyContent="center" marginBottom={2}>
           <Box
             display="flex"
@@ -872,10 +890,6 @@ export function DepenseCaisseForm({ state }) {
                 Selected file: {receiptsFileName}
               </Typography>
             )}
-            {/* <FileUploadForm
-              loading={loadingButton}
-              updateFunction={updateReceiptsFileData}
-            /> */}
           </Box>
         </Box>
       )}
@@ -986,6 +1000,7 @@ export function DepenseCaisseForm({ state }) {
             <Button
               color="success"
               onClick={handleOnSubmitModificationsConfirmationButtonClick}
+              variant="contained"
             >
               Submit
             </Button>
