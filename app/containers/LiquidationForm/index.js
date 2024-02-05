@@ -13,7 +13,7 @@ import { useInjectReducer } from 'utils/injectReducer';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import { makeSelectLiquidationIdentity } from 'pages/Liquidation/selectors';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, Radio, RadioGroup, Typography } from '@mui/joy';
+import { Box, Option, Radio, RadioGroup, Select, Typography } from '@mui/joy';
 import reducer from './reducer';
 import saga from './saga';
 import messages from './messages';
@@ -59,6 +59,7 @@ export function LiquidationForm({ state }) {
     liquidationDetails,
     liquidationIdentity,
     requestTypeToLiquidate,
+    requestsToLiquidate,
   } = useSelector(mapStateToProps);
   const avanceVoyageLabel = (
     <Typography color="primary" level="title-lg">
@@ -189,12 +190,37 @@ export function LiquidationForm({ state }) {
           />
         </RadioGroup>
       </Box>
+
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 2,
+        }}
+      >
+        <Select
+          placeholder="Select address"
+          sx={{ width: 240 }}
+          slotProps={{
+            listbox: {
+              placement: 'bottom-start',
+            },
+          }}
+        >
+          {requestsToLiquidate?.map((req) => (
+            <Option value={req.id}>
+              #{req.id}&nbsp;-&nbsp;{req.description}
+            </Option>
+          ))}
+        </Select>
+      </Box>
     </Box>
   );
 }
 
 LiquidationForm.propTypes = {
-  state: PropTypes.func.isRequired,
+  state: PropTypes.string.isRequired,
 };
 
 export default LiquidationForm;
