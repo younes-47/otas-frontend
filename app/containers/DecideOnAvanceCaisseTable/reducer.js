@@ -46,7 +46,7 @@ const decideOnAvanceCaisseTableReducer = (state = initialState, action) =>
         draft.loadingAvanceCaisses = false;
         draft.errorLoadingAvanceCaisses = null;
         draft.avanceCaisses = [];
-        draft.statusAvanceVoyage = '';
+        draft.statusAvanceCaisse = '';
         break;
     }
   });

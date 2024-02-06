@@ -88,11 +88,11 @@ export function DecideOnAvanceCaisseTable() {
       headerName: 'Description',
       flex: 1,
       renderCell: (params) => {
-        const { ordreMissionDescription } = params.row;
+        const { description } = params.row;
         return (
-          <Tooltip title={ordreMissionDescription} placement="bottom-start">
+          <Tooltip title={description} placement="bottom-start">
             <Typography level="title-md" variant="plain">
-              {ordreMissionDescription}
+              {description}
             </Typography>
           </Tooltip>
         );

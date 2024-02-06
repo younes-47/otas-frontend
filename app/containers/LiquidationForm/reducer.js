@@ -19,6 +19,7 @@ import {
   LOAD_REQUEST_TO_LIQUIDATE_DETAILS,
   LOAD_REQUEST_TO_LIQUIDATE_DETAILS_ERROR,
   LOAD_REQUEST_TO_LIQUIDATE_DETAILS_SUCCESS,
+  NULLIFY_REQUEST_TO_LIQUIDATE_DETAILS,
   SELECT_REQUEST_TYPE_TO_LIQUIDATE,
   SUBMIT_LIQUIDATION,
   SUBMIT_LIQUIDATION_ERROR,
@@ -130,6 +131,9 @@ const liquidationFormReducer = (state = initialState, action) =>
       case LOAD_REQUEST_TO_LIQUIDATE_DETAILS_ERROR:
         draft.loadingRequestToLiquidateDetails = true;
         draft.errorLoadingRequestsToLiquidate = null;
+        break;
+      case NULLIFY_REQUEST_TO_LIQUIDATE_DETAILS:
+        draft.requestToLiquidateDetails = null;
         break;
       case CLEANUP_STORE_ACTION:
         draft.addingLiquidation = false;

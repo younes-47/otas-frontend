@@ -86,7 +86,7 @@ const liquidationTableReducer = (state = initialState, action) =>
       case CLEANUP_STORE_ACTION:
         draft.loadingLiquidations = false;
         draft.errorLoadingLiquidations = null;
-        draft.depenseCaisses = [];
+        draft.liquidations = [];
         draft.deletingLiquidation = false;
         draft.errorDeletingLiquidation = null;
         draft.downloadingLiquidationReceiptsFile = false;

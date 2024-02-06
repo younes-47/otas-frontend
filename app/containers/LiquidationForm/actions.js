@@ -164,3 +164,9 @@ export function selectRequestTypeToLiquidateAction(selection) {
     selection,
   };
 }
+
+export function nullifyRequestToLiquidateDetailsAction() {
+  return {
+    type: SELECT_REQUEST_TYPE_TO_LIQUIDATE,
+  };
+}

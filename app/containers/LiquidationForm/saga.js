@@ -113,22 +113,30 @@ export function* loadRequestsToLiquidate({ requestType }) {
 export function* loadRequestToLiquidateDetails({ id, requestType }) {
   if (requestType === 'AV') {
     try {
-      const { data } = yield call(request.get, `/AvanceVoyage/View?Id=${id}`, {
-        headers: {
-          'Content-Type': 'application/json',
+      const { data } = yield call(
+        request.get,
+        `Liquidation/Requests/ToLiquidate/AvanceVoyage?requestId=${id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
         },
-      });
+      );
       yield put(loadRequestToLiquidateDetailsSuccessAction(data));
     } catch (error) {
       yield put(loadRequestToLiquidateDetailsErrorAction(error));
     }
   } else {
     try {
-      const { data } = yield call(request.get, `/AvanceCaisse/View?Id=${id}`, {
-        headers: {
-          'Content-Type': 'application/json',
+      const { data } = yield call(
+        request.get,
+        `Liquidation/Requests/ToLiquidate/AvanceCaisse?requestId=${id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
         },
-      });
+      );
       yield put(loadRequestToLiquidateDetailsSuccessAction(data));
     } catch (error) {
       yield put(loadRequestToLiquidateDetailsErrorAction(error));

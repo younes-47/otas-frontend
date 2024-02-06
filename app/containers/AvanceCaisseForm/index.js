@@ -251,7 +251,7 @@ export function AvanceCaisseForm({ state }) {
     const newExpense = {
       id: expenseId,
       description: '',
-      expenseDate: dayjs(Date()),
+      expenseDate: null,
       estimatedFee: 0.0,
     };
     setExpenses((prevExpenses) => [...prevExpenses, newExpense]);

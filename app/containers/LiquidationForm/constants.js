@@ -50,6 +50,9 @@ export const CLEANUP_STORE_ACTION = 'app/LiquidationForm/CLEANUP_STORE_ACTION';
 export const SELECT_REQUEST_TYPE_TO_LIQUIDATE =
   'app/LiquidationForm/SELECT_REQUEST_TYPE_TO_LIQUIDATE';
 
+export const NULLIFY_REQUEST_TO_LIQUIDATE_DETAILS =
+  'app/LiquidationForm/NULLIFY_REQUEST_TO_LIQUIDATE_DETAILS';
+
 export const webService = {
   ADD_LIQUIDATION: '/Liquidation/Create',
   LOAD_LIQUIDATION_DETAILS: '/Liquidation/Requester/View',

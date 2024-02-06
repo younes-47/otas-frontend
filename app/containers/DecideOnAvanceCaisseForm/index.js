@@ -6,8 +6,7 @@
 
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { connect, useDispatch, useSelector } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
+import { useDispatch, useSelector } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import CustomizedTimeLine from 'components/CustomizedTimeLine';
 import HistoryIcon from '@mui/icons-material/History';
@@ -42,11 +41,15 @@ import { useInjectReducer } from 'utils/injectReducer';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import { makeSelectAvanceCaisseIdentity } from 'pages/DecideOnAvanceCaisse/selectors';
 import { setAvanceCaisseStatusAction } from 'containers/DecideOnAvanceCaisseTable/actions';
-import { cleanupParentDecideOnAvanceCaisseStoreAction } from 'pages/DecideOnAvanceCaisse/actions';
+import {
+  changeDecideOnAvanceCaissePageContentAction,
+  cleanupParentDecideOnAvanceCaisseStoreAction,
+} from 'pages/DecideOnAvanceCaisse/actions';
 import { DateTimeFormater } from 'utils/Custom/stringManipulation';
 import DisplayUserinfo from 'components/DisplayUserinfo';
 import SimpleExpensesTable from 'components/SimpleExpensesTable';
 import { NumericFormat, PatternFormat } from 'react-number-format';
+
 import {
   makeSelectAvanceCaisseDetails,
   makeSelectConfirmingAvanceCaisseFundsDelivery,
@@ -126,6 +129,11 @@ export function DecideOnAvanceCaisseForm({ state }) {
     advanceOption: methodOfDelivery,
   };
 
+  const confirmFundsDelivery = {
+    requestId: avanceCaisseDetails !== null && avanceCaisseDetails?.id,
+    confirmationNumber,
+  };
+
   // Load the data => object details
   useEffect(() => {
     dispatch(loadAvanceCaisseDetailsAction(avanceCaisseIdentity));
@@ -169,7 +177,7 @@ export function DecideOnAvanceCaisseForm({ state }) {
         dispatch(setAvanceCaisseStatusAction('rejected'));
 
       dispatch(cleanupDecideOnAvanceCaisseFormPageAction());
-      dispatch(cleanupParentDecideOnAvanceCaisseStoreAction());
+      dispatch(changeDecideOnAvanceCaissePageContentAction('TABLE'));
     }
 
     if (errorMarkingFundsAsPrepared === false) {
@@ -177,7 +185,17 @@ export function DecideOnAvanceCaisseForm({ state }) {
       dispatch(cleanupDecideOnAvanceCaisseFormPageAction());
       dispatch(cleanupParentDecideOnAvanceCaisseStoreAction());
     }
-  }, [errorDecidingOnAvanceCaisse, errorMarkingFundsAsPrepared]);
+
+    if (errorConfirmingAvanceCaisseFundsDelivery === false) {
+      dispatch(setAvanceCaisseStatusAction('confirmed its funds delivery'));
+      dispatch(cleanupDecideOnAvanceCaisseFormPageAction());
+      dispatch(cleanupParentDecideOnAvanceCaisseStoreAction());
+    }
+  }, [
+    errorDecidingOnAvanceCaisse,
+    errorMarkingFundsAsPrepared,
+    errorConfirmingAvanceCaisseFundsDelivery,
+  ]);
 
   // Cleanup Store
   useEffect(
@@ -249,7 +267,7 @@ export function DecideOnAvanceCaisseForm({ state }) {
   };
 
   const handleOnConfirmFundsDeliveryConfirmationButtonClick = () => {
-    dispatch(confirmAvanceCaisseFundsDeliveryAction(confirmationNumber));
+    dispatch(confirmAvanceCaisseFundsDeliveryAction(confirmFundsDelivery));
   };
 
   const handleOnApproveRequestConfirmationButtonClick = () => {
@@ -465,15 +483,17 @@ export function DecideOnAvanceCaisseForm({ state }) {
             </Button>
           </>
         )}
-        {!readOnly && localStorage.getItem('level') === 'TR' && (
-          <Button
-            variant="contained"
-            color="success"
-            onClick={handleOnMarkFundsAsPreparedButtonClick}
-          >
-            Mark funds as prepared
-          </Button>
-        )}
+        {!readOnly &&
+          localStorage.getItem('level') === 'TR' &&
+          avanceCaisseDetails?.latestStatus === 'Preparing Funds' && (
+            <Button
+              variant="contained"
+              color="success"
+              onClick={handleOnMarkFundsAsPreparedButtonClick}
+            >
+              Mark funds as prepared
+            </Button>
+          )}
         {!readOnly &&
           localStorage.getItem('level') === 'TR' &&
           avanceCaisseDetails?.latestStatus === 'Funds Prepared' && (
@@ -608,7 +628,7 @@ export function DecideOnAvanceCaisseForm({ state }) {
               )}
               {modalHeader === 'Confirm funds delivery?' && (
                 <>
-                  <FormControl>
+                  <FormControl sx={{ marginTop: '2em' }}>
                     <FormLabel>Confirmation Number</FormLabel>
                     <PatternFormat
                       displayType="input"
@@ -636,11 +656,6 @@ export function DecideOnAvanceCaisseForm({ state }) {
                   {errorConfirmingAvanceCaisseFundsDelivery === true && (
                     <Alert color="danger" size="md" variant="soft">
                       Wrong Confirmation Number. Please try again.
-                    </Alert>
-                  )}
-                  {errorConfirmingAvanceCaisseFundsDelivery === false && (
-                    <Alert color="success" size="md" variant="soft">
-                      Funds has been succefully confirmed.
                     </Alert>
                   )}
                 </>

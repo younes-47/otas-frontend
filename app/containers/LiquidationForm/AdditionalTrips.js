@@ -1,4 +1,4 @@
-// Trips.js
+// AdditionalTrips.js
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
@@ -17,23 +17,18 @@ import {
 } from '@mui/material';
 import { Box } from '@mui/system';
 import { DateTimePicker } from '@mui/x-date-pickers';
-import { createStructuredSelector } from 'reselect';
 import { useSelector } from 'react-redux';
 import { NumericFormat } from 'react-number-format';
 import { FormatNumber } from 'utils/Custom/stringManipulation';
-import { makeSelectAbroad } from './selectors';
 // import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
-const mapStateToProps = createStructuredSelector({
-  abroadSelection: makeSelectAbroad(),
-});
-
-const Trips = ({
+const AdditionalTrips = ({
   tripData,
   updateTripData,
   isTripRequired,
   removeTrip,
   isTripModifiabale = true,
+  isRequestAbroad,
 }) => {
   const {
     id,
@@ -59,7 +54,6 @@ const Trips = ({
   const [calculatedTripFee, setCalculatedTripFee] = useState(
     parseFloat(value) + parseFloat(highwayFee),
   );
-  const { abroadSelection } = useSelector(mapStateToProps);
 
   const handleTripDates = (tripId, type, e) => {
     const tzoffset = new Date().getTimezoneOffset() * 60000; // offset in milliseconds
@@ -74,13 +68,7 @@ const Trips = ({
       setCalculatedTripFee(parseFloat(value) + parseFloat(highwayFee));
     }
   }, [unit, value, highwayFee]);
-  // if (id === 0) {
-  //   updateTripData(id, 'departureDate', '2025-01-19T00:00:00.000Z');
-  //   updateTripData(id, 'arrivalDate', '2025-01-20T00:00:00.000Z');
-  // } else {
-  //   updateTripData(id, 'departureDate', '2025-01-21T00:00:00.000Z');
-  //   updateTripData(id, 'arrivalDate', '2025-01-23T00:00:00.000Z');
-  // }
+
   return (
     <Box key={id} marginRight={3} marginLeft={3} marginBottom={2}>
       <Box display="flex" justifyContent="center" gap={0.8}>
@@ -208,7 +196,7 @@ const Trips = ({
               ) : (
                 <MenuItem value="MAD">MAD</MenuItem>
               )}
-              {String(abroadSelection) === 'true' &&
+              {String(isRequestAbroad) === 'true' &&
                 transportationMethod !== transportationMethodOptions[6] &&
                 transportationMethod !== transportationMethodOptions[7] && (
                   <MenuItem value="EUR">EUR</MenuItem>
@@ -346,11 +334,12 @@ const Trips = ({
   );
 };
 
-Trips.propTypes = {
+AdditionalTrips.propTypes = {
   tripData: PropTypes.object.isRequired,
   updateTripData: PropTypes.func.isRequired,
   isTripRequired: PropTypes.bool.isRequired,
   removeTrip: PropTypes.func.isRequired,
   isTripModifiabale: PropTypes.bool,
+  isRequestAbroad: PropTypes.bool,
 };
-export default Trips;
+export default AdditionalTrips;
