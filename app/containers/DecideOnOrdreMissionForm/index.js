@@ -35,10 +35,10 @@ import {
   DateTimeFormater,
   FormatNumber,
 } from 'utils/Custom/stringManipulation';
-import SimpleTripsTable from 'components/SimpleTripsTable';
-import SimpleExpensesTable from 'components/SimpleExpensesTable';
 import { setOrdreMissionStatusAction } from 'containers/DecideOnOrdreMissionTable/actions';
 import { NumericFormat } from 'react-number-format';
+import TripsTable from 'components/TripsTable';
+import ExpensesTable from 'components/ExpensesTable';
 import {
   makeSelectErrorDecidingOnOrdreMission,
   makeSelectErrorLoadingOrdreMissionDetails,
@@ -362,7 +362,7 @@ export function DecideOnOrdreMissionForm({ state }) {
       </Box>
 
       <Box display="flex" justifyContent="center" marginBottom={5}>
-        <SimpleTripsTable tripsData={trips} />
+        <TripsTable tripsData={trips} />
       </Box>
 
       {expesnes.length > 0 && (
@@ -378,7 +378,7 @@ export function DecideOnOrdreMissionForm({ state }) {
             </Typography>
           </Box>
           <Box display="flex" justifyContent="center" marginBottom={3}>
-            <SimpleExpensesTable expensesData={expesnes} />
+            <ExpensesTable expensesData={expesnes} />
           </Box>
         </>
       )}

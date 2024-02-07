@@ -47,9 +47,9 @@ import {
 } from 'pages/DecideOnAvanceCaisse/actions';
 import { DateTimeFormater } from 'utils/Custom/stringManipulation';
 import DisplayUserinfo from 'components/DisplayUserinfo';
-import SimpleExpensesTable from 'components/SimpleExpensesTable';
 import { NumericFormat, PatternFormat } from 'react-number-format';
 
+import ExpensesTable from 'components/ExpensesTable';
 import {
   makeSelectAvanceCaisseDetails,
   makeSelectConfirmingAvanceCaisseFundsDelivery,
@@ -404,7 +404,7 @@ export function DecideOnAvanceCaisseForm({ state }) {
             </Typography>
           </Box>
           <Box display="flex" justifyContent="center" marginBottom={3}>
-            <SimpleExpensesTable expensesData={expesnes} />
+            <ExpensesTable expensesData={expesnes} />
           </Box>
         </>
       )}

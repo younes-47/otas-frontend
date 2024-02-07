@@ -40,6 +40,7 @@ export function loadLiquidationDetailsAction(id) {
     id,
   };
 }
+
 export function loadLiquidationDetailsSuccessAction(data) {
   return {
     type: LOAD_LIQUIDATION_DETAILS_SUCCESS,

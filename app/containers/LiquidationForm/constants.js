@@ -55,7 +55,7 @@ export const NULLIFY_REQUEST_TO_LIQUIDATE_DETAILS =
 
 export const webService = {
   ADD_LIQUIDATION: '/Liquidation/Create',
-  LOAD_LIQUIDATION_DETAILS: '/Liquidation/Requester/View',
+  LOAD_LIQUIDATION_DETAILS: '/Liquidation/View',
   UPDATE_LIQUIDATION: '/Liquidation/Modify',
   SUBMIT_LIQUIDATION: '/Liquidation/Submit',
   LOAD_REQUESTS_TO_LIQUIDATE: '/Liquidation/Requests/Pending',

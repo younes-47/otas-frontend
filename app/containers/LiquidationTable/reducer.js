@@ -81,7 +81,7 @@ const liquidationTableReducer = (state = initialState, action) =>
       case DELETE_LIQUIDATION_SUCCESS:
         draft.deletingLiquidation = false;
         draft.errorDeletingLiquidation = false;
-        draft.depenseCaisses = action.data;
+        draft.liquidations = action.data;
         break;
       case CLEANUP_STORE_ACTION:
         draft.loadingLiquidations = false;

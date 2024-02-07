@@ -34,10 +34,11 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-export default function TripsToLiquidateTable({
+export default function TripsTable({
   tripsData,
-  updateTripsToLiquidate,
-  getActualFee,
+  updateTripsToLiquidate = undefined,
+  getActualFee = undefined,
+  isTripModifiable = true,
 }) {
   return (
     <TableContainer component={Paper} sx={{ width: '60%' }}>
@@ -53,9 +54,12 @@ export default function TripsToLiquidateTable({
             <StyledTableCell align="left">Value</StyledTableCell>
             <StyledTableCell align="left">Highway&nbsp;Fee</StyledTableCell>
             <StyledTableCell align="left">Amount</StyledTableCell>
-            <StyledTableCell align="left" color="danger">
-              Actual&nbsp;amount&nbsp;spent*
-            </StyledTableCell>
+            {updateTripsToLiquidate !== undefined &&
+              getActualFee !== undefined && (
+                <StyledTableCell align="left" color="danger">
+                  Actual&nbsp;amount&nbsp;spent*
+                </StyledTableCell>
+              )}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -155,38 +159,48 @@ export default function TripsToLiquidateTable({
                   />
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell align="left">
-                <NumericFormat
-                  required
-                  prefix={
-                    trip.unit === 'KM' || trip.unit === 'MAD' ? 'MAD ' : 'EUR '
-                  }
-                  value={getActualFee(trip.id)}
-                  onValueChange={(values, sourceInfo) => {
-                    updateTripsToLiquidate(trip.id, values.value);
-                  }}
-                  displayType="input"
-                  placeholder="Enter the amount here..."
-                  size="md"
-                  variant="outlined"
-                  customInput={Input}
-                  valueIsNumericString
-                  defaultValue="0"
-                  decimalScale={2}
-                  fixedDecimalScale
-                  allowNegative={false}
-                  thousandSeparator={
-                    localStorage.getItem('preferredLanguage') === 'en'
-                      ? ','
-                      : ' '
-                  }
-                  decimalSeparator={
-                    localStorage.getItem('preferredLanguage') === 'en'
-                      ? '.'
-                      : ','
-                  }
-                />
-              </StyledTableCell>
+              {updateTripsToLiquidate !== undefined &&
+                getActualFee !== undefined && (
+                  <StyledTableCell align="left">
+                    <NumericFormat
+                      required
+                      prefix={
+                        trip.unit === 'KM' || trip.unit === 'MAD'
+                          ? 'MAD '
+                          : 'EUR '
+                      }
+                      value={getActualFee(trip.id)}
+                      onValueChange={(values, sourceInfo) => {
+                        if (values.value === '') {
+                          updateTripsToLiquidate(trip.id, 0);
+                        } else {
+                          updateTripsToLiquidate(trip.id, values.floatValue);
+                        }
+                      }}
+                      disabled={!isTripModifiable}
+                      displayType="input"
+                      placeholder="Enter the amount here..."
+                      size="md"
+                      variant="outlined"
+                      customInput={Input}
+                      valueIsNumericString
+                      defaultValue="0"
+                      decimalScale={2}
+                      fixedDecimalScale
+                      allowNegative={false}
+                      thousandSeparator={
+                        localStorage.getItem('preferredLanguage') === 'en'
+                          ? ','
+                          : ' '
+                      }
+                      decimalSeparator={
+                        localStorage.getItem('preferredLanguage') === 'en'
+                          ? '.'
+                          : ','
+                      }
+                    />
+                  </StyledTableCell>
+                )}
             </StyledTableRow>
           ))}
         </TableBody>
@@ -195,8 +209,9 @@ export default function TripsToLiquidateTable({
   );
 }
 
-TripsToLiquidateTable.propTypes = {
+TripsTable.propTypes = {
   tripsData: PropTypes.array.isRequired,
-  updateTripsToLiquidate: PropTypes.func.isRequired,
-  getActualFee: PropTypes.func.isRequired,
+  updateTripsToLiquidate: PropTypes.func,
+  getActualFee: PropTypes.func,
+  isTripModifiable: PropTypes.bool,
 };

@@ -318,14 +318,6 @@ export function DepenseCaisseForm({ state }) {
     }
   };
 
-  const getAction = () => {
-    let requestAction = '';
-    if (depenseCaisseDetails !== null) {
-      requestAction = state === 'EDIT' ? 'save' : 'submit';
-    }
-    return requestAction;
-  };
-
   // Handle on buttons click
   const handleOnReturnButtonClick = () => {
     dispatch(cleanupDepenseCaisseFormPageStoreAction());
@@ -440,7 +432,7 @@ export function DepenseCaisseForm({ state }) {
 
   const data = {
     id: depenseCaisseDetails !== null ? depenseCaisseDetails?.id : 0,
-    action: getAction(),
+    action: state === 'EDIT' ? 'save' : 'submit',
     onBehalf: onBehalfSelection === 'true',
     description,
     receiptsFile:

@@ -26,12 +26,12 @@ export function Liquidation() {
   const disptach = useDispatch();
   const { pageContent } = useSelector(mapStateToProps);
 
-  useEffect(
-    () => () => {
-      disptach(cleanupliquidationParentPageStoreAction());
-    },
-    [],
-  );
+  // useEffect(
+  //   () => () => {
+  //     disptach(cleanupliquidationParentPageStoreAction());
+  //   },
+  //   [],
+  // );
 
   switch (pageContent) {
     case 'ADD':

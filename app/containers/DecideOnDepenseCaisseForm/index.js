@@ -33,7 +33,6 @@ import {
 import Timeline from '@mui/lab/Timeline';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
-import SimpleExpensesTable from 'components/SimpleExpensesTable';
 import DisplayUserinfo from 'components/DisplayUserinfo';
 import { cleanupParentDecideOnDepenseCaisseStoreAction } from 'pages/DecideOnDepenseCaisse/actions';
 import { setDepenseCaisseStatusAction } from 'containers/DecideOnDepenseCaisseTable/actions';
@@ -41,6 +40,7 @@ import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import { makeSelectDepenseCaisseIdentity } from 'pages/DecideOnDepenseCaisse/selectors';
 import { NumericFormat } from 'react-number-format';
 import { List, ListItem, ListItemDecorator, Radio, RadioGroup } from '@mui/joy';
+import ExpensesTable from 'components/ExpensesTable';
 import {
   makeSelectDepenseCaisseDetails,
   makeSelectErrorDecidingOnDepenseCaisse,
@@ -435,7 +435,7 @@ export function DecideOnDepenseCaisseForm({ state }) {
             </Typography>
           </Box>
           <Box display="flex" justifyContent="center" marginBottom={3}>
-            <SimpleExpensesTable expensesData={expenses} />
+            <ExpensesTable expensesData={expenses} />
           </Box>
         </>
       )}

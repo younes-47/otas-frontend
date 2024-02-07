@@ -34,6 +34,6 @@ export const CLEANUP_STORE_ACTION = 'app/LiquidationTable/CLEANUP_STORE_ACTION';
 
 export const webService = {
   LOAD_LIQUIDATIONS: '/Liquidation/Requester/Table',
-  DELETE_LIQUIDATION: '/Liquidation/Requester/Delete',
+  DELETE_LIQUIDATION: '/Liquidation/Delete',
   DOWNLOAD_RECEIPTS: '/Liquidation/ReceiptsFile/Download',
 };

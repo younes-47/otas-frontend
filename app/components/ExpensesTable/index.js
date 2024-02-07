@@ -33,10 +33,11 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-export default function ExpensesToLiquidateTable({
+export default function ExpensesTable({
   expensesData,
-  updateExpenseToLiquidate,
-  getActualFee,
+  updateExpenseToLiquidate = undefined,
+  getActualFee = undefined,
+  isExpenseModifiable = true,
 }) {
   return (
     <TableContainer component={Paper} sx={{ width: '60%' }}>
@@ -47,9 +48,12 @@ export default function ExpensesToLiquidateTable({
             <StyledTableCell align="left">Expense&nbsp;Date</StyledTableCell>
             <StyledTableCell align="left">Currency</StyledTableCell>
             <StyledTableCell align="left">Amount</StyledTableCell>
-            <StyledTableCell align="left" color="danger">
-              Actual&nbsp;amount&nbsp;spent*
-            </StyledTableCell>
+            {updateExpenseToLiquidate !== undefined &&
+              getActualFee !== undefined && (
+                <StyledTableCell align="left" color="danger">
+                  Actual&nbsp;amount&nbsp;spent*
+                </StyledTableCell>
+              )}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -88,36 +92,47 @@ export default function ExpensesToLiquidateTable({
                   />
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell align="left">
-                <NumericFormat
-                  prefix={expense.currency === 'MAD' ? 'MAD ' : 'EUR '}
-                  required
-                  displayType="input"
-                  placeholder="Enter the amount here..."
-                  value={getActualFee(expense.id)}
-                  onValueChange={(values, sourceInfo) => {
-                    updateExpenseToLiquidate(expense.id, values.floatValue);
-                  }}
-                  size="md"
-                  variant="outlined"
-                  customInput={Input}
-                  valueIsNumericString
-                  defaultValue="0"
-                  decimalScale={2}
-                  fixedDecimalScale
-                  allowNegative={false}
-                  thousandSeparator={
-                    localStorage.getItem('preferredLanguage') === 'en'
-                      ? ','
-                      : ' '
-                  }
-                  decimalSeparator={
-                    localStorage.getItem('preferredLanguage') === 'en'
-                      ? '.'
-                      : ','
-                  }
-                />
-              </StyledTableCell>
+              {updateExpenseToLiquidate !== undefined &&
+                getActualFee !== undefined && (
+                  <StyledTableCell align="left">
+                    <NumericFormat
+                      prefix={expense.currency === 'MAD' ? 'MAD ' : 'EUR '}
+                      required
+                      displayType="input"
+                      placeholder="Enter the amount here..."
+                      value={getActualFee(expense.id)}
+                      onValueChange={(values, sourceInfo) => {
+                        if (values.value === '') {
+                          updateExpenseToLiquidate(expense.id, 0);
+                        } else {
+                          updateExpenseToLiquidate(
+                            expense.id,
+                            values.floatValue,
+                          );
+                        }
+                      }}
+                      disabled={!isExpenseModifiable}
+                      size="md"
+                      variant="outlined"
+                      customInput={Input}
+                      valueIsNumericString
+                      defaultValue="0"
+                      decimalScale={2}
+                      fixedDecimalScale
+                      allowNegative={false}
+                      thousandSeparator={
+                        localStorage.getItem('preferredLanguage') === 'en'
+                          ? ','
+                          : ' '
+                      }
+                      decimalSeparator={
+                        localStorage.getItem('preferredLanguage') === 'en'
+                          ? '.'
+                          : ','
+                      }
+                    />
+                  </StyledTableCell>
+                )}
             </StyledTableRow>
           ))}
         </TableBody>
@@ -126,8 +141,9 @@ export default function ExpensesToLiquidateTable({
   );
 }
 
-ExpensesToLiquidateTable.propTypes = {
+ExpensesTable.propTypes = {
   expensesData: PropTypes.array.isRequired,
-  updateExpenseToLiquidate: PropTypes.func.isRequired,
-  getActualFee: PropTypes.func.isRequired,
+  updateExpenseToLiquidate: PropTypes.func,
+  getActualFee: PropTypes.func,
+  isExpenseModifiable: PropTypes.bool,
 };
