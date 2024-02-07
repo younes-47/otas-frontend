@@ -195,7 +195,13 @@ export function LiquidationForm({ state }) {
         if (expense.estimatedFee === 0) {
           newAddedExpensesReq = [...newAddedExpensesReq, expense];
         } else {
-          expensesToLiquidateReq = [...expensesToLiquidateReq, expense];
+          expensesToLiquidateReq = [
+            ...expensesToLiquidateReq,
+            {
+              expenseId: expense.id,
+              actualFee: expense.actualFee,
+            },
+          ];
         }
       });
       setNewExpenses(newAddedExpensesReq);
@@ -206,7 +212,13 @@ export function LiquidationForm({ state }) {
         if (trip.estimatedFee === 0) {
           newAddedTripsReq = [...newAddedTripsReq, trip];
         } else {
-          tripsToLiquidateReq = [...tripsToLiquidateReq, trip];
+          tripsToLiquidateReq = [
+            ...tripsToLiquidateReq,
+            {
+              tripId: trip.id,
+              actualFee: trip.actualFee,
+            },
+          ];
         }
       });
       setNewTrips(newAddedTripsReq);
