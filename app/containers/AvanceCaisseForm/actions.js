@@ -132,9 +132,10 @@ export function submitAvanceCaisseErrorAction(error) {
     error,
   };
 }
-export function downloadAvanceCaisseDocumentFileAction() {
+export function downloadAvanceCaisseDocumentFileAction(id) {
   return {
     type: DOWNLOAD_AVANCE_CAISSE_DOCUMENT,
+    id,
   };
 }
 
