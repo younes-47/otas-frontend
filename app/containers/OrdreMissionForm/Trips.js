@@ -21,9 +21,10 @@ import { createStructuredSelector } from 'reselect';
 import { useSelector } from 'react-redux';
 import { NumericFormat } from 'react-number-format';
 import { FormatNumber } from 'utils/Custom/stringManipulation';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
 import { makeSelectAbroad } from './selectors';
 // import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-
 const mapStateToProps = createStructuredSelector({
   abroadSelection: makeSelectAbroad(),
 });
@@ -125,7 +126,7 @@ const Trips = ({
           variant={isTripModifiabale ? 'outlined' : 'filled'}
           sx={{ minWidth: 160, maxWidth: 160 }}
           label="Departure Date"
-          value={departureDate}
+          value={departureDate === null ? departureDate : dayjs(departureDate)}
           onChange={(e) => {
             handleTripDates(id, 'departureDate', e);
           }}
@@ -139,7 +140,7 @@ const Trips = ({
           variant={isTripModifiabale ? 'outlined' : 'filled'}
           sx={{ minWidth: 160, maxWidth: 160 }}
           label="Arrival"
-          value={arrivalDate}
+          value={departureDate === null ? departureDate : dayjs(departureDate)}
           onChange={(e) => {
             handleTripDates(id, 'arrivalDate', e);
           }}

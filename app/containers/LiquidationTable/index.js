@@ -5,7 +5,6 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import InsertLinkIcon from '@mui/icons-material/InsertLink';
@@ -130,6 +129,7 @@ export function LiquidationTable() {
     }
   }, [errorDownloadingLiquidationReceiptsFile]);
 
+  // Notifications
   useEffect(() => {
     if (errorLoadingLiquidations === null) {
       dispatch(loadLiquidationAction());
@@ -149,6 +149,7 @@ export function LiquidationTable() {
     }
   }, [liquidations]);
 
+  // delete action + notif
   useEffect(() => {
     if (errorDeletingLiquidation === false) {
       dispatch(setLiquidationStatusAction('DELETED'));
@@ -158,12 +159,14 @@ export function LiquidationTable() {
     }
   }, [errorDeletingLiquidation]);
 
+  // load table
   useEffect(() => {
     if (errorLoadingLiquidations === null) {
       dispatch(loadLiquidationAction());
     }
   }, [liquidations]);
 
+  // cleanup store
   useEffect(
     () => () => {
       dispatch(cleanupLiquidationTableStoreAction());
@@ -197,7 +200,7 @@ export function LiquidationTable() {
         const { requestType, requestId } = params.row;
         return requestType === 'AV' ? (
           <Typography level="title-md" variant="plain">
-            Avance Voyage
+            Avance Voyage&nbsp;-&nbsp;
             <Tooltip
               title="Navigate to the related Avance Voyage"
               placement="bottom-start"
@@ -217,7 +220,7 @@ export function LiquidationTable() {
           </Typography>
         ) : (
           <Typography level="title-md" variant="plain">
-            Avance Caisse
+            Avance Caisse&nbsp;-&nbsp;
             <Tooltip
               title="Navigate to the related Avance Caisse"
               placement="bottom-start"
@@ -257,8 +260,8 @@ export function LiquidationTable() {
     {
       field: 'actualTotal',
       hide: false,
+      width: 120,
       headerName: 'Actual Total',
-      flex: 1,
       renderCell: (params) => {
         const { actualTotal } = params.row;
         return (
@@ -285,7 +288,7 @@ export function LiquidationTable() {
       field: 'currency',
       hide: false,
       headerName: 'Currency',
-      width: 150,
+      width: 120,
       renderCell: (params) => {
         const { currency } = params.row;
         return (
@@ -379,13 +382,13 @@ export function LiquidationTable() {
       hide: false,
       type: 'boolean',
       headerName: 'onBehalf',
-      width: 150,
+      width: 120,
     },
     {
       field: 'receiptsFileName',
       hide: false,
       headerName: 'Receipts File',
-      width: 150,
+      width: 120,
       renderCell: (params) => {
         const { receiptsFileName } = params.row;
         return (
@@ -633,7 +636,7 @@ export function LiquidationTable() {
             <CloseIcon fontSize="small" />
           </IconButton>
         }
-        color={snackbarAlertSeverity}
+        color={snackbarAlertSeverity !== '' ? snackbarAlertSeverity : 'primary'}
       >
         Request has been {statusLiquidation} successfully!
       </Snackbar>

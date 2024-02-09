@@ -402,7 +402,7 @@ export function DecideOnDepenseCaisseTable() {
             <CloseIcon fontSize="small" />
           </IconButton>
         }
-        color={snackbarAlertSeverity}
+        color={snackbarAlertSeverity !== '' ? snackbarAlertSeverity : 'primary'}
         variant="solid"
       >
         Request has been {statusDepenseCaisse} successfully!

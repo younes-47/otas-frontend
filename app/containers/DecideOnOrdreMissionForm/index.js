@@ -39,6 +39,7 @@ import { setOrdreMissionStatusAction } from 'containers/DecideOnOrdreMissionTabl
 import { NumericFormat } from 'react-number-format';
 import TripsTable from 'components/TripsTable';
 import ExpensesTable from 'components/ExpensesTable';
+import { makeSelectDeciderLevels } from 'pages/DecideOnRequests/selectors';
 import {
   makeSelectErrorDecidingOnOrdreMission,
   makeSelectErrorLoadingOrdreMissionDetails,
@@ -58,6 +59,7 @@ const mapStateToProps = createStructuredSelector({
   errorLoadingOrdreMissionDetails: makeSelectErrorLoadingOrdreMissionDetails(),
   ordreMissionDetails: makeSelectOrdreMissionDetails(),
   errorDecidingOnOrdreMission: makeSelectErrorDecidingOnOrdreMission(),
+  deciderLevels: makeSelectDeciderLevels(),
 });
 
 export function DecideOnOrdreMissionForm({ state }) {
@@ -459,9 +461,7 @@ export function DecideOnOrdreMissionForm({ state }) {
               color="success"
               onClick={handleOnApproveRequestButtonClick}
             >
-              {localStorage.getItem('level') !== 'FM'
-                ? 'Sign and Approve'
-                : 'Approve'}
+              {!deciderLevels?.includes('FM') ? 'Sign and Approve' : 'Approve'}
             </Button>
           </>
         )}

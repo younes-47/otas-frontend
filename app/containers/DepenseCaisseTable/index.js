@@ -543,7 +543,7 @@ export function DepenseCaisseTable() {
             <CloseIcon fontSize="small" />
           </IconButton>
         }
-        color={snackbarAlertSeverity}
+        color={snackbarAlertSeverity !== '' ? snackbarAlertSeverity : 'primary'}
       >
         Request has been {statusDepenseCaisse} successfully!
       </Snackbar>

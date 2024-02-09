@@ -11,6 +11,9 @@ import {
   CHANGE_ONBEHALF_SELECTION_ACTION,
   CLEANUP_STORE_ACTION,
   DEFAULT_ACTION,
+  DOWNLOAD_AVANCE_CAISSE_DOCUMENT,
+  DOWNLOAD_AVANCE_CAISSE_DOCUMENT_ERROR,
+  DOWNLOAD_AVANCE_CAISSE_DOCUMENT_SUCCESS,
   LOAD_AVANCE_CAISSE_DETAILS,
   LOAD_AVANCE_CAISSE_DETAILS_ERROR,
   LOAD_AVANCE_CAISSE_DETAILS_SUCCESS,
@@ -39,6 +42,9 @@ export const initialState = {
   loadingaAvanceCaisseDetails: false,
   errorLoadingAvanceCaisseDetails: null,
   avanceCaisseDetails: null,
+  downloadingAvanceCaisseDocumentFile: false,
+  errorDownloadingAvanceCaisseDocumentFile: null,
+  avanceCaisseDocumentFile: null,
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -46,6 +52,19 @@ const avanceCaisseFormReducer = (state = initialState, action) =>
   produce(state, (draft) => {
     switch (action.type) {
       case DEFAULT_ACTION:
+        break;
+      case DOWNLOAD_AVANCE_CAISSE_DOCUMENT:
+        draft.downloadingAvanceCaisseDocumentFile = true;
+        draft.errorDownloadingAvanceCaisseDocumentFile = null;
+        break;
+      case DOWNLOAD_AVANCE_CAISSE_DOCUMENT_SUCCESS:
+        draft.downloadingAvanceCaisseDocumentFile = false;
+        draft.errorDownloadingAvanceCaisseDocumentFile = false;
+        draft.avanceCaisseDocumentFile = action.data;
+        break;
+      case DOWNLOAD_AVANCE_CAISSE_DOCUMENT_ERROR:
+        draft.downloadingAvanceCaisseDocumentFile = false;
+        draft.errorDownloadingAvanceCaisseDocumentFile = true;
         break;
       case LOAD_AVANCE_CAISSE_DETAILS:
         draft.loadingaAvanceCaisseDetails = true;
@@ -123,6 +142,9 @@ const avanceCaisseFormReducer = (state = initialState, action) =>
         draft.loadingaAvanceCaisseDetails = false;
         draft.errorLoadingAvanceCaisseDetails = null;
         draft.avanceCaisseDetails = null;
+        draft.downloadingAvanceCaisseDocumentFile = false;
+        draft.errorDownloadingAvanceCaisseDocumentFile = null;
+        draft.avanceCaisseDocumentFile = null;
         break;
       case CHANGE_ONBEHALF_SELECTION_ACTION:
         draft.onBehalfSelection = action.selection;

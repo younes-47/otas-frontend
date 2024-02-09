@@ -19,6 +19,7 @@ import FileUploadIcon from '@mui/icons-material/FileUpload';
 import FilePresentIcon from '@mui/icons-material/FilePresent';
 import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';
+import HistoryIcon from '@mui/icons-material/History';
 import {
   Box,
   Card,
@@ -42,9 +43,9 @@ import {
   Divider,
   Grid,
   LinearProgress,
-  Snackbar,
   Stack,
 } from '@mui/material';
+import Snackbar from '@mui/joy/Snackbar';
 import CloseIcon from '@mui/icons-material/Close';
 import DisplayUserinfo from 'components/DisplayUserinfo';
 import Expenses from 'containers/AvanceCaisseForm/Expenses';
@@ -134,6 +135,7 @@ export function LiquidationForm({ state }) {
   const [expensesToLiquidate, setExpensesToLiquidate] = useState([]);
   const [tripsToLiquidate, setTripsToLiquidate] = useState([]);
   const [actualTotal, setActualTotal] = useState(0.0);
+  const [result, setResult] = useState(0.0);
   const [receiptsFile, setReceiptsFile] = useState('');
   const [receiptsFileName, setReceiptsFileName] = useState('');
   const [loadingButton, setLoadingButton] = useState(false);
@@ -153,8 +155,14 @@ export function LiquidationForm({ state }) {
 
   const data = {
     id: liquidationDetails !== null ? liquidationDetails?.id : 0,
-    requestId: requestToLiquidateDetails?.id,
-    requestType: requestTypeToLiquidate,
+    requestId:
+      requestToLiquidateDetails !== null
+        ? requestToLiquidateDetails?.id
+        : liquidationDetails?.requestId,
+    requestType:
+      requestTypeToLiquidate !== null
+        ? requestTypeToLiquidate
+        : liquidationDetails?.requestType,
     receiptsFile:
       liquidationDetails?.receiptsFile === receiptsFile ? null : receiptsFile,
     tripsLiquidations: tripsToLiquidate,
@@ -171,7 +179,7 @@ export function LiquidationForm({ state }) {
     }
   }, [buttonClicked]);
 
-  // Load request data => object details
+  // Load liquidation detils in a case oher than ADD
   useEffect(() => {
     if (state !== 'ADD') {
       dispatch(loadLiquidationDetailsAction(liquidationIdentity));
@@ -233,7 +241,7 @@ export function LiquidationForm({ state }) {
       requestToLiquidateDetails?.expenses?.forEach((expense) => {
         const toLiquidateExpense = {
           expenseId: expense.id,
-          actualFee: 0.0,
+          actualFee: expense.estimatedFee,
         };
         setExpensesToLiquidate((prevExpenses) => [
           ...prevExpenses,
@@ -249,26 +257,13 @@ export function LiquidationForm({ state }) {
         requestToLiquidateDetails?.trips?.forEach((trip) => {
           const toLiquidateTrip = {
             tripId: trip.id,
-            actualFee: 0.0,
+            actualFee: trip.estimatedFee,
           };
           setTripsToLiquidate((prevTrips) => [...prevTrips, toLiquidateTrip]);
         });
       }
     }
   }, [requestToLiquidateDetails]);
-
-  // Change PAGE CONTENT TO CONFIRMATION PAGE when the object is loaded and the button clicked is CONFIRM
-  useEffect(() => {
-    if (
-      buttonClicked === 'CONFIRM' &&
-      errorLoadingLiquidationDetails === false
-    ) {
-      dispatch(cleanupliquidationParentPageStoreAction());
-      dispatch(changeLiquidationParentPageContentAction('CONFIRM'));
-      setFullPageModalVisibility(true);
-      setSavedSnackbarVisibility(true);
-    }
-  }, [errorLoadingLiquidationDetails]);
 
   // clean arrays in case of changing request type
   useEffect(() => {
@@ -278,7 +273,7 @@ export function LiquidationForm({ state }) {
     setNewTrips([]);
   }, [selection]);
 
-  // update actual total
+  // update actual total and result
   useEffect(() => {
     let newTotal = 0.0;
 
@@ -302,6 +297,14 @@ export function LiquidationForm({ state }) {
       newTotal += trip.actualFee;
     });
 
+    const estimatedTotal =
+      requestToLiquidateDetails !== null
+        ? requestToLiquidateDetails?.estimatedTotal
+        : liquidationDetails?.requestDetails?.estimatedTotal;
+
+    const newResult = newTotal - estimatedTotal;
+
+    setResult(Number(newResult.toFixed(2)));
     setActualTotal(Number(newTotal.toFixed(2)));
   }, [expensesToLiquidate, tripsToLiquidate, newExpenses, newTrips]);
 
@@ -331,6 +334,20 @@ export function LiquidationForm({ state }) {
     }
   }, [errorAddingLiquidation, errorUpdatingLiquidation]);
 
+  // Change PAGE CONTENT TO CONFIRMATION PAGE when the object is loaded and the button clicked is CONFIRM
+  useEffect(() => {
+    if (
+      buttonClicked === 'CONFIRM' &&
+      errorLoadingLiquidationDetails === false
+    ) {
+      dispatch(cleanupliquidationParentPageStoreAction());
+      dispatch(changeLiquidationParentPageContentAction('CONFIRM'));
+      setFullPageModalVisibility(true);
+      setSavedSnackbarVisibility(true);
+    }
+  }, [errorLoadingLiquidationDetails]);
+
+  // Cleanup store during unmount
   useEffect(
     () => () => {
       dispatch(cleanupLiquidationFormPageStoreAction());
@@ -372,12 +389,14 @@ export function LiquidationForm({ state }) {
   };
 
   const getTripActualFee = (tripId) => {
-    const trip = tripsToLiquidate.find((item) => item.id === tripId);
+    const trip = tripsToLiquidate.find((item) => item.tripId === tripId);
     return trip ? trip.actualFee : 0.0;
   };
 
   const getExpenseActualFee = (expenseId) => {
-    const expense = expensesToLiquidate.find((item) => item.id === expenseId);
+    const expense = expensesToLiquidate.find(
+      (item) => item.expenseId === expenseId,
+    );
     return expense ? expense.actualFee : 0.0;
   };
 
@@ -403,6 +422,24 @@ export function LiquidationForm({ state }) {
     setReceiptsFile(base64data);
     setReceiptsFileName(file.name);
     setLoadingButton(false);
+  };
+
+  const getResultPrefix = () => {
+    if (requestToLiquidateDetails !== null) {
+      if (result >= 0) {
+        return `${requestToLiquidateDetails?.currency} +`;
+      }
+
+      return `${requestToLiquidateDetails?.currency} -`;
+    }
+    if (liquidationDetails !== null) {
+      if (result >= 0) {
+        return `${liquidationDetails?.requestDetails?.currency} +`;
+      }
+
+      return `${liquidationDetails?.requestDetails?.currency} -`;
+    }
+    return '';
   };
 
   // FUNCS FOR NEW DATA
@@ -518,7 +555,7 @@ export function LiquidationForm({ state }) {
   };
 
   const handleOnSaveAsDraftClick = () => {
-    const result = ValidateLiquidationInputs(
+    const validationResult = ValidateLiquidationInputs(
       setModalVisibility,
       setModalBody,
       setModalHeader,
@@ -526,7 +563,7 @@ export function LiquidationForm({ state }) {
       data,
       actualTotal,
     );
-    if (result === true) {
+    if (validationResult === true) {
       if (state === 'ADD') {
         dispatch(AddLiquidationAction(data));
         setButtonClicked('SAVE-AS-DRAFT');
@@ -540,7 +577,7 @@ export function LiquidationForm({ state }) {
   };
 
   const handleOnConfirmButtonClick = () => {
-    const result = ValidateLiquidationInputs(
+    const validationResult = ValidateLiquidationInputs(
       setModalVisibility,
       setModalBody,
       setModalHeader,
@@ -548,7 +585,7 @@ export function LiquidationForm({ state }) {
       data,
       actualTotal,
     );
-    if (result === true) {
+    if (validationResult === true) {
       if (state === 'ADD') {
         dispatch(AddLiquidationAction(data));
         setButtonClicked('CONFIRM');
@@ -586,7 +623,7 @@ export function LiquidationForm({ state }) {
 
   const handleOnSubmitModificationsConfirmationButtonClick = () => {
     // This button is in the modal
-    const result = ValidateLiquidationInputs(
+    const validationResult = ValidateLiquidationInputs(
       setModalVisibility,
       setModalBody,
       setModalHeader,
@@ -594,7 +631,7 @@ export function LiquidationForm({ state }) {
       data,
       actualTotal,
     );
-    if (result === true) {
+    if (validationResult === true) {
       dispatch(UpdateLiquidationAction(data));
       setButtonClicked('SUBMIT-MODIFICATIONS');
     }
@@ -763,8 +800,25 @@ export function LiquidationForm({ state }) {
             )}
 
             {/* THE HEADER */}
+            {state === 'CONFIRM' && (
+              <Box
+                display="flex"
+                justifyContent="center"
+                textAlign="center"
+                marginBottom={3}
+              >
+                <Box>
+                  <Typography level="h1" marginTop={3} gutterBottom>
+                    Please Review your information before submitting
+                  </Typography>
+                  <Box sx={{ width: '100%' }}>
+                    <LinearProgress color="info" value={40} />
+                  </Box>
+                </Box>
+              </Box>
+            )}
             {state === 'ADD' ? (
-              <Typography level="title-lg" textAlign="center">
+              <Typography level="h3" textAlign="center">
                 {`Liquidating ${
                   requestTypeToLiquidate === 'AC'
                     ? 'Avance Caisse'
@@ -772,7 +826,7 @@ export function LiquidationForm({ state }) {
                 } #${requestToLiquidateDetails?.id}`}
               </Typography>
             ) : (
-              <Typography level="title-lg" textAlign="center">
+              <Typography level="h3" textAlign="center">
                 {`Liquidating ${
                   liquidationDetails?.requestType === 'AC'
                     ? 'Avance Caisse'
@@ -788,7 +842,9 @@ export function LiquidationForm({ state }) {
                 />
               )}
             {state !== 'ADD' && liquidationDetails?.onBehalf === true && (
-              <DisplayUserinfo userData={liquidationDetails?.actualRequester} />
+              <DisplayUserinfo
+                userData={liquidationDetails?.requestDetails?.actualRequester}
+              />
             )}
 
             {/* CURRENCY */}
@@ -799,7 +855,7 @@ export function LiquidationForm({ state }) {
               marginTop={1}
               marginBottom={3}
             >
-              <Typography color="success" level="title-sm" display="flex">
+              <Typography color="success" level="title-md" display="flex">
                 This Request&apos;s currency is set to be:&nbsp;
                 <Box sx={{ fontWeight: 'bold' }}>
                   {state === 'ADD' && requestToLiquidateDetails?.currency}
@@ -808,6 +864,47 @@ export function LiquidationForm({ state }) {
                 </Box>
               </Typography>
             </Box>
+
+            {(state === 'VIEW' || state === 'MODIFY') && (
+              <>
+                <Box
+                  display="flex"
+                  justifyContent="center"
+                  textAlign="center"
+                  marginBottom={1}
+                >
+                  <Typography color="neutral" level="title-lg" variant="plain">
+                    Current Status:{' '}
+                    <Typography
+                      color="primary"
+                      level="title-lg"
+                      variant="plain"
+                    >
+                      {liquidationDetails?.latestStatus}
+                    </Typography>
+                  </Typography>
+                </Box>
+                <Box
+                  display="flex"
+                  justifyContent="center"
+                  textAlign="center"
+                  marginBottom={2}
+                >
+                  <Button
+                    variant="contained"
+                    color="warning"
+                    onClick={() => {
+                      setModalVisibility(true);
+                      setModalHeader('Status History');
+                    }}
+                    startIcon={<HistoryIcon />}
+                  >
+                    Status History
+                  </Button>
+                </Box>
+              </>
+            )}
+
             {/* DESCRIPTION */}
             <Box display="flex" justifyContent="center" marginBottom={3}>
               <Card
@@ -818,9 +915,9 @@ export function LiquidationForm({ state }) {
                 <CardContent>
                   <Typography level="title-md">Description</Typography>
                   <Typography level="body-md">
-                    {state === 'ADD' && requestToLiquidateDetails?.description}
-                    {state === 'ADD' &&
-                      liquidationDetails?.requestDetails?.description}
+                    {state === 'ADD'
+                      ? requestToLiquidateDetails?.description
+                      : liquidationDetails?.requestDetails?.description}
                   </Typography>
                 </CardContent>
               </Card>
@@ -1112,9 +1209,17 @@ export function LiquidationForm({ state }) {
                   Estimated Total:&nbsp;
                   <Typography color="success">
                     <NumericFormat
-                      prefix={`${requestToLiquidateDetails?.currency} `}
+                      prefix={
+                        requestToLiquidateDetails !== null
+                          ? `${requestToLiquidateDetails?.currency} `
+                          : `${liquidationDetails?.requestDetails?.currency} `
+                      }
                       displayType="text"
-                      value={requestToLiquidateDetails?.estimatedTotal}
+                      value={
+                        requestToLiquidateDetails !== null
+                          ? requestToLiquidateDetails?.estimatedTotal
+                          : liquidationDetails?.requestDetails?.estimatedTotal
+                      }
                       fixedDecimalScale
                       decimalScale={2}
                       defaultValue="0"
@@ -1140,7 +1245,11 @@ export function LiquidationForm({ state }) {
                   Actual Amount Spent:&nbsp;
                   <Typography color="success">
                     <NumericFormat
-                      prefix={`${requestToLiquidateDetails?.currency} `}
+                      prefix={
+                        requestToLiquidateDetails !== null
+                          ? `${requestToLiquidateDetails?.currency} `
+                          : `${liquidationDetails?.requestDetails?.currency} `
+                      }
                       displayType="text"
                       value={actualTotal}
                       fixedDecimalScale
@@ -1160,6 +1269,80 @@ export function LiquidationForm({ state }) {
                     />
                   </Typography>
                 </Typography>
+              </Box>
+            </Box>
+            {/* DIVIDER */}
+            <Box
+              display="flex"
+              justifyContent="center"
+              textAlign="center"
+              marginBottom={3}
+            >
+              <Divider style={{ width: '60%', opacity: 0.7 }} />
+            </Box>
+            <Box display="flex" justifyContent="center" marginBottom={3}>
+              <Box width="60%" display="flex" justifyContent="flex-end">
+                <Typography level="h4">
+                  You owe:&nbsp;
+                  <Typography color={result < 0 ? 'danger' : 'success'}>
+                    <NumericFormat
+                      prefix={getResultPrefix()}
+                      displayType="text"
+                      value={result}
+                      fixedDecimalScale
+                      decimalScale={2}
+                      defaultValue="0"
+                      allowNegative={false}
+                      thousandSeparator={
+                        localStorage.getItem('preferredLanguage') === 'en'
+                          ? ','
+                          : ' '
+                      }
+                      decimalSeparator={
+                        localStorage.getItem('preferredLanguage') === 'en'
+                          ? '.'
+                          : ','
+                      }
+                    />
+                  </Typography>
+                </Typography>
+              </Box>
+            </Box>
+
+            <Box display="flex" justifyContent="center" marginBottom={2}>
+              <Box
+                display="flex"
+                justifyContent="center"
+                marginBottom={2}
+                width="40rem"
+              >
+                <Card variant="soft" color={result < 0 ? 'danger' : 'success'}>
+                  <Typography
+                    level="title-lg"
+                    textColor="inherit"
+                    sx={{ textTransform: 'capitalize' }}
+                  >
+                    Decision:
+                  </Typography>
+                  <Typography
+                    level="title-md"
+                    textColor="inherit"
+                    sx={{ textTransform: 'capitalize' }}
+                  >
+                    {result < 0 &&
+                      `You must hand over an amount of ${
+                        requestToLiquidateDetails !== null
+                          ? requestToLiquidateDetails?.currency
+                          : liquidationDetails?.requestDetails?.currency
+                      } ${Math.abs(result)}`}
+                    {result >= 0 &&
+                      `An amount of ${
+                        requestToLiquidateDetails !== null
+                          ? requestToLiquidateDetails?.currency
+                          : liquidationDetails?.requestDetails?.currency
+                      } ${result} must be refunded to you.`}
+                  </Typography>
+                </Card>
               </Box>
             </Box>
 
@@ -1228,7 +1411,7 @@ export function LiquidationForm({ state }) {
           <DialogContent dividers>
             {modalHeader === 'Status History' ? (
               <Timeline position="alternate">
-                {requestToLiquidateDetails?.statusHistory?.map((sh, i, arr) => (
+                {liquidationDetails?.statusHistory?.map((sh, i, arr) => (
                   <CustomizedTimeLine
                     statusHistory={sh}
                     lastOne={arr.length - 1 === i}
@@ -1237,7 +1420,7 @@ export function LiquidationForm({ state }) {
               </Timeline>
             ) : (
               <DialogContentText id="alert-dialog-slide-description">
-                <Alert sevirity={modalSevirity}>{modalBody}</Alert>
+                <Alert severity={modalSevirity}>{modalBody}</Alert>
               </DialogContentText>
             )}
           </DialogContent>
@@ -1264,7 +1447,7 @@ export function LiquidationForm({ state }) {
           </DialogActions>
         </Dialog>
 
-        {/* Confirmation Modal */}
+        {/* Confirmation Modal full page */}
         <Dialog
           fullScreen
           open={fullPageModalVisibility}
@@ -1285,7 +1468,7 @@ export function LiquidationForm({ state }) {
           >
             <Grid item xs={1.5} justifyContent="center">
               <Box>
-                <Typography variant="h4">
+                <Typography level="h1">
                   Please Review your information before submitting
                 </Typography>
                 <Box sx={{ width: '100%' }}>

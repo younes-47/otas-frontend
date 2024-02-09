@@ -71,7 +71,6 @@ export function DecideOnRequests() {
             } else {
               string += ' and Finance Manager';
             }
-            localStorage.setItem('level', 'FM');
             break;
           case 'HR':
             if (index === 0) {
@@ -86,7 +85,6 @@ export function DecideOnRequests() {
             } else {
               string += ' and Treasurer';
             }
-            localStorage.setItem('level', 'TR');
             break;
           case 'DG':
             if (index === 0) {

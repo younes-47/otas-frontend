@@ -57,10 +57,7 @@ export default function MyRequests() {
   } = useSelector(mapStateToProps);
 
   useEffect(() => {
-    // only token, username, and role => dispatch to get userInfo
-    if (localStorage.length === 3) {
-      dispatch(loadUserInfoAction());
-    }
+    dispatch(loadUserInfoAction());
   }, []);
 
   useEffect(() => {

@@ -25,14 +25,15 @@ const makeSelectChangePageContent = () =>
     (substate) => substate.pageContent,
   );
 
-const makeSelectCleanupStore = () =>
+const makeSelectLiquidationIdentity = () =>
   createSelector(
     selectDecideOnLiquidationDomain,
-    (substate) => substate.storeCleanup,
+    (substate) => substate.liquidationIdentity,
   );
+
 export default makeSelectDecideOnLiquidation;
 export {
   selectDecideOnLiquidationDomain,
-  makeSelectCleanupStore,
+  makeSelectLiquidationIdentity,
   makeSelectChangePageContent,
 };

@@ -41,6 +41,7 @@ import DisplayUserinfo from 'components/DisplayUserinfo';
 import { setAvanceCaisseStatusAction } from 'containers/AvanceCaisseTable/actions';
 import { makeSelectAvanceCaisseIdentity } from 'pages/AvanceCaisse/selectors';
 import { Timeline } from '@mui/lab';
+import DescriptionIcon from '@mui/icons-material/Description';
 import CustomizedTimeLine from 'components/CustomizedTimeLine';
 import ActualRequesterInputs from 'components/ActualRequesterInputs';
 import { ValidateInputs } from 'utils/Custom/ValidateInputs';
@@ -52,6 +53,8 @@ import { NumericFormat } from 'react-number-format';
 import {
   makeSelectAddAvanceCaisse,
   makeSelectAvanceCaisseDetails,
+  makeSelectAvanceCaisseDocumentFile,
+  makeSelectErrorDownloadingAvanceCaisseDocumentFile,
   makeSelectErrorLoadingAvanceCaisseDetails,
   makeSelectErrorLoadingStaticData,
   makeSelectErrorSubmittingAvanceCaisse,
@@ -68,6 +71,7 @@ import {
   SelectOnBehalfAction,
   UpdateAvanceCaisseAction,
   cleanupAvanceCaisseFormPageStoreAction,
+  downloadAvanceCaisseDocumentFileAction,
   loadAvanceCaisseDetailsAction,
   submitAvanceCaisseAction,
 } from './actions';
@@ -83,6 +87,9 @@ const mapStateToProps = createStructuredSelector({
   avanceCaisseIdentity: makeSelectAvanceCaisseIdentity(),
   errorloadingAvanceCaisseDetails: makeSelectErrorLoadingAvanceCaisseDetails(),
   avanceCaisseDetails: makeSelectAvanceCaisseDetails(),
+  errorDownloadingAvanceCaisseDocumentFile:
+    makeSelectErrorDownloadingAvanceCaisseDocumentFile(),
+  avanceCaisseDocumentFile: makeSelectAvanceCaisseDocumentFile(),
 });
 
 export function AvanceCaisseForm({ state }) {
@@ -90,6 +97,8 @@ export function AvanceCaisseForm({ state }) {
   useInjectSaga({ key: 'avanceCaisseForm', saga });
   const dispatch = useDispatch();
   const {
+    errorDownloadingAvanceCaisseDocumentFile,
+    avanceCaisseDocumentFile,
     avanceCaisseDetails,
     errorloadingAvanceCaisseDetails,
     avanceCaisseIdentity,
@@ -239,11 +248,31 @@ export function AvanceCaisseForm({ state }) {
     setTotal(totalExpenses);
   }, [expenses]);
 
-  const handleOnBehalfSelectionChange = (event) => {
-    if (event.target.value !== String(onBehalfSelection)) {
-      dispatch(SelectOnBehalfAction(event.target.value.toString()));
+  // Download file
+  useEffect(() => {
+    if (errorDownloadingAvanceCaisseDocumentFile === false) {
+      const binaryString = atob(avanceCaisseDocumentFile.fileContents);
+      const bytes = new Uint8Array(binaryString.length);
+
+      for (let i = 0; i < binaryString.length; i += 1) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      const blob = new Blob([bytes.buffer], {
+        type: 'application/pdf',
+      });
+
+      const blobUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = avanceCaisseDocumentFile.fileDownloadName;
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
-  };
+  }, [errorDownloadingAvanceCaisseDocumentFile]);
 
   // FUNCS
   const addExpense = () => {
@@ -292,6 +321,12 @@ export function AvanceCaisseForm({ state }) {
       requestAction = state === 'EDIT' ? 'save' : 'submit';
     }
     return requestAction;
+  };
+
+  const handleOnBehalfSelectionChange = (event) => {
+    if (event.target.value !== String(onBehalfSelection)) {
+      dispatch(SelectOnBehalfAction(event.target.value.toString()));
+    }
   };
 
   // Handle on buttons click
@@ -382,6 +417,11 @@ export function AvanceCaisseForm({ state }) {
       setButtonClicked('SUBMIT-MODIFICATIONS');
     }
   };
+
+  const handleOnDownloadDocumentClick = () => {
+    dispatch(downloadAvanceCaisseDocumentFileAction(avanceCaisseDetails));
+  };
+
   const data = {
     id: avanceCaisseDetails !== null ? avanceCaisseDetails?.id : 0,
     action: getAction(),
@@ -477,6 +517,7 @@ export function AvanceCaisseForm({ state }) {
             justifyContent="center"
             textAlign="center"
             marginBottom={2}
+            gap={3}
           >
             <Button
               variant="contained"
@@ -488,6 +529,15 @@ export function AvanceCaisseForm({ state }) {
               startIcon={<HistoryIcon />}
             >
               Status History
+            </Button>
+            <Button
+              variant="contained"
+              color="secondary"
+              size="medium"
+              startIcon={<DescriptionIcon />}
+              onClick={() => handleOnDownloadDocumentClick()}
+            >
+              Download Document
             </Button>
           </Box>
         </>

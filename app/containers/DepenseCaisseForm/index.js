@@ -12,6 +12,7 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import FilePresentIcon from '@mui/icons-material/FilePresent';
 import HistoryIcon from '@mui/icons-material/History';
+import DescriptionIcon from '@mui/icons-material/Description';
 import Box from '@mui/system/Box';
 import Stack from '@mui/system/Stack';
 import Alert from '@mui/material/Alert';
@@ -527,6 +528,7 @@ export function DepenseCaisseForm({ state }) {
             justifyContent="center"
             textAlign="center"
             marginBottom={2}
+            gap={3}
           >
             <Button
               variant="contained"
@@ -538,6 +540,14 @@ export function DepenseCaisseForm({ state }) {
               startIcon={<HistoryIcon />}
             >
               Status History
+            </Button>
+            <Button
+              variant="contained"
+              color="secondary"
+              size="medium"
+              startIcon={<DescriptionIcon />}
+            >
+              Download Document
             </Button>
           </Box>
         </>

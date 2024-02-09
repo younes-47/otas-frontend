@@ -1,25 +1,31 @@
 import React from 'react';
 import AssignmentIcon from '@mui/icons-material/Assignment';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import PropTypes from 'prop-types';
 import EditIcon from '@mui/icons-material/Edit';
+import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
+import CardTravelIcon from '@mui/icons-material/CardTravel';
+import RequestQuoteIcon from '@mui/icons-material/RequestQuote';
+import CashHandIcon from 'components/CashHandIcon';
+import CashStackIcon from 'components/CashStackIcon';
+import DocSignatureIcon from 'components/DocSignatureIcon';
+import UserIcon from 'components/UserIcon';
 
 const SideBarButtonIcon = ({ ButtonIconName }) => {
   switch (ButtonIconName) {
     case 'myRequests':
-      return <AssignmentIcon />;
+      return <UserIcon />;
     case 'ordreMission':
-      return <ArrowForwardIosIcon />;
+      return <CardTravelIcon />;
     case 'avanceCaisse':
-      return <ArrowForwardIosIcon />;
+      return <CashHandIcon />;
     case 'avanceVoyage':
-      return <ArrowForwardIosIcon />;
+      return <CashHandIcon />;
     case 'depenseCaisse':
-      return <ArrowForwardIosIcon />;
+      return <CashStackIcon />;
     case 'liquidation':
-      return <ArrowForwardIosIcon />;
+      return <CurrencyExchangeIcon />;
     case 'decideOnRequests':
-      return <AssignmentIcon />;
+      return <DocSignatureIcon />;
     case 'decideOnOrdreMission':
       return <EditIcon />;
     case 'decideOnAvanceCaisse':

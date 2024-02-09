@@ -12,6 +12,24 @@ const selectDecideOnLiquidationFormDomain = (state) =>
  * Other specific selectors
  */
 
+const makeSelectLiquidationDetails = () =>
+  createSelector(
+    selectDecideOnLiquidationFormDomain,
+    (substate) => substate.liquidationDetails,
+  );
+
+const makeSelectErrorLoadingLiquidationDetails = () =>
+  createSelector(
+    selectDecideOnLiquidationFormDomain,
+    (substate) => substate.errorLoadingLiquidationDetails,
+  );
+
+const makeSelectErrorDecidingOnLiquidation = () =>
+  createSelector(
+    selectDecideOnLiquidationFormDomain,
+    (substate) => substate.errorDecidingOnLiquidation,
+  );
+
 /**
  * Default selector used by DecideOnLiquidationForm
  */
@@ -20,4 +38,9 @@ const makeSelectDecideOnLiquidationForm = () =>
   createSelector(selectDecideOnLiquidationFormDomain, (substate) => substate);
 
 export default makeSelectDecideOnLiquidationForm;
-export { selectDecideOnLiquidationFormDomain };
+export {
+  selectDecideOnLiquidationFormDomain,
+  makeSelectErrorDecidingOnLiquidation,
+  makeSelectErrorLoadingLiquidationDetails,
+  makeSelectLiquidationDetails,
+};

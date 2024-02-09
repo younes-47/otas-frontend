@@ -41,6 +41,7 @@ import { makeSelectDepenseCaisseIdentity } from 'pages/DecideOnDepenseCaisse/sel
 import { NumericFormat } from 'react-number-format';
 import { List, ListItem, ListItemDecorator, Radio, RadioGroup } from '@mui/joy';
 import ExpensesTable from 'components/ExpensesTable';
+import { makeSelectDeciderLevels } from 'pages/DecideOnRequests/selectors';
 import {
   makeSelectDepenseCaisseDetails,
   makeSelectErrorDecidingOnDepenseCaisse,
@@ -57,6 +58,7 @@ import {
 const mapStateToProps = createStructuredSelector({
   isSideBarVisible: makeSelectIsSideBarVisible(),
   depenseCaisseIdentity: makeSelectDepenseCaisseIdentity(),
+  deciderLevels: makeSelectDeciderLevels(),
   errorLoadingDepenseCaisseDetails:
     makeSelectErrorLoadingDepenseCaisseDetails(),
   errorDecidingOnDepenseCaisse: makeSelectErrorDecidingOnDepenseCaisse(),
@@ -75,6 +77,7 @@ export function DecideOnDepenseCaisseForm({ state }) {
     errorDecidingOnDepenseCaisse,
     depenseCaisseDetails,
     depenseCaisseIdentity,
+    deciderLevels,
   } = useSelector(mapStateToProps);
 
   // Control data
@@ -519,7 +522,7 @@ export function DecideOnDepenseCaisseForm({ state }) {
         >
           Return
         </Button>
-        {!readOnly && localStorage.getItem('level') !== 'TR' && (
+        {!readOnly && !deciderLevels?.includes('TR') && (
           <>
             {depenseCaisseDetails?.latestStatus !==
               'Returned To Finance Department for missing Information' && (
@@ -563,7 +566,7 @@ export function DecideOnDepenseCaisseForm({ state }) {
             )}
           </>
         )}
-        {!readOnly && localStorage.getItem('level') === 'TR' && (
+        {!readOnly && deciderLevels?.includes('TR') && (
           <Button
             variant="contained"
             color="warning"
@@ -572,7 +575,7 @@ export function DecideOnDepenseCaisseForm({ state }) {
             Return the request
           </Button>
         )}
-        {!readOnly && localStorage.getItem('level') === 'TR' && (
+        {!readOnly && deciderLevels?.includes('TR') && (
           <Button
             variant="contained"
             color="success"
@@ -607,7 +610,7 @@ export function DecideOnDepenseCaisseForm({ state }) {
                 {modalBody}
               </Alert>
               {modalHeader === 'Return the request?' &&
-                localStorage.getItem('level') !== 'TR' && (
+                !deciderLevels?.includes('TR') && (
                   <>
                     <Typography
                       level="title-md"
@@ -631,7 +634,7 @@ export function DecideOnDepenseCaisseForm({ state }) {
                   </>
                 )}
               {modalHeader === 'Return the request?' &&
-                localStorage.getItem('level') === 'TR' && (
+                deciderLevels?.includes('TR') && (
                   <>
                     <RadioGroup
                       name="delivery-method"
@@ -759,7 +762,7 @@ export function DecideOnDepenseCaisseForm({ state }) {
             </Button>
           )}
           {modalHeader === 'Return the request?' &&
-            localStorage.getItem('level') !== 'TR' && (
+            !deciderLevels?.includes('TR') && (
               <Button
                 color="warning"
                 onClick={handleOnReturnRequestConfirmationButtonClick}
@@ -793,7 +796,7 @@ export function DecideOnDepenseCaisseForm({ state }) {
             </Button>
           )}
           {modalHeader === 'Return the request?' &&
-            localStorage.getItem('level') === 'TR' && (
+            deciderLevels?.includes('TR') && (
               <Button
                 color="warning"
                 onClick={handleOnReturnRequestByTreasuryConfirmationButtonClick}

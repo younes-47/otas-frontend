@@ -3,6 +3,7 @@ import request from 'utils/request';
 import { setAvanceCaisseIdentityAction } from 'pages/AvanceCaisse/actions';
 import {
   ADD_AVANCE_CAISSE,
+  DOWNLOAD_AVANCE_CAISSE_DOCUMENT,
   LOAD_AVANCE_CAISSE_DETAILS,
   LOAD_STATIC_DATA,
   SUBMIT_AVANCE_CAISSE,
@@ -16,6 +17,8 @@ import {
   LoadStaticDataSuccessAction,
   UpdateAvanceCaisseErrorAction,
   UpdateAvanceCaisseSuccessAction,
+  downloadAvanceCaisseDocumentFileErrorAction,
+  downloadAvanceCaisseDocumentFileSuccessAction,
   loadAvanceCaisseDetailsErrorAction,
   loadAvanceCaisseDetailsSuccessAction,
   submitAvanceCaisseErrorAction,
@@ -103,11 +106,32 @@ export function* loadAvanceCaisseDetails({ id }) {
   }
 }
 
+export function* DownloadAvanceCaisseDocumentFile({ id }) {
+  try {
+    const { data } = yield call(
+      request.get,
+      `${webService.DOWNLOAD_AVANCE_CAISSE_DOCUMENT}?Id=${id}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    yield put(downloadAvanceCaisseDocumentFileSuccessAction(data));
+  } catch (error) {
+    yield put(downloadAvanceCaisseDocumentFileErrorAction(error));
+  }
+}
+
 // Individual exports for testing
 export default function* avanceCaisseFormSaga() {
   yield takeLatest(LOAD_STATIC_DATA, LoadStaticData);
   yield takeLatest(ADD_AVANCE_CAISSE, AddAvanceCaisse);
   yield takeLatest(UPDATE_AVANCE_CAISSE, UpdateAvanceCaisse);
   yield takeLatest(SUBMIT_AVANCE_CAISSE, SubmitAvanceCaisse);
+  yield takeLatest(
+    DOWNLOAD_AVANCE_CAISSE_DOCUMENT,
+    DownloadAvanceCaisseDocumentFile,
+  );
   yield takeLatest(LOAD_AVANCE_CAISSE_DETAILS, loadAvanceCaisseDetails);
 }

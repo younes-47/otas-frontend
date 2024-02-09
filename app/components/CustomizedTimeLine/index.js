@@ -52,7 +52,7 @@ const getDotIcon = (status) => {
 
 const CustomizedTimeLine = ({ statusHistory, lastOne }) => (
   <>
-    <TimelineItem>
+    <TimelineItem key={statusHistory.createDate}>
       <TimelineOppositeContent color="textSecondary">
         {DateTimeFormater(statusHistory.createDate)}
       </TimelineOppositeContent>

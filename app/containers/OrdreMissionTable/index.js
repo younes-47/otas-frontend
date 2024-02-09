@@ -457,7 +457,7 @@ export function OrdreMissionTable() {
             <CloseIcon fontSize="small" />
           </IconButton>
         }
-        color={snackbarAlertSeverity}
+        color={snackbarAlertSeverity !== '' ? snackbarAlertSeverity : 'primary'}
       >
         Request has been {statusOrdreMission} successfully!
       </Snackbar>

@@ -51,6 +51,9 @@ import {
   setOrdreMissionIdentityAction,
 } from 'pages/DecideOnOrdreMission/actions';
 import { setAvanceVoyageStatusAction } from 'containers/DecideOnAvanceVoyageTable/actions';
+import { makeSelectDeciderLevels } from 'pages/DecideOnRequests/selectors';
+import TripsTable from 'components/TripsTable';
+import ExpensesTable from 'components/ExpensesTable';
 import reducer from './reducer';
 import saga from './saga';
 import {
@@ -75,6 +78,7 @@ const mapStateToProps = createStructuredSelector({
   errorLoadingAvanceVoyageDetails: makeSelectErrorLoadingAvanceVoyageDetails(),
   errorDecidingOnAvanceVoyage: makeSelectErrorDecidingOnAvanceVoyage(),
   avanceVoyageDetails: makeSelectAvanceVoyageDetails(),
+  deciderLevels: makeSelectDeciderLevels(),
   errorMarkingFundsAsPrepared:
     makeSelectErrorMarkingAvanceVoyageFundsAsPrepared(),
   confirmingAvanceVoyageFundsDelivery:
@@ -93,6 +97,7 @@ export function DecideOnAvanceVoyageForm({ state }) {
   const {
     isSideBarVisible,
     errorLoadingAvanceVoyageDetails,
+    deciderLevels,
     errorDecidingOnAvanceVoyage,
     avanceVoyageDetails,
     avanceVoyageIdentity,
@@ -371,7 +376,7 @@ export function DecideOnAvanceVoyageForm({ state }) {
         <Divider style={{ width: '60%', opacity: 0.7 }} />
       </Box>
 
-      {localStorage.getItem('level') !== 'TR' && (
+      {!deciderLevels?.includes('TR') && (
         <>
           <Box
             textAlign="center"
@@ -432,6 +437,58 @@ export function DecideOnAvanceVoyageForm({ state }) {
         <Divider style={{ width: '60%', opacity: 0.7 }} />
       </Box>
 
+      <Typography level="title-lg" textAlign="center" marginBottom={2}>
+        Trajectories
+      </Typography>
+      <Box display="flex" justifyContent="center" marginBottom={5}>
+        <TripsTable
+          tripsData={avanceVoyageDetails?.trips}
+          isTripModifiable={false}
+        />
+      </Box>
+
+      {avanceVoyageDetails?.expenses?.length > 0 ? (
+        <>
+          <Box
+            textAlign="center"
+            display="flex"
+            justifyContent="center"
+            marginBottom={2}
+          >
+            <Typography level="title-lg" textAlign="center" marginBottom={2}>
+              Expenses
+            </Typography>
+          </Box>
+          <Box display="flex" justifyContent="center" marginBottom={3}>
+            <ExpensesTable
+              expensesData={avanceVoyageDetails?.expenses}
+              isExpenseModifiable={false}
+            />
+          </Box>
+        </>
+      ) : (
+        <Box
+          textAlign="center"
+          display="flex"
+          justifyContent="center"
+          marginBottom={2}
+        >
+          <Typography level="title-lg" textAlign="center" marginBottom={2}>
+            No Expenses
+          </Typography>
+        </Box>
+      )}
+
+      {/* DIVIDER */}
+      <Box
+        display="flex"
+        justifyContent="center"
+        textAlign="center"
+        marginBottom={3}
+      >
+        <Divider style={{ width: '60%', opacity: 0.7 }} />
+      </Box>
+
       <Box display="flex" justifyContent="center" marginBottom={3}>
         <Box width="60%" display="flex" justifyContent="flex-end">
           <Typography level="h4">
@@ -471,7 +528,7 @@ export function DecideOnAvanceVoyageForm({ state }) {
         >
           Return
         </Button>
-        {!readOnly && localStorage.getItem('level') !== 'TR' && (
+        {!readOnly && !deciderLevels?.includes('TR') && (
           <>
             <Button
               variant="contained"
@@ -498,7 +555,7 @@ export function DecideOnAvanceVoyageForm({ state }) {
         )}
         {!readOnly &&
           avanceVoyageDetails?.latestStatus === 'Preparing Funds' &&
-          localStorage.getItem('level') === 'TR' && (
+          deciderLevels?.includes('TR') && (
             <Button
               variant="contained"
               color="success"
@@ -508,7 +565,7 @@ export function DecideOnAvanceVoyageForm({ state }) {
             </Button>
           )}
         {!readOnly &&
-          localStorage.getItem('level') === 'TR' &&
+          deciderLevels?.includes('TR') &&
           avanceVoyageDetails?.latestStatus === 'Funds Prepared' && (
             <Button
               variant="contained"
@@ -686,9 +743,7 @@ export function DecideOnAvanceVoyageForm({ state }) {
               onClick={handleOnApproveRequestConfirmationButtonClick}
               variant="contained"
             >
-              {localStorage.getItem('level') !== 'FM'
-                ? 'Sign and Approve'
-                : 'Approve'}
+              {!deciderLevels?.includes('FM') ? 'Sign and Approve' : 'Approve'}
             </Button>
           )}
           {modalHeader === 'Reject the request?' && (

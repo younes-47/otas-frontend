@@ -341,7 +341,7 @@ export function DecideOnAvanceCaisseTable() {
             <CloseIcon fontSize="small" />
           </IconButton>
         }
-        color={snackbarAlertSeverity}
+        color={snackbarAlertSeverity !== '' ? snackbarAlertSeverity : 'primary'}
         variant="solid"
       >
         Request has been {statusAvanceCaisse} successfully!

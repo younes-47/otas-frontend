@@ -11,6 +11,9 @@ import {
   CHANGE_ONBEHALF_SELECTION_ACTION,
   CLEANUP_STORE_ACTION,
   DEFAULT_ACTION,
+  DOWNLOAD_AVANCE_CAISSE_DOCUMENT,
+  DOWNLOAD_AVANCE_CAISSE_DOCUMENT_ERROR,
+  DOWNLOAD_AVANCE_CAISSE_DOCUMENT_SUCCESS,
   LOAD_AVANCE_CAISSE_DETAILS,
   LOAD_AVANCE_CAISSE_DETAILS_ERROR,
   LOAD_AVANCE_CAISSE_DETAILS_SUCCESS,
@@ -126,6 +129,25 @@ export function submitAvanceCaisseSuccessAction(data) {
 export function submitAvanceCaisseErrorAction(error) {
   return {
     type: SUBMIT_AVANCE_CAISSE_ERROR,
+    error,
+  };
+}
+export function downloadAvanceCaisseDocumentFileAction() {
+  return {
+    type: DOWNLOAD_AVANCE_CAISSE_DOCUMENT,
+  };
+}
+
+export function downloadAvanceCaisseDocumentFileSuccessAction(data) {
+  return {
+    type: DOWNLOAD_AVANCE_CAISSE_DOCUMENT_SUCCESS,
+    data,
+  };
+}
+
+export function downloadAvanceCaisseDocumentFileErrorAction(error) {
+  return {
+    type: DOWNLOAD_AVANCE_CAISSE_DOCUMENT_ERROR,
     error,
   };
 }

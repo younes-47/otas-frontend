@@ -50,6 +50,7 @@ import DisplayUserinfo from 'components/DisplayUserinfo';
 import { NumericFormat, PatternFormat } from 'react-number-format';
 
 import ExpensesTable from 'components/ExpensesTable';
+import { makeSelectDeciderLevels } from 'pages/DecideOnRequests/selectors';
 import {
   makeSelectAvanceCaisseDetails,
   makeSelectConfirmingAvanceCaisseFundsDelivery,
@@ -74,6 +75,7 @@ const mapStateToProps = createStructuredSelector({
   errorLoadingAvanceCaisseDetails: makeSelectErrorLoadingAvanceCaisseDetails(),
   errorDecidingOnAvanceCaisse: makeSelectErrorDecidingOnAvanceCaisse(),
   avanceCaisseDetails: makeSelectAvanceCaisseDetails(),
+  deciderLevels: makeSelectDeciderLevels(),
   errorMarkingFundsAsPrepared:
     makeSelectErrorMarkingAvanceCaisseFundsAsPrepared(),
   confirmingAvanceCaisseFundsDelivery:
@@ -94,6 +96,7 @@ export function DecideOnAvanceCaisseForm({ state }) {
     errorDecidingOnAvanceCaisse,
     avanceCaisseDetails,
     avanceCaisseIdentity,
+    deciderLevels,
     errorMarkingFundsAsPrepared,
     confirmingAvanceCaisseFundsDelivery,
     errorConfirmingAvanceCaisseFundsDelivery,
@@ -458,7 +461,7 @@ export function DecideOnAvanceCaisseForm({ state }) {
         >
           Return
         </Button>
-        {!readOnly && localStorage.getItem('level') !== 'TR' && (
+        {!readOnly && !deciderLevels?.includes('TR') && (
           <>
             <Button
               variant="contained"
@@ -484,7 +487,7 @@ export function DecideOnAvanceCaisseForm({ state }) {
           </>
         )}
         {!readOnly &&
-          localStorage.getItem('level') === 'TR' &&
+          deciderLevels?.includes('TR') &&
           avanceCaisseDetails?.latestStatus === 'Preparing Funds' && (
             <Button
               variant="contained"
@@ -495,7 +498,7 @@ export function DecideOnAvanceCaisseForm({ state }) {
             </Button>
           )}
         {!readOnly &&
-          localStorage.getItem('level') === 'TR' &&
+          deciderLevels?.includes('TR') &&
           avanceCaisseDetails?.latestStatus === 'Funds Prepared' && (
             <Button
               variant="contained"
@@ -673,9 +676,7 @@ export function DecideOnAvanceCaisseForm({ state }) {
               onClick={handleOnApproveRequestConfirmationButtonClick}
               variant="contained"
             >
-              {localStorage.getItem('level') !== 'FM'
-                ? 'Sign and Approve'
-                : 'Approve'}
+              {!deciderLevels?.includes('FM') ? 'Sign and Approve' : 'Approve'}
             </Button>
           )}
           {modalHeader === 'Reject the request?' && (

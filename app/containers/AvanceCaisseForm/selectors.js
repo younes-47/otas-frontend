@@ -51,6 +51,18 @@ const makeSelectErrorSubmittingAvanceCaisse = () =>
     (substate) => substate.errorSubmittingAvanceCaisse,
   );
 
+const makeSelectErrorDownloadingAvanceCaisseDocumentFile = () =>
+  createSelector(
+    selectAvanceCaisseFormDomain,
+    (substate) => substate.errorDownloadingAvanceCaisseDocumentFile,
+  );
+
+const makeSelectAvanceCaisseDocumentFile = () =>
+  createSelector(
+    selectAvanceCaisseFormDomain,
+    (substate) => substate.avanceCaisseDocumentFile,
+  );
+
 const makeSelectAvanceCaisseDetails = () =>
   createSelector(
     selectAvanceCaisseFormDomain,
@@ -65,6 +77,8 @@ const makeSelectErrorLoadingAvanceCaisseDetails = () =>
 
 export default makeSelectAvanceCaisseForm;
 export {
+  makeSelectAvanceCaisseDocumentFile,
+  makeSelectErrorDownloadingAvanceCaisseDocumentFile,
   makeSelectErrorLoadingAvanceCaisseDetails,
   makeSelectAvanceCaisseDetails,
   makeSelectErrorAddingAvanceCaisse,

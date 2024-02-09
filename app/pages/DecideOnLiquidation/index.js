@@ -21,7 +21,7 @@ import makeSelectDecideOnLiquidation, {
 import reducer from './reducer';
 import saga from './saga';
 import messages from './messages';
-import { cleanupStoreAction } from './actions';
+import { cleanupDecideOnLiquidationParentPageStoreAction } from './actions';
 
 const mapStateToProps = createStructuredSelector({
   pageContent: makeSelectChangePageContent(),
@@ -29,22 +29,26 @@ const mapStateToProps = createStructuredSelector({
 
 export function DecideOnLiquidation() {
   useInjectReducer({ key: 'decideOnLiquidation', reducer });
-  useInjectSaga({ key: 'decideOnLiquidation', saga });
+  // useInjectSaga({ key: 'decideOnLiquidation', saga });
 
   const dispatch = useDispatch();
   const { pageContent } = useSelector(mapStateToProps);
 
-  useEffect(
-    () => () => {
-      dispatch(cleanupStoreAction());
-    },
-    [],
-  );
+  // useEffect(
+  //   () => () => {
+  //     dispatch(cleanupDecideOnLiquidationParentPageStoreAction());
+  //   },
+  //   [],
+  // );
 
-  if (pageContent === 'DECIDE') {
-    return <DecideOnLiquidationForm></DecideOnLiquidationForm>;
+  switch (pageContent) {
+    case 'DECIDE':
+      return <DecideOnLiquidationForm state="DECIDE" />;
+    case 'VIEW':
+      return <DecideOnLiquidationForm state="VIEW" />;
+    default:
+      return <DecideOnLiquidationTable />;
   }
-  return <DecideOnLiquidationTable></DecideOnLiquidationTable>;
 }
 
 DecideOnLiquidation.propTypes = {

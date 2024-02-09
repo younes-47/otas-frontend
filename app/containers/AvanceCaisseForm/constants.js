@@ -37,6 +37,13 @@ export const SUBMIT_AVANCE_CAISSE_SUCCESS =
 export const SUBMIT_AVANCE_CAISSE_ERROR =
   'app/AvanceCaisseForm/SUBMIT_AVANCE_CAISSE_ERROR';
 
+export const DOWNLOAD_AVANCE_CAISSE_DOCUMENT =
+  'app/AvanceCaisseForm/DOWNLOAD_AVANCE_CAISSE_DOCUMENT';
+export const DOWNLOAD_AVANCE_CAISSE_DOCUMENT_SUCCESS =
+  'app/AvanceCaisseForm/DOWNLOAD_AVANCE_CAISSE_DOCUMENT_SUCCESS';
+export const DOWNLOAD_AVANCE_CAISSE_DOCUMENT_ERROR =
+  'app/AvanceCaisseForm/DOWNLOAD_AVANCE_CAISSE_DOCUMENT_ERROR';
+
 export const CLEANUP_STORE_ACTION = 'app/AvanceCaisseForm/CLEANUP_STORE_ACTION';
 
 export const CHANGE_ONBEHALF_SELECTION_ACTION =
@@ -48,4 +55,5 @@ export const webService = {
   UPDATE_AVANCE_CAISSE: '/AvanceCaisse/Modify',
   SUBMIT_AVANCE_CAISSE: '/AvanceCaisse/Submit',
   LOAD_AVANCE_CAISSE_DETAILS: '/AvanceCaisse/View',
+  DOWNLOAD_AVANCE_CAISSE_DOCUMENT: '/AvanceCaisse/Document/Download',
 };

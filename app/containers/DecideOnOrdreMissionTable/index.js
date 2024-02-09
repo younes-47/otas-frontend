@@ -418,7 +418,7 @@ export function DecideOnOrdreMissionTable() {
             <CloseIcon fontSize="small" />
           </IconButton>
         }
-        color={snackbarAlertSeverity}
+        color={snackbarAlertSeverity !== '' ? snackbarAlertSeverity : 'primary'}
         variant="solid"
       >
         Request has been {statusOrdreMission} successfully!

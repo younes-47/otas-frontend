@@ -39,6 +39,7 @@ export default function TripsTable({
   updateTripsToLiquidate = undefined,
   getActualFee = undefined,
   isTripModifiable = true,
+  isLiquidationView = false,
 }) {
   return (
     <TableContainer component={Paper} sx={{ width: '60%' }}>
@@ -54,12 +55,13 @@ export default function TripsTable({
             <StyledTableCell align="left">Value</StyledTableCell>
             <StyledTableCell align="left">Highway&nbsp;Fee</StyledTableCell>
             <StyledTableCell align="left">Amount</StyledTableCell>
-            {updateTripsToLiquidate !== undefined &&
-              getActualFee !== undefined && (
-                <StyledTableCell align="left" color="danger">
-                  Actual&nbsp;amount&nbsp;spent*
-                </StyledTableCell>
-              )}
+            {((updateTripsToLiquidate !== undefined &&
+              getActualFee !== undefined) ||
+              isLiquidationView === true) && (
+              <StyledTableCell align="left" color="danger">
+                Actual&nbsp;amount&nbsp;spent*
+              </StyledTableCell>
+            )}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -159,9 +161,14 @@ export default function TripsTable({
                   />
                 </Typography>
               </StyledTableCell>
-              {updateTripsToLiquidate !== undefined &&
-                getActualFee !== undefined && (
-                  <StyledTableCell align="left">
+              {((updateTripsToLiquidate !== undefined &&
+                getActualFee !== undefined) ||
+                isLiquidationView === true) && (
+                <StyledTableCell align="left">
+                  <Typography
+                    level="title-md"
+                    color={isLiquidationView ? 'success' : 'neutral'}
+                  >
                     <NumericFormat
                       required
                       prefix={
@@ -169,7 +176,11 @@ export default function TripsTable({
                           ? 'MAD '
                           : 'EUR '
                       }
-                      value={getActualFee(trip.id)}
+                      value={
+                        isLiquidationView
+                          ? trip.actualFee
+                          : getActualFee(trip.id)
+                      }
                       onValueChange={(values, sourceInfo) => {
                         if (values.value === '') {
                           updateTripsToLiquidate(trip.id, 0);
@@ -177,11 +188,11 @@ export default function TripsTable({
                           updateTripsToLiquidate(trip.id, values.floatValue);
                         }
                       }}
-                      disabled={!isTripModifiable}
-                      displayType="input"
+                      disabled={!isTripModifiable && !isLiquidationView}
+                      displayType={isLiquidationView ? 'text' : 'input'}
                       placeholder="Enter the amount here..."
                       size="md"
-                      variant="outlined"
+                      variant={isTripModifiable ? 'outlined' : 'solid'}
                       customInput={Input}
                       valueIsNumericString
                       defaultValue="0"
@@ -199,8 +210,9 @@ export default function TripsTable({
                           : ','
                       }
                     />
-                  </StyledTableCell>
-                )}
+                  </Typography>
+                </StyledTableCell>
+              )}
             </StyledTableRow>
           ))}
         </TableBody>
@@ -214,4 +226,5 @@ TripsTable.propTypes = {
   updateTripsToLiquidate: PropTypes.func,
   getActualFee: PropTypes.func,
   isTripModifiable: PropTypes.bool,
+  isLiquidationView: PropTypes.bool,
 };

@@ -17,14 +17,11 @@ import {
   TextField,
 } from '@mui/material';
 import { Box } from '@mui/system';
-import {
-  DatePicker,
-  DateTimePicker,
-  LocalizationProvider,
-} from '@mui/x-date-pickers';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { createStructuredSelector } from 'reselect';
 import { useSelector } from 'react-redux';
+import dayjs from 'dayjs';
 import { makeSelectAbroad } from './selectors';
 // import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
@@ -78,7 +75,7 @@ const Expenses = ({
         <DatePicker
           readOnly={isExpenseRequired}
           variant={!isExpenseRequired ? 'outlined' : 'filled'}
-          value={expenseDate}
+          value={expenseDate === null ? expenseDate : dayjs(expenseDate)}
           onChange={(e) => handleExpenseDate(e, id)}
           sx={{ maxWidth: 170 }}
           required

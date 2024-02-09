@@ -20,6 +20,7 @@ import { DateTimePicker } from '@mui/x-date-pickers';
 import { useSelector } from 'react-redux';
 import { NumericFormat } from 'react-number-format';
 import { FormatNumber } from 'utils/Custom/stringManipulation';
+import dayjs from 'dayjs';
 // import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 const AdditionalTrips = ({
@@ -113,7 +114,7 @@ const AdditionalTrips = ({
           variant={isTripModifiabale ? 'outlined' : 'filled'}
           sx={{ minWidth: 160, maxWidth: 160 }}
           label="Departure Date"
-          value={departureDate}
+          value={departureDate === null ? departureDate : dayjs(departureDate)}
           onChange={(e) => {
             handleTripDates(id, 'departureDate', e);
           }}
@@ -127,7 +128,7 @@ const AdditionalTrips = ({
           variant={isTripModifiabale ? 'outlined' : 'filled'}
           sx={{ minWidth: 160, maxWidth: 160 }}
           label="Arrival"
-          value={arrivalDate}
+          value={arrivalDate === null ? arrivalDate : dayjs(arrivalDate)}
           onChange={(e) => {
             handleTripDates(id, 'arrivalDate', e);
           }}

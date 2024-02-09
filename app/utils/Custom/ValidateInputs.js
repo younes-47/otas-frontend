@@ -243,16 +243,12 @@ export const ValidateLiquidationInputs = (
   if (data.expensesLiquidations?.length > 0) {
     data.expensesLiquidations?.forEach((expense) => {
       // value is 0 or left out blank or anything other than an actual number
-      if (
-        expense?.actualFee <= 0 ||
-        expense?.actualFee === '0' ||
-        expense?.actualFee.isNaN
-      ) {
+      if (expense?.actualFee < 0 || expense?.actualFee.isNaN) {
         setModalHeader('Invalid Information!');
         setModalBody(
           'You must provide a valid number for the actual amount spent for ALL of your expenses! Please review your expenses information and try again',
         );
-        setModalSevirity('danger');
+        setModalSevirity('error');
         setModalVisibility(true);
         isAllGood = false;
       }
@@ -272,7 +268,7 @@ export const ValidateLiquidationInputs = (
         setModalBody(
           'You must provide a valid spent amount for all of your trajectories! Please review your trajectories information and try again',
         );
-        setModalSevirity('danger');
+        setModalSevirity('error');
         setModalVisibility(true);
         isAllGood = false;
       }
@@ -299,18 +295,18 @@ export const ValidateLiquidationInputs = (
         setModalBody(
           "One of the trajectories' required information is missing! Please review your trajectories and fill all necessary information",
         );
-        setModalSevirity('danger');
+        setModalSevirity('error');
         setModalVisibility(true);
         isAllGood = false;
       }
 
       // value = 0
-      if (trip?.value <= 0 || trip?.value === '0') {
+      if (trip?.value < 0) {
         setModalHeader('Invalid Information!');
         setModalBody(
           "A trajectory's fee or mileage cannot be 0 or negative! Please review your trajectories information and try again",
         );
-        setModalSevirity('danger');
+        setModalSevirity('error');
         setModalVisibility(true);
         isAllGood = false;
       }
@@ -325,7 +321,7 @@ export const ValidateLiquidationInputs = (
         setModalBody(
           'Invalid Total value! Please review your trajectories and/or expenses fee/Mileage values and try again',
         );
-        setModalSevirity('danger');
+        setModalSevirity('error');
         setModalVisibility(true);
         isAllGood = false;
       }
@@ -336,7 +332,7 @@ export const ValidateLiquidationInputs = (
         setModalBody(
           'Arrival date cannot be earlier than the departure date! Please review your trajectories information and try again',
         );
-        setModalSevirity('danger');
+        setModalSevirity('error');
         setModalVisibility(true);
         isAllGood = false;
       }
@@ -352,7 +348,7 @@ export const ValidateLiquidationInputs = (
           setModalBody(
             'Trips dates do not make sense! You cannot start another trip before you arrive from the previous one.',
           );
-          setModalSevirity('danger');
+          setModalSevirity('error');
           setModalVisibility(true);
           isAllGood = false;
         }
@@ -369,7 +365,7 @@ export const ValidateLiquidationInputs = (
         setModalBody(
           'One of the expenses description is not specified! Please review your expenses and fill all necessary information.',
         );
-        setModalSevirity('danger');
+        setModalSevirity('error');
         setModalVisibility(true);
         isAllGood = false;
       }
@@ -380,7 +376,7 @@ export const ValidateLiquidationInputs = (
           setModalBody(
             'One of the expenses currency is not specified! Please review your expenses and fill all necessary information.',
           );
-          setModalSevirity('danger');
+          setModalSevirity('error');
           setModalVisibility(true);
           isAllGood = false;
         }
@@ -391,7 +387,7 @@ export const ValidateLiquidationInputs = (
         setModalBody(
           'Expense fee cannot be 0 or negative! Please review your expenses information and try again.',
         );
-        setModalSevirity('danger');
+        setModalSevirity('error');
         setModalVisibility(true);
         isAllGood = false;
       }
@@ -405,7 +401,7 @@ export const ValidateLiquidationInputs = (
         setModalBody(
           'Invalid Total value! Please review your trajectories and/or expenses fee/Mileage values and try again',
         );
-        setModalSevirity('danger');
+        setModalSevirity('error');
         setModalVisibility(true);
         isAllGood = false;
       }
@@ -420,7 +416,7 @@ export const ValidateLiquidationInputs = (
         setModalBody(
           "One of the expenses' date is not set yet! Please review your expenses information and try again.",
         );
-        setModalSevirity('danger');
+        setModalSevirity('error');
         setModalVisibility(true);
         isAllGood = false;
       }
@@ -434,7 +430,7 @@ export const ValidateLiquidationInputs = (
     setModalBody(
       'Please upload your receipts file! Or wait for it while it is being uploaded',
     );
-    setModalSevirity('danger');
+    setModalSevirity('error');
     setModalVisibility(true);
     isAllGood = false;
   }

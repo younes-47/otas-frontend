@@ -94,7 +94,7 @@ export function AvanceCaisseTable() {
   useEffect(() => {
     if (errorDeletingAvanceCaisse === false) {
       dispatch(setAvanceCaisseStatusAction('DELETED'));
-      setSnackbarAlertSeverity('error');
+      setSnackbarAlertSeverity('danger');
       setSnackbarVisibility(true);
       dispatch(nullifyErrorDeletingAvanceCaisseAction());
     }
@@ -491,7 +491,7 @@ export function AvanceCaisseTable() {
             <CloseIcon fontSize="small" />
           </IconButton>
         }
-        color={snackbarAlertSeverity}
+        color={snackbarAlertSeverity !== '' ? snackbarAlertSeverity : 'primary'}
       >
         Request has been {statusAvanceCaisse} successfully!
       </Snackbar>

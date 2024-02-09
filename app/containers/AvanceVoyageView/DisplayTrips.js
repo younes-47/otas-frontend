@@ -1,32 +1,18 @@
 // Trips.js
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
-import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AirlineStopsIcon from '@mui/icons-material/AirlineStops';
 import Typography from '@mui/joy/Typography';
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Collapse,
-  List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  ListSubheader,
-} from '@mui/material';
-import { Box } from '@mui/system';
-import { DateTimePicker } from '@mui/x-date-pickers';
+import Collapse from '@mui/material/Collapse';
+import List from '@mui/material/List';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
 import { createStructuredSelector } from 'reselect';
-import { useSelector } from 'react-redux';
-import { ExpandLess, ExpandMore, StarBorder } from '@mui/icons-material';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
 import { DateTimeFormater } from 'utils/Custom/stringManipulation';
 import { NumericFormat } from 'react-number-format';
-import { makeSelectAbroad } from './selectors';
 // import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 const mapStateToProps = createStructuredSelector({
@@ -186,10 +172,5 @@ const DisplayTrips = ({ tripData }) => {
 
 DisplayTrips.propTypes = {
   tripData: PropTypes.object.isRequired,
-  // updateTripData: PropTypes.func.isRequired,
-  // isTripRequired: PropTypes.bool.isRequired,
-  // removeTrip: PropTypes.func.isRequired,
-  // removeTrip: PropTypes.func.isRequired,
-  // dispatch: PropTypes.func.isRequired,
 };
 export default DisplayTrips;

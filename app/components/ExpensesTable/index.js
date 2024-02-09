@@ -38,6 +38,7 @@ export default function ExpensesTable({
   updateExpenseToLiquidate = undefined,
   getActualFee = undefined,
   isExpenseModifiable = true,
+  isLiquidationView = false,
 }) {
   return (
     <TableContainer component={Paper} sx={{ width: '60%' }}>
@@ -48,12 +49,13 @@ export default function ExpensesTable({
             <StyledTableCell align="left">Expense&nbsp;Date</StyledTableCell>
             <StyledTableCell align="left">Currency</StyledTableCell>
             <StyledTableCell align="left">Amount</StyledTableCell>
-            {updateExpenseToLiquidate !== undefined &&
-              getActualFee !== undefined && (
-                <StyledTableCell align="left" color="danger">
-                  Actual&nbsp;amount&nbsp;spent*
-                </StyledTableCell>
-              )}
+            {((updateExpenseToLiquidate !== undefined &&
+              getActualFee !== undefined) ||
+              isLiquidationView === true) && (
+              <StyledTableCell align="left" color="danger">
+                Actual&nbsp;amount&nbsp;spent*
+              </StyledTableCell>
+            )}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -92,15 +94,24 @@ export default function ExpensesTable({
                   />
                 </Typography>
               </StyledTableCell>
-              {updateExpenseToLiquidate !== undefined &&
-                getActualFee !== undefined && (
-                  <StyledTableCell align="left">
+              {((updateExpenseToLiquidate !== undefined &&
+                getActualFee !== undefined) ||
+                isLiquidationView === true) && (
+                <StyledTableCell align="left">
+                  <Typography
+                    level="title-md"
+                    color={isLiquidationView ? 'success' : 'neutral'}
+                  >
                     <NumericFormat
                       prefix={expense.currency === 'MAD' ? 'MAD ' : 'EUR '}
                       required
-                      displayType="input"
+                      displayType={isLiquidationView ? 'text' : 'input'}
                       placeholder="Enter the amount here..."
-                      value={getActualFee(expense.id)}
+                      value={
+                        isLiquidationView
+                          ? expense?.actualFee
+                          : getActualFee(expense.id)
+                      }
                       onValueChange={(values, sourceInfo) => {
                         if (values.value === '') {
                           updateExpenseToLiquidate(expense.id, 0);
@@ -111,9 +122,9 @@ export default function ExpensesTable({
                           );
                         }
                       }}
-                      disabled={!isExpenseModifiable}
+                      disabled={!isExpenseModifiable && !isLiquidationView}
                       size="md"
-                      variant="outlined"
+                      variant={isExpenseModifiable ? 'outlined' : 'solid'}
                       customInput={Input}
                       valueIsNumericString
                       defaultValue="0"
@@ -131,8 +142,9 @@ export default function ExpensesTable({
                           : ','
                       }
                     />
-                  </StyledTableCell>
-                )}
+                  </Typography>
+                </StyledTableCell>
+              )}
             </StyledTableRow>
           ))}
         </TableBody>
@@ -146,4 +158,5 @@ ExpensesTable.propTypes = {
   updateExpenseToLiquidate: PropTypes.func,
   getActualFee: PropTypes.func,
   isExpenseModifiable: PropTypes.bool,
+  isLiquidationView: PropTypes.bool,
 };
