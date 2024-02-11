@@ -40,6 +40,7 @@ import { List, ListItem, ListItemDecorator, Radio, RadioGroup } from '@mui/joy';
 import ExpensesTable from 'components/ExpensesTable';
 import TripsTable from 'components/TripsTable';
 import { makeSelectDeciderLevels } from 'pages/DecideOnRequests/selectors';
+import { ValidateDeciderComment } from 'utils/Custom/ValidateInputs';
 import {
   makeSelectLiquidationDetails,
   makeSelectErrorDecidingOnLiquidation,
@@ -136,7 +137,18 @@ export function DecideOnLiquidationForm({ state }) {
   // Decide
   useEffect(() => {
     if (decisionString !== null) {
-      dispatch(decideOnLiquidationAction(data));
+      if (decisionString === 'return') {
+        const result = ValidateDeciderComment(
+          setModalVisibility,
+          setModalBody,
+          setModalHeader,
+          setModalSevirity,
+          deciderComment,
+        );
+        if (result) dispatch(decideOnLiquidationAction(data));
+      } else {
+        dispatch(decideOnLiquidationAction(data));
+      }
     }
   }, [decisionString]);
 
@@ -760,7 +772,7 @@ export function DecideOnLiquidationForm({ state }) {
                       id="outlined-multiline-static"
                       multiline
                       rows={5}
-                      placeholder="Your Comment..."
+                      placeholder="Your Comment (255 characters: ~35 to 50 words)..."
                       variant="outlined"
                       onChange={(e) => setDeciderComment(e.target.value)}
                       inputProps={{ maxLength: 255 }}

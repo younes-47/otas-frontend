@@ -40,6 +40,7 @@ import { NumericFormat } from 'react-number-format';
 import TripsTable from 'components/TripsTable';
 import ExpensesTable from 'components/ExpensesTable';
 import { makeSelectDeciderLevels } from 'pages/DecideOnRequests/selectors';
+import { ValidateDeciderComment } from 'utils/Custom/ValidateInputs';
 import {
   makeSelectErrorDecidingOnOrdreMission,
   makeSelectErrorLoadingOrdreMissionDetails,
@@ -73,6 +74,7 @@ export function DecideOnOrdreMissionForm({ state }) {
     ordreMissionDetails,
     ordreMissionIdentity,
     errorDecidingOnOrdreMission,
+    deciderLevels,
   } = useSelector(mapStateToProps);
 
   // Control data
@@ -132,7 +134,18 @@ export function DecideOnOrdreMissionForm({ state }) {
 
   useEffect(() => {
     if (decisionString !== null) {
-      dispatch(decideOnOrdreMissionAction(data));
+      if (decisionString === 'return') {
+        const result = ValidateDeciderComment(
+          setModalVisibility,
+          setModalBody,
+          setModalHeader,
+          setModalSevirity,
+          deciderComment,
+        );
+        if (result) dispatch(decideOnOrdreMissionAction(data));
+      } else {
+        dispatch(decideOnOrdreMissionAction(data));
+      }
     }
   }, [decisionString]);
 
@@ -506,7 +519,7 @@ export function DecideOnOrdreMissionForm({ state }) {
                     id="outlined-multiline-static"
                     multiline
                     rows={5}
-                    placeholder="Your Comment..."
+                    placeholder="Your Comment (MAX 255 characters: ~35 to 50 words)..."
                     variant="outlined"
                     onChange={(e) => setDeciderComment(e.target.value)}
                     inputProps={{ maxLength: 255 }}

@@ -54,6 +54,7 @@ import { setAvanceVoyageStatusAction } from 'containers/DecideOnAvanceVoyageTabl
 import { makeSelectDeciderLevels } from 'pages/DecideOnRequests/selectors';
 import TripsTable from 'components/TripsTable';
 import ExpensesTable from 'components/ExpensesTable';
+import { ValidateDeciderComment } from 'utils/Custom/ValidateInputs';
 import reducer from './reducer';
 import saga from './saga';
 import {
@@ -147,7 +148,18 @@ export function DecideOnAvanceVoyageForm({ state }) {
   // Decide
   useEffect(() => {
     if (decisionString !== null) {
-      dispatch(decideOnAvanceVoyageAction(data));
+      if (decisionString === 'return') {
+        const result = ValidateDeciderComment(
+          setModalVisibility,
+          setModalBody,
+          setModalHeader,
+          setModalSevirity,
+          deciderComment,
+        );
+        if (result) dispatch(decideOnAvanceVoyageAction(data));
+      } else {
+        dispatch(decideOnAvanceVoyageAction(data));
+      }
     }
   }, [decisionString]);
 
@@ -616,7 +628,7 @@ export function DecideOnAvanceVoyageForm({ state }) {
                     id="outlined-multiline-static"
                     multiline
                     rows={5}
-                    placeholder="Your Comment..."
+                    placeholder="Your Comment (255 characters: ~35 to 50 words)..."
                     variant="outlined"
                     onChange={(e) => setDeciderComment(e.target.value)}
                     inputProps={{ maxLength: 255 }}

@@ -42,6 +42,7 @@ import { NumericFormat } from 'react-number-format';
 import { List, ListItem, ListItemDecorator, Radio, RadioGroup } from '@mui/joy';
 import ExpensesTable from 'components/ExpensesTable';
 import { makeSelectDeciderLevels } from 'pages/DecideOnRequests/selectors';
+import { ValidateDeciderComment } from 'utils/Custom/ValidateInputs';
 import {
   makeSelectDepenseCaisseDetails,
   makeSelectErrorDecidingOnDepenseCaisse,
@@ -129,7 +130,18 @@ export function DecideOnDepenseCaisseForm({ state }) {
   // Decide
   useEffect(() => {
     if (decisionString !== null) {
-      dispatch(decideOnDepenseCaisseAction(data));
+      if (decisionString === 'return') {
+        const result = ValidateDeciderComment(
+          setModalVisibility,
+          setModalBody,
+          setModalHeader,
+          setModalSevirity,
+          deciderComment,
+        );
+        if (result) dispatch(decideOnDepenseCaisseAction(data));
+      } else {
+        dispatch(decideOnDepenseCaisseAction(data));
+      }
     }
   }, [decisionString]);
 
@@ -626,7 +638,7 @@ export function DecideOnDepenseCaisseForm({ state }) {
                       id="outlined-multiline-static"
                       multiline
                       rows={5}
-                      placeholder="Your Comment..."
+                      placeholder="Your Comment (255 characters: ~35 to 50 words)..."
                       variant="outlined"
                       onChange={(e) => setDeciderComment(e.target.value)}
                       inputProps={{ maxLength: 255 }}

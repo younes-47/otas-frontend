@@ -437,3 +437,34 @@ export const ValidateLiquidationInputs = (
 
   return isAllGood;
 };
+
+export const ValidateDeciderComment = (
+  setModalVisibility,
+  setModalBody,
+  setModalHeader,
+  setModalSevirity,
+  deciderComment,
+) => {
+  let isAllGood = true;
+  if (deciderComment === '') {
+    setModalHeader('Comment is invalid!');
+
+    setModalBody(
+      'You must provide a comment on why you are returning the request!',
+    );
+    setModalSevirity('error');
+    setModalVisibility(true);
+    isAllGood = false;
+  }
+  if (deciderComment.length > 255) {
+    setModalHeader('Comment is invalid!');
+
+    setModalBody(
+      'Comment is too long! Maximum characters are 255 (~35 to 50 words)',
+    );
+    setModalSevirity('error');
+    setModalVisibility(true);
+    isAllGood = false;
+  }
+  return isAllGood;
+};
