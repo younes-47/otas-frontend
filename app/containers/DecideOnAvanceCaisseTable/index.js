@@ -146,8 +146,8 @@ export function DecideOnAvanceCaisseTable() {
       headerName: 'Status',
       flex: 1,
       renderCell: (params) => {
-        const { nextDeciderUserName } = params.row;
-        if (nextDeciderUserName === localStorage.getItem('username')) {
+        const { isDecidable } = params.row;
+        if (isDecidable) {
           return (
             <Alert
               icon={false}
@@ -207,8 +207,8 @@ export function DecideOnAvanceCaisseTable() {
       headerName: 'Actions',
       flex: 1,
       renderCell: (params) => {
-        const { id, nextDeciderUserName } = params.row;
-        if (nextDeciderUserName === localStorage.getItem('username')) {
+        const { id, nextDeciderUserName, isDecidable } = params.row;
+        if (isDecidable) {
           return (
             <Button
               variant="contained"

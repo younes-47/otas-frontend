@@ -3,6 +3,7 @@ import request from 'utils/request';
 import { setDepenseCaisseIdentityAction } from 'pages/DepenseCaisse/actions';
 import {
   ADD_DEPENSE_CAISSE,
+  DOWNLOAD_DEPENSE_CAISSE_DOCUMENT,
   LOAD_DEPENSE_CAISSE_DETAILS,
   LOAD_STATIC_DATA,
   SUBMIT_DEPENSE_CAISSE,
@@ -16,6 +17,8 @@ import {
   LoadStaticDataSuccessAction,
   UpdateDepenseCaisseErrorAction,
   UpdateDepenseCaisseSuccessAction,
+  downloadDepenseCaisseDocumentFileErrorAction,
+  downloadDepenseCaisseDocumentFileSuccessAction,
   loadDepenseCaisseDetailsErrorAction,
   loadDepenseCaisseDetailsSuccessAction,
   submitDepenseCaisseErrorAction,
@@ -103,6 +106,23 @@ export function* loadDepenseCaisseDetails({ id }) {
   }
 }
 
+export function* DownloadDepenseCaisseDocumentFile({ id }) {
+  try {
+    const { data } = yield call(
+      request.get,
+      `${webService.DOWNLOAD_DEPENSE_CAISSE_DOCUMENT}?Id=${id}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    yield put(downloadDepenseCaisseDocumentFileSuccessAction(data));
+  } catch (error) {
+    yield put(downloadDepenseCaisseDocumentFileErrorAction(error));
+  }
+}
+
 // Individual exports for testing
 export default function* depenseCaisseFormSaga() {
   yield takeLatest(ADD_DEPENSE_CAISSE, AddDepenseCaisse);
@@ -110,4 +130,8 @@ export default function* depenseCaisseFormSaga() {
   yield takeLatest(UPDATE_DEPENSE_CAISSE, UpdateDepenseCaisse);
   yield takeLatest(LOAD_STATIC_DATA, LoadStaticData);
   yield takeLatest(LOAD_DEPENSE_CAISSE_DETAILS, loadDepenseCaisseDetails);
+  yield takeLatest(
+    DOWNLOAD_DEPENSE_CAISSE_DOCUMENT,
+    DownloadDepenseCaisseDocumentFile,
+  );
 }

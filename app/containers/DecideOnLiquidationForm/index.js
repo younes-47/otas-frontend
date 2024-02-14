@@ -79,7 +79,7 @@ export function DecideOnLiquidationForm({ state }) {
   } = useSelector(mapStateToProps);
 
   // Control data
-  const [deciderComment, setDeciderComment] = useState(null);
+  const [deciderComment, setDeciderComment] = useState('');
   const [decisionString, setDecisionString] = useState(null);
   const [isReturnedToTRByFM, setReturnedToTRByFM] = useState(false);
   const [isReturnedToRequesterByTR, setReturnedToRequesterByTR] = useState('');
@@ -157,8 +157,7 @@ export function DecideOnLiquidationForm({ state }) {
     if (errorDecidingOnLiquidation === false) {
       if (decisionString === 'aprrove') {
         if (
-          liquidationDetails?.latestStatus ===
-          "Pending Finance Department's Approval"
+          liquidationDetails?.latestStatus === "Pending Treasury's Validation"
         ) {
           dispatch(setLiquidationStatusAction('approved'));
         } else {
@@ -215,12 +214,9 @@ export function DecideOnLiquidationForm({ state }) {
 
   const handleOnApproveRequestButtonClick = () => {
     setModalHeader('Approve the request?');
-    if (
-      liquidationDetails?.latestStatus ===
-      "Pending Finance Department's Approval"
-    ) {
+    if (liquidationDetails?.latestStatus === "Pending Treasury's Validation") {
       setModalBody(
-        'By Approving the request, you forward it to the next decider',
+        'By Approving the request, you acknowledge that all information is correct and you start preparing the funds',
       );
     } else {
       setModalBody(
@@ -267,7 +263,7 @@ export function DecideOnLiquidationForm({ state }) {
   const handleOnFinalizeButtonClick = () => {
     setModalHeader('Finalize the request?');
     setModalBody(
-      'By fanalizing the request, you approve the request, and a transaction has been initiated to the requester.',
+      'By finalizing the request, you acknowledge that everything is settled and no further actions are required. All information will still be accessible afterwards.',
     );
     setModalSevirity('success');
     setModalVisibility(true);
@@ -285,7 +281,16 @@ export function DecideOnLiquidationForm({ state }) {
   };
 
   const handleOnReturnRequestByTreasuryConfirmationButtonClick = () => {
-    setDecisionString('return');
+    if (isReturnedToRequesterByTR === '') {
+      setModalHeader('Invalid choice!');
+      setModalBody(
+        'If you are returning this request, you should specify to whom!',
+      );
+      setModalSevirity('danger');
+      setModalVisibility(true);
+    } else {
+      setDecisionString('return');
+    }
   };
 
   // Other deciders buttons
@@ -705,7 +710,7 @@ export function DecideOnLiquidationForm({ state }) {
                 onClick={handleOnApproveRequestButtonClick}
               >
                 {liquidationDetails?.latestStatus ===
-                "Pending Finance Department's Approval"
+                "Pending Treasury's Validation"
                   ? 'Approve'
                   : 'Sign and Approve'}
               </Button>
@@ -871,7 +876,7 @@ export function DecideOnLiquidationForm({ state }) {
                       id="outlined-multiline-static"
                       multiline
                       rows={5}
-                      placeholder="Your Comment..."
+                      placeholder="Your Comment (255 characters: ~35 to 50 words)..."
                       variant="outlined"
                       onChange={(e) => setDeciderComment(e.target.value)}
                       inputProps={{ maxLength: 255 }}
@@ -893,7 +898,7 @@ export function DecideOnLiquidationForm({ state }) {
               variant="contained"
             >
               {liquidationDetails?.latestStatus ===
-              "Pending Finance Department's Approval"
+              "Pending Treasury's Validation"
                 ? 'Approve'
                 : 'Sign and Approve'}
             </Button>

@@ -150,8 +150,7 @@ export function DecideOnDepenseCaisseForm({ state }) {
     if (errorDecidingOnDepenseCaisse === false) {
       if (decisionString === 'aprrove') {
         if (
-          depenseCaisseDetails?.latestStatus ===
-          "Pending Finance Department's Approval"
+          depenseCaisseDetails?.latestStatus === "Pending Treasury's Validation"
         ) {
           dispatch(setDepenseCaisseStatusAction('approved'));
         } else {
@@ -209,11 +208,10 @@ export function DecideOnDepenseCaisseForm({ state }) {
   const handleOnApproveRequestButtonClick = () => {
     setModalHeader('Approve the request?');
     if (
-      depenseCaisseDetails?.latestStatus ===
-      "Pending Finance Department's Approval"
+      depenseCaisseDetails?.latestStatus === "Pending Treasury's Validation"
     ) {
       setModalBody(
-        'By Approving the request, you forward it to the next decider',
+        'By Approving the request, you acknowledge that all information is correct and you start preparing the funds',
       );
     } else {
       setModalBody(
@@ -260,7 +258,7 @@ export function DecideOnDepenseCaisseForm({ state }) {
   const handleOnFinalizeButtonClick = () => {
     setModalHeader('Finalize the request?');
     setModalBody(
-      'By fanalizing the request, you approve the request, and a transaction has been initiated to the requester.',
+      'By finalizing the request, you acknowledge that everything is settled and no further actions are required. All information will still be accessible afterwards',
     );
     setModalSevirity('success');
     setModalVisibility(true);
@@ -571,7 +569,7 @@ export function DecideOnDepenseCaisseForm({ state }) {
                 onClick={handleOnApproveRequestButtonClick}
               >
                 {depenseCaisseDetails?.latestStatus ===
-                "Pending Finance Department's Approval"
+                "Pending Treasury's Validation"
                   ? 'Approve'
                   : 'Sign and Approve'}
               </Button>
@@ -759,7 +757,7 @@ export function DecideOnDepenseCaisseForm({ state }) {
               variant="contained"
             >
               {depenseCaisseDetails?.latestStatus ===
-              "Pending Finance Department's Approval"
+              "Pending Treasury's Validation"
                 ? 'Approve'
                 : 'Sign and Approve'}
             </Button>

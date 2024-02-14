@@ -25,6 +25,9 @@ import {
   LOAD_ORDRE_MISSION_DETAILS,
   LOAD_ORDRE_MISSION_DETAILS_SUCCESS,
   LOAD_ORDRE_MISSION_DETAILS_ERROR,
+  DOWNLOAD_ORDRE_MISSION_DOCUMENT,
+  DOWNLOAD_ORDRE_MISSION_DOCUMENT_SUCCESS,
+  DOWNLOAD_ORDRE_MISSION_DOCUMENT_ERROR,
 } from './constants';
 
 export function defaultAction() {
@@ -151,6 +154,27 @@ export function SelectTransportationMethodAction(
   return {
     type: CHANGE_TRANSPORTATION_METHOD_ACTION,
     transportationMethodSelection,
+  };
+}
+
+export function downloadOrdreMissionDocumentFileAction(id) {
+  return {
+    type: DOWNLOAD_ORDRE_MISSION_DOCUMENT,
+    id,
+  };
+}
+
+export function downloadOrdreMissionDocumentFileSuccessAction(data) {
+  return {
+    type: DOWNLOAD_ORDRE_MISSION_DOCUMENT_SUCCESS,
+    data,
+  };
+}
+
+export function downloadOrdreMissionDocumentFileErrorAction(error) {
+  return {
+    type: DOWNLOAD_ORDRE_MISSION_DOCUMENT_ERROR,
+    error,
   };
 }
 

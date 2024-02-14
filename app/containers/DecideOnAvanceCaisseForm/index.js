@@ -177,14 +177,7 @@ export function DecideOnAvanceCaisseForm({ state }) {
   useEffect(() => {
     if (errorDecidingOnAvanceCaisse === false) {
       if (decisionString === 'aprrove') {
-        if (
-          avanceCaisseDetails?.latestStatus ===
-          "Pending Finance Department's Approval"
-        ) {
-          dispatch(setAvanceCaisseStatusAction('approved'));
-        } else {
-          dispatch(setAvanceCaisseStatusAction('signed and approved'));
-        }
+        dispatch(setAvanceCaisseStatusAction('signed and approved'));
       }
       if (decisionString === 'return')
         dispatch(setAvanceCaisseStatusAction('returned'));
@@ -228,18 +221,10 @@ export function DecideOnAvanceCaisseForm({ state }) {
 
   const handleOnApproveRequestButtonClick = () => {
     setModalHeader('Approve the request?');
-    if (
-      avanceCaisseDetails?.latestStatus ===
-      "Pending Finance Department's Approval"
-    ) {
-      setModalBody(
-        'By Approving the request, you forward it to the next decider',
-      );
-    } else {
-      setModalBody(
-        'By Approving the request, you sign it digitally and forward it to the next decider',
-      );
-    }
+    setModalBody(
+      'By Approving the request, you sign it digitally and forward it to the next decider',
+    );
+
     setModalSevirity('primary');
     setModalVisibility(true);
   };

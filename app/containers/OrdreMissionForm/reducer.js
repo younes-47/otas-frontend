@@ -25,6 +25,9 @@ import {
   LOAD_ORDRE_MISSION_DETAILS,
   LOAD_ORDRE_MISSION_DETAILS_SUCCESS,
   LOAD_ORDRE_MISSION_DETAILS_ERROR,
+  DOWNLOAD_ORDRE_MISSION_DOCUMENT,
+  DOWNLOAD_ORDRE_MISSION_DOCUMENT_SUCCESS,
+  DOWNLOAD_ORDRE_MISSION_DOCUMENT_ERROR,
 } from './constants';
 
 export const initialState = {
@@ -43,6 +46,9 @@ export const initialState = {
   loadingOrdreMissionDetails: false,
   errorLoadingOrdreMissionDetails: null,
   ordreMissionDetails: null,
+  downloadingOrdreMissionDocumentFile: false,
+  errorDownloadingOrdreMissionDocumentFile: null,
+  ordreMissionDocumentFile: null,
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -64,6 +70,20 @@ const ordreMissionFormReducer = (state = initialState, action) =>
         draft.loadingStaticData = false;
         draft.errorLoadingStaticData = true;
         break;
+      case DOWNLOAD_ORDRE_MISSION_DOCUMENT:
+        draft.downloadingOrdreMissionDocumentFile = true;
+        draft.errorDownloadingOrdreMissionDocumentFile = null;
+        break;
+      case DOWNLOAD_ORDRE_MISSION_DOCUMENT_SUCCESS:
+        draft.downloadingOrdreMissionDocumentFile = false;
+        draft.errorDownloadingOrdreMissionDocumentFile = false;
+        draft.ordreMissionDocumentFile = action.data;
+        break;
+      case DOWNLOAD_ORDRE_MISSION_DOCUMENT_ERROR:
+        draft.downloadingOrdreMissionDocumentFile = false;
+        draft.errorDownloadingOrdreMissionDocumentFile = true;
+        break;
+
       case LOAD_ORDRE_MISSION_DETAILS:
         draft.loadingOrdreMissionDetails = true;
         draft.errorLoadingOrdreMissionDetails = null;
@@ -136,6 +156,10 @@ const ordreMissionFormReducer = (state = initialState, action) =>
         draft.loadingOrdreMissionDetails = false;
         draft.errorLoadingOrdreMissionDetails = null;
         draft.ordreMissionDetails = null;
+        draft.downloadingOrdreMissionDocumentFile = false;
+        draft.errorDownloadingOrdreMissionDocumentFile = null;
+        draft.ordreMissionDocumentFile = null;
+
         break;
     }
   });

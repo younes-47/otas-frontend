@@ -167,14 +167,7 @@ export function DecideOnAvanceVoyageForm({ state }) {
   useEffect(() => {
     if (errorDecidingOnAvanceVoyage === false) {
       if (decisionString === 'aprrove') {
-        if (
-          avanceVoyageDetails?.latestStatus ===
-          "Pending Finance Department's Approval"
-        ) {
-          dispatch(setAvanceVoyageStatusAction('approved'));
-        } else {
-          dispatch(setAvanceVoyageStatusAction('signed and approved'));
-        }
+        dispatch(setAvanceVoyageStatusAction('signed and approved'));
       }
       if (decisionString === 'return')
         dispatch(setAvanceVoyageStatusAction('returned'));
@@ -217,18 +210,9 @@ export function DecideOnAvanceVoyageForm({ state }) {
 
   const handleOnApproveRequestButtonClick = () => {
     setModalHeader('Approve the request?');
-    if (
-      avanceVoyageDetails?.latestStatus ===
-      "Pending Finance Department's Approval"
-    ) {
-      setModalBody(
-        'By Approving the request, you forward it to the next decider',
-      );
-    } else {
-      setModalBody(
-        'By Approving the request, you sign it digitally and forward it to the next decider',
-      );
-    }
+    setModalBody(
+      'By Approving the request, you sign it digitally and forward it to the next decider',
+    );
     setModalSevirity('primary');
     setModalVisibility(true);
   };

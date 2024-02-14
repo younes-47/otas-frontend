@@ -7,6 +7,9 @@ import produce from 'immer';
 import {
   CLEANUP_STORE_ACTION,
   DEFAULT_ACTION,
+  DOWNLOAD_AVANCE_VOYAGE_DOCUMENT,
+  DOWNLOAD_AVANCE_VOYAGE_DOCUMENT_ERROR,
+  DOWNLOAD_AVANCE_VOYAGE_DOCUMENT_SUCCESS,
   LOAD_AVANCE_VOYAGE,
   LOAD_AVANCE_VOYAGE_ERROR,
   LOAD_AVANCE_VOYAGE_SUCCESS,
@@ -16,6 +19,9 @@ export const initialState = {
   loadingAvanceVoyage: false,
   errorLoadingAvanceVoyage: null,
   avanceVoyageDetails: null,
+  downloadingAvanceVoyageDocumentFile: false,
+  errorDownloadingAvanceVoyageDocumentFile: null,
+  avanceVoyageDocumentFile: null,
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -37,10 +43,26 @@ const avanceVoyageViewReducer = (state = initialState, action) =>
         draft.errorLoadingAvanceVoyage = false;
         draft.avanceVoyageDetails = action.data;
         break;
+      case DOWNLOAD_AVANCE_VOYAGE_DOCUMENT:
+        draft.downloadingAvanceVoyageDocumentFile = true;
+        draft.errorDownloadingAvanceVoyageDocumentFile = null;
+        break;
+      case DOWNLOAD_AVANCE_VOYAGE_DOCUMENT_SUCCESS:
+        draft.downloadingAvanceVoyageDocumentFile = false;
+        draft.errorDownloadingAvanceVoyageDocumentFile = false;
+        draft.avanceVoyageDocumentFile = action.data;
+        break;
+      case DOWNLOAD_AVANCE_VOYAGE_DOCUMENT_ERROR:
+        draft.downloadingAvanceVoyageDocumentFile = false;
+        draft.errorDownloadingAvanceVoyageDocumentFile = true;
+        break;
       case CLEANUP_STORE_ACTION:
         draft.loadingAvanceVoyage = false;
         draft.errorLoadingAvanceVoyage = null;
         draft.avanceVoyageDetails = null;
+        draft.downloadingAvanceVoyageDocumentFile = false;
+        draft.errorDownloadingAvanceVoyageDocumentFile = null;
+        draft.avanceVoyageDocumentFile = null;
         break;
     }
   });

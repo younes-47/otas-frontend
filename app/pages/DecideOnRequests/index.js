@@ -12,30 +12,50 @@ import Typography from '@mui/joy/Typography';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
-import { Box, Stack } from '@mui/system';
+import Box from '@mui/system/Box';
+import Stack from '@mui/system/Stack';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
-import { Alert } from '@mui/material';
-import { Card, CardContent, Container, Grid } from '@mui/joy';
+import Alert from '@mui/material/Alert';
+import Grow from '@mui/material/Grow';
+import Card from '@mui/joy/Card';
+import CardContent from '@mui/joy/CardContent';
+import Container from '@mui/joy/Container';
+import Grid from '@mui/joy/Grid';
+import { PieChart } from '@mui/x-charts/PieChart';
+import CountUp from 'react-countup';
 import reducer from './reducer';
 import saga from './saga';
-import { cleanupStoreAction, loadDeciderLevelsAction } from './actions';
+import {
+  cleanupStoreAction,
+  loadDeciderLevelsAction,
+  loadDeciderStatsAction,
+} from './actions';
 import {
   makeSelectDeciderLevels,
+  makeSelectDeciderStats,
   makeSelectErrorLoadingDeciderLevels,
+  makeSelectErrorLoadingDeciderStats,
 } from './selectors';
 
 const mapStateToProps = createStructuredSelector({
   isSideBarVisible: makeSelectIsSideBarVisible(),
   deciderLevels: makeSelectDeciderLevels(),
   errorLoadingDeciderLevels: makeSelectErrorLoadingDeciderLevels(),
+  errorLoadingDeciderStats: makeSelectErrorLoadingDeciderStats(),
+  deciderStats: makeSelectDeciderStats(),
 });
 
 export function DecideOnRequests() {
   useInjectReducer({ key: 'decideOnRequests', reducer });
   useInjectSaga({ key: 'decideOnRequests', saga });
   const dispatch = useDispatch();
-  const { isSideBarVisible, errorLoadingDeciderLevels, deciderLevels } =
-    useSelector(mapStateToProps);
+  const {
+    isSideBarVisible,
+    errorLoadingDeciderLevels,
+    deciderLevels,
+    errorLoadingDeciderStats,
+    deciderStats,
+  } = useSelector(mapStateToProps);
 
   const [levelsString, setLevelsString] = useState('');
 
@@ -44,6 +64,12 @@ export function DecideOnRequests() {
       dispatch(loadDeciderLevelsAction());
     }
   }, [errorLoadingDeciderLevels]);
+
+  useEffect(() => {
+    if (errorLoadingDeciderStats === null) {
+      dispatch(loadDeciderStatsAction());
+    }
+  }, []);
 
   useEffect(
     () => () => {
@@ -151,11 +177,7 @@ export function DecideOnRequests() {
       </Box>
 
       <Container maxWidth="sm">
-        <Typography
-          level="h3"
-          textAlign="center"
-          // sx={{ fontSize: '50px', marginBottom: '10px', marginTop: '20px' }}
-        >
+        <Typography level="h3" textAlign="center">
           Statistics <TrendingUpIcon />
         </Typography>
         <Grid
@@ -165,55 +187,250 @@ export function DecideOnRequests() {
           justifyContent="center"
           marginTop={0.5}
         >
-          <Grid item xs={6}>
-            <Card variant="outlined">
-              <CardContent>
-                <Typography level="h1" variant="plain" color="primary">
-                  5
-                </Typography>
-                <Typography level="title-md">
-                  Requests are pending your approval.
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={6}>
-            <Card variant="outlined">
-              <CardContent>
-                <Typography level="h1" variant="plain" color="success">
-                  89
-                </Typography>
-                <Typography level="title-md">
-                  requests have been decided upon!
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={6}>
-            <Card variant="outlined">
-              <CardContent>
-                <Typography level="h1" variant="plain" color="success">
-                  70%
-                </Typography>
-                <Typography level="title-md">
-                  of requests have been approved!
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={6}>
-            <Card variant="outlined">
-              <CardContent>
-                <Typography level="h1" variant="plain" color="danger">
-                  0
-                </Typography>
-                <Typography level="title-md">
-                  Requests have been rejected.
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          {/* Add more Grid items as needed */}
+          <Grow in>
+            <Grid xs={6}>
+              <Card variant="outlined">
+                <CardContent>
+                  <Typography level="h1" variant="plain" color="primary">
+                    {deciderStats?.requestsStats?.allOngoingRequestsCount}
+                  </Typography>
+                  <Typography level="title-md">
+                    Requests are in the process of approval.
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grow>
+          <Grow in timeout={1200}>
+            <Grid xs={6}>
+              <Card variant="outlined">
+                <CardContent>
+                  {deciderStats?.requestsStats?.hoursPassedSinceLastRequest ===
+                  null ? (
+                    <>
+                      <Typography
+                        level="title-md"
+                        marginTop={3}
+                        marginBottom={3}
+                      >
+                        You have never decider upon a request before.
+                      </Typography>
+                    </>
+                  ) : (
+                    <>
+                      <Typography level="h1" variant="plain" color="warning">
+                        {Math.floor(
+                          deciderStats?.requestsStats
+                            ?.hoursPassedSinceLastRequest / 24,
+                        )}
+                      </Typography>
+                      <Typography level="title-md">
+                        Days Have been passed since the last time you decided
+                        upon a request.
+                      </Typography>
+                    </>
+                  )}
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grow>
+          <Grow in timeout={2200}>
+            <Grid xs={6}>
+              <Card variant="outlined">
+                <CardContent>
+                  <Typography level="h1" variant="plain" color="success">
+                    <CountUp
+                      delay={0}
+                      start={0}
+                      end={deciderStats?.requestsStats?.allTimeCount}
+                      duration={3.2}
+                    />
+                  </Typography>
+                  <Typography level="title-md">
+                    requests have been decided upon so far!
+                  </Typography>
+                  {deciderStats?.requestsStats && (
+                    <PieChart
+                      slotProps={{ legend: { hidden: true } }}
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        margin: '0',
+                      }}
+                      series={[
+                        {
+                          data: [
+                            {
+                              id: 0,
+                              value:
+                                deciderStats?.requestsStats
+                                  ?.ordreMissionsAllTimeCount,
+                              label: 'Ordre Mission',
+                              color: '#ef7765',
+                            },
+                            {
+                              id: 1,
+                              value:
+                                deciderStats?.requestsStats
+                                  ?.avanceVoyagesAllTimeCount,
+                              label: 'Avance Voyage',
+                              color: '#00a697',
+                            },
+                            {
+                              id: 2,
+                              value:
+                                deciderStats?.requestsStats
+                                  ?.avanceCaissesAllTimeCount,
+                              label: 'Avance Caisse',
+                              color: '#f3bc00',
+                            },
+                            {
+                              id: 3,
+                              value:
+                                deciderStats?.requestsStats
+                                  ?.depenseCaissesAllTimeCount,
+                              label: 'Depense Caisse',
+                              color: '#0075a4',
+                            },
+                          ],
+                        },
+                      ]}
+                      width={226.3}
+                      height={200}
+                    />
+                  )}
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grow>
+          <Grow in timeout={3200}>
+            <Grid xs={6}>
+              <Card variant="outlined">
+                <CardContent>
+                  <Typography level="h3" variant="plain" color="success">
+                    <CountUp
+                      delay={0}
+                      start={0}
+                      end={deciderStats?.moneyStats?.allTimeAmountMAD}
+                      separator={
+                        localStorage.getItem('preferredLanguage') === 'en'
+                          ? ','
+                          : ' '
+                      }
+                      decimal={
+                        localStorage.getItem('preferredLanguage') === 'en'
+                          ? '.'
+                          : ','
+                      }
+                      decimals={2}
+                      duration={3.2}
+                    />
+                    &nbsp;MAD
+                  </Typography>
+                  <Typography level="h3" variant="plain" color="success">
+                    <CountUp
+                      delay={0}
+                      start={0}
+                      end={deciderStats?.moneyStats?.allTimeAmountEUR}
+                      separator={
+                        localStorage.getItem('preferredLanguage') === 'en'
+                          ? ','
+                          : ' '
+                      }
+                      decimal={
+                        localStorage.getItem('preferredLanguage') === 'en'
+                          ? '.'
+                          : ','
+                      }
+                      decimals={2}
+                      duration={3.2}
+                    />
+                    &nbsp;EUR
+                  </Typography>
+                  <Typography level="title-md">
+                    have been decided upon so far!
+                  </Typography>
+                  {deciderStats?.moneyStats && (
+                    <PieChart
+                      slotProps={{ legend: { hidden: true } }}
+                      height={200}
+                      width={226.3}
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                      }}
+                      series={[
+                        {
+                          data: [
+                            {
+                              id: 0,
+                              value:
+                                deciderStats?.moneyStats
+                                  ?.avanceVoyagesAllTimeAmountMAD,
+
+                              label: 'Avance Voyage MAD',
+                              color: '#00a697',
+                            },
+                            {
+                              id: 1,
+                              value:
+                                deciderStats?.moneyStats
+                                  ?.avanceCaissesAllTimeAmountMAD,
+
+                              label: 'Avance Caisse MAD',
+                              color: '#f3bc00',
+                            },
+                            {
+                              id: 2,
+                              value:
+                                deciderStats?.moneyStats
+                                  ?.depenseCaissesAllTimeAmountMAD,
+
+                              label: 'Depense Caisse MAD',
+                              color: '#0075a4',
+                            },
+                          ],
+                          outerRadius: 50,
+                        },
+                        {
+                          data: [
+                            {
+                              id: 0,
+                              value:
+                                deciderStats?.moneyStats
+                                  ?.avanceVoyagesAllTimeAmountEUR,
+
+                              label: 'Avance Voyage EUR',
+                              color: '#00a697',
+                            },
+                            {
+                              id: 1,
+                              value:
+                                deciderStats?.moneyStats
+                                  ?.avanceCaissesAllTimeAmountEUR,
+
+                              label: 'Avance Caisse EUR',
+                              color: '#f3bc00',
+                            },
+                            {
+                              id: 2,
+                              value:
+                                deciderStats?.moneyStats
+                                  ?.depenseCaissesAllTimeAmountEUR,
+
+                              label: 'Depense Caisse EUR',
+                              color: '#0075a4',
+                            },
+                          ],
+                          innerRadius: 40,
+                        },
+                      ]}
+                    />
+                  )}
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grow>
         </Grid>
       </Container>
     </Box>

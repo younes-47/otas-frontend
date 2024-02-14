@@ -47,6 +47,18 @@ const makeSelectErrorSubmittingDepenseCaisse = () =>
     (substate) => substate.errorSubmittingDepenseCaisse,
   );
 
+const makeSelectErrorDownloadingDepenseCaisseDocumentFile = () =>
+  createSelector(
+    selectDepenseCaisseFormDomain,
+    (substate) => substate.errorDownloadingDepenseCaisseDocumentFile,
+  );
+
+const makeSelectDepenseCaisseDocumentFile = () =>
+  createSelector(
+    selectDepenseCaisseFormDomain,
+    (substate) => substate.depenseCaisseDocumentFile,
+  );
+
 const makeSelectDepenseCaisseDetails = () =>
   createSelector(
     selectDepenseCaisseFormDomain,
@@ -61,6 +73,8 @@ const makeSelectErrorLoadingDepenseCaisseDetails = () =>
 
 export default makeSelectDepenseCaisseForm;
 export {
+  makeSelectErrorDownloadingDepenseCaisseDocumentFile,
+  makeSelectDepenseCaisseDocumentFile,
   makeSelectErrorLoadingDepenseCaisseDetails,
   makeSelectDepenseCaisseDetails,
   makeSelectErrorSubmittingDepenseCaisse,

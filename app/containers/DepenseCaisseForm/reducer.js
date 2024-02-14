@@ -11,6 +11,9 @@ import {
   CHANGE_ONBEHALF_SELECTION_ACTION,
   CLEANUP_STORE_ACTION,
   DEFAULT_ACTION,
+  DOWNLOAD_DEPENSE_CAISSE_DOCUMENT,
+  DOWNLOAD_DEPENSE_CAISSE_DOCUMENT_ERROR,
+  DOWNLOAD_DEPENSE_CAISSE_DOCUMENT_SUCCESS,
   LOAD_DEPENSE_CAISSE_DETAILS,
   LOAD_DEPENSE_CAISSE_DETAILS_ERROR,
   LOAD_DEPENSE_CAISSE_DETAILS_SUCCESS,
@@ -39,6 +42,9 @@ export const initialState = {
   loadingDepenseCaisseDetails: false,
   errorLoadingDepenseCaisseDetails: null,
   depenseCaisseDetails: null,
+  downloadingDepenseCaisseDocumentFile: false,
+  errorDownloadingDepenseCaisseDocumentFile: null,
+  depesneCaisseDocumentFile: null,
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -46,6 +52,19 @@ const depenseCaisseFormReducer = (state = initialState, action) =>
   produce(state, (draft) => {
     switch (action.type) {
       case DEFAULT_ACTION:
+        break;
+      case DOWNLOAD_DEPENSE_CAISSE_DOCUMENT:
+        draft.downloadingDepenseCaisseDocumentFile = true;
+        draft.errorDownloadingDepenseCaisseDocumentFile = null;
+        break;
+      case DOWNLOAD_DEPENSE_CAISSE_DOCUMENT_SUCCESS:
+        draft.downloadingDepenseCaisseDocumentFile = false;
+        draft.errorDownloadingDepenseCaisseDocumentFile = false;
+        draft.depesneCaisseDocumentFile = action.data;
+        break;
+      case DOWNLOAD_DEPENSE_CAISSE_DOCUMENT_ERROR:
+        draft.downloadingDepenseCaisseDocumentFile = false;
+        draft.errorDownloadingDepenseCaisseDocumentFile = true;
         break;
       case LOAD_DEPENSE_CAISSE_DETAILS:
         draft.loadingDepenseCaisseDetails = true;
@@ -126,6 +145,9 @@ const depenseCaisseFormReducer = (state = initialState, action) =>
         draft.loadingDepenseCaisseDetails = false;
         draft.errorLoadingDepenseCaisseDetails = null;
         draft.depenseCaisseDetails = null;
+        draft.downloadingDepenseCaisseDocumentFile = false;
+        draft.errorDownloadingDepenseCaisseDocumentFile = null;
+        draft.depesneCaisseDocumentFile = null;
         break;
     }
   });

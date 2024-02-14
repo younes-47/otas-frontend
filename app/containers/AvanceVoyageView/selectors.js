@@ -37,8 +37,22 @@ const makeSelectAvanceVoyageDetails = () =>
     (substate) => substate.avanceVoyageDetails,
   );
 
+const makeSelectErrorDownloadingAvanceVoyageDocumentFile = () =>
+  createSelector(
+    selectAvanceVoyageViewDomain,
+    (substate) => substate.errorDownloadingAvanceVoyageDocumentFile,
+  );
+
+const makeSelectAvanceVoyageDocumentFile = () =>
+  createSelector(
+    selectAvanceVoyageViewDomain,
+    (substate) => substate.avanceVoyageDocumentFile,
+  );
+
 export default makeSelectAvanceVoyageView;
 export {
+  makeSelectAvanceVoyageDocumentFile,
+  makeSelectErrorDownloadingAvanceVoyageDocumentFile,
   makeSelectAvanceVoyageDetails,
   selectAvanceVoyageViewDomain,
   makeSelectLoadingAvanceVoyage,

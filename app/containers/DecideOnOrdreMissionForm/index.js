@@ -180,18 +180,9 @@ export function DecideOnOrdreMissionForm({ state }) {
 
   const handleOnApproveRequestButtonClick = () => {
     setModalHeader('Approve the request?');
-    if (
-      ordreMissionDetails?.latestStatus ===
-      "Pending Finance Department's Approval"
-    ) {
-      setModalBody(
-        'By Approving the request, you forward it to the next decider',
-      );
-    } else {
-      setModalBody(
-        'By Approving the request, you sign it digitally and forward it to the next decider',
-      );
-    }
+    setModalBody(
+      'By Approving the request, you sign it digitally and forward it to the next decider',
+    );
     setModalSevirity('primary');
     setModalVisibility(true);
   };

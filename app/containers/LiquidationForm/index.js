@@ -151,7 +151,8 @@ export function LiquidationForm({ state }) {
     state === 'VIEW' ||
     state === 'CONFIRM' ||
     requestToLiquidateDetails?.latestStatus ===
-      'Returned for missing evidences';
+      'Returned for missing evidences' ||
+    liquidationDetails?.latestStatus === 'Returned for missing evidences';
 
   const data = {
     id: liquidationDetails !== null ? liquidationDetails?.id : 0,

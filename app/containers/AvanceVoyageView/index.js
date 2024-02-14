@@ -22,6 +22,7 @@ import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import Alert from '@mui/material/Alert';
+import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -47,12 +48,15 @@ import { makeSelectAvanceVoyageIdentity } from 'pages/AvanceVoyage/selectors';
 import { NumericFormat } from 'react-number-format';
 import makeSelectAvanceVoyageView, {
   makeSelectAvanceVoyageDetails,
+  makeSelectAvanceVoyageDocumentFile,
+  makeSelectErrorDownloadingAvanceVoyageDocumentFile,
   makeSelectErrorLoadingAvanceVoyage,
 } from './selectors';
 import reducer from './reducer';
 import saga from './saga';
 import {
   cleanupAvanceVoyageViewStoreAction,
+  downloadAvanceVoyageDocumentFileAction,
   loadAvanceVoyageAction,
 } from './actions';
 import DisplayTrips from './DisplayTrips';
@@ -64,12 +68,17 @@ const mapStateToProps = createStructuredSelector({
   avanceVoyageDetails: makeSelectAvanceVoyageDetails(),
   avanceVoyageIdentity: makeSelectAvanceVoyageIdentity(),
   errorLoadingAvanceVoyage: makeSelectErrorLoadingAvanceVoyage(),
+  errorDownloadingAvanceVoyageDocumentFile:
+    makeSelectErrorDownloadingAvanceVoyageDocumentFile(),
+  avanceVoyageDocumentFile: makeSelectAvanceVoyageDocumentFile(),
 });
 
 export function AvanceVoyageView() {
   useInjectReducer({ key: 'avanceVoyageView', reducer });
   useInjectSaga({ key: 'avanceVoyageView', saga });
   const {
+    errorDownloadingAvanceVoyageDocumentFile,
+    avanceVoyageDocumentFile,
     errorLoadingAvanceVoyage,
     isSideBarVisible,
     avanceVoyageDetails,
@@ -79,12 +88,40 @@ export function AvanceVoyageView() {
   const history = useHistory();
   const [statusHistoryDialogVisibility, setStatusHistoryDialogVisibility] =
     useState(false);
+  const [loadingButton, setLoadingButton] = useState(false);
 
   useEffect(() => {
     if (errorLoadingAvanceVoyage == null) {
       dispatch(loadAvanceVoyageAction(avanceVoyageIdentity));
     }
   }, [errorLoadingAvanceVoyage]);
+
+  // Download Document
+  useEffect(() => {
+    if (errorDownloadingAvanceVoyageDocumentFile === false) {
+      const binaryString = atob(avanceVoyageDocumentFile.fileContents);
+      const bytes = new Uint8Array(binaryString.length);
+
+      for (let i = 0; i < binaryString.length; i += 1) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      const blob = new Blob([bytes.buffer], {
+        type: 'application/pdf',
+      });
+
+      const blobUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = avanceVoyageDocumentFile.fileDownloadName;
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setLoadingButton(false);
+    }
+  }, [errorDownloadingAvanceVoyageDocumentFile]);
 
   useEffect(
     () => () => {
@@ -105,6 +142,11 @@ export function AvanceVoyageView() {
     );
     dispatch(ChangePageContentAction('VIEW'));
     history.push('/my-requests/ordre-mission');
+  };
+
+  const handleOnDownloadDocumentClick = () => {
+    setLoadingButton(true);
+    dispatch(downloadAvanceVoyageDocumentFileAction(avanceVoyageDetails.id));
   };
 
   return (
@@ -174,9 +216,17 @@ export function AvanceVoyageView() {
           variant="contained"
           color="secondary"
           size="medium"
-          startIcon={<DescriptionIcon />}
+          startIcon={
+            loadingButton ? (
+              <CircularProgress size={20} color="inherit" />
+            ) : (
+              <DescriptionIcon />
+            )
+          }
+          onClick={() => handleOnDownloadDocumentClick()}
+          disabled={loadingButton}
         >
-          Download Document
+          {!loadingButton ? <>Download Document</> : <>Generating...</>}
         </Button>
       </Box>
 

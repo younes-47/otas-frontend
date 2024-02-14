@@ -7,8 +7,10 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { Box, Stack } from '@mui/system';
+import Box from '@mui/system/Box';
+import Stack from '@mui/system/Stack';
 import { v4 as uuidv4 } from 'uuid';
+import CircularProgress from '@mui/material/CircularProgress';
 import PropTypes from 'prop-types';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CloseIcon from '@mui/icons-material/Close';
@@ -137,6 +139,7 @@ export function AvanceCaisseForm({ state }) {
   const [buttonClicked, setButtonClicked] = useState(''); // this state is used to track which button has been clicked
   const [savedSnackbarVisibility, setSavedSnackbarVisibility] = useState(false);
   const [fullPageModalVisibility, setFullPageModalVisibility] = useState(false);
+  const [loadingButton, setLoadingButton] = useState(false);
 
   const readOnly = state === 'VIEW' || state === 'CONFIRM';
 
@@ -248,7 +251,7 @@ export function AvanceCaisseForm({ state }) {
     setTotal(totalExpenses);
   }, [expenses]);
 
-  // Download file
+  // Download Document
   useEffect(() => {
     if (errorDownloadingAvanceCaisseDocumentFile === false) {
       const binaryString = atob(avanceCaisseDocumentFile.fileContents);
@@ -271,6 +274,7 @@ export function AvanceCaisseForm({ state }) {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      setLoadingButton(false);
     }
   }, [errorDownloadingAvanceCaisseDocumentFile]);
 
@@ -419,7 +423,8 @@ export function AvanceCaisseForm({ state }) {
   };
 
   const handleOnDownloadDocumentClick = () => {
-    dispatch(downloadAvanceCaisseDocumentFileAction(avanceCaisseDetails));
+    setLoadingButton(true);
+    dispatch(downloadAvanceCaisseDocumentFileAction(avanceCaisseDetails.id));
   };
 
   const data = {
@@ -534,10 +539,17 @@ export function AvanceCaisseForm({ state }) {
               variant="contained"
               color="secondary"
               size="medium"
-              startIcon={<DescriptionIcon />}
+              startIcon={
+                loadingButton ? (
+                  <CircularProgress size={20} color="inherit" />
+                ) : (
+                  <DescriptionIcon />
+                )
+              }
               onClick={() => handleOnDownloadDocumentClick()}
+              disabled={loadingButton}
             >
-              Download Document
+              {!loadingButton ? <>Download Document</> : <>Generating...</>}
             </Button>
           </Box>
         </>

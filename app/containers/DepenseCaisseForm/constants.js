@@ -39,6 +39,13 @@ export const ADD_DEPENSE_CAISSE_SUCCESS =
 export const ADD_DEPENSE_CAISSE_ERROR =
   'app/DepenseCaisseForm/ADD_DEPENSE_CAISSE_ERROR';
 
+export const DOWNLOAD_DEPENSE_CAISSE_DOCUMENT =
+  'app/DepenseCaisseForm/DOWNLOAD_DEPENSE_CAISSE_DOCUMENT';
+export const DOWNLOAD_DEPENSE_CAISSE_DOCUMENT_SUCCESS =
+  'app/DepenseCaisseForm/DOWNLOAD_DEPENSE_CAISSE_DOCUMENT_SUCCESS';
+export const DOWNLOAD_DEPENSE_CAISSE_DOCUMENT_ERROR =
+  'app/DepenseCaisseForm/DOWNLOAD_DEPENSE_CAISSE_DOCUMENT_ERROR';
+
 export const CHANGE_ONBEHALF_SELECTION_ACTION =
   'app/DepenseCaisseForm/ON_BEHALF_SELECTION';
 
@@ -51,4 +58,5 @@ export const webService = {
   UPDATE_DEPENSE_CAISSE: '/DepenseCaisse/Modify',
   SUBMIT_DEPENSE_CAISSE: '/DepenseCaisse/Submit',
   LOAD_STATIC_DATA: '/User/ActualRequesterStaticInfo/All',
+  DOWNLOAD_DEPENSE_CAISSE_DOCUMENT: '/DepenseCaisse/Document/Download',
 };

@@ -56,6 +56,8 @@ import Expenses from './Expenses';
 import {
   makeSelectAddDepenseCaisse,
   makeSelectDepenseCaisseDetails,
+  makeSelectDepenseCaisseDocumentFile,
+  makeSelectErrorDownloadingDepenseCaisseDocumentFile,
   makeSelectErrorLoadingDepenseCaisseDetails,
   makeSelectErrorLoadingStaticData,
   makeSelectErrorSubmittingDepenseCaisse,
@@ -71,6 +73,7 @@ import {
   SelectOnBehalfAction,
   UpdateDepenseCaisseAction,
   cleanupDepenseCaisseFormPageStoreAction,
+  downloadDepenseCaisseDocumentFileAction,
   loadDepenseCaisseDetailsAction,
   submitDepenseCaisseAction,
 } from './actions';
@@ -87,6 +90,9 @@ const mapStateToProps = createStructuredSelector({
   staticData: makeSelectStaticData(),
   depenseCaisseDetails: makeSelectDepenseCaisseDetails(),
   depenseCaisseIdentity: makeSelectDepenseCaisseIdentity(),
+  errorDownloadingDepenseCaisseDocumentFile:
+    makeSelectErrorDownloadingDepenseCaisseDocumentFile(),
+  depenseCaisseDocumentFile: makeSelectDepenseCaisseDocumentFile(),
 });
 
 export function DepenseCaisseForm({ state }) {
@@ -94,6 +100,8 @@ export function DepenseCaisseForm({ state }) {
   useInjectSaga({ key: 'depenseCaisseForm', saga });
   const dispatch = useDispatch();
   const {
+    errorDownloadingDepenseCaisseDocumentFile,
+    depenseCaisseDocumentFile,
     errorLoadingStaticData,
     errorUpdatingDepenseCaisse,
     errorSubmittingDepenseCaisse,
@@ -235,6 +243,33 @@ export function DepenseCaisseForm({ state }) {
       dispatch(cleanupDepenseCaisseParentPageStoreAction());
     }
   }, [errorSubmittingDepenseCaisse]);
+
+  // Download Document
+  useEffect(() => {
+    if (errorDownloadingDepenseCaisseDocumentFile === false) {
+      const binaryString = atob(depenseCaisseDocumentFile.fileContents);
+      const bytes = new Uint8Array(binaryString.length);
+
+      for (let i = 0; i < binaryString.length; i += 1) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      const blob = new Blob([bytes.buffer], {
+        type: 'application/pdf',
+      });
+
+      const blobUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = depenseCaisseDocumentFile.fileDownloadName;
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setLoadingButton(false);
+    }
+  }, [errorDownloadingDepenseCaisseDocumentFile]);
 
   // Cleanup store
   useEffect(
@@ -431,6 +466,11 @@ export function DepenseCaisseForm({ state }) {
     document.body.removeChild(link);
   };
 
+  const handleOnDownloadDocumentClick = () => {
+    setLoadingButton(true);
+    downloadDepenseCaisseDocumentFileAction(depenseCaisseDetails.id);
+  };
+
   const data = {
     id: depenseCaisseDetails !== null ? depenseCaisseDetails?.id : 0,
     action: state === 'EDIT' ? 'save' : 'submit',
@@ -545,9 +585,17 @@ export function DepenseCaisseForm({ state }) {
               variant="contained"
               color="secondary"
               size="medium"
-              startIcon={<DescriptionIcon />}
+              startIcon={
+                loadingButton ? (
+                  <CircularProgress size={20} color="inherit" />
+                ) : (
+                  <DescriptionIcon />
+                )
+              }
+              onClick={() => handleOnDownloadDocumentClick()}
+              disabled={loadingButton}
             >
-              Download Document
+              {!loadingButton ? <>Download Document</> : <>Generating...</>}
             </Button>
           </Box>
         </>

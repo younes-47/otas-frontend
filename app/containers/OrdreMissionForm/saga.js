@@ -3,6 +3,7 @@ import request from 'utils/request';
 import { setOrdreMissionIdentityAction } from 'pages/OrdreMission/actions';
 import {
   ADD_ORDRE_MISSION,
+  DOWNLOAD_ORDRE_MISSION_DOCUMENT,
   LOAD_ORDRE_MISSION_DETAILS,
   LOAD_STATIC_DATA,
   SUBMIT_ORDRE_MISSION,
@@ -16,6 +17,8 @@ import {
   LoadStaticDataSuccessAction,
   UpdateOrdreMissionErrorAction,
   UpdateOrdreMissionSuccessAction,
+  downloadOrdreMissionDocumentFileErrorAction,
+  downloadOrdreMissionDocumentFileSuccessAction,
   loadOrdreMissionDetailsAction,
   loadOrdreMissionDetailsErrorAction,
   loadOrdreMissionDetailsSuccessAction,
@@ -103,10 +106,31 @@ export function* loadOrdreMissionDetailsSaga({ id }) {
   }
 }
 
+export function* DownloadOrdreMissionDocumentFile({ id }) {
+  try {
+    const { data } = yield call(
+      request.get,
+      `${webService.DOWNLOAD_ORDRE_MISSION_DOCUMENT}?Id=${id}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    yield put(downloadOrdreMissionDocumentFileSuccessAction(data));
+  } catch (error) {
+    yield put(downloadOrdreMissionDocumentFileErrorAction(error));
+  }
+}
+
 export default function* ordreMissionFormSaga() {
   yield takeLatest(LOAD_STATIC_DATA, LoadStaticData);
   yield takeLatest(ADD_ORDRE_MISSION, AddOrdreMission);
   yield takeLatest(UPDATE_ORDRE_MISSION, UpdateOrdreMission);
   yield takeLatest(SUBMIT_ORDRE_MISSION, SubmitOrdreMission);
   yield takeLatest(LOAD_ORDRE_MISSION_DETAILS, loadOrdreMissionDetailsSaga);
+  yield takeLatest(
+    DOWNLOAD_ORDRE_MISSION_DOCUMENT,
+    DownloadOrdreMissionDocumentFile,
+  );
 }

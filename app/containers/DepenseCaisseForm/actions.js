@@ -11,6 +11,9 @@ import {
   CHANGE_ONBEHALF_SELECTION_ACTION,
   CLEANUP_STORE_ACTION,
   DEFAULT_ACTION,
+  DOWNLOAD_DEPENSE_CAISSE_DOCUMENT,
+  DOWNLOAD_DEPENSE_CAISSE_DOCUMENT_ERROR,
+  DOWNLOAD_DEPENSE_CAISSE_DOCUMENT_SUCCESS,
   LOAD_DEPENSE_CAISSE_DETAILS,
   LOAD_DEPENSE_CAISSE_DETAILS_ERROR,
   LOAD_DEPENSE_CAISSE_DETAILS_SUCCESS,
@@ -133,6 +136,27 @@ export function submitDepenseCaisseSuccessAction(data) {
 export function submitDepenseCaisseErrorAction(error) {
   return {
     type: SUBMIT_DEPENSE_CAISSE_ERROR,
+    error,
+  };
+}
+
+export function downloadDepenseCaisseDocumentFileAction(id) {
+  return {
+    type: DOWNLOAD_DEPENSE_CAISSE_DOCUMENT,
+    id,
+  };
+}
+
+export function downloadDepenseCaisseDocumentFileSuccessAction(data) {
+  return {
+    type: DOWNLOAD_DEPENSE_CAISSE_DOCUMENT_SUCCESS,
+    data,
+  };
+}
+
+export function downloadDepenseCaisseDocumentFileErrorAction(error) {
+  return {
+    type: DOWNLOAD_DEPENSE_CAISSE_DOCUMENT_ERROR,
     error,
   };
 }

@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
+import CircularProgress from '@mui/material/CircularProgress';
 import Stack from '@mui/system/Stack';
 import Box from '@mui/system/Box';
 import Alert from '@mui/material/Alert';
@@ -35,6 +36,7 @@ import Snackbar from '@mui/joy/Snackbar';
 import LinearProgress from '@mui/material/LinearProgress';
 import CloseIcon from '@mui/icons-material/Close';
 import HistoryIcon from '@mui/icons-material/History';
+import DescriptionIcon from '@mui/icons-material/Description';
 import { Typography as JoyTypography } from '@mui/joy';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers';
@@ -57,11 +59,13 @@ import reducer from './reducer';
 import {
   makeSelectAbroad,
   makeSelectAddOrdreMissionError,
+  makeSelectErrorDownloadingOrdreMissionDocumentFile,
   makeSelectErrorLoadingOrdreMissionDetails,
   makeSelectErrorLoadingStaticData,
   makeSelectErrorSubmittingOrdreMission,
   makeSelectOnBehalf,
   makeSelectOrdreMissionDetails,
+  makeSelectOrdreMissionDocumentFile,
   makeSelectStaticData,
   makeSelectUpdateOrdreMissionError,
 } from './selectors';
@@ -74,6 +78,7 @@ import {
   SelectOnBehalfAction,
   UpdateOrdreMissionAction,
   cleanupOrdreMissionFormPageAction,
+  downloadOrdreMissionDocumentFileAction,
   loadOrdreMissionDetailsAction,
   submitOrdreMissionAction,
 } from './actions';
@@ -90,6 +95,9 @@ const mapStateToProps = createStructuredSelector({
   ordreMissionIdentity: makeSelectOrdreMissionIdentity(),
   errorLoadingOrdreMissionDetails: makeSelectErrorLoadingOrdreMissionDetails(),
   ordreMissionDetails: makeSelectOrdreMissionDetails(),
+  errorDownloadingOrdreMissionDocumentFile:
+    makeSelectErrorDownloadingOrdreMissionDocumentFile(),
+  ordreMissionDocumentFile: makeSelectOrdreMissionDocumentFile(),
 });
 
 export function OrdreMissionForm({ state }) {
@@ -108,6 +116,8 @@ export function OrdreMissionForm({ state }) {
     ordreMissionDetails,
     errorSubmittingOrdreMission,
     ordreMissionIdentity,
+    errorDownloadingOrdreMissionDocumentFile,
+    ordreMissionDocumentFile,
   } = useSelector(mapStateToProps);
   const [trips, setTrips] = useState([
     {
@@ -154,6 +164,7 @@ export function OrdreMissionForm({ state }) {
   const [buttonClicked, setButtonClicked] = useState(''); // this state is used to track which button has been clicked
   const [savedSnackbarVisibility, setSavedSnackbarVisibility] = useState(false);
   const [fullPageModalVisibility, setFullPageModalVisibility] = useState(false);
+  const [loadingButton, setLoadingButton] = useState(false);
 
   const readOnly = state === 'VIEW' || state === 'CONFIRM';
 
@@ -213,6 +224,7 @@ export function OrdreMissionForm({ state }) {
     }
   }, [ordreMissionDetails]);
 
+  // calculate estimated total
   useEffect(() => {
     let totalTripsMAD = 0.0;
     let totalTripsEUR = 0.0;
@@ -302,6 +314,34 @@ export function OrdreMissionForm({ state }) {
     }
   }, [errorSubmittingOrdreMission]);
 
+  // Download Document
+  useEffect(() => {
+    if (errorDownloadingOrdreMissionDocumentFile === false) {
+      const binaryString = atob(ordreMissionDocumentFile.fileContents);
+      const bytes = new Uint8Array(binaryString.length);
+
+      for (let i = 0; i < binaryString.length; i += 1) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      const blob = new Blob([bytes.buffer], {
+        type: 'application/pdf',
+      });
+
+      const blobUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = ordreMissionDocumentFile.fileDownloadName;
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setLoadingButton(false);
+    }
+  }, [errorDownloadingOrdreMissionDocumentFile]);
+
+  // cleanup store
   useEffect(
     () => () => {
       dispatch(cleanupOrdreMissionFormPageAction());
@@ -527,6 +567,11 @@ export function OrdreMissionForm({ state }) {
     }
   };
 
+  const handleOnDownloadDocumentClick = () => {
+    setLoadingButton(true);
+    downloadOrdreMissionDocumentFileAction(ordreMissionDetails.id);
+  };
+
   return (
     <Box
       id="main-box"
@@ -613,6 +658,7 @@ export function OrdreMissionForm({ state }) {
               justifyContent="center"
               textAlign="center"
               marginBottom={2}
+              gap={3}
             >
               <Button
                 variant="contained"
@@ -624,6 +670,22 @@ export function OrdreMissionForm({ state }) {
                 startIcon={<HistoryIcon />}
               >
                 Status History
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                size="medium"
+                startIcon={
+                  loadingButton ? (
+                    <CircularProgress size={20} color="inherit" />
+                  ) : (
+                    <DescriptionIcon />
+                  )
+                }
+                onClick={() => handleOnDownloadDocumentClick()}
+                disabled={loadingButton}
+              >
+                {!loadingButton ? <>Download Document</> : <>Generating...</>}
               </Button>
             </Box>
           </>

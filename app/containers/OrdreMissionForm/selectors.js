@@ -78,8 +78,22 @@ const makeSelectTransportationMethodSelector = () =>
     (substate) => substate.transportationMethodSelector,
   );
 
+const makeSelectErrorDownloadingOrdreMissionDocumentFile = () =>
+  createSelector(
+    selectOrdreMissionFormDomain,
+    (substate) => substate.errorDownloadingOrdreMissionDocumentFile,
+  );
+
+const makeSelectOrdreMissionDocumentFile = () =>
+  createSelector(
+    selectOrdreMissionFormDomain,
+    (substate) => substate.ordreMissionDocumentFile,
+  );
+
 export default makeSelectOrdreMissionForm;
 export {
+  makeSelectOrdreMissionDocumentFile,
+  makeSelectErrorDownloadingOrdreMissionDocumentFile,
   makeSelectOrdreMissionDetails,
   makeSelectErrorLoadingOrdreMissionDetails,
   makeSelectStaticData,

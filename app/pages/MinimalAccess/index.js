@@ -5,21 +5,17 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
-import { connect, useSelector } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
+import { useSelector } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { compose } from 'redux';
 
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
-import { Box, Stack } from '@mui/system';
+import Box from '@mui/system/Box';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import { Alert, AlertTitle } from '@mui/material';
 import makeSelectMinimalAccess from './selectors';
 import reducer from './reducer';
 import saga from './saga';
-import messages from './messages';
 
 const mapStateToProps = createStructuredSelector({
   minimalAccess: makeSelectMinimalAccess(),

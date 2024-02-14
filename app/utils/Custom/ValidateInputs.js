@@ -452,7 +452,7 @@ export const ValidateDeciderComment = (
     setModalBody(
       'You must provide a comment on why you are returning the request!',
     );
-    setModalSevirity('error');
+    setModalSevirity('danger');
     setModalVisibility(true);
     isAllGood = false;
   }
@@ -462,7 +462,7 @@ export const ValidateDeciderComment = (
     setModalBody(
       'Comment is too long! Maximum characters are 255 (~35 to 50 words)',
     );
-    setModalSevirity('error');
+    setModalSevirity('danger');
     setModalVisibility(true);
     isAllGood = false;
   }
