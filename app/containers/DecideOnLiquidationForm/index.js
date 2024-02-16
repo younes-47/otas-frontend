@@ -33,13 +33,15 @@ import { useInjectReducer } from 'utils/injectReducer';
 import DisplayUserinfo from 'components/DisplayUserinfo';
 import { cleanupDecideOnLiquidationParentPageStoreAction } from 'pages/DecideOnLiquidation/actions';
 import { setLiquidationStatusAction } from 'containers/DecideOnLiquidationTable/actions';
-import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
+import {
+  makeSelectIsSideBarVisible,
+  makeSelectDeciderLevels,
+} from 'containers/SideBar/selectors';
 import { makeSelectLiquidationIdentity } from 'pages/DecideOnLiquidation/selectors';
 import { NumericFormat } from 'react-number-format';
 import { List, ListItem, ListItemDecorator, Radio, RadioGroup } from '@mui/joy';
 import ExpensesTable from 'components/ExpensesTable';
 import TripsTable from 'components/TripsTable';
-import { makeSelectDeciderLevels } from 'pages/DecideOnRequests/selectors';
 import { ValidateDeciderComment } from 'utils/Custom/ValidateInputs';
 import {
   makeSelectLiquidationDetails,

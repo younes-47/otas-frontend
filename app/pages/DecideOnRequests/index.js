@@ -5,7 +5,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import Typography from '@mui/joy/Typography';
@@ -14,7 +14,11 @@ import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import Box from '@mui/system/Box';
 import Stack from '@mui/system/Stack';
-import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
+import {
+  makeSelectDeciderLevels,
+  makeSelectErrorLoadingDeciderLevels,
+  makeSelectIsSideBarVisible,
+} from 'containers/SideBar/selectors';
 import Alert from '@mui/material/Alert';
 import Grow from '@mui/material/Grow';
 import Card from '@mui/joy/Card';
@@ -25,15 +29,9 @@ import { PieChart } from '@mui/x-charts/PieChart';
 import CountUp from 'react-countup';
 import reducer from './reducer';
 import saga from './saga';
+import { cleanupStoreAction, loadDeciderStatsAction } from './actions';
 import {
-  cleanupStoreAction,
-  loadDeciderLevelsAction,
-  loadDeciderStatsAction,
-} from './actions';
-import {
-  makeSelectDeciderLevels,
   makeSelectDeciderStats,
-  makeSelectErrorLoadingDeciderLevels,
   makeSelectErrorLoadingDeciderStats,
 } from './selectors';
 
@@ -58,12 +56,6 @@ export function DecideOnRequests() {
   } = useSelector(mapStateToProps);
 
   const [levelsString, setLevelsString] = useState('');
-
-  useEffect(() => {
-    if (errorLoadingDeciderLevels === null) {
-      dispatch(loadDeciderLevelsAction());
-    }
-  }, [errorLoadingDeciderLevels]);
 
   useEffect(() => {
     if (errorLoadingDeciderStats === null) {

@@ -12,18 +12,6 @@ const selectDecideOnRequestsDomain = (state) =>
  * Other specific selectors
  */
 
-const makeSelectDeciderLevels = () =>
-  createSelector(
-    selectDecideOnRequestsDomain,
-    (substate) => substate.deciderLevels,
-  );
-
-const makeSelectErrorLoadingDeciderLevels = () =>
-  createSelector(
-    selectDecideOnRequestsDomain,
-    (substate) => substate.errorLoadingDeciderLevels,
-  );
-
 const makeSelectErrorLoadingDeciderStats = () =>
   createSelector(
     selectDecideOnRequestsDomain,
@@ -47,6 +35,4 @@ export {
   makeSelectDeciderStats,
   makeSelectErrorLoadingDeciderStats,
   selectDecideOnRequestsDomain,
-  makeSelectDeciderLevels,
-  makeSelectErrorLoadingDeciderLevels,
 };

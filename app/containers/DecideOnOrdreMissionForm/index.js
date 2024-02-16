@@ -29,14 +29,16 @@ import TextField from '@mui/material/TextField';
 import Timeline from '@mui/lab/Timeline';
 import CustomizedTimeLine from 'components/CustomizedTimeLine';
 import DisplayUserinfo from 'components/DisplayUserinfo';
-import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
+import {
+  makeSelectIsSideBarVisible,
+  makeSelectDeciderLevels,
+} from 'containers/SideBar/selectors';
 import { cleanupParentDecideOnOrdreMissionPageAction } from 'pages/DecideOnOrdreMission/actions';
 import { DateTimeFormater } from 'utils/Custom/stringManipulation';
 import { setOrdreMissionStatusAction } from 'containers/DecideOnOrdreMissionTable/actions';
 import { NumericFormat } from 'react-number-format';
 import TripsTable from 'components/TripsTable';
 import ExpensesTable from 'components/ExpensesTable';
-import { makeSelectDeciderLevels } from 'pages/DecideOnRequests/selectors';
 import { ValidateDeciderComment } from 'utils/Custom/ValidateInputs';
 import {
   makeSelectErrorDecidingOnOrdreMission,
@@ -534,15 +536,16 @@ export function DecideOnOrdreMissionForm({ state }) {
               Sign and Approve
             </Button>
           )}
-          {modalHeader === 'Approve the request?' && (
-            <Button
-              color="success"
-              onClick={handleOnApproveAllConfirmationButtonClick}
-              variant="contained"
-            >
-              Sign and Approve related Travel Advances
-            </Button>
-          )}
+          {modalHeader === 'Approve the request?' &&
+            ordreMissionDetails.latestStatus !== "Pending HR's Approval" && (
+              <Button
+                color="success"
+                onClick={handleOnApproveAllConfirmationButtonClick}
+                variant="contained"
+              >
+                Sign and Approve related Travel Advances
+              </Button>
+            )}
           {modalHeader === 'Reject the request?' && (
             <Button
               color="error"

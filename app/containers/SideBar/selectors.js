@@ -22,9 +22,20 @@ const makeSelectSelectedMenu = () =>
 const makeSelectIsSideBarVisible = () =>
   createSelector(selectSideBarDomain, (substate) => substate.isSideBarVisible);
 
+const makeSelectDeciderLevels = () =>
+  createSelector(selectSideBarDomain, (substate) => substate.deciderLevels);
+
+const makeSelectErrorLoadingDeciderLevels = () =>
+  createSelector(
+    selectSideBarDomain,
+    (substate) => substate.errorLoadingDeciderLevels,
+  );
+
 export default makeSelectSideBar;
 export {
   selectSideBarDomain,
   makeSelectSelectedMenu,
   makeSelectIsSideBarVisible,
+  makeSelectDeciderLevels,
+  makeSelectErrorLoadingDeciderLevels,
 };

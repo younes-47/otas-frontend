@@ -4,21 +4,21 @@
  *
  */
 
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React /* , { useEffect } */ from 'react';
+import { /* useDispatch, */ useSelector } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { useInjectSaga } from 'utils/injectSaga';
+// import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
-import { DecideOnAvanceCaisseForm } from 'containers/DecideOnAvanceCaisseForm';
-import { DecideOnAvanceCaisseTable } from 'containers/DecideOnAvanceCaisseTable';
+// import { DecideOnAvanceCaisseForm } from 'containers/DecideOnAvanceCaisseForm';
+// import { DecideOnAvanceCaisseTable } from 'containers/DecideOnAvanceCaisseTable';
 import { DecideOnOrdreMissionForm } from 'containers/DecideOnOrdreMissionForm';
 import DecideOnOrdreMissionTable from 'containers/DecideOnOrdreMissionTable';
 import Unauthorized from 'pages/Unauthorized';
-import { makeSelectDeciderLevels } from 'pages/DecideOnRequests/selectors';
+import { makeSelectDeciderLevels } from 'containers/SideBar/selectors';
 import { makeSelectChangePageContent } from './selectors';
 import reducer from './reducer';
-import saga from './saga';
-import { cleanupParentDecideOnOrdreMissionPageAction } from './actions';
+// import saga from './saga';
+// import { cleanupParentDecideOnOrdreMissionPageAction } from './actions';
 
 const mapStateToProps = createStructuredSelector({
   pageContent: makeSelectChangePageContent(),
@@ -28,7 +28,7 @@ export function DecideOnOrdreMission() {
   useInjectReducer({ key: 'decideOnOrdreMission', reducer });
   // useInjectSaga({ key: 'decideOnOrdreMission', saga });
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const { pageContent, deciderLevels } = useSelector(mapStateToProps);
 
   // useEffect(

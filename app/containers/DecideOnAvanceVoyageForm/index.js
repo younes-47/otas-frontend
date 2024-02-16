@@ -40,7 +40,6 @@ import Timeline from '@mui/lab/Timeline';
 import { PatternFormat, NumericFormat } from 'react-number-format';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
-import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import { makeSelectAvanceVoyageIdentity } from 'pages/DecideOnAvanceVoyage/selectors';
 import { cleanupParentDecideOnAvanceVoyageStoreAction } from 'pages/DecideOnAvanceVoyage/actions';
 import DisplayUserinfo from 'components/DisplayUserinfo';
@@ -51,7 +50,10 @@ import {
   setOrdreMissionIdentityAction,
 } from 'pages/DecideOnOrdreMission/actions';
 import { setAvanceVoyageStatusAction } from 'containers/DecideOnAvanceVoyageTable/actions';
-import { makeSelectDeciderLevels } from 'pages/DecideOnRequests/selectors';
+import {
+  makeSelectIsSideBarVisible,
+  makeSelectDeciderLevels,
+} from 'containers/SideBar/selectors';
 import TripsTable from 'components/TripsTable';
 import ExpensesTable from 'components/ExpensesTable';
 import { ValidateDeciderComment } from 'utils/Custom/ValidateInputs';

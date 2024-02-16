@@ -36,12 +36,14 @@ import { useInjectReducer } from 'utils/injectReducer';
 import DisplayUserinfo from 'components/DisplayUserinfo';
 import { cleanupParentDecideOnDepenseCaisseStoreAction } from 'pages/DecideOnDepenseCaisse/actions';
 import { setDepenseCaisseStatusAction } from 'containers/DecideOnDepenseCaisseTable/actions';
-import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
+import {
+  makeSelectIsSideBarVisible,
+  makeSelectDeciderLevels,
+} from 'containers/SideBar/selectors';
 import { makeSelectDepenseCaisseIdentity } from 'pages/DecideOnDepenseCaisse/selectors';
 import { NumericFormat } from 'react-number-format';
 import { List, ListItem, ListItemDecorator, Radio, RadioGroup } from '@mui/joy';
 import ExpensesTable from 'components/ExpensesTable';
-import { makeSelectDeciderLevels } from 'pages/DecideOnRequests/selectors';
 import { ValidateDeciderComment } from 'utils/Custom/ValidateInputs';
 import {
   makeSelectDepenseCaisseDetails,

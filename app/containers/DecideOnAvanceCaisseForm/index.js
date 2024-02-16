@@ -38,7 +38,10 @@ import TextField from '@mui/material/TextField';
 import Timeline from '@mui/lab/Timeline';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
-import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
+import {
+  makeSelectIsSideBarVisible,
+  makeSelectDeciderLevels,
+} from 'containers/SideBar/selectors';
 import { makeSelectAvanceCaisseIdentity } from 'pages/DecideOnAvanceCaisse/selectors';
 import { setAvanceCaisseStatusAction } from 'containers/DecideOnAvanceCaisseTable/actions';
 import {
@@ -50,7 +53,6 @@ import DisplayUserinfo from 'components/DisplayUserinfo';
 import { NumericFormat, PatternFormat } from 'react-number-format';
 
 import ExpensesTable from 'components/ExpensesTable';
-import { makeSelectDeciderLevels } from 'pages/DecideOnRequests/selectors';
 import { ValidateDeciderComment } from 'utils/Custom/ValidateInputs';
 import {
   makeSelectAvanceCaisseDetails,

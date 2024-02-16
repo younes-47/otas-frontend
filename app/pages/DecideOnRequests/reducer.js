@@ -6,9 +6,6 @@
 import produce from 'immer';
 import {
   DEFAULT_ACTION,
-  LOAD_DECIDER_LEVELS,
-  LOAD_DECIDER_LEVELS_ERROR,
-  LOAD_DECIDER_LEVELS_SUCCESS,
   LOAD_DECIDER_STATS,
   LOAD_DECIDER_STATS_ERROR,
   LOAD_DECIDER_STATS_SUCCESS,
@@ -16,9 +13,6 @@ import {
 } from './constants';
 
 export const initialState = {
-  loadingDeciderLevels: false,
-  errorLoadingDeciderLevels: null,
-  deciderLevels: null,
   loadingDeciderStats: false,
   errorLoadingDeciderStats: null,
   deciderStats: null,
@@ -29,20 +23,6 @@ const decideOnRequestsReducer = (state = initialState, action) =>
   produce(state, (draft) => {
     switch (action.type) {
       case DEFAULT_ACTION:
-        break;
-      case LOAD_DECIDER_LEVELS:
-        draft.loadingDeciderLevels = true;
-        draft.errorLoadingDeciderLevels = null;
-        break;
-      case LOAD_DECIDER_LEVELS_SUCCESS:
-        draft.loadingDeciderLevels = false;
-        draft.errorLoadingDeciderLevels = false;
-        draft.deciderLevels = action.data;
-        break;
-      case LOAD_DECIDER_LEVELS_ERROR:
-        draft.loadingDeciderLevels = false;
-        draft.errorLoadingDeciderLevels = true;
-        // draft.errorUserInfo = action.error;
         break;
       case LOAD_DECIDER_STATS:
         draft.loadingDeciderStats = true;

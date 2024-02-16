@@ -25,8 +25,9 @@ import reducer from './reducer';
 import {
   makeSelectIsSideBarVisible,
   makeSelectSelectedMenu,
+  makeSelectErrorLoadingDeciderLevels,
 } from './selectors';
-import { changeSelectedMenuAction } from './actions';
+import { changeSelectedMenuAction, loadDeciderLevelsAction } from './actions';
 // eslint-disable-next-line import/no-unresolved, import/no-absolute-path
 import logo from '/app/images/logo-512x512.png';
 import messages from './messages';
@@ -34,6 +35,7 @@ import messages from './messages';
 const mapStateToProps = createStructuredSelector({
   selectedMenu: makeSelectSelectedMenu(),
   isSideBarVisible: makeSelectIsSideBarVisible(),
+  errorLoadingDeciderLevels: makeSelectErrorLoadingDeciderLevels(),
 });
 
 export function SideBar() {
@@ -43,8 +45,19 @@ export function SideBar() {
   const history = useHistory();
   const location = useLocation();
   const dispatch = useDispatch();
-  const { selectedMenu, isSideBarVisible } = useSelector(mapStateToProps);
+  const { selectedMenu, isSideBarVisible, errorLoadingDeciderLevels } =
+    useSelector(mapStateToProps);
 
+  // Load Decider Levels
+  useEffect(() => {
+    if (
+      errorLoadingDeciderLevels === null &&
+      localStorage.getItem('role') === 'decider'
+    ) {
+      dispatch(loadDeciderLevelsAction());
+    }
+  }, [errorLoadingDeciderLevels]);
+  // Load Decider Levels
   function getSelectedMenu(url) {
     const segments = url.split('/');
     if (segments.length === 2) {
