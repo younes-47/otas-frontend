@@ -31,10 +31,7 @@ import CustomizedTimeLine from 'components/CustomizedTimeLine';
 import DisplayUserinfo from 'components/DisplayUserinfo';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import { cleanupParentDecideOnOrdreMissionPageAction } from 'pages/DecideOnOrdreMission/actions';
-import {
-  DateTimeFormater,
-  FormatNumber,
-} from 'utils/Custom/stringManipulation';
+import { DateTimeFormater } from 'utils/Custom/stringManipulation';
 import { setOrdreMissionStatusAction } from 'containers/DecideOnOrdreMissionTable/actions';
 import { NumericFormat } from 'react-number-format';
 import TripsTable from 'components/TripsTable';
@@ -205,6 +202,9 @@ export function DecideOnOrdreMissionForm({ state }) {
 
   const handleOnApproveRequestConfirmationButtonClick = () => {
     setDecisionString('approve');
+  };
+  const handleOnApproveAllConfirmationButtonClick = () => {
+    setDecisionString('approveAll');
   };
   const handleOnRejectRequestConfirmationButtonClick = () => {
     setDecisionString('reject');
@@ -531,6 +531,15 @@ export function DecideOnOrdreMissionForm({ state }) {
               variant="contained"
             >
               Sign and Approve
+            </Button>
+          )}
+          {modalHeader === 'Approve the request?' && (
+            <Button
+              color="success"
+              onClick={handleOnApproveAllConfirmationButtonClick}
+              variant="contained"
+            >
+              Sign and Approve related Travel Advances
             </Button>
           )}
           {modalHeader === 'Reject the request?' && (

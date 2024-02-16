@@ -34,8 +34,8 @@ function DropDownMenu({
           onChange={onSelectedMenuItemChange}
         >
           {Object.values(dataArray).map((value) => (
-            <StyledMenuItem key={value} value={value}>
-              {value}
+            <StyledMenuItem key={value} value={value.id}>
+              {value.label}
             </StyledMenuItem>
           ))}
         </StyledSelect>
