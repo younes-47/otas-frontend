@@ -24,6 +24,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Divider from '@mui/material/Divider';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import WarningIcon from '@mui/icons-material/Warning';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import Radio from '@mui/material/Radio';
@@ -47,7 +48,6 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import CustomizedTimeLine from 'components/CustomizedTimeLine';
 import ActualRequesterInputs from 'components/ActualRequesterInputs';
 import { ValidateInputs } from 'utils/Custom/ValidateInputs';
-import LinearProgress from '@mui/material/LinearProgress';
 import Card from '@mui/joy/Card';
 import CardContent from '@mui/joy/CardContent';
 import Snackbar from '@mui/joy/Snackbar';
@@ -143,13 +143,6 @@ export function AvanceCaisseForm({ state }) {
 
   const readOnly = state === 'VIEW' || state === 'CONFIRM';
 
-  // Scroll to top
-  useEffect(() => {
-    if (buttonClicked === 'CONFIRM') {
-      document.getElementById('main-box').scrollTop = 0;
-    }
-  }, [buttonClicked]);
-
   // Load the data => object details and static data
   useEffect(() => {
     if (state !== 'ADD') {
@@ -214,10 +207,7 @@ export function AvanceCaisseForm({ state }) {
       buttonClicked === 'CONFIRM' &&
       errorloadingAvanceCaisseDetails === false
     ) {
-      dispatch(cleanupAvanceCaisseParentPageStoreAction());
-      dispatch(changePageContentAction('CONFIRM'));
       setFullPageModalVisibility(true);
-      setSavedSnackbarVisibility(true);
     }
   }, [errorloadingAvanceCaisseDetails]);
 
@@ -386,9 +376,9 @@ export function AvanceCaisseForm({ state }) {
   const handleOnSubmitButtonClick = () => {
     setModalHeader('Submit');
     setModalBody(
-      'By submitting this request, you acknowledge that all provided information is correct.',
+      "Please Review your information before confirming your changes. You won't be able to modify your request afterwards!",
     );
-    setModalSevirity('info');
+    setModalSevirity('warning');
     setModalVisibility(true);
   };
 
@@ -482,9 +472,6 @@ export function AvanceCaisseForm({ state }) {
             <Typography variant="h4" marginTop={3} gutterBottom>
               Please Review your information before submitting
             </Typography>
-            <Box sx={{ width: '100%' }}>
-              <LinearProgress color="info" value={40} />
-            </Box>
           </Box>
         )}
       </Box>
@@ -535,22 +522,27 @@ export function AvanceCaisseForm({ state }) {
             >
               Status History
             </Button>
-            <Button
-              variant="contained"
-              color="secondary"
-              size="medium"
-              startIcon={
-                loadingButton ? (
-                  <CircularProgress size={20} color="inherit" />
-                ) : (
-                  <DescriptionIcon />
-                )
-              }
-              onClick={() => handleOnDownloadDocumentClick()}
-              disabled={loadingButton}
-            >
-              {!loadingButton ? <>Download Document</> : <>Generating...</>}
-            </Button>
+            {avanceCaisseDetails?.latestStatus !== 'Returned' &&
+              avanceCaisseDetails?.latestStatus !== 'Rejected' &&
+              avanceCaisseDetails?.latestStatus !==
+                'Returned for missing evidences' && (
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  size="medium"
+                  startIcon={
+                    loadingButton ? (
+                      <CircularProgress size={20} color="inherit" />
+                    ) : (
+                      <DescriptionIcon />
+                    )
+                  }
+                  onClick={() => handleOnDownloadDocumentClick()}
+                  disabled={loadingButton}
+                >
+                  {!loadingButton ? <>Download Document</> : <>Generating...</>}
+                </Button>
+              )}
           </Box>
         </>
       )}
@@ -566,6 +558,25 @@ export function AvanceCaisseForm({ state }) {
             <CardContent sx={{ textAlign: 'center', marginBottom: '1em' }}>
               This request has been returned. <br /> Please refer to the comment
               below and apply the necessary changes.
+            </CardContent>
+            <Card variant="outlined">
+              {avanceCaisseDetails?.deciderComment}
+            </Card>
+          </Card>
+        </Box>
+      )}
+
+      {state === 'VIEW' && avanceCaisseDetails?.latestStatus === 'Rejected' && (
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          marginBottom={3}
+        >
+          <Card color="danger" variant="soft" icon={false}>
+            <CardContent sx={{ textAlign: 'center', marginBottom: '1em' }}>
+              This request has been rejected. <br /> Please refer to the comment
+              know to know why.
             </CardContent>
             <Card variant="outlined">
               {avanceCaisseDetails?.deciderComment}
@@ -918,7 +929,7 @@ export function AvanceCaisseForm({ state }) {
         </DialogActions>
       </Dialog>
 
-      {/* Confirmation Modal */}
+      {/* Confirmation full page Modal */}
       <Dialog
         fullScreen
         open={fullPageModalVisibility}
@@ -938,21 +949,37 @@ export function AvanceCaisseForm({ state }) {
           sx={{ minHeight: '100vh' }}
         >
           <Grid item xs={1.5} justifyContent="center">
-            <Box>
-              <Typography variant="h4">
-                Please Review your information before submitting
-              </Typography>
-              <Box sx={{ width: '100%' }}>
-                <LinearProgress color="info" value={40} />
+            <Alert
+              sx={{ alignItems: 'flex-start' }}
+              variant="outlined"
+              severity="warning"
+              icon={false}
+            >
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                gap={3}
+              >
+                <WarningIcon color="warning" fontSize="large" />
+                <Typography variant="h6" color="warning">
+                  By submitting this request, you acknowledge that all provided
+                  information is correct.
+                </Typography>
               </Box>
-            </Box>
+            </Alert>
           </Grid>
           <Grid item justifyContent="center">
             <Button
               variant="contained"
-              color="info"
-              // endIcon={<ThumbUpOffAltIcon />}
-              onClick={() => setFullPageModalVisibility(false)}
+              color="warning"
+              onClick={() => {
+                document.getElementById('main-box').scrollTop = 0;
+                dispatch(cleanupAvanceCaisseParentPageStoreAction());
+                dispatch(changePageContentAction('CONFIRM'));
+                setFullPageModalVisibility(false);
+                setSavedSnackbarVisibility(true);
+              }}
               aria-label="close"
               size="large"
             >

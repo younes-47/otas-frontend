@@ -158,7 +158,7 @@ export function DecideOnAvanceCaisseForm({ state }) {
   // Decide
   useEffect(() => {
     if (decisionString !== null) {
-      if (decisionString === 'return') {
+      if (decisionString === 'return' || decisionString === 'reject') {
         const result = ValidateDeciderComment(
           setModalVisibility,
           setModalBody,
@@ -530,7 +530,8 @@ export function DecideOnAvanceCaisseForm({ state }) {
               <Alert color={modalSevirity} size="lg" variant="soft">
                 {modalBody}
               </Alert>
-              {modalHeader === 'Return the request?' && (
+              {(modalHeader === 'Return the request?' ||
+                modalHeader === 'Reject the request?') && (
                 <>
                   <Typography
                     level="title-md"
@@ -538,8 +539,11 @@ export function DecideOnAvanceCaisseForm({ state }) {
                     marginTop={3}
                     marginBottom={2}
                   >
-                    *Please provide a comment on why you are returning this
-                    request (required)
+                    *Please provide a comment on why you are{' '}
+                    {modalHeader === 'Reject the request?'
+                      ? 'rejecting'
+                      : 'returning'}{' '}
+                    this request (required)
                   </Typography>
                   <TextField
                     sx={{ width: '100%' }}

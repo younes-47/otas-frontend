@@ -20,40 +20,36 @@ import FilePresentIcon from '@mui/icons-material/FilePresent';
 import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';
 import HistoryIcon from '@mui/icons-material/History';
-import {
-  Box,
-  Card,
-  CardContent,
-  List,
-  ListDivider,
-  ListItem,
-  Option,
-  Radio,
-  RadioGroup,
-  Select,
-  Typography,
-} from '@mui/joy';
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Divider,
-  Grid,
-  LinearProgress,
-  Stack,
-} from '@mui/material';
+import Box from '@mui/joy/Box';
+import Card from '@mui/joy/Card';
+import CardContent from '@mui/joy/CardContent';
+import List from '@mui/joy/List';
+import ListDivider from '@mui/joy/ListDivider';
+import ListItem from '@mui/joy/ListItem';
+import Option from '@mui/joy/Option';
+import Radio from '@mui/joy/Radio';
+import RadioGroup from '@mui/joy/RadioGroup';
+import Select from '@mui/joy/Select';
+import Typography from '@mui/joy/Typography';
+import Button from '@mui/material/Button';
+import DescriptionIcon from '@mui/icons-material/Description';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Divider from '@mui/material/Divider';
+import Grid from '@mui/material/Grid';
+import Stack from '@mui/material/Stack';
 import Snackbar from '@mui/joy/Snackbar';
 import CloseIcon from '@mui/icons-material/Close';
 import DisplayUserinfo from 'components/DisplayUserinfo';
 import Expenses from 'containers/AvanceCaisseForm/Expenses';
-import { LocalizationProvider } from '@mui/x-date-pickers';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { NumericFormat } from 'react-number-format';
 import TripsTable from 'components/TripsTable';
 import ExpensesTable from 'components/ExpensesTable';
-import { Timeline } from '@mui/lab';
+import Timeline from '@mui/lab/Timeline';
 import CustomizedTimeLine from 'components/CustomizedTimeLine';
 import {
   changeLiquidationParentPageContentAction,
@@ -61,15 +57,18 @@ import {
 } from 'pages/Liquidation/actions';
 import { ValidateLiquidationInputs } from 'utils/Custom/ValidateInputs';
 import { setLiquidationStatusAction } from 'containers/LiquidationTable/actions';
+import WarningIcon from '@mui/icons-material/Warning';
 import reducer from './reducer';
 import saga from './saga';
 import {
   makeSelectAddLiquidation,
+  makeSelectErrorDownloadingLiquidationDocumentFile,
   makeSelectErrorLoadingLiquidationDetails,
   makeSelectErrorLoadingRequestsToLiquidate,
   makeSelectErrorSubmittingLiquidation,
   makeSelectErrorUpdatingLiquidation,
   makeSelectLiquidationDetails,
+  makeSelectLiquidationDocumentFile,
   makeSelectRequestToLiquidateDetails,
   makeSelectRequestTypeToLiquidate,
   makeSelectRequestsToLiquidate,
@@ -78,6 +77,7 @@ import {
   AddLiquidationAction,
   UpdateLiquidationAction,
   cleanupLiquidationFormPageStoreAction,
+  downloadLiquidationDocumentFileAction,
   loadLiquidationDetailsAction,
   loadRequestToLiquidateDetailsAction,
   loadRequestsToLiquidateAction,
@@ -99,6 +99,9 @@ const mapStateToProps = createStructuredSelector({
   errorLoadingRequestsToLiquidate: makeSelectErrorLoadingRequestsToLiquidate(),
   requestsToLiquidate: makeSelectRequestsToLiquidate(),
   requestToLiquidateDetails: makeSelectRequestToLiquidateDetails(),
+  errorDownloadingLiquidationDocumentFile:
+    makeSelectErrorDownloadingLiquidationDocumentFile(),
+  liquidationDocumentFile: makeSelectLiquidationDocumentFile(),
 });
 
 export function LiquidationForm({ state }) {
@@ -116,6 +119,8 @@ export function LiquidationForm({ state }) {
     requestTypeToLiquidate,
     requestsToLiquidate,
     requestToLiquidateDetails,
+    errorDownloadingLiquidationDocumentFile,
+    liquidationDocumentFile,
   } = useSelector(mapStateToProps);
   const avanceVoyageLabel = (
     <Typography color="primary" level="title-lg">
@@ -128,7 +133,8 @@ export function LiquidationForm({ state }) {
     </Typography>
   );
 
-  const [selection, setSelection] = useState(null);
+  const [isRequestToLiquidateSelected, setRequestToLiquidateSelection] =
+    useState(0);
   const [counter, setCounter] = useState(0); // used for uniqueness of items (trips/expenses)
   const [newExpenses, setNewExpenses] = useState([]);
   const [newTrips, setNewTrips] = useState([]);
@@ -172,13 +178,6 @@ export function LiquidationForm({ state }) {
     newTrips,
     action: state === 'EDIT' ? 'save' : 'submit',
   };
-
-  // Scroll to top
-  useEffect(() => {
-    if (buttonClicked === 'CONFIRM') {
-      document.getElementById('main-box').scrollTop = 0;
-    }
-  }, [buttonClicked]);
 
   // Load liquidation detils in a case oher than ADD
   useEffect(() => {
@@ -272,7 +271,7 @@ export function LiquidationForm({ state }) {
     setExpensesToLiquidate([]);
     setNewExpenses([]);
     setNewTrips([]);
-  }, [selection]);
+  }, [requestTypeToLiquidate, isRequestToLiquidateSelected]);
 
   // update actual total and result
   useEffect(() => {
@@ -347,6 +346,33 @@ export function LiquidationForm({ state }) {
       setSavedSnackbarVisibility(true);
     }
   }, [errorLoadingLiquidationDetails]);
+
+  // Download Document
+  useEffect(() => {
+    if (errorDownloadingLiquidationDocumentFile === false) {
+      const binaryString = atob(liquidationDocumentFile.fileContents);
+      const bytes = new Uint8Array(binaryString.length);
+
+      for (let i = 0; i < binaryString.length; i += 1) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      const blob = new Blob([bytes.buffer], {
+        type: 'application/pdf',
+      });
+
+      const blobUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = liquidationDocumentFile.fileDownloadName;
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setLoadingButton(false);
+    }
+  }, [errorDownloadingLiquidationDocumentFile]);
 
   // Cleanup store during unmount
   useEffect(
@@ -602,9 +628,9 @@ export function LiquidationForm({ state }) {
   const handleOnSubmitButtonClick = () => {
     setModalHeader('Submit');
     setModalBody(
-      'By submitting this request, you acknowledge that all provided information is correct.',
+      "Please Review your information before confirming your changes. You won't be able to modify your request afterwards!",
     );
-    setModalSevirity('info');
+    setModalSevirity('warning');
     setModalVisibility(true);
   };
 
@@ -661,6 +687,11 @@ export function LiquidationForm({ state }) {
     document.body.removeChild(link);
   };
 
+  const handleOnDownloadDocumentClick = () => {
+    setLoadingButton(true);
+    dispatch(downloadLiquidationDocumentFileAction(liquidationDetails.id));
+  };
+
   return (
     <Box
       id="main-box"
@@ -702,11 +733,11 @@ export function LiquidationForm({ state }) {
               <RadioGroup
                 overlay
                 value={requestTypeToLiquidate}
-                onChange={(event) =>
+                onChange={(event) => {
                   dispatch(
                     selectRequestTypeToLiquidateAction(event.target.value),
-                  )
-                }
+                  );
+                }}
               >
                 <List
                   component="div"
@@ -715,6 +746,9 @@ export function LiquidationForm({ state }) {
                   sx={{
                     borderRadius: 'sm',
                     boxShadow: 'sm',
+                  }}
+                  onChange={() => {
+                    setRequestToLiquidateSelection(0);
                   }}
                 >
                   <React.Fragment key={0}>
@@ -758,19 +792,28 @@ export function LiquidationForm({ state }) {
                     },
                   }}
                   size="lg"
-                  onChange={(e) => setSelection(e?.target?.value)}
                 >
                   {requestsToLiquidate?.map((req) => (
                     <Option
                       key={req.id}
                       value={req.id}
                       onClick={() => {
-                        dispatch(
-                          loadRequestToLiquidateDetailsAction(
-                            req.id,
-                            requestTypeToLiquidate,
-                          ),
-                        );
+                        if (
+                          requestToLiquidateDetails == null ||
+                          requestToLiquidateDetails?.id !== req.id
+                        ) {
+                          setRequestToLiquidateSelection(() =>
+                            setRequestToLiquidateSelection(
+                              (prevValue) => prevValue + 1,
+                            ),
+                          );
+                          dispatch(
+                            loadRequestToLiquidateDetailsAction(
+                              req.id,
+                              requestTypeToLiquidate,
+                            ),
+                          );
+                        }
                       }}
                     >
                       #{req.id}&nbsp;-&nbsp;{req.description}
@@ -782,10 +825,9 @@ export function LiquidationForm({ state }) {
           </>
         )}
 
-        {/* Load details request details to liquidate */}
+        {/* Load request details to liquidate */}
         {((requestToLiquidateDetails !== null &&
-          selection !== undefined &&
-          selection !== null) ||
+          isRequestToLiquidateSelected > 0) ||
           state !== 'ADD') && (
           <Box marginBottom={20} marginTop={3}>
             {/* DIVIDER */}
@@ -812,9 +854,6 @@ export function LiquidationForm({ state }) {
                   <Typography level="h1" marginTop={3} gutterBottom>
                     Please Review your information before submitting
                   </Typography>
-                  <Box sx={{ width: '100%' }}>
-                    <LinearProgress color="info" value={40} />
-                  </Box>
                 </Box>
               </Box>
             )}
@@ -890,6 +929,7 @@ export function LiquidationForm({ state }) {
                   justifyContent="center"
                   textAlign="center"
                   marginBottom={2}
+                  gap={2}
                 >
                   <Button
                     variant="contained"
@@ -902,6 +942,31 @@ export function LiquidationForm({ state }) {
                   >
                     Status History
                   </Button>
+                  {liquidationDetails?.latestStatus !== 'Returned' &&
+                    liquidationDetails?.latestStatus !== 'Rejected' &&
+                    liquidationDetails?.latestStatus !==
+                      'Returned for missing evidences' && (
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        size="medium"
+                        startIcon={
+                          loadingButton ? (
+                            <CircularProgress size={20} color="inherit" />
+                          ) : (
+                            <DescriptionIcon />
+                          )
+                        }
+                        onClick={() => handleOnDownloadDocumentClick()}
+                        disabled={loadingButton}
+                      >
+                        {!loadingButton ? (
+                          <>Download Document</>
+                        ) : (
+                          <>Generating...</>
+                        )}
+                      </Button>
+                    )}
                 </Box>
               </>
             )}
@@ -1001,25 +1066,29 @@ export function LiquidationForm({ state }) {
 
             {/* Expenses */}
             <Typography level="title-lg" textAlign="center" marginBottom={2}>
-              Expenses
+              {expensesToLiquidate.length > 0
+                ? 'Expenses'
+                : 'No Expenses to Liquidate'}
             </Typography>
             <Box display="flex" justifyContent="center" marginBottom={3}>
-              {requestToLiquidateDetails !== null && (
-                <ExpensesTable
-                  expensesData={requestToLiquidateDetails?.expenses}
-                  updateExpenseToLiquidate={updateExpenseToLiquidate}
-                  getActualFee={getExpenseActualFee}
-                  isExpenseModifiable={!readOnly}
-                />
-              )}
-              {liquidationDetails !== null && (
-                <ExpensesTable
-                  expensesData={liquidationDetails?.requestDetails?.expenses}
-                  updateExpenseToLiquidate={updateExpenseToLiquidate}
-                  getActualFee={getExpenseActualFee}
-                  isExpenseModifiable={!readOnly}
-                />
-              )}
+              {requestToLiquidateDetails !== null &&
+                expensesToLiquidate.length > 0 && (
+                  <ExpensesTable
+                    expensesData={requestToLiquidateDetails?.expenses}
+                    updateExpenseToLiquidate={updateExpenseToLiquidate}
+                    getActualFee={getExpenseActualFee}
+                    isExpenseModifiable={!readOnly}
+                  />
+                )}
+              {liquidationDetails !== null &&
+                liquidationDetails?.requestDetails?.expenses.length > 0 && (
+                  <ExpensesTable
+                    expensesData={liquidationDetails?.requestDetails?.expenses}
+                    updateExpenseToLiquidate={updateExpenseToLiquidate}
+                    getActualFee={getExpenseActualFee}
+                    isExpenseModifiable={!readOnly}
+                  />
+                )}
             </Box>
 
             {(state === 'ADD' || state === 'EDIT') && (
@@ -1330,18 +1399,59 @@ export function LiquidationForm({ state }) {
                     textColor="inherit"
                     sx={{ textTransform: 'capitalize' }}
                   >
-                    {result < 0 &&
-                      `You must hand over an amount of ${
-                        requestToLiquidateDetails !== null
+                    {result < 0 && (
+                      <>
+                        You must hand over an amount of{' '}
+                        {requestToLiquidateDetails !== null
                           ? requestToLiquidateDetails?.currency
-                          : liquidationDetails?.requestDetails?.currency
-                      } ${Math.abs(result)}`}
-                    {result >= 0 &&
-                      `An amount of ${
-                        requestToLiquidateDetails !== null
+                          : liquidationDetails?.requestDetails?.currency}{' '}
+                        <NumericFormat
+                          displayType="text"
+                          value={Math.abs(result)}
+                          fixedDecimalScale
+                          decimalScale={2}
+                          defaultValue="0"
+                          allowNegative={false}
+                          thousandSeparator={
+                            localStorage.getItem('preferredLanguage') === 'en'
+                              ? ','
+                              : ' '
+                          }
+                          decimalSeparator={
+                            localStorage.getItem('preferredLanguage') === 'en'
+                              ? '.'
+                              : ','
+                          }
+                        />
+                      </>
+                    )}
+                    {result >= 0 && (
+                      <>
+                        An amount of{' '}
+                        {requestToLiquidateDetails !== null
                           ? requestToLiquidateDetails?.currency
-                          : liquidationDetails?.requestDetails?.currency
-                      } ${result} must be refunded to you.`}
+                          : liquidationDetails?.requestDetails?.currency}{' '}
+                        <NumericFormat
+                          displayType="text"
+                          value={Math.abs(result)}
+                          fixedDecimalScale
+                          decimalScale={2}
+                          defaultValue="0"
+                          allowNegative={false}
+                          thousandSeparator={
+                            localStorage.getItem('preferredLanguage') === 'en'
+                              ? ','
+                              : ' '
+                          }
+                          decimalSeparator={
+                            localStorage.getItem('preferredLanguage') === 'en'
+                              ? '.'
+                              : ','
+                          }
+                        />{' '}
+                        must be refunded to you.
+                      </>
+                    )}
                   </Typography>
                 </Card>
               </Box>
@@ -1468,21 +1578,37 @@ export function LiquidationForm({ state }) {
             sx={{ minHeight: '100vh' }}
           >
             <Grid item xs={1.5} justifyContent="center">
-              <Box>
-                <Typography level="h1">
-                  Please Review your information before submitting
-                </Typography>
-                <Box sx={{ width: '100%' }}>
-                  <LinearProgress color="info" value={40} />
+              <Alert
+                sx={{ alignItems: 'flex-start' }}
+                variant="outlined"
+                severity="warning"
+                icon={false}
+              >
+                <Box
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                  gap={3}
+                >
+                  <WarningIcon color="warning" fontSize="large" />
+                  <Typography level="h4" color="warning">
+                    By submitting this request, you acknowledge that all
+                    provided information is correct.
+                  </Typography>
                 </Box>
-              </Box>
+              </Alert>
             </Grid>
             <Grid item justifyContent="center">
               <Button
                 variant="contained"
-                color="info"
-                // endIcon={<ThumbUpOffAltIcon />}
-                onClick={() => setFullPageModalVisibility(false)}
+                color="warning"
+                onClick={() => {
+                  document.getElementById('main-box').scrollTop = 0;
+                  dispatch(cleanupliquidationParentPageStoreAction());
+                  dispatch(changeLiquidationParentPageContentAction('CONFIRM'));
+                  setFullPageModalVisibility(false);
+                  setSavedSnackbarVisibility(true);
+                }}
                 aria-label="close"
                 size="large"
               >
