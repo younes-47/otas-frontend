@@ -17,9 +17,7 @@ import './loginPageRaw.css';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import { StyledBox } from 'components/GlobalComponents/StyledBox';
-import { StyledSubmitButton } from 'components/GlobalComponents/StyledSubmitButton';
-import { Box, borderRadius } from '@mui/system';
-import { Alert, Button, TextField, Typography } from '@mui/material';
+import { Alert, Button } from '@mui/material';
 import makeSelectLoginPage, {
   makeSelectToken,
   makeSelectUsername,
@@ -36,13 +34,9 @@ import {
   loginPageStoreCleanupAction,
   loginUserAction,
 } from './actions';
-import PasswordInput from './PasswordInput';
-import TextInput from './TextInput';
 // import logo from '/app/images/logo-512x512.png';
 // eslint-disable-next-line import/no-unresolved
 import otasLoginImage from '/app/images/OTAS_login_image-634×360.png';
-import userIcon from '/app/images/user-circle-svgrepo-com.png';
-import passwordIcon from '/app/images/password-svgrepo-com.png';
 
 const mapStateToProps = createStructuredSelector({
   loginPage: makeSelectLoginPage(),

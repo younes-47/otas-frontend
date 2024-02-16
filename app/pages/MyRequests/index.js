@@ -28,6 +28,7 @@ import {
   FormatNumber,
   parseDecimalFromString,
 } from 'utils/Custom/stringManipulation';
+import DropDownMenu from 'components/DropDownMenu';
 import saga from './saga';
 import reducer from './reducer';
 import {
@@ -51,6 +52,109 @@ const mapStateToProps = createStructuredSelector({
 export default function MyRequests() {
   useInjectReducer({ key: 'myRequests', reducer });
   useInjectSaga({ key: 'myRequests', saga });
+  // temporary fix
+  const [selectedRole, setSelectedRole] = React.useState('');
+  useEffect(() => {
+    UsersToggle.forEach((user, index) => {
+      if (user.username === localStorage.getItem('username')) {
+        setSelectedRole(index);
+      }
+    });
+  }, []);
+  const UsersToggle = [
+    {},
+    {
+      role: 'decider',
+      username: 'yelasraoui',
+      token:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InllbGFzcmFvdWkiLCJyb2xlIjoiZGVjaWRlciIsIm5iZiI6MTcwNjEwOTY1MiwiZXhwIjoxNzQ2MTk2MDUyLCJpYXQiOjE3MDYxMDk2NTJ9.P_OI3r4MN7PQD9__OkV0l_YJpxjjWQnq-lWjIQQieSQ',
+    },
+    {
+      role: 'decider',
+      username: 'msenhaji',
+      token:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Im1zZW5oYWppIiwicm9sZSI6ImRlY2lkZXIiLCJuYmYiOjE3MDYxMDk2NTIsImV4cCI6MTc0NjE5NjA1MiwiaWF0IjoxNzA2MTA5NjUyfQ.WxRAlJZE78ske9T6pgyukDqiQqUU-6miZHsy8HOn-28',
+    },
+    {
+      role: 'decider',
+      username: 'youhammou',
+      token:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InlvdWhhbW1vdSIsInJvbGUiOiJkZWNpZGVyIiwibmJmIjoxNzA2MTA5NjUyLCJleHAiOjE3NDYxOTYwNTIsImlhdCI6MTcwNjEwOTY1Mn0.AJRyMaSx-2la08LPvQq6Uh3SnYv4ovKB77gL99MnwbA',
+    },
+    {
+      role: 'decider',
+      username: 'blahmoudi',
+      token:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImJsYWhtb3VkaSIsInJvbGUiOiJkZWNpZGVyIiwibmJmIjoxNzA2MTA5NjUyLCJleHAiOjE3NDYxOTYwNTIsImlhdCI6MTcwNjEwOTY1Mn0.XG_6m1XB4aBjJgGi697IQ32T3bDa3RvOVRKvJLZYSP0',
+    },
+    {
+      role: 'decider',
+      username: 'blahmoudi',
+      token:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImJsYWhtb3VkaSIsInJvbGUiOiJkZWNpZGVyIiwibmJmIjoxNzA2MTA5NjUyLCJleHAiOjE3NDYxOTYwNTIsImlhdCI6MTcwNjEwOTY1Mn0.XG_6m1XB4aBjJgGi697IQ32T3bDa3RvOVRKvJLZYSP0',
+    },
+    {
+      role: 'decider',
+      username: 'houguellit',
+      token:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImhvdWd1ZWxsaXQiLCJyb2xlIjoiZGVjaWRlciIsIm5iZiI6MTcwNjEwOTY1MiwiZXhwIjoxNzQ2MTk2MDUyLCJpYXQiOjE3MDYxMDk2NTJ9.Srjuy-CJnPB7JR_6CxxhyiLuODnduJnwUD77pOpnsvA',
+    },
+    {
+      role: 'requester',
+      username: 'ykhoubaz',
+      token:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InlraG91YmF6Iiwicm9sZSI6InJlcXVlc3RlciIsIm5iZiI6MTcwNzk4MjUyMCwiZXhwIjoyNTA4MDY4OTIwLCJpYXQiOjE3MDc5ODI1MjB9.I9xBreCZAmD_AxAdCzmABUu6Yv7zQAK1cA0-jnTSfNA',
+    },
+  ];
+  const RolesList = [
+    {
+      id: 1,
+      label: 'manager',
+    },
+    {
+      id: 2,
+      label: 'HR',
+    },
+    {
+      id: 3,
+      label: 'Finance',
+    },
+    {
+      id: 4,
+      label: 'General Manager',
+    },
+    {
+      id: 5,
+      label: 'Vice President',
+    },
+    {
+      id: 6,
+      label: 'Treasury',
+    },
+    {
+      id: 7,
+      label: 'Younes Khoubaz',
+    },
+  ];
+  const onSelectedRoleChange = (evt) => {
+    setSelectedRole(evt.target.value);
+  };
+  const changeCurrentUser = () => {
+    localStorage.clear();
+    localStorage.setItem('username', UsersToggle[selectedRole].username);
+    localStorage.setItem('token', UsersToggle[selectedRole].token);
+    localStorage.setItem('role', UsersToggle[selectedRole].role);
+    window.location.reload();
+  };
+  useEffect(() => {
+    if (
+      selectedRole !== '' &&
+      localStorage.getItem('username') !== UsersToggle[selectedRole].username
+    ) {
+      changeCurrentUser();
+    }
+  }, [selectedRole]);
+  // temporary fix
   const dispatch = useDispatch();
   const {
     isSideBarVisible,
@@ -103,6 +207,12 @@ export default function MyRequests() {
         overflow: 'auto',
       }}
     >
+      <DropDownMenu
+        label="Roles"
+        dataArray={RolesList}
+        selectedMenuItem={selectedRole}
+        onSelectedMenuItemChange={onSelectedRoleChange}
+      />
       <Box display="flex" justifyContent="center" textAlign="center">
         <Stack>
           <Typography

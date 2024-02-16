@@ -137,7 +137,7 @@ export function DecideOnLiquidationForm({ state }) {
   // Decide
   useEffect(() => {
     if (decisionString !== null) {
-      if (decisionString === 'return') {
+      if (decisionString === 'return' || decisionString === 'reject') {
         const result = ValidateDeciderComment(
           setModalVisibility,
           setModalBody,
@@ -760,7 +760,8 @@ export function DecideOnLiquidationForm({ state }) {
               <Alert color={modalSevirity} size="lg" variant="soft">
                 {modalBody}
               </Alert>
-              {modalHeader === 'Return the request?' &&
+              {(modalHeader === 'Return the request?' ||
+                modalHeader === 'Reject the request?') &&
                 !deciderLevels?.includes('TR') && (
                   <>
                     <Typography

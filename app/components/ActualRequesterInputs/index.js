@@ -9,7 +9,17 @@ import PropTypes from 'prop-types';
 // import styled from 'styled-components';
 
 import { FormattedMessage } from 'react-intl';
-import { Autocomplete, Box, Paper, TextField } from '@mui/material';
+import {
+  Autocomplete,
+  Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+  TextField,
+} from '@mui/material';
+import { Typography } from '@mui/joy';
 import messages from './messages';
 
 function ActualRequesterInputs({
@@ -82,7 +92,7 @@ function ActualRequesterInputs({
             id="combo-box-demo"
             options={mappedJobTitles}
             sx={{ width: 224 }}
-            value={actualRequester.jobTitle}
+            value={actualRequester.jobTitle ? actualRequester.jobTitle : null}
             PaperComponent={CustomPaper}
             required
             onChange={(e, newValue) =>
@@ -96,7 +106,7 @@ function ActualRequesterInputs({
               <TextField
                 // eslint-disable-next-line react/jsx-props-no-spreading
                 {...params}
-                label="Job Title"
+                label="Job Title*"
                 onChange={(e) =>
                   updateActualRequesterData('jobTitle', e.target.value)
                 }
@@ -108,7 +118,9 @@ function ActualRequesterInputs({
             id="combo-box-demo"
             options={staticData.departments}
             sx={{ width: 224 }}
-            value={actualRequester.department}
+            value={
+              actualRequester.department ? actualRequester.department : null
+            }
             onChange={(e, newValue) =>
               updateActualRequesterData('department', newValue)
             }
@@ -116,25 +128,63 @@ function ActualRequesterInputs({
             required
             renderInput={(params) => (
               // eslint-disable-next-line react/jsx-props-no-spreading
-              <TextField {...params} label="Department" />
+              <TextField {...params} label="Department*" />
             )}
           />
-          <Autocomplete
+          <Box sx={{ width: 224 }}>
+            <FormControl fullWidth>
+              <InputLabel required>Manager</InputLabel>
+              <Select
+                label="Manager"
+                value={actualRequester.managerUserName}
+                onChange={(e) =>
+                  updateActualRequesterData('managerUserName', e.target.value)
+                }
+                required
+                MenuProps={{
+                  PaperProps: {
+                    style: {
+                      maxHeight: 200,
+                    },
+                  },
+                  TransitionProps: {
+                    timeout: 0,
+                  },
+                }}
+              >
+                {Object.values(staticData.managers).map((manager) => (
+                  <MenuItem key={manager.username} value={manager.username}>
+                    {manager.firstName}&nbsp;{manager.lastName}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Box>
+
+          {/* <Autocomplete
             disablePortal
             id="combo-box-demo"
-            options={staticData.managersUsernames}
+            options={staticData.managers}
             sx={{ width: 224 }}
             value={actualRequester.managerUserName}
             PaperComponent={CustomPaper}
             onChange={(e, newValue) =>
-              updateActualRequesterData('managerUserName', newValue)
+              updateActualRequesterData('managerUserName', newValue.username)
             }
+            // isOptionEqualToValue={(option, value) => option.username === value}
+            getOptionLabel={(option) => option.username}
+            renderOption={(props, option) => (
+              // eslint-disable-next-line react/jsx-props-no-spreading
+              <li {...props}>
+                <Typography level="body-md">{`${option.firstName} ${option.lastName}`}</Typography>
+              </li>
+            )}
             required
             renderInput={(params) => (
               // eslint-disable-next-line react/jsx-props-no-spreading
-              <TextField {...params} label="Manager" />
+              <TextField {...params} label="Manager*" />
             )}
-          />
+          /> */}
         </Box>
       </Box>
     </>

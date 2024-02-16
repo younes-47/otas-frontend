@@ -25,9 +25,9 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Divider from '@mui/material/Divider';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import WarningIcon from '@mui/icons-material/Warning';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
-import LinearProgress from '@mui/material/LinearProgress';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import TextField from '@mui/material/TextField';
@@ -150,13 +150,6 @@ export function DepenseCaisseForm({ state }) {
     state === 'CONFIRM' ||
     depenseCaisseDetails?.latestStatus === 'Returned for missing evidences';
 
-  // Scroll to top
-  useEffect(() => {
-    if (buttonClicked === 'CONFIRM') {
-      document.getElementById('main-box').scrollTop = 0;
-    }
-  }, [buttonClicked]);
-
   // Load the data => object details and static data
   useEffect(() => {
     if (state !== 'ADD') {
@@ -223,10 +216,7 @@ export function DepenseCaisseForm({ state }) {
       buttonClicked === 'CONFIRM' &&
       errorLoadingDepenseCaisseDetails === false
     ) {
-      dispatch(cleanupDepenseCaisseParentPageStoreAction());
-      dispatch(changePageContentAction('CONFIRM'));
       setFullPageModalVisibility(true);
-      setSavedSnackbarVisibility(true);
     }
   }, [errorLoadingDepenseCaisseDetails]);
 
@@ -407,9 +397,9 @@ export function DepenseCaisseForm({ state }) {
   const handleOnSubmitButtonClick = () => {
     setModalHeader('Submit');
     setModalBody(
-      'By submitting this request, you acknowledge that all provided information is correct.',
+      "Please Review your information before confirming your changes. You won't be able to modify your request afterwards!",
     );
-    setModalSevirity('info');
+    setModalSevirity('warning');
     setModalVisibility(true);
   };
 
@@ -528,9 +518,6 @@ export function DepenseCaisseForm({ state }) {
             <Typography variant="h4" marginTop={3} gutterBottom>
               Please Review your information before submitting
             </Typography>
-            <Box sx={{ width: '100%' }}>
-              <LinearProgress color="info" value={40} />
-            </Box>
           </Box>
         )}
       </Box>
@@ -581,22 +568,27 @@ export function DepenseCaisseForm({ state }) {
             >
               Status History
             </Button>
-            <Button
-              variant="contained"
-              color="secondary"
-              size="medium"
-              startIcon={
-                loadingButton ? (
-                  <CircularProgress size={20} color="inherit" />
-                ) : (
-                  <DescriptionIcon />
-                )
-              }
-              onClick={() => handleOnDownloadDocumentClick()}
-              disabled={loadingButton}
-            >
-              {!loadingButton ? <>Download Document</> : <>Generating...</>}
-            </Button>
+            {depenseCaisseDetails?.latestStatus !== 'Returned' &&
+              depenseCaisseDetails?.latestStatus !== 'Rejected' &&
+              depenseCaisseDetails?.latestStatus !==
+                'Returned for missing evidences' && (
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  size="medium"
+                  startIcon={
+                    loadingButton ? (
+                      <CircularProgress size={20} color="inherit" />
+                    ) : (
+                      <DescriptionIcon />
+                    )
+                  }
+                  onClick={() => handleOnDownloadDocumentClick()}
+                  disabled={loadingButton}
+                >
+                  {!loadingButton ? <>Download Document</> : <>Generating...</>}
+                </Button>
+              )}
           </Box>
         </>
       )}
@@ -619,6 +611,26 @@ export function DepenseCaisseForm({ state }) {
           </Card>
         </Box>
       )}
+
+      {state === 'VIEW' &&
+        depenseCaisseDetails?.latestStatus === 'Rejected' && (
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            marginBottom={3}
+          >
+            <Card color="danger" variant="soft" icon={false}>
+              <CardContent sx={{ textAlign: 'center', marginBottom: '1em' }}>
+                This request has been rejected. <br /> Please refer to the
+                comment know to know why.
+              </CardContent>
+              <Card variant="outlined">
+                {depenseCaisseDetails?.deciderComment}
+              </Card>
+            </Card>
+          </Box>
+        )}
 
       {/* DIVIDER */}
       <Box
@@ -1067,7 +1079,7 @@ export function DepenseCaisseForm({ state }) {
         </DialogActions>
       </Dialog>
 
-      {/* Confirmation Modal */}
+      {/* Confirmation full page Modal */}
       <Dialog
         fullScreen
         open={fullPageModalVisibility}
@@ -1087,21 +1099,37 @@ export function DepenseCaisseForm({ state }) {
           sx={{ minHeight: '100vh' }}
         >
           <Grid item xs={1.5} justifyContent="center">
-            <Box>
-              <Typography variant="h4">
-                Please Review your information before submitting
-              </Typography>
-              <Box sx={{ width: '100%' }}>
-                <LinearProgress color="info" value={40} />
+            <Alert
+              sx={{ alignItems: 'flex-start' }}
+              variant="outlined"
+              severity="warning"
+              icon={false}
+            >
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                gap={3}
+              >
+                <WarningIcon color="warning" fontSize="large" />
+                <Typography variant="h6" color="warning">
+                  By submitting this request, you acknowledge that all provided
+                  information is correct.
+                </Typography>
               </Box>
-            </Box>
+            </Alert>
           </Grid>
           <Grid item justifyContent="center">
             <Button
               variant="contained"
-              color="info"
-              // endIcon={<ThumbUpOffAltIcon />}
-              onClick={() => setFullPageModalVisibility(false)}
+              color="warning"
+              onClick={() => {
+                document.getElementById('main-box').scrollTop = 0;
+                dispatch(cleanupDepenseCaisseParentPageStoreAction());
+                dispatch(changePageContentAction('CONFIRM'));
+                setFullPageModalVisibility(false);
+                setSavedSnackbarVisibility(true);
+              }}
               aria-label="close"
               size="large"
             >

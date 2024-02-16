@@ -10,6 +10,9 @@ import {
   ADD_LIQUIDATION_SUCCESS,
   CLEANUP_STORE_ACTION,
   DEFAULT_ACTION,
+  DOWNLOAD_LIQUIDATION_DOCUMENT,
+  DOWNLOAD_LIQUIDATION_DOCUMENT_ERROR,
+  DOWNLOAD_LIQUIDATION_DOCUMENT_SUCCESS,
   LOAD_LIQUIDATION_DETAILS,
   LOAD_LIQUIDATION_DETAILS_ERROR,
   LOAD_LIQUIDATION_DETAILS_SUCCESS,
@@ -149,6 +152,27 @@ export function loadRequestToLiquidateDetailsSuccessAction(data) {
 export function loadRequestToLiquidateDetailsErrorAction(error) {
   return {
     type: LOAD_REQUEST_TO_LIQUIDATE_DETAILS_ERROR,
+    error,
+  };
+}
+
+export function downloadLiquidationDocumentFileAction(id) {
+  return {
+    type: DOWNLOAD_LIQUIDATION_DOCUMENT,
+    id,
+  };
+}
+
+export function downloadLiquidationDocumentFileSuccessAction(data) {
+  return {
+    type: DOWNLOAD_LIQUIDATION_DOCUMENT_SUCCESS,
+    data,
+  };
+}
+
+export function downloadLiquidationDocumentFileErrorAction(error) {
+  return {
+    type: DOWNLOAD_LIQUIDATION_DOCUMENT_ERROR,
     error,
   };
 }

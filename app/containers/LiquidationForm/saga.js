@@ -3,6 +3,7 @@ import request from 'utils/request';
 import { setLiquidationIdentityAction } from 'pages/Liquidation/actions';
 import {
   ADD_LIQUIDATION,
+  DOWNLOAD_LIQUIDATION_DOCUMENT,
   LOAD_LIQUIDATION_DETAILS,
   LOAD_REQUESTS_TO_LIQUIDATE,
   LOAD_REQUEST_TO_LIQUIDATE_DETAILS,
@@ -15,6 +16,8 @@ import {
   AddLiquidationSuccessAction,
   UpdateLiquidationErrorAction,
   UpdateLiquidationSuccessAction,
+  downloadLiquidationDocumentFileErrorAction,
+  downloadLiquidationDocumentFileSuccessAction,
   loadLiquidationDetailsErrorAction,
   loadLiquidationDetailsSuccessAction,
   loadRequestToLiquidateDetailsErrorAction,
@@ -144,6 +147,23 @@ export function* loadRequestToLiquidateDetails({ id, requestType }) {
   }
 }
 
+export function* DownloadLiquidationDocumentFile({ id }) {
+  try {
+    const { data } = yield call(
+      request.get,
+      `${webService.DOWNLOAD_LIQUIDATION_DOCUMENT}?Id=${id}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    yield put(downloadLiquidationDocumentFileSuccessAction(data));
+  } catch (error) {
+    yield put(downloadLiquidationDocumentFileErrorAction(error));
+  }
+}
+
 // Individual exports for testing
 export default function* liquidationFormSaga() {
   yield takeLatest(ADD_LIQUIDATION, AddLiquidation);
@@ -154,5 +174,9 @@ export default function* liquidationFormSaga() {
   yield takeLatest(
     LOAD_REQUEST_TO_LIQUIDATE_DETAILS,
     loadRequestToLiquidateDetails,
+  );
+  yield takeLatest(
+    DOWNLOAD_LIQUIDATION_DOCUMENT,
+    DownloadLiquidationDocumentFile,
   );
 }

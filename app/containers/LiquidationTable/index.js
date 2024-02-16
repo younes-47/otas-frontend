@@ -37,7 +37,7 @@ import {
   setLiquidationIdentityAction,
 } from 'pages/Liquidation/actions';
 import { NumericFormat } from 'react-number-format';
-import { Link } from '@mui/joy';
+import Link from '@mui/joy/Link';
 import {
   changePageContentAction,
   setAvanceVoyageIdentityAction,
@@ -589,8 +589,8 @@ export function LiquidationTable() {
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
             <Alert severity="error">
-              This will delete all information related to it. This can&apos;t be
-              undone.
+              This will delete all information you previously filled. This
+              can&apos;t be undone.
             </Alert>
           </DialogContentText>
         </DialogContent>

@@ -45,6 +45,13 @@ export const ADD_LIQUIDATION_SUCCESS =
 export const ADD_LIQUIDATION_ERROR =
   'app/LiquidationForm/ADD_LIQUIDATION_ERROR';
 
+export const DOWNLOAD_LIQUIDATION_DOCUMENT =
+  'app/LiquidationForm/DOWNLOAD_LIQUIDATION_DOCUMENT';
+export const DOWNLOAD_LIQUIDATION_DOCUMENT_SUCCESS =
+  'app/LiquidationForm/DOWNLOAD_LIQUIDATION_DOCUMENT_SUCCESS';
+export const DOWNLOAD_LIQUIDATION_DOCUMENT_ERROR =
+  'app/LiquidationForm/DOWNLOAD_LIQUIDATION_DOCUMENT_ERROR';
+
 export const CLEANUP_STORE_ACTION = 'app/LiquidationForm/CLEANUP_STORE_ACTION';
 
 export const SELECT_REQUEST_TYPE_TO_LIQUIDATE =
@@ -59,4 +66,5 @@ export const webService = {
   UPDATE_LIQUIDATION: '/Liquidation/Modify',
   SUBMIT_LIQUIDATION: '/Liquidation/Submit',
   LOAD_REQUESTS_TO_LIQUIDATE: '/Liquidation/Requests/Pending',
+  DOWNLOAD_LIQUIDATION_DOCUMENT: '/Liquidation/Document/Download',
 };

@@ -19,23 +19,42 @@ import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineDot from '@mui/lab/TimelineDot';
 import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
 import { DateTimeFormater } from 'utils/Custom/stringManipulation';
+import { NumericFormat } from 'react-number-format';
+import { Typography } from '@mui/joy';
 
 const getDotColor = (status) => {
-  if (status === 'Approved') return 'success';
-  if (status === 'Returned') return 'warning';
+  if (
+    status === 'Approved' ||
+    status === 'Finalized' ||
+    status === 'Funds Collected'
+  )
+    return 'success';
+  if (
+    status === 'Returned' ||
+    status === 'Returned for missing evidences' ||
+    status === 'Returned To Finance Department for missing Information'
+  )
+    return 'warning';
   if (status === 'Rejected') return 'error';
   return 'primary';
 };
 const getDotIcon = (status) => {
   if (status === 'Draft' || status === 'Submitted') {
-    return <EditIcon fontSize="small"></EditIcon>;
+    return <EditIcon fontSize="small" />;
   }
-  if (status === 'Approved') return <CheckIcon fontSize="small"></CheckIcon>;
-  if (status === 'Returned')
-    return (
-      <SettingsBackupRestoreIcon fontSize="small"></SettingsBackupRestoreIcon>
-    );
-  if (status === 'Rejected') return <CloseIcon fontSize="small"></CloseIcon>;
+  if (
+    status === 'Approved' ||
+    status === 'Finalized' ||
+    status === 'Funds Collected'
+  )
+    return <CheckIcon fontSize="small" />;
+  if (
+    status === 'Returned' ||
+    status === 'Returned for missing evidences' ||
+    status === 'Returned To Finance Department for missing Information'
+  )
+    return <SettingsBackupRestoreIcon fontSize="small" />;
+  if (status === 'Rejected') return <CloseIcon fontSize="small" />;
   if (
     status === "Pending Manager's Approval" ||
     status === "Pending HR's Approval" ||
@@ -45,7 +64,7 @@ const getDotIcon = (status) => {
     status === "Pending Treasury's Validation" ||
     status === 'Preparing Funds'
   ) {
-    return <MoreHorizIcon fontSize="small"></MoreHorizIcon>;
+    return <MoreHorizIcon fontSize="small" />;
   }
   return <></>;
 };
@@ -55,6 +74,27 @@ const CustomizedTimeLine = ({ statusHistory, lastOne }) => (
     <TimelineItem key={statusHistory.createDate}>
       <TimelineOppositeContent color="textSecondary">
         {DateTimeFormater(statusHistory.createDate)}
+        {(statusHistory.status === 'Submitted' ||
+          statusHistory.status === 'Resubmitted') &&
+          statusHistory.total && (
+            <Typography level="body-sm" color="success">
+              Total:&nbsp;
+              <NumericFormat
+                displayType="text"
+                value={statusHistory.total}
+                fixedDecimalScale
+                decimalScale={2}
+                defaultValue="0"
+                allowNegative={false}
+                thousandSeparator={
+                  localStorage.getItem('preferredLanguage') === 'en' ? ',' : ' '
+                }
+                decimalSeparator={
+                  localStorage.getItem('preferredLanguage') === 'en' ? '.' : ','
+                }
+              />
+            </Typography>
+          )}
       </TimelineOppositeContent>
       <TimelineSeparator>
         <TimelineDot

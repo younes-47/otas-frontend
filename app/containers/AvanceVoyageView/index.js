@@ -32,7 +32,7 @@ import Divider from '@mui/material/Divider';
 import List from '@mui/material/List';
 import ListSubheader from '@mui/material/ListSubheader';
 import Typography from '@mui/material/Typography';
-import { Typography as JoyTypography } from '@mui/joy';
+import { Card, CardContent, Typography as JoyTypography } from '@mui/joy';
 import InsertLinkIcon from '@mui/icons-material/InsertLink';
 import { changePageContentAction } from 'pages/AvanceVoyage/actions';
 import CustomizedTimeLine from 'components/CustomizedTimeLine';
@@ -212,23 +212,65 @@ export function AvanceVoyageView() {
         >
           Status History
         </Button>
-        <Button
-          variant="contained"
-          color="secondary"
-          size="medium"
-          startIcon={
-            loadingButton ? (
-              <CircularProgress size={20} color="inherit" />
-            ) : (
-              <DescriptionIcon />
-            )
-          }
-          onClick={() => handleOnDownloadDocumentClick()}
-          disabled={loadingButton}
-        >
-          {!loadingButton ? <>Download Document</> : <>Generating...</>}
-        </Button>
+        {avanceVoyageDetails?.latestStatus !== 'Returned' &&
+          avanceVoyageDetails?.latestStatus !== 'Rejected' &&
+          avanceVoyageDetails?.latestStatus !==
+            'Returned for missing evidences' && (
+            <Button
+              variant="contained"
+              color="secondary"
+              size="medium"
+              startIcon={
+                loadingButton ? (
+                  <CircularProgress size={20} color="inherit" />
+                ) : (
+                  <DescriptionIcon />
+                )
+              }
+              onClick={() => handleOnDownloadDocumentClick()}
+              disabled={loadingButton}
+            >
+              {!loadingButton ? <>Download Document</> : <>Generating...</>}
+            </Button>
+          )}
       </Box>
+
+      {avanceVoyageDetails?.latestStatus === 'Returned' && (
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          marginBottom={3}
+        >
+          <Card color="warning" variant="soft" icon={false}>
+            <CardContent sx={{ textAlign: 'center', marginBottom: '1em' }}>
+              This request has been returned. <br /> Please refer to the comment
+              below and apply the necessary changes.
+            </CardContent>
+            <Card variant="outlined">
+              {avanceVoyageDetails?.deciderComment}
+            </Card>
+          </Card>
+        </Box>
+      )}
+      {avanceVoyageDetails?.latestStatus === 'Rejected' && (
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          marginBottom={3}
+        >
+          <Card color="danger" variant="soft" icon={false}>
+            <CardContent sx={{ textAlign: 'center', marginBottom: '1em' }}>
+              This request has been rejected. <br /> Please refer to the comment
+              below to know why.
+            </CardContent>
+            <Card variant="outlined">
+              {avanceVoyageDetails?.deciderComment}
+            </Card>
+          </Card>
+        </Box>
+      )}
 
       {/* DIVIDER */}
       <Box

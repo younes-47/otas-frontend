@@ -10,6 +10,9 @@ import {
   ADD_LIQUIDATION_SUCCESS,
   CLEANUP_STORE_ACTION,
   DEFAULT_ACTION,
+  DOWNLOAD_LIQUIDATION_DOCUMENT,
+  DOWNLOAD_LIQUIDATION_DOCUMENT_ERROR,
+  DOWNLOAD_LIQUIDATION_DOCUMENT_SUCCESS,
   LOAD_LIQUIDATION_DETAILS,
   LOAD_LIQUIDATION_DETAILS_ERROR,
   LOAD_LIQUIDATION_DETAILS_SUCCESS,
@@ -46,6 +49,9 @@ export const initialState = {
   errorLoadingRequestToLiquidateDetails: null,
   requestToLiquidateDetails: null,
   requestTypeToLiquidate: null,
+  downloadingLiquidationDocumentFile: false,
+  errorDownloadingLiquidationDocumentFile: null,
+  liquidationDocumentFile: null,
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -53,6 +59,19 @@ const liquidationFormReducer = (state = initialState, action) =>
   produce(state, (draft) => {
     switch (action.type) {
       case DEFAULT_ACTION:
+        break;
+      case DOWNLOAD_LIQUIDATION_DOCUMENT:
+        draft.downloadingLiquidationDocumentFile = true;
+        draft.errorDownloadingLiquidationDocumentFile = null;
+        break;
+      case DOWNLOAD_LIQUIDATION_DOCUMENT_SUCCESS:
+        draft.downloadingLiquidationDocumentFile = false;
+        draft.errorDownloadingLiquidationDocumentFile = false;
+        draft.liquidationDocumentFile = action.data;
+        break;
+      case DOWNLOAD_LIQUIDATION_DOCUMENT_ERROR:
+        draft.downloadingLiquidationDocumentFile = false;
+        draft.errorDownloadingLiquidationDocumentFile = true;
         break;
       case SELECT_REQUEST_TYPE_TO_LIQUIDATE:
         draft.requestTypeToLiquidate = action.selection;
@@ -152,6 +171,9 @@ const liquidationFormReducer = (state = initialState, action) =>
         draft.errorLoadingRequestToLiquidateDetails = null;
         draft.requestToLiquidateDetails = null;
         draft.requestTypeToLiquidate = null;
+        draft.downloadingLiquidationDocumentFile = false;
+        draft.errorDownloadingLiquidationDocumentFile = null;
+        draft.liquidationDocumentFile = null;
         break;
     }
   });

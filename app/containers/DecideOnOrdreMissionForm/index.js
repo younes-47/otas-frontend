@@ -113,15 +113,15 @@ export function DecideOnOrdreMissionForm({ state }) {
         avanceDetails?.trips?.forEach((trip) => {
           const formattedDateTrip = {
             ...trip,
-            departureDate: DateTimeFormater(new Date(trip.departureDate)),
-            arrivalDate: DateTimeFormater(new Date(trip.arrivalDate)),
+            departureDate: trip.departureDate,
+            arrivalDate: trip.arrivalDate,
           };
           setTrips((prevTrips) => [...prevTrips, formattedDateTrip]);
         });
         avanceDetails?.expenses?.forEach((expense) => {
           const formattedDateExpense = {
             ...expense,
-            expenseDate: DateTimeFormater(new Date(expense.expenseDate)),
+            expenseDate: expense.expenseDate,
           };
           setExpenses((prevExpenses) => [
             ...prevExpenses,
@@ -134,7 +134,7 @@ export function DecideOnOrdreMissionForm({ state }) {
 
   useEffect(() => {
     if (decisionString !== null) {
-      if (decisionString === 'return') {
+      if (decisionString === 'return' || decisionString === 'reject') {
         const result = ValidateDeciderComment(
           setModalVisibility,
           setModalBody,
@@ -494,7 +494,8 @@ export function DecideOnOrdreMissionForm({ state }) {
               <Alert color={modalSevirity} size="lg" variant="soft">
                 {modalBody}
               </Alert>
-              {modalHeader === 'Return the request?' && (
+              {(modalHeader === 'Return the request?' ||
+                modalHeader === 'Reject the request?') && (
                 <>
                   <Typography
                     level="title-md"

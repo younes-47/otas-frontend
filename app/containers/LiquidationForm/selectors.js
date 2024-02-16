@@ -72,6 +72,18 @@ const makeSelectRequestTypeToLiquidate = () =>
     (substate) => substate.requestTypeToLiquidate,
   );
 
+const makeSelectErrorDownloadingLiquidationDocumentFile = () =>
+  createSelector(
+    selectLiquidationFormDomain,
+    (substate) => substate.errorDownloadingLiquidationDocumentFile,
+  );
+
+const makeSelectLiquidationDocumentFile = () =>
+  createSelector(
+    selectLiquidationFormDomain,
+    (substate) => substate.liquidationDocumentFile,
+  );
+
 /**
  * Default selector used by LiquidationForm
  */
@@ -81,6 +93,8 @@ const makeSelectLiquidationForm = () =>
 
 export default makeSelectLiquidationForm;
 export {
+  makeSelectLiquidationDocumentFile,
+  makeSelectErrorDownloadingLiquidationDocumentFile,
   makeSelectRequestTypeToLiquidate,
   makeSelectErrorLoadingRequestToLiquidatedetails,
   makeSelectRequestsToLiquidate,
