@@ -623,7 +623,7 @@ export function DepenseCaisseForm({ state }) {
             <Card color="danger" variant="soft" icon={false}>
               <CardContent sx={{ textAlign: 'center', marginBottom: '1em' }}>
                 This request has been rejected. <br /> Please refer to the
-                comment know to know why.
+                comment below to know why.
               </CardContent>
               <Card variant="outlined">
                 {depenseCaisseDetails?.deciderComment}

@@ -29,6 +29,7 @@ import {
   setAvanceCaisseIdentityAction,
 } from 'pages/AvanceCaisse/actions';
 import { NumericFormat } from 'react-number-format';
+import { FormattedMessage, useIntl } from 'react-intl';
 import saga from './saga';
 import reducer from './reducer';
 import {
@@ -45,6 +46,7 @@ import {
   nullifyErrorDeletingAvanceCaisseAction,
   setAvanceCaisseStatusAction,
 } from './actions';
+import messages from './messages';
 
 const mapStateToProps = createStructuredSelector({
   avanceCaisses: makeSelectAvanceCaisses(),
@@ -130,7 +132,8 @@ export function AvanceCaisseTable() {
   const handleOnConfirmDeletionButtonClick = (id) => {
     dispatch(deleteAvanceCaisseAction(id));
   };
-
+  const intl = useIntl();
+  const description = intl.formatMessage({ id: messages.TableDescription.id });
   const avanceCaisseColumns = [
     {
       field: 'id',
@@ -151,7 +154,7 @@ export function AvanceCaisseTable() {
     {
       field: 'description',
       hide: false,
-      headerName: 'Description',
+      headerName: description,
       flex: 1,
       renderCell: (params) => {
         const { description } = params.row;
@@ -439,7 +442,7 @@ export function AvanceCaisseTable() {
         aria-describedby="alert-dialog-slide-description"
       >
         <DialogTitle color="error">
-          Are you sure you want to delete this request!
+          <FormattedMessage id={messages.dialogHeader.id} />
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
