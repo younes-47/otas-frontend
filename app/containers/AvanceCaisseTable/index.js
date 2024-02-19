@@ -133,7 +133,32 @@ export function AvanceCaisseTable() {
     dispatch(deleteAvanceCaisseAction(id));
   };
   const intl = useIntl();
-  const description = intl.formatMessage({ id: messages.TableDescription.id });
+  const tableDescription = intl.formatMessage({
+    id: messages.TableDescription.id,
+  });
+  const tableEstimatedTotal = intl.formatMessage({
+    id: messages.tableEstimatedTotal.id,
+  });
+  const tableCurrency = intl.formatMessage({
+    id: messages.tableCurrency.id,
+  });
+
+  const tableLatestStatus = intl.formatMessage({
+    id: messages.tableLatestStatus.id,
+  });
+
+  const tableOnBehalf = intl.formatMessage({
+    id: messages.tableOnBehalf.id,
+  });
+
+  const tableCreatedOn = intl.formatMessage({
+    id: messages.tableCreatedOn.id,
+  });
+
+  const tableActions = intl.formatMessage({
+    id: messages.tableActions.id,
+  });
+
   const avanceCaisseColumns = [
     {
       field: 'id',
@@ -154,7 +179,7 @@ export function AvanceCaisseTable() {
     {
       field: 'description',
       hide: false,
-      headerName: description,
+      headerName: tableDescription,
       flex: 1,
       renderCell: (params) => {
         const { description } = params.row;
@@ -170,7 +195,7 @@ export function AvanceCaisseTable() {
     {
       field: 'estimatedTotal',
       hide: false,
-      headerName: 'Estimated Total',
+      headerName: tableEstimatedTotal,
       flex: 1,
       renderCell: (params) => {
         const { estimatedTotal } = params.row;
@@ -197,7 +222,7 @@ export function AvanceCaisseTable() {
     {
       field: 'currency',
       hide: false,
-      headerName: 'Currency',
+      headerName: tableCurrency,
       flex: 1,
       renderCell: (params) => {
         const { currency } = params.row;
@@ -212,7 +237,7 @@ export function AvanceCaisseTable() {
     {
       field: 'latestStatus',
       hide: false,
-      headerName: 'Latest Status',
+      headerName: tableLatestStatus,
       flex: 1,
       renderCell: (params) => {
         const { latestStatus } = params.row;
@@ -292,13 +317,13 @@ export function AvanceCaisseTable() {
       field: 'onBehalf',
       hide: false,
       type: 'boolean',
-      headerName: 'onBehalf',
+      headerName: tableOnBehalf,
       flex: 1,
     },
     {
       field: 'createDate',
       hide: false,
-      headerName: 'Created On',
+      headerName: tableCreatedOn,
       flex: 1,
       renderCell: (params) => {
         const { createDate } = params.row;
@@ -312,7 +337,7 @@ export function AvanceCaisseTable() {
     {
       field: '',
       hide: false,
-      headerName: 'Actions',
+      headerName: tableActions,
       flex: 1,
       renderCell: (params) => {
         const { id, latestStatus } = params.row;
@@ -414,7 +439,9 @@ export function AvanceCaisseTable() {
             fontSize="large"
             sx={{ color: 'green' }}
           ></AddCircleIcon>
-          <h1 style={{ color: 'green', fontSize: '20px' }}>Request</h1>
+          <h1 style={{ color: 'green', fontSize: '20px' }}>
+            <FormattedMessage id={messages.requestButton.id} />
+          </h1>
         </IconButton>
       </Box>
       {!errorLoadingAvanceCaisses ? (
@@ -447,8 +474,7 @@ export function AvanceCaisseTable() {
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
             <Alert severity="error">
-              This will delete all information related to it. This can&apos;t be
-              undone.
+              <FormattedMessage id={messages.dialogDeletionAlert.id} />
             </Alert>
           </DialogContentText>
         </DialogContent>
@@ -461,14 +487,14 @@ export function AvanceCaisseTable() {
             variant="outlined"
             color="error"
           >
-            Confirm
+            <FormattedMessage id={messages.dialogConfirmButton.id} />
           </Button>
           <Button
             onClick={() => setModalVisibility(false)}
             variant="outlined"
             color="primary"
           >
-            Close
+            <FormattedMessage id={messages.dialogCloseButton.id} />
           </Button>
         </DialogActions>
       </Dialog>
