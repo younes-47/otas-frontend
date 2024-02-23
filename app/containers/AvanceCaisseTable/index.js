@@ -134,7 +134,7 @@ export function AvanceCaisseTable() {
   };
   const intl = useIntl();
   const tableDescription = intl.formatMessage({
-    id: messages.TableDescription.id,
+    id: messages.tableDescription.id,
   });
   const tableEstimatedTotal = intl.formatMessage({
     id: messages.tableEstimatedTotal.id,
@@ -223,7 +223,7 @@ export function AvanceCaisseTable() {
       field: 'currency',
       hide: false,
       headerName: tableCurrency,
-      flex: 1,
+      width: 120,
       renderCell: (params) => {
         const { currency } = params.row;
         return (
@@ -318,13 +318,13 @@ export function AvanceCaisseTable() {
       hide: false,
       type: 'boolean',
       headerName: tableOnBehalf,
-      flex: 1,
+      width: 120,
     },
     {
       field: 'createDate',
       hide: false,
       headerName: tableCreatedOn,
-      flex: 1,
+      width: 200,
       renderCell: (params) => {
         const { createDate } = params.row;
         return (
@@ -353,7 +353,7 @@ export function AvanceCaisseTable() {
                   handleOnEditButtonClick(id);
                 }}
               >
-                Edit
+                <FormattedMessage id={messages.tableEditButton.id} />
               </Button>
               <Button
                 variant="contained"
@@ -364,7 +364,7 @@ export function AvanceCaisseTable() {
                   setModalVisibility(true);
                 }}
               >
-                Delete
+                <FormattedMessage id={messages.tableDeleteButton.id} />
               </Button>
             </Box>
           );
@@ -384,7 +384,7 @@ export function AvanceCaisseTable() {
                   handleOnModifyButtonClick(id);
                 }}
               >
-                Modify
+                <FormattedMessage id={messages.tableModifyButton.id} />
               </Button>
             </Box>
           );
@@ -398,7 +398,7 @@ export function AvanceCaisseTable() {
               handleOnViewButtonClick(id);
             }}
           >
-            View
+            <FormattedMessage id={messages.tableViewButton.id} />
           </Button>
         );
       },

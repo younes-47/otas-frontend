@@ -3,28 +3,24 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-import {
-  FormControl,
-  IconButton,
-  // IconButton,
-  InputAdornment,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from '@mui/material';
-import { Box } from '@mui/system';
-import { DateTimePicker } from '@mui/x-date-pickers';
+import FormControl from '@mui/material/FormControl';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/system/Box';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { createStructuredSelector } from 'reselect';
 import { useSelector } from 'react-redux';
 import { NumericFormat } from 'react-number-format';
 import { FormatNumber } from 'utils/Custom/stringManipulation';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { makeSelectAbroad } from './selectors';
-// import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import messages from './messages';
 const mapStateToProps = createStructuredSelector({
   abroadSelection: makeSelectAbroad(),
 });
@@ -75,20 +71,16 @@ const Trips = ({
       setCalculatedTripFee(parseFloat(value) + parseFloat(highwayFee));
     }
   }, [unit, value, highwayFee]);
-  // if (id === 0) {
-  //   updateTripData(id, 'departureDate', '2025-01-19T00:00:00.000Z');
-  //   updateTripData(id, 'arrivalDate', '2025-01-20T00:00:00.000Z');
-  // } else {
-  //   updateTripData(id, 'departureDate', '2025-01-21T00:00:00.000Z');
-  //   updateTripData(id, 'arrivalDate', '2025-01-23T00:00:00.000Z');
-  // }
+
+  const intl = useIntl();
+
   return (
     <Box key={id} marginRight={3} marginLeft={3} marginBottom={2}>
       <Box display="flex" justifyContent="center" gap={0.8}>
         <TextField
           variant={isTripModifiabale ? 'outlined' : 'filled'}
           id="input-with-icon-textfield"
-          label="Departure"
+          label={intl.formatMessage({ id: messages.tripDeparture.id })}
           value={departurePlace}
           onChange={(e) => updateTripData(id, 'departurePlace', e.target.value)}
           InputProps={{
@@ -105,7 +97,7 @@ const Trips = ({
 
         <TextField
           id="input-with-icon-textfield"
-          label="Destination"
+          label={intl.formatMessage({ id: messages.tripDestination.id })}
           value={destination}
           onChange={(e) => updateTripData(id, 'destination', e.target.value)}
           InputProps={{
@@ -125,7 +117,7 @@ const Trips = ({
           readOnly={!isTripModifiabale}
           variant={isTripModifiabale ? 'outlined' : 'filled'}
           sx={{ minWidth: 160, maxWidth: 160 }}
-          label="Departure Date"
+          label={intl.formatMessage({ id: messages.tripDepartureDate.id })}
           value={departureDate === null ? departureDate : dayjs(departureDate)}
           onChange={(e) => {
             handleTripDates(id, 'departureDate', e);
@@ -139,8 +131,8 @@ const Trips = ({
           readOnly={!isTripModifiabale}
           variant={isTripModifiabale ? 'outlined' : 'filled'}
           sx={{ minWidth: 160, maxWidth: 160 }}
-          label="Arrival"
-          value={departureDate === null ? departureDate : dayjs(departureDate)}
+          label={intl.formatMessage({ id: messages.tripArrivalDate.id })}
+          value={arrivalDate === null ? arrivalDate : dayjs(arrivalDate)}
           onChange={(e) => {
             handleTripDates(id, 'arrivalDate', e);
           }}
@@ -151,13 +143,13 @@ const Trips = ({
         <Box sx={{ minWidth: 160, maxWidth: 160 }}>
           <FormControl fullWidth>
             <InputLabel required id="demo-simple-select-label">
-              Transportation
+              <FormattedMessage id={messages.tripTransportation.id} />
             </InputLabel>
             <Select
               inputProps={{ readOnly: !isTripModifiabale }}
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              label="Transportation"
+              label={intl.formatMessage({ id: messages.tripTransportation.id })}
               value={transportationMethod}
               onChange={(e) =>
                 updateTripData(id, 'transportationMethod', e.target.value)
@@ -181,12 +173,12 @@ const Trips = ({
         <Box sx={{ maxWidth: 90, minWidth: 90 }}>
           <FormControl fullWidth>
             <InputLabel required id="demo-simple-select-label">
-              Unit
+              <FormattedMessage id={messages.tripUnit.id} />
             </InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              label="Unit"
+              label={intl.formatMessage({ id: messages.tripUnit.id })}
               value={unit}
               onChange={(e) => updateTripData(id, 'unit', e.target.value)}
               required
@@ -219,8 +211,12 @@ const Trips = ({
         </Box>
 
         <NumericFormat
-          required
-          label={unit === 'KM' ? 'Mileage' : 'Fee'}
+          required-
+          label={
+            unit === 'KM'
+              ? intl.formatMessage({ id: messages.tripMileage.id })
+              : intl.formatMessage({ id: messages.tripFee.id })
+          }
           value={value}
           sx={{ maxWidth: 90, minWidth: 90 }}
           variant={
@@ -263,7 +259,7 @@ const Trips = ({
                 ? 'outlined-required'
                 : 'filled-disabled'
             }
-            label="Highway"
+            label={intl.formatMessage({ id: messages.tripHighwayFee.id })}
             value={highwayFee}
             sx={{ maxWidth: 90, minWidth: 90 }}
             variant={!isTripModifiabale ? 'filled' : undefined}
@@ -293,7 +289,7 @@ const Trips = ({
           <NumericFormat
             required
             disabled
-            label="Highway"
+            label={intl.formatMessage({ id: messages.tripHighwayFee.id })}
             value={highwayFee}
             sx={{ maxWidth: 90, minWidth: 90 }}
             variant="filled"
@@ -321,7 +317,7 @@ const Trips = ({
         <TextField
           sx={{ maxWidth: 90, minWidth: 90 }}
           id="filled-read-only-input"
-          label="Total"
+          label={intl.formatMessage({ id: messages.tripTotal.id })}
           value={FormatNumber(calculatedTripFee)}
           InputProps={{
             readOnly: true,

@@ -608,7 +608,7 @@ export function DecideOnDepenseCaisseForm({ state }) {
         <DialogTitle>{modalHeader}</DialogTitle>
         <DialogContent dividers>
           {modalHeader === 'Status History' ? (
-            <Timeline position="alternate">
+            <Timeline>
               {depenseCaisseDetails?.statusHistory?.map((sh, i, arr) => (
                 <CustomizedTimeLine
                   statusHistory={sh}

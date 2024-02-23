@@ -585,7 +585,7 @@ export function DecideOnAvanceVoyageForm({ state }) {
         <DialogTitle>{modalHeader}</DialogTitle>
         <DialogContent dividers>
           {modalHeader === 'Status History' ? (
-            <Timeline position="alternate">
+            <Timeline>
               {avanceVoyageDetails?.statusHistory?.map((sh, i, arr) => (
                 <CustomizedTimeLine
                   statusHistory={sh}

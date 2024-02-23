@@ -10,10 +10,8 @@ export const ValidateInputs = (
 ) => {
   // Invalid on behalf selection
   if (data.onBehalf !== true && data.onBehalf !== false) {
-    setModalHeader('Invalid Information!');
-    setModalBody(
-      'Could not figure out whether you are filling this request on behalf of someone else or not! Please select "Yes" or "No".',
-    );
+    setModalHeader('invalidInformationHeader');
+    setModalBody('invalidOnBehalf');
     setModalSevirity('error');
     setModalVisibility(true);
     return false;
@@ -29,10 +27,8 @@ export const ValidateInputs = (
       !data.actualRequester?.department ||
       !data.actualRequester?.managerUserName)
   ) {
-    setModalHeader('Invalid Information!');
-    setModalBody(
-      'You must fill all actual requester information if you are filling this request on behalf of someone else!',
-    );
+    setModalHeader('invalidInformationHeader');
+    setModalBody('invalidActualRequesterInformation');
     setModalSevirity('error');
     setModalVisibility(true);
     return false;
@@ -41,7 +37,7 @@ export const ValidateInputs = (
   // invalid abroad selection
   if ('Abroad' in data) {
     if (data.Abroad !== true && data.Abroad !== false) {
-      setModalHeader('Invalid Information!');
+      setModalHeader('invalidInformationHeader');
       setModalBody(
         'Could not figure out whether this request is abroad or not! Please select "Yes" or "No".',
       );
@@ -58,8 +54,8 @@ export const ValidateInputs = (
 
   // Description
   if (data.description === '') {
-    setModalHeader('Invalid Information!');
-    setModalBody('You must provide a description for the mission!');
+    setModalHeader('invalidInformationHeader');
+    setModalBody('invalidDescription');
     setModalSevirity('error');
     setModalVisibility(true);
     return false;
@@ -83,10 +79,8 @@ export const ValidateInputs = (
         trip?.transportationMethod === '' ||
         trip?.unit === ''
       ) {
-        setModalHeader('Invalid Information!');
-        setModalBody(
-          "One of the trajectories' required information is missing! Please review your trajectories and fill all necessary information",
-        );
+        setModalHeader('invalidInformationHeader');
+        setModalBody('missingTripInformation');
         setModalSevirity('error');
         setModalVisibility(true);
         isAllGood = false;
@@ -94,10 +88,8 @@ export const ValidateInputs = (
 
       // value = 0
       if (trip?.value <= 0 || trip?.value === '0') {
-        setModalHeader('Invalid Information!');
-        setModalBody(
-          "A trajectory's fee or mileage cannot be 0 or negative! Please review your trajectories information and try again",
-        );
+        setModalHeader('invalidInformationHeader');
+        setModalBody('invalidTripValue');
         setModalSevirity('error');
         setModalVisibility(true);
         isAllGood = false;
@@ -109,10 +101,8 @@ export const ValidateInputs = (
         totalMAD.isNaN === true ||
         totalEUR.isNaN === true
       ) {
-        setModalHeader('Invalid Information!');
-        setModalBody(
-          'Invalid Total value! Please review your trajectories and/or expenses fee/Mileage values and try again',
-        );
+        setModalHeader('invalidInformationHeader');
+        setModalBody('blankTripValue');
         setModalSevirity('error');
         setModalVisibility(true);
         isAllGood = false;
@@ -120,10 +110,8 @@ export const ValidateInputs = (
 
       // ArrivalDate < DepartureDate
       if (trip?.departureDate > trip?.arrivalDate) {
-        setModalHeader('Invalid Information!');
-        setModalBody(
-          'Arrival date cannot be earlier than the departure date! Please review your trajectories information and try again',
-        );
+        setModalHeader('invalidInformationHeader');
+        setModalBody('invalidTripDates');
         setModalSevirity('error');
         setModalVisibility(true);
         isAllGood = false;
@@ -136,10 +124,8 @@ export const ValidateInputs = (
           trip.arrivalDate >
           sortedTrips.at(sortedTrips.length - 1).departureDate
         ) {
-          setModalHeader('Invalid Information!');
-          setModalBody(
-            'Trips dates do not make sense! You cannot start another trip before you arrive from the previous one.',
-          );
+          setModalHeader('invalidInformationHeader');
+          setModalBody('nonsenseTripDates');
           setModalSevirity('error');
           setModalVisibility(true);
           isAllGood = false;
@@ -151,10 +137,8 @@ export const ValidateInputs = (
   data.expenses?.forEach((expense) => {
     // expense description
     if (expense?.description === '' || !expense?.description) {
-      setModalHeader('Invalid Information!');
-      setModalBody(
-        'One of the expenses description is not specified! Please review your expenses and fill all necessary information.',
-      );
+      setModalHeader('invalidInformationHeader');
+      setModalBody('expenseDescriptionNotSpecified');
       setModalSevirity('error');
       setModalVisibility(true);
       isAllGood = false;
@@ -162,10 +146,8 @@ export const ValidateInputs = (
     // expense currency
     if ('currency' in expense) {
       if (expense?.currency !== 'MAD' && expense?.currency !== 'EUR') {
-        setModalHeader('Invalid Information!');
-        setModalBody(
-          'One of the expenses currency is not specified! Please review your expenses and fill all necessary information.',
-        );
+        setModalHeader('invalidInformationHeader');
+        setModalBody('expenseCurrencyNotSpecified');
         setModalSevirity('error');
         setModalVisibility(true);
         isAllGood = false;
@@ -173,10 +155,8 @@ export const ValidateInputs = (
     }
     // fee = 0
     if (expense?.estimatedFee <= 0 || expense?.estimatedFee === '0') {
-      setModalHeader('Invalid Information!');
-      setModalBody(
-        'Expense fee cannot be 0 or negative! Please review your expenses information and try again.',
-      );
+      setModalHeader('invalidInformationHeader');
+      setModalBody('expenseFeeInvalid');
       setModalSevirity('error');
       setModalVisibility(true);
       isAllGood = false;
@@ -187,10 +167,8 @@ export const ValidateInputs = (
       totalMAD.isNaN === true ||
       totalEUR.isNaN === true
     ) {
-      setModalHeader('Invalid Information!');
-      setModalBody(
-        'Invalid Total value! Please review your trajectories and/or expenses fee/Mileage values and try again',
-      );
+      setModalHeader('invalidInformationHeader');
+      setModalBody('invalidExpenseFeeValue');
       setModalSevirity('error');
       setModalVisibility(true);
       isAllGood = false;
@@ -201,11 +179,9 @@ export const ValidateInputs = (
       expense?.expenseDate === '' ||
       !expense?.expenseDate
     ) {
-      setModalHeader('Invalid Information!');
+      setModalHeader('invalidInformationHeader');
 
-      setModalBody(
-        "One of the expenses' date is not set yet! Please review your expenses information and try again.",
-      );
+      setModalBody('expenseDateNotSet');
       setModalSevirity('error');
       setModalVisibility(true);
       isAllGood = false;
@@ -215,7 +191,7 @@ export const ValidateInputs = (
   if ('receiptsFile' in data) {
     // Receipts file
     if (data.receiptsFile === '') {
-      setModalHeader('Invalid Information!');
+      setModalHeader('invalidInformationHeader');
 
       setModalBody(
         'Please upload your receipts file! Or wait for it while it is being uploaded',
@@ -244,7 +220,7 @@ export const ValidateLiquidationInputs = (
     data.expensesLiquidations?.forEach((expense) => {
       // value is 0 or left out blank or anything other than an actual number
       if (expense?.actualFee < 0 || expense?.actualFee.isNaN) {
-        setModalHeader('Invalid Information!');
+        setModalHeader('invalidInformationHeader');
         setModalBody(
           'You must provide a valid number for the actual amount spent for ALL of your expenses! Please review your expenses information and try again',
         );
@@ -264,7 +240,7 @@ export const ValidateLiquidationInputs = (
         trip?.actualFee === '0' ||
         trip?.actualFee.isNaN
       ) {
-        setModalHeader('Invalid Information!');
+        setModalHeader('invalidInformationHeader');
         setModalBody(
           'You must provide a valid spent amount for all of your trajectories! Please review your trajectories information and try again',
         );
@@ -291,7 +267,7 @@ export const ValidateLiquidationInputs = (
         trip?.transportationMethod === '' ||
         trip?.unit === ''
       ) {
-        setModalHeader('Invalid Information!');
+        setModalHeader('invalidInformationHeader');
         setModalBody(
           "One of the trajectories' required information is missing! Please review your trajectories and fill all necessary information",
         );
@@ -302,7 +278,7 @@ export const ValidateLiquidationInputs = (
 
       // value = 0
       if (trip?.value < 0) {
-        setModalHeader('Invalid Information!');
+        setModalHeader('invalidInformationHeader');
         setModalBody(
           "A trajectory's fee or mileage cannot be 0 or negative! Please review your trajectories information and try again",
         );
@@ -317,7 +293,7 @@ export const ValidateLiquidationInputs = (
         actualTotal.isNaN === true ||
         actualTotal.isNaN === true
       ) {
-        setModalHeader('Invalid Information!');
+        setModalHeader('invalidInformationHeader');
         setModalBody(
           'Invalid Total value! Please review your trajectories and/or expenses fee/Mileage values and try again',
         );
@@ -328,7 +304,7 @@ export const ValidateLiquidationInputs = (
 
       // ArrivalDate < DepartureDate
       if (trip?.departureDate > trip?.arrivalDate) {
-        setModalHeader('Invalid Information!');
+        setModalHeader('invalidInformationHeader');
         setModalBody(
           'Arrival date cannot be earlier than the departure date! Please review your trajectories information and try again',
         );
@@ -344,7 +320,7 @@ export const ValidateLiquidationInputs = (
           trip.arrivalDate >
           sortedTrips.at(sortedTrips.length - 1).departureDate
         ) {
-          setModalHeader('Invalid Information!');
+          setModalHeader('invalidInformationHeader');
           setModalBody(
             'Trips dates do not make sense! You cannot start another trip before you arrive from the previous one.',
           );
@@ -361,7 +337,7 @@ export const ValidateLiquidationInputs = (
     data.newExpenses?.forEach((expense) => {
       // expense description
       if (expense?.description === '' || !expense?.description) {
-        setModalHeader('Invalid Information!');
+        setModalHeader('invalidInformationHeader');
         setModalBody(
           'One of the expenses description is not specified! Please review your expenses and fill all necessary information.',
         );
@@ -372,7 +348,7 @@ export const ValidateLiquidationInputs = (
       // expense currency
       if ('currency' in expense) {
         if (expense?.currency !== 'MAD' && expense?.currency !== 'EUR') {
-          setModalHeader('Invalid Information!');
+          setModalHeader('invalidInformationHeader');
           setModalBody(
             'One of the expenses currency is not specified! Please review your expenses and fill all necessary information.',
           );
@@ -383,7 +359,7 @@ export const ValidateLiquidationInputs = (
       }
       // fee = 0
       if (expense?.estimatedFee <= 0 || expense?.estimatedFee === '0') {
-        setModalHeader('Invalid Information!');
+        setModalHeader('invalidInformationHeader');
         setModalBody(
           'Expense fee cannot be 0 or negative! Please review your expenses information and try again.',
         );
@@ -397,7 +373,7 @@ export const ValidateLiquidationInputs = (
         actualTotal.isNaN === true ||
         actualTotal.isNaN === true
       ) {
-        setModalHeader('Invalid Information!');
+        setModalHeader('invalidInformationHeader');
         setModalBody(
           'Invalid Total value! Please review your trajectories and/or expenses fee/Mileage values and try again',
         );
@@ -411,7 +387,7 @@ export const ValidateLiquidationInputs = (
         expense?.expenseDate === '' ||
         !expense?.expenseDate
       ) {
-        setModalHeader('Invalid Information!');
+        setModalHeader('invalidInformationHeader');
 
         setModalBody(
           "One of the expenses' date is not set yet! Please review your expenses information and try again.",
@@ -425,7 +401,7 @@ export const ValidateLiquidationInputs = (
 
   // validate file
   if (data.receiptsFile === '') {
-    setModalHeader('Invalid Information!');
+    setModalHeader('invalidInformationHeader');
 
     setModalBody(
       'Please upload your receipts file! Or wait for it while it is being uploaded',

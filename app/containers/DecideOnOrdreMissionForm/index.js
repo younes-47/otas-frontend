@@ -483,7 +483,7 @@ export function DecideOnOrdreMissionForm({ state }) {
         <DialogTitle>{modalHeader}</DialogTitle>
         <DialogContent dividers>
           {modalHeader === 'Status History' ? (
-            <Timeline position="alternate">
+            <Timeline>
               {ordreMissionDetails?.statusHistory?.map((sh, i, arr) => (
                 <CustomizedTimeLine
                   statusHistory={sh}

@@ -9,14 +9,24 @@ import { defineMessages } from 'react-intl';
 export const scope = 'app.containers.AvanceCaisseTable';
 
 export default defineMessages({
-  header: {
-    id: `${scope}.header`,
-    defaultMessage: 'This is the AvanceCaisseTable container!',
-  },
   dialogHeader: {
     id: `${scope}.dialog.header`,
     defaultMessage: 'Are you sure you want to delete this request!',
   },
+  dialogConfirmButton: {
+    id: `${scope}.dialog.confirmButton`,
+    defaultMessage: 'Confirm',
+  },
+  dialogCloseButton: {
+    id: `${scope}.dialog.closeButton`,
+    defaultMessage: 'Close',
+  },
+  dialogDeletionAlert: {
+    id: `${scope}.dialog.deletionAlert`,
+    defaultMessage:
+      "This will delete all information related to it. This can't be undone.",
+  },
+
   tableDescription: {
     id: `${scope}.table.description`,
     defaultMessage: 'Description',
@@ -41,19 +51,31 @@ export default defineMessages({
     id: `${scope}.table.actions`,
     defaultMessage: 'Actions',
   },
-  dialogConfirmButton: {
-    id: `${scope}.dialog.confirmButton`,
-    defaultMessage: 'Confirm',
+  tableEstimatedTotal: {
+    id: `${scope}.table.estimatedTotal`,
+    defaultMessage: 'Estimated Total',
   },
-  dialogCloseButton: {
-    id: `${scope}.dialog.closeButton`,
-    defaultMessage: 'Close',
+
+  tableEditButton: {
+    id: `${scope}.tableEditButton`,
+    defaultMessage: 'Edit',
   },
-  dialogDeletionAlert: {
-    id: `${scope}.dialog.deletionAlert`,
-    defaultMessage:
-      "This will delete all information related to it. This can't be undone.",
+
+  tableDeleteButton: {
+    id: `${scope}.tableDeleteButton`,
+    defaultMessage: 'Delete',
   },
+
+  tableModifyButton: {
+    id: `${scope}.tableModifyButton`,
+    defaultMessage: 'Modify',
+  },
+
+  tableViewButton: {
+    id: `${scope}.tableViewButton`,
+    defaultMessage: 'View',
+  },
+
   requestButton: {
     id: `${scope}.dialog.requestButton`,
     defaultMessage: 'Request',

@@ -26,6 +26,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { changeIsSideBarVisibleAction } from 'containers/SideBar/actions';
 import AccessController from 'utils/Custom/checkLogin';
 import { FormattedMessage, useIntl } from 'react-intl';
+import LanguageToggle from 'containers/LanguageToggle';
 import reducer from './reducer';
 import messages from '../SideBar/messages';
 
@@ -88,6 +89,7 @@ export function Header() {
               >
                 {Title}
               </Typography>
+              <LanguageToggle />
               <Button color="inherit" onClick={onLogOutButtonClick}>
                 <FormattedMessage id={messages.logout.id} />
               </Button>

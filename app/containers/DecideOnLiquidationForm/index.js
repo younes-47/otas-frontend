@@ -749,7 +749,7 @@ export function DecideOnLiquidationForm({ state }) {
         <DialogTitle>{modalHeader}</DialogTitle>
         <DialogContent dividers>
           {modalHeader === 'Status History' ? (
-            <Timeline position="alternate">
+            <Timeline>
               {liquidationDetails?.statusHistory?.map((sh, i, arr) => (
                 <CustomizedTimeLine
                   statusHistory={sh}

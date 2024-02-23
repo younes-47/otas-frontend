@@ -52,7 +52,9 @@ import CustomizedTimeLine from 'components/CustomizedTimeLine';
 import { makeSelectDepenseCaisseIdentity } from 'pages/DepenseCaisse/selectors';
 import ActualRequesterInputs from 'components/ActualRequesterInputs';
 import { ValidateInputs } from 'utils/Custom/ValidateInputs';
+import { FormattedMessage } from 'react-intl';
 import Expenses from './Expenses';
+import messages from './messages';
 import {
   makeSelectAddDepenseCaisse,
   makeSelectDepenseCaisseDetails,
@@ -395,10 +397,8 @@ export function DepenseCaisseForm({ state }) {
   };
 
   const handleOnSubmitButtonClick = () => {
-    setModalHeader('Submit');
-    setModalBody(
-      "Please Review your information before confirming your changes. You won't be able to modify your request afterwards!",
-    );
+    setModalHeader('submitHeader');
+    setModalBody('onSubmit');
     setModalSevirity('warning');
     setModalVisibility(true);
   };
@@ -409,10 +409,8 @@ export function DepenseCaisseForm({ state }) {
   };
 
   const handleOnSubmitModificationsButtonClick = () => {
-    setModalHeader('Confirmation');
-    setModalBody(
-      "Please Review your information before confirming your changes. You won't be able to modify your request afterwards!",
-    );
+    setModalHeader('confirmation');
+    setModalBody('onSubmitModifications');
     setModalSevirity('warning');
     setModalVisibility(true);
   };
@@ -496,27 +494,32 @@ export function DepenseCaisseForm({ state }) {
         marginBottom={1}
       >
         {state === 'ADD' && (
-          <h1 style={{ fontSize: '30px' }}>New Depense Caisse Request</h1>
+          <h1 style={{ fontSize: '30px' }}>
+            <FormattedMessage id={messages.pageTitleAdd.id} />
+          </h1>
         )}
         {state === 'EDIT' && (
           <h1 style={{ fontSize: '30px' }}>
-            Editing Depense Caisse #{depenseCaisseDetails?.id}
+            <FormattedMessage id={messages.pageTitleEdit.id} /> #
+            {depenseCaisseDetails?.id}
           </h1>
         )}
         {state === 'MODIFY' && (
           <h1 style={{ fontSize: '30px' }}>
-            Modifying Depense Caisse #{depenseCaisseDetails?.id}
+            <FormattedMessage id={messages.pageTitleModify.id} /> #
+            {depenseCaisseDetails?.id}
           </h1>
         )}
         {state === 'VIEW' && (
           <h1 style={{ fontSize: '30px' }}>
-            View Depense Caisse #{depenseCaisseDetails?.id}
+            <FormattedMessage id={messages.pageTitleView.id} /> #
+            {depenseCaisseDetails?.id}
           </h1>
         )}
         {state === 'CONFIRM' && (
           <Box>
             <Typography variant="h4" marginTop={3} gutterBottom>
-              Please Review your information before submitting
+              <FormattedMessage id={messages.pageTitleConfirm.id} />
             </Typography>
           </Box>
         )}
@@ -529,9 +532,7 @@ export function DepenseCaisseForm({ state }) {
           marginBottom={1}
         >
           <Typography variant="caption">
-            *This request has been saved as a draft. You can still modify it if
-            you don&apos;t submit it. <br /> Please note: your request cannot be
-            edited once it is submitted.
+            <FormattedMessage id={messages.pageSubtitleConfirm.id} />
           </Typography>
         </Box>
       )}
@@ -544,7 +545,7 @@ export function DepenseCaisseForm({ state }) {
             marginBottom={1}
           >
             <JoyTypography color="neutral" level="title-lg" variant="plain">
-              Current Status:{' '}
+              <FormattedMessage id={messages.currentStatus.id} />:{' '}
               <JoyTypography color="primary" level="title-lg" variant="plain">
                 {depenseCaisseDetails?.latestStatus}
               </JoyTypography>
@@ -562,11 +563,11 @@ export function DepenseCaisseForm({ state }) {
               color="warning"
               onClick={() => {
                 setModalVisibility(true);
-                setModalHeader('Status History');
+                setModalHeader('statusHistory');
               }}
               startIcon={<HistoryIcon />}
             >
-              Status History
+              <FormattedMessage id={messages.statusHistoryButton.id} />
             </Button>
             {depenseCaisseDetails?.latestStatus !== 'Returned' &&
               depenseCaisseDetails?.latestStatus !== 'Rejected' &&
@@ -586,7 +587,11 @@ export function DepenseCaisseForm({ state }) {
                   onClick={() => handleOnDownloadDocumentClick()}
                   disabled={loadingButton}
                 >
-                  {!loadingButton ? <>Download Document</> : <>Generating...</>}
+                  {!loadingButton ? (
+                    <FormattedMessage id={messages.downloadDocumentButton.id} />
+                  ) : (
+                    <FormattedMessage id={messages.generating.id} />
+                  )}
                 </Button>
               )}
           </Box>
@@ -602,8 +607,7 @@ export function DepenseCaisseForm({ state }) {
         >
           <Card color="warning" variant="soft" icon={false}>
             <CardContent sx={{ textAlign: 'center', marginBottom: '1em' }}>
-              This request has been returned. <br /> Please refer to the comment
-              below and apply the necessary changes.
+              <FormattedMessage id={messages.requestReturned.id} />
             </CardContent>
             <Card variant="outlined">
               {depenseCaisseDetails?.deciderComment}
@@ -622,8 +626,7 @@ export function DepenseCaisseForm({ state }) {
           >
             <Card color="danger" variant="soft" icon={false}>
               <CardContent sx={{ textAlign: 'center', marginBottom: '1em' }}>
-                This request has been rejected. <br /> Please refer to the
-                comment below to know why.
+                <FormattedMessage id={messages.requestRejected.id} />
               </CardContent>
               <Card variant="outlined">
                 {depenseCaisseDetails?.deciderComment}
@@ -668,7 +671,7 @@ export function DepenseCaisseForm({ state }) {
           </Box>
           <Box textAlign="center">
             <Typography variant="subtitle1">
-              Are you filling this form on behalf of someone else?
+              <FormattedMessage id={messages.onBehalfOfSomeoneElse.id} />
             </Typography>
           </Box>
           <RadioGroup
@@ -720,7 +723,7 @@ export function DepenseCaisseForm({ state }) {
             flexDirection="column"
           >
             <Typography variant="subtitle1">
-              Please choose the currency*
+              <FormattedMessage id={messages.chooseCurrency.id} />
             </Typography>
           </Box>
           <RadioGroup
@@ -748,7 +751,7 @@ export function DepenseCaisseForm({ state }) {
           marginBottom={3}
         >
           <Typography variant="subtitle1" display="flex">
-            This Request&apos;s currency is set to be:&nbsp;
+            <FormattedMessage id={messages.requestCurrencySet.id} />
             <Box sx={{ fontWeight: 'bold' }}>
               {depenseCaisseDetails?.currency}
             </Box>
@@ -799,7 +802,7 @@ export function DepenseCaisseForm({ state }) {
       >
         <Box display="flex" justifyContent="flex-start" width="40rem">
           <h1 style={{ fontSize: '18px' }}>
-            Expense(s)
+            <FormattedMessage id={messages.expenses.id} />
             {state !== 'CONFIRM' && state !== 'VIEW' && (
               <Typography variant="caption">*</Typography>
             )}
@@ -855,7 +858,8 @@ export function DepenseCaisseForm({ state }) {
           >
             <Box alignItems="flex-start" width="40rem">
               <Typography variant="h6">
-                {state !== 'CONFIRM' && 'Old'} Receipts File:
+                {state !== 'CONFIRM' && 'Old'}{' '}
+                <FormattedMessage id={messages.receiptsFileHeader.id} />:
               </Typography>
 
               <Button
@@ -881,27 +885,29 @@ export function DepenseCaisseForm({ state }) {
             alignItems="flex-start"
             width="40rem"
           >
-            {state === 'ADD' && <h1 style={{ fontSize: '18px' }}>Receipts*</h1>}
-            {(state === 'CONFIRM' || state === 'VIEW') && (
-              <h1 style={{ fontSize: '18px' }}>Receipts*</h1>
-            )}
-            {(state === 'EDIT' || state === 'MODIFY') && (
+            {(state === 'ADD' || state === 'CONFIRM' || state === 'VIEW') && (
               <h1 style={{ fontSize: '18px' }}>
-                Update your receipts&nbsp;
-                <Typography variant="caption">(optional)</Typography>
+                <FormattedMessage id={messages.receiptsUploadHeader.id} />
               </h1>
             )}
             {(state === 'EDIT' || state === 'MODIFY') && (
-              <Alert severity="warning" textAlign="left">
-                <Typography variant="p">
-                  <Typography sx={{ fontWeight: 'bold' }}>
-                    Please note:
+              <>
+                <h1 style={{ fontSize: '18px' }}>
+                  <FormattedMessage id={messages.updateReceipts.id} />
+                  &nbsp;
+                  <Typography variant="caption">
+                    <FormattedMessage id={messages.optionalSmallHeader.id} />
                   </Typography>
-                  uploading a new file will override the old one. You may want
-                  to attach your previously uploaded receipts in case you still
-                  want to include them.
-                </Typography>
-              </Alert>
+                </h1>
+                <Alert severity="warning" textAlign="left">
+                  <Typography variant="p">
+                    <Typography sx={{ fontWeight: 'bold' }}>
+                      <FormattedMessage id={messages.pleaseNoteHeader.id} />:
+                    </Typography>
+                    <FormattedMessage id={messages.overrideUploadNote.id} />
+                  </Typography>
+                </Alert>
+              </>
             )}
 
             <Typography
@@ -909,7 +915,7 @@ export function DepenseCaisseForm({ state }) {
               sx={{ color: 'error.main' }}
               marginTop={3}
             >
-              Please upload your receipts in a single pdf file.
+              <FormattedMessage id={messages.signlePdfFileHeader.id} />
             </Typography>
 
             {/* The dropzonearea component sill has some side effects */}
@@ -938,7 +944,15 @@ export function DepenseCaisseForm({ state }) {
               fullWidth
               disabled={loadingButton}
             >
-              {!loadingButton ? <>Upload file</> : <>Uploading...</>}
+              {!loadingButton ? (
+                <>
+                  <FormattedMessage id={messages.uploadButton.id} />
+                </>
+              ) : (
+                <>
+                  <FormattedMessage id={messages.uploading.id} />
+                </>
+              )}
 
               <input
                 type="file"
@@ -949,7 +963,8 @@ export function DepenseCaisseForm({ state }) {
             </Button>
             {receiptsFileName && (
               <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                Selected file: {receiptsFileName}
+                <FormattedMessage id={messages.selectedFile.id} />:{' '}
+                {receiptsFileName}
               </Typography>
             )}
           </Box>
@@ -972,7 +987,8 @@ export function DepenseCaisseForm({ state }) {
           <Box display="flex" flexDirection="column">
             <Box display="flex" justifyContent="space-between" gap={5}>
               <h1 style={{ fontSize: '1.1rem' }}>
-                Estimated Total in {currency === 'MAD' ? 'MAD' : 'EUR'}
+                <FormattedMessage id={messages.total.id} />{' '}
+                {currency === 'MAD' ? 'MAD' : 'EUR'}
               </h1>
               <h1 style={{ fontSize: '1.1rem', color: 'green' }}>{total}</h1>
             </Box>
@@ -992,7 +1008,7 @@ export function DepenseCaisseForm({ state }) {
           color="primary"
           onClick={handleOnReturnButtonClick}
         >
-          Return
+          <FormattedMessage id={messages.returnButton.id} />
         </Button>
         {(state === 'EDIT' || state === 'ADD') && (
           <>
@@ -1001,14 +1017,14 @@ export function DepenseCaisseForm({ state }) {
               color="warning"
               onClick={handleOnSaveAsDraftClick}
             >
-              Save as Draft
+              <FormattedMessage id={messages.saveAsDraftButton.id} />
             </Button>
             <Button
               variant="contained"
               color="success"
               onClick={handleOnConfirmButtonClick}
             >
-              Confirm
+              <FormattedMessage id={messages.confirmButton.id} />
             </Button>
           </>
         )}
@@ -1018,7 +1034,7 @@ export function DepenseCaisseForm({ state }) {
             color="success"
             onClick={handleOnSubmitModificationsButtonClick}
           >
-            Submit Modifications
+            <FormattedMessage id={messages.confirmModificationsButton.id} />
           </Button>
         )}
         {state === 'CONFIRM' && (
@@ -1027,7 +1043,7 @@ export function DepenseCaisseForm({ state }) {
             color="success"
             onClick={handleOnSubmitButtonClick}
           >
-            Submit
+            <FormattedMessage id={messages.submitButton.id} />
           </Button>
         )}
       </Stack>
@@ -1039,10 +1055,12 @@ export function DepenseCaisseForm({ state }) {
         onClose={() => setModalVisibility(false)}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>{modalHeader}</DialogTitle>
+        <DialogTitle>
+          {modalHeader && <FormattedMessage id={messages[modalHeader].id} />}
+        </DialogTitle>
         <DialogContent dividers>
-          {modalHeader === 'Status History' ? (
-            <Timeline position="alternate">
+          {modalHeader === 'statusHistory' ? (
+            <Timeline>
               {depenseCaisseDetails?.statusHistory?.map((sh, i, arr) => (
                 <CustomizedTimeLine
                   statusHistory={sh}
@@ -1052,28 +1070,30 @@ export function DepenseCaisseForm({ state }) {
             </Timeline>
           ) : (
             <DialogContentText id="alert-dialog-slide-description">
-              <Alert severity={modalSevirity}>{modalBody}</Alert>
+              <Alert severity={modalSevirity}>
+                {modalBody && <FormattedMessage id={messages[modalBody].id} />}
+              </Alert>
             </DialogContentText>
           )}
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setModalVisibility(false)}>Close</Button>
-          {modalHeader === 'Confirmation' && (
+          {modalHeader === 'confirmation' && (
             <Button
               color="success"
               onClick={handleOnSubmitModificationsConfirmationButtonClick}
               variant="contained"
             >
-              Submit
+              <FormattedMessage id={messages.submitButton.id} />
             </Button>
           )}
-          {modalHeader === 'Submit' && (
+          {modalHeader === 'submitHeader' && (
             <Button
               color="success"
               onClick={handleOnSubmitConfirmationButtonClick}
               variant="contained"
             >
-              Submit
+              <FormattedMessage id={messages.submitButton.id} />
             </Button>
           )}
         </DialogActions>
@@ -1113,8 +1133,7 @@ export function DepenseCaisseForm({ state }) {
               >
                 <WarningIcon color="warning" fontSize="large" />
                 <Typography variant="h6" color="warning">
-                  By submitting this request, you acknowledge that all provided
-                  information is correct.
+                  <FormattedMessage id={messages.submitAcknowledgement.id} />
                 </Typography>
               </Box>
             </Alert>
@@ -1162,7 +1181,7 @@ export function DepenseCaisseForm({ state }) {
         }
         color="primary"
       >
-        Request has been saved!
+        <FormattedMessage id={messages.requestSaved.id} />
       </Snackbar>
     </Box>
   );

@@ -9,8 +9,38 @@ import { defineMessages } from 'react-intl';
 export const scope = 'app.components.ActualRequesterInputs';
 
 export default defineMessages({
-  header: {
-    id: `${scope}.header`,
-    defaultMessage: 'This is the ActualRequesterInputs component!',
+  title: {
+    id: `${scope}.title`,
+    defaultMessage: 'Please fill the actual requester information*',
+  },
+
+  firstName: {
+    id: `${scope}.firstName`,
+    defaultMessage: 'First Name',
+  },
+
+  lastName: {
+    id: `${scope}.lastName`,
+    defaultMessage: 'Last Name',
+  },
+
+  employeeId: {
+    id: `${scope}.employeeId`,
+    defaultMessage: 'Employee ID',
+  },
+
+  jobTitle: {
+    id: `${scope}.jobTitle`,
+    defaultMessage: 'Job Title*',
+  },
+
+  department: {
+    id: `${scope}.department`,
+    defaultMessage: 'Department*',
+  },
+
+  manager: {
+    id: `${scope}.manager`,
+    defaultMessage: 'Manager',
   },
 });

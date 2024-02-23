@@ -31,6 +31,8 @@ import {
   setOrdreMissionIdentityAction,
 } from 'pages/OrdreMission/actions';
 import { NumericFormat } from 'react-number-format';
+import { FormattedMessage, useIntl } from 'react-intl';
+import messages from './messages';
 import {
   cleanupAvanceVoyageTableStoreAction,
   loadAvanceVoyageAction,
@@ -62,6 +64,43 @@ export function AvanceVoyageTable() {
     isSideBarVisible,
   } = useSelector(mapStateToProps);
 
+  const intl = useIntl();
+
+  const tableDescription = intl.formatMessage({
+    id: messages.tableDescription.id,
+  });
+
+  const tableMissionOrderId = intl.formatMessage({
+    id: messages.tableMissionOrderId.id,
+  });
+
+  const tableEstimatedTotal = intl.formatMessage({
+    id: messages.tableEstimatedTotal.id,
+  });
+  const tableCurrency = intl.formatMessage({
+    id: messages.tableCurrency.id,
+  });
+
+  const tableLatestStatus = intl.formatMessage({
+    id: messages.tableLatestStatus.id,
+  });
+
+  const tableOnBehalf = intl.formatMessage({
+    id: messages.tableOnBehalf.id,
+  });
+
+  const tableCreatedOn = intl.formatMessage({
+    id: messages.tableCreatedOn.id,
+  });
+
+  const tableActions = intl.formatMessage({
+    id: messages.tableActions.id,
+  });
+
+  const missionOrderNavigationTooltipTitle = intl.formatMessage({
+    id: messages.missionOrderNavigationTooltipTitle.id,
+  });
+
   const avanceVoyageColumns = [
     {
       field: 'id',
@@ -83,7 +122,7 @@ export function AvanceVoyageTable() {
       field: 'ordreMissionDescription',
       hide: false,
       width: 250,
-      headerName: 'Description',
+      headerName: tableDescription,
       renderCell: (params) => {
         const { ordreMissionDescription } = params.row;
         return (
@@ -99,12 +138,12 @@ export function AvanceVoyageTable() {
       field: 'ordreMissionId',
       hide: false,
       width: 120,
-      headerName: '#Mission Order',
+      headerName: tableMissionOrderId,
       renderCell: (params) => {
         const { ordreMissionId } = params.row;
         return (
           <Tooltip
-            title="Navigate to the related Ordre Mission"
+            title={missionOrderNavigationTooltipTitle}
             placement="bottom-start"
           >
             <Typography level="title-md" variant="plain">
@@ -125,7 +164,7 @@ export function AvanceVoyageTable() {
     {
       field: 'estimatedTotal',
       hide: false,
-      headerName: 'Estimated Total',
+      headerName: tableEstimatedTotal,
       flex: 1,
       renderCell: (params) => {
         const { estimatedTotal } = params.row;
@@ -152,7 +191,7 @@ export function AvanceVoyageTable() {
     {
       field: 'currency',
       hide: false,
-      headerName: 'Currency',
+      headerName: tableCurrency,
       flex: 1,
       renderCell: (params) => {
         const { currency } = params.row;
@@ -166,7 +205,7 @@ export function AvanceVoyageTable() {
     {
       field: 'latestStatus',
       hide: false,
-      headerName: 'Latest Status',
+      headerName: tableLatestStatus,
       flex: 1,
       renderCell: (params) => {
         const { latestStatus } = params.row;
@@ -246,13 +285,13 @@ export function AvanceVoyageTable() {
       field: 'onBehalf',
       hide: false,
       type: 'boolean',
-      headerName: 'onBehalf',
+      headerName: tableOnBehalf,
       flex: 1,
     },
     {
       field: 'createDate',
       hide: false,
-      headerName: 'Created On',
+      headerName: tableCreatedOn,
       flex: 1,
       renderCell: (params) => {
         const { createDate } = params.row;
@@ -266,7 +305,7 @@ export function AvanceVoyageTable() {
     {
       field: '',
       hide: false,
-      headerName: 'Actions',
+      headerName: tableActions,
       flex: 1,
       renderCell: (params) => {
         const { id } = params.row;
@@ -280,7 +319,7 @@ export function AvanceVoyageTable() {
               dispatch(changePageContentAction('VIEW'));
             }}
           >
-            View
+            <FormattedMessage id={messages.tableViewButton.id} />
           </Button>
         );
       },

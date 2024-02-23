@@ -29,6 +29,8 @@ import {
   parseDecimalFromString,
 } from 'utils/Custom/stringManipulation';
 import DropDownMenu from 'components/DropDownMenu';
+import { FormattedMessage } from 'react-intl';
+import messages from './messages';
 import saga from './saga';
 import reducer from './reducer';
 import {
@@ -219,7 +221,7 @@ export default function MyRequests() {
             level="h1"
             sx={{ fontSize: '50px', marginBottom: '10px', marginTop: '20px' }}
           >
-            Welcome{' '}
+            <FormattedMessage id={messages.welcome.id} />{' '}
             {localStorage.getItem('firstName') !== null
               ? `${localStorage.getItem('firstName')} ${localStorage.getItem(
                   'lastName',
@@ -235,13 +237,14 @@ export default function MyRequests() {
               textAlign: 'center',
             }}
           >
-            This is the section, where you can access or place your requests.
+            <FormattedMessage id={messages.sectionInfo.id} />
           </Alert>
         </Stack>
       </Box>
       <Container maxWidth="sm">
         <Typography level="h3" textAlign="center">
-          Statistics <TrendingUpIcon />
+          <FormattedMessage id={messages.statisticsHeader.id} />{' '}
+          <TrendingUpIcon />
         </Typography>
         <Grid
           container
@@ -262,9 +265,7 @@ export default function MyRequests() {
                         variant="plain"
                         color="warning"
                       >
-                        You have never placed a request before. Head to a
-                        corresponding section and click on &quot;Request&quot;
-                        to initiate one.
+                        <FormattedMessage id={messages.noRequestsAlert.id} />
                       </Typography>
                     </CardContent>
                   </Card>

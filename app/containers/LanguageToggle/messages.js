@@ -11,7 +11,7 @@ export const scope = 'app.containers.LanguageToggle';
 export default defineMessages({
   Label: {
     id: `${scope}.title`,
-    defaultMessage: '-Language',
+    defaultMessage: 'Language',
   },
   en: {
     id: `${scope}.english`,
@@ -19,6 +19,6 @@ export default defineMessages({
   },
   fr: {
     id: `${scope}.french`,
-    defaultMessage: '-French',
+    defaultMessage: 'French',
   },
 });

@@ -27,6 +27,7 @@ import Container from '@mui/joy/Container';
 import Grid from '@mui/joy/Grid';
 import { PieChart } from '@mui/x-charts/PieChart';
 import CountUp from 'react-countup';
+import { Divider } from '@mui/material';
 import reducer from './reducer';
 import saga from './saga';
 import { cleanupStoreAction, loadDeciderStatsAction } from './actions';
@@ -425,6 +426,20 @@ export function DecideOnRequests() {
           </Grow>
         </Grid>
       </Container>
+
+      <Card sx={{ minWidth: 275 }}>
+        <Grow in>
+          <CardContent>
+            <Typography level="h4">
+              Pending requests awaiting your approval:
+            </Typography>
+            <Typography level="title-md" color="primary">
+              Mission Order: 5
+            </Typography>
+            <Divider variant="middle" />
+          </CardContent>
+        </Grow>
+      </Card>
     </Box>
   );
 }

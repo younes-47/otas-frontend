@@ -30,6 +30,7 @@ import FilePresent from '@mui/icons-material/FilePresent';
 import Typography from '@mui/joy/Typography';
 import Snackbar from '@mui/joy/Snackbar';
 import { NumericFormat } from 'react-number-format';
+import { FormattedMessage, useIntl } from 'react-intl';
 import saga from './saga';
 import reducer from './reducer';
 import {
@@ -41,6 +42,7 @@ import {
   makeSelectLoadingDepenseCaisses,
   makeSelectStatusDepenseCaisse,
 } from './selectors';
+import messages from './messages';
 import {
   cleanupDepenseCaisseTableStoreAction,
   deleteDepenseCaisseAction,
@@ -171,6 +173,39 @@ export function DepenseCaisseTable() {
   const handleOnFileIconClick = (fileName) => {
     dispatch(downloadDepenseCaisseReceiptsFileAction(fileName));
   };
+
+  const intl = useIntl();
+
+  const tableDescription = intl.formatMessage({
+    id: messages.tableDescription.id,
+  });
+  const tableTotal = intl.formatMessage({
+    id: messages.tableTotal.id,
+  });
+  const tableCurrency = intl.formatMessage({
+    id: messages.tableCurrency.id,
+  });
+
+  const tableLatestStatus = intl.formatMessage({
+    id: messages.tableLatestStatus.id,
+  });
+
+  const tableOnBehalf = intl.formatMessage({
+    id: messages.tableOnBehalf.id,
+  });
+
+  const tableCreatedOn = intl.formatMessage({
+    id: messages.tableCreatedOn.id,
+  });
+
+  const tableActions = intl.formatMessage({
+    id: messages.tableActions.id,
+  });
+
+  const tableReceiptsFile = intl.formatMessage({
+    id: messages.tableReceiptsFile.id,
+  });
+
   const depenseCaisseColumns = [
     {
       field: 'id',
@@ -191,7 +226,7 @@ export function DepenseCaisseTable() {
     {
       field: 'description',
       hide: false,
-      headerName: 'Description',
+      headerName: tableDescription,
       flex: 1,
       renderCell: (params) => {
         const { description } = params.row;
@@ -208,7 +243,7 @@ export function DepenseCaisseTable() {
       field: 'total',
       hide: false,
       width: 150,
-      headerName: 'Total',
+      headerName: tableTotal,
       renderCell: (params) => {
         const { total } = params.row;
         return (
@@ -234,7 +269,7 @@ export function DepenseCaisseTable() {
     {
       field: 'currency',
       hide: false,
-      headerName: 'Currency',
+      headerName: tableCurrency,
       width: 150,
       renderCell: (params) => {
         const { currency } = params.row;
@@ -248,7 +283,7 @@ export function DepenseCaisseTable() {
     {
       field: 'latestStatus',
       hide: false,
-      headerName: 'Latest Status',
+      headerName: tableLatestStatus,
       width: 150,
       renderCell: (params) => {
         const { latestStatus } = params.row;
@@ -328,13 +363,13 @@ export function DepenseCaisseTable() {
       field: 'onBehalf',
       hide: false,
       type: 'boolean',
-      headerName: 'onBehalf',
+      headerName: tableOnBehalf,
       width: 150,
     },
     {
       field: 'receiptsFileName',
       hide: false,
-      headerName: 'Receipts File',
+      headerName: tableReceiptsFile,
       width: 150,
       renderCell: (params) => {
         const { receiptsFileName } = params.row;
@@ -348,7 +383,7 @@ export function DepenseCaisseTable() {
     {
       field: 'createDate',
       hide: false,
-      headerName: 'Created On',
+      headerName: tableCreatedOn,
       flex: 1,
       renderCell: (params) => {
         const { createDate } = params.row;
@@ -362,7 +397,7 @@ export function DepenseCaisseTable() {
     {
       field: '',
       hide: false,
-      headerName: 'Actions',
+      headerName: tableActions,
       flex: 1,
       renderCell: (params) => {
         const { id, latestStatus } = params.row;
@@ -378,7 +413,7 @@ export function DepenseCaisseTable() {
                   handleOnEditButtonClick(id);
                 }}
               >
-                Edit
+                <FormattedMessage id={messages.tableEditButton.id} />
               </Button>
               <Button
                 variant="contained"
@@ -389,7 +424,7 @@ export function DepenseCaisseTable() {
                   setModalVisibility(true);
                 }}
               >
-                Delete
+                <FormattedMessage id={messages.tableDeleteButton.id} />
               </Button>
             </Box>
           );
@@ -409,7 +444,7 @@ export function DepenseCaisseTable() {
                   handleOnModifyButtonClick(id);
                 }}
               >
-                Modify
+                <FormattedMessage id={messages.tableModifyButton.id} />
               </Button>
             </Box>
           );
@@ -423,7 +458,7 @@ export function DepenseCaisseTable() {
               handleOnViewButtonClick(id);
             }}
           >
-            View
+            <FormattedMessage id={messages.tableViewButton.id} />
           </Button>
         );
       },
@@ -463,7 +498,9 @@ export function DepenseCaisseTable() {
             fontSize="large"
             sx={{ color: 'green' }}
           ></AddCircleIcon>
-          <h1 style={{ color: 'green', fontSize: '20px' }}>Request</h1>
+          <h1 style={{ color: 'green', fontSize: '20px' }}>
+            <FormattedMessage id={messages.requestButton.id} />
+          </h1>
         </IconButton>
       </Box>
       {!errorLoadingDepenseCaisses ? (
@@ -491,13 +528,12 @@ export function DepenseCaisseTable() {
         aria-describedby="alert-dialog-slide-description"
       >
         <DialogTitle color="error">
-          Are you sure you want to delete this request!
+          <FormattedMessage id={messages.dialogHeader.id} />
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
             <Alert severity="error">
-              This will delete all information related to it. This can&apos;t be
-              undone.
+              <FormattedMessage id={messages.dialogDeletionAlert.id} />
             </Alert>
           </DialogContentText>
         </DialogContent>
@@ -510,14 +546,14 @@ export function DepenseCaisseTable() {
             variant="outlined"
             color="error"
           >
-            Confirm
+            <FormattedMessage id={messages.dialogConfirmButton.id} />
           </Button>
           <Button
             onClick={() => setModalVisibility(false)}
             variant="outlined"
             color="primary"
           >
-            Close
+            <FormattedMessage id={messages.dialogCloseButton.id} />
           </Button>
         </DialogActions>
       </Dialog>

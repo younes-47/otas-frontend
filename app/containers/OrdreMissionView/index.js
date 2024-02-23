@@ -319,7 +319,7 @@ export function OrdreMissionView({ state }) {
       >
         <DialogTitle>Status History</DialogTitle>
         <DialogContent dividers>
-          <Timeline position="alternate">
+          <Timeline>
             {ordreMissionDetails?.statusHistory?.map((sh, i, arr) => (
               <CustomizedTimeLine
                 statusHistory={sh}

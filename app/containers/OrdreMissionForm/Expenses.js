@@ -5,23 +5,20 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { NumericFormat } from 'react-number-format';
-import {
-  Divider,
-  FormControl,
-  IconButton,
-  // IconButton,
-  InputAdornment,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from '@mui/material';
-import { Box } from '@mui/system';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import FormControl from '@mui/material/FormControl';
+import IconButton from '@mui/material/IconButton';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/system/Box';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { createStructuredSelector } from 'reselect';
 import { useSelector } from 'react-redux';
 import dayjs from 'dayjs';
+import { FormattedMessage, useIntl } from 'react-intl';
+import messages from './messages';
 import { makeSelectAbroad } from './selectors';
 // import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
@@ -45,6 +42,8 @@ const Expenses = ({
     updateExpenseData(expenseId, 'expenseDate', noOffsetDate);
   };
 
+  const intl = useIntl();
+
   return (
     <Box key={id}>
       <Box display="flex" gap={2} marginBottom="1rem">
@@ -67,7 +66,9 @@ const Expenses = ({
           }}
           variant={!isExpenseRequired ? 'outlined' : 'filled'}
           id="outlined-basic"
-          label="Description"
+          label={intl.formatMessage({
+            id: messages.expenseDescriptionLabel.id,
+          })}
           value={description}
           onChange={(e) => updateExpenseData(id, 'description', e.target.value)}
         />
@@ -79,7 +80,9 @@ const Expenses = ({
           onChange={(e) => handleExpenseDate(e, id)}
           sx={{ maxWidth: 170 }}
           required
-          label="Expense Date"
+          label={intl.formatMessage({
+            id: messages.expenseDateLabel.id,
+          })}
           disablePast={!isExpenseRequired}
           format="DD/MM/YYYY"
         />
@@ -87,14 +90,16 @@ const Expenses = ({
         <Box sx={{ minWidth: 120 }}>
           <FormControl fullWidth>
             <InputLabel required id="demo-simple-select-label">
-              Currency
+              <FormattedMessage id={messages.expensesTableCurrency.id} />
             </InputLabel>
             <Select
               inputProps={{ readOnly: isExpenseRequired }}
               variant={!isExpenseRequired ? 'outlined' : 'filled'}
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              label="Currency"
+              label={intl.formatMessage({
+                id: messages.expensesTableCurrency.id,
+              })}
               value={currency}
               onChange={(e) =>
                 updateExpenseData(id, 'currency', e.target.value)
@@ -113,7 +118,7 @@ const Expenses = ({
             readOnly: isExpenseRequired,
           }}
           required
-          label="Fee"
+          label={intl.formatMessage({ id: messages.expensesFeeLabel.id })}
           value={estimatedFee}
           onValueChange={(values, sourceInfo) => {
             if (values.value === '') {

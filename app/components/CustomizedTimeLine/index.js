@@ -26,7 +26,8 @@ const getDotColor = (status) => {
   if (
     status === 'Approved' ||
     status === 'Finalized' ||
-    status === 'Funds Collected'
+    status === 'Funds Collected' ||
+    status === 'Funds Prepared'
   )
     return 'success';
   if (
@@ -39,13 +40,18 @@ const getDotColor = (status) => {
   return 'primary';
 };
 const getDotIcon = (status) => {
-  if (status === 'Draft' || status === 'Submitted') {
+  if (
+    status === 'Draft' ||
+    status === 'Submitted' ||
+    status === 'Resubmitted'
+  ) {
     return <EditIcon fontSize="small" />;
   }
   if (
     status === 'Approved' ||
     status === 'Finalized' ||
-    status === 'Funds Collected'
+    status === 'Funds Collected' ||
+    status === 'Funds Prepared'
   )
     return <CheckIcon fontSize="small" />;
   if (

@@ -46,6 +46,9 @@ import {
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { makeSelectAvanceVoyageIdentity } from 'pages/AvanceVoyage/selectors';
 import { NumericFormat } from 'react-number-format';
+import TripsTable from 'components/TripsTable';
+import ExpensesTable from 'components/ExpensesTable';
+import messages from './messages';
 import makeSelectAvanceVoyageView, {
   makeSelectAvanceVoyageDetails,
   makeSelectAvanceVoyageDocumentFile,
@@ -174,7 +177,8 @@ export function AvanceVoyageView() {
       >
         {avanceVoyageDetails ? (
           <h1 style={{ fontSize: '30px' }}>
-            Avance Voyage #{avanceVoyageDetails?.id} Details
+            <FormattedMessage id={messages.pageTitle.id} />
+            &nbsp; #{avanceVoyageDetails?.id}
           </h1>
         ) : (
           <></>
@@ -188,7 +192,7 @@ export function AvanceVoyageView() {
         marginBottom={1}
       >
         <JoyTypography color="neutral" level="title-lg" variant="plain">
-          Current Status:{' '}
+          <FormattedMessage id={messages.currentStatus.id} />:{' '}
           <JoyTypography color="primary" level="title-lg" variant="plain">
             {avanceVoyageDetails?.latestStatus}
           </JoyTypography>
@@ -210,7 +214,7 @@ export function AvanceVoyageView() {
           size="medium"
           variant="contained"
         >
-          Status History
+          <FormattedMessage id={messages.statusHistoryButton.id} />
         </Button>
         {avanceVoyageDetails?.latestStatus !== 'Returned' &&
           avanceVoyageDetails?.latestStatus !== 'Rejected' &&
@@ -230,7 +234,11 @@ export function AvanceVoyageView() {
               onClick={() => handleOnDownloadDocumentClick()}
               disabled={loadingButton}
             >
-              {!loadingButton ? <>Download Document</> : <>Generating...</>}
+              {!loadingButton ? (
+                <FormattedMessage id={messages.downloadDocumentButton.id} />
+              ) : (
+                <FormattedMessage id={messages.generating.id} />
+              )}
             </Button>
           )}
       </Box>
@@ -244,8 +252,7 @@ export function AvanceVoyageView() {
         >
           <Card color="warning" variant="soft" icon={false}>
             <CardContent sx={{ textAlign: 'center', marginBottom: '1em' }}>
-              This request has been returned. <br /> Please refer to the comment
-              below and apply the necessary changes.
+              <FormattedMessage id={messages.requestReturned.id} />
             </CardContent>
             <Card variant="outlined">
               {avanceVoyageDetails?.deciderComment}
@@ -262,8 +269,7 @@ export function AvanceVoyageView() {
         >
           <Card color="danger" variant="soft" icon={false}>
             <CardContent sx={{ textAlign: 'center', marginBottom: '1em' }}>
-              This request has been rejected. <br /> Please refer to the comment
-              below to know why.
+              <FormattedMessage id={messages.requestRejected.id} />
             </CardContent>
             <Card variant="outlined">
               {avanceVoyageDetails?.deciderComment}
@@ -302,22 +308,32 @@ export function AvanceVoyageView() {
         <Divider style={{ width: '60%', opacity: 0.7 }} />
       </Box>
 
-      <Box display="flex" justifyContent="center" marginTop={3}>
+      <Box
+        display="flex"
+        justifyContent="center"
+        marginTop={3}
+        marginBottom={3}
+      >
         <Alert severity="info">
-          <Typography variant="P">This request is Linked to&nbsp;</Typography>
+          <Typography variant="P">
+            <FormattedMessage id={messages.requestLinkedTo.id} />
+            &nbsp;
+          </Typography>
           {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
           <Link
             level="title-sm"
             underline="always"
             onClick={() => handleOnOrdreMissionLinkClick()}
           >
-            Ordre Mission #{avanceVoyageDetails?.ordreMissionId}&nbsp;
+            <FormattedMessage id={messages.missionOrderTitle.id} />
+            {avanceVoyageDetails?.ordreMissionId}&nbsp;
             <InsertLinkIcon fontSize="small" />
           </Link>
         </Alert>
       </Box>
 
-      <Box
+      {/* Accordion */}
+      {/* <Box
         key={avanceVoyageDetails?.id}
         display="flex"
         justifyContent="center"
@@ -334,7 +350,7 @@ export function AvanceVoyageView() {
               variant="h6"
               sx={{ width: '33%', flexShrink: 0, fontWeight: 'bold' }}
             >
-              More Details
+              <FormattedMessage id={messages.moreDetails.id} />
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
@@ -359,7 +375,7 @@ export function AvanceVoyageView() {
                     component="div"
                     id="nested-list-subheader"
                   >
-                    Trajectories
+                    <FormattedMessage id={messages.trajectoriesHeader.id} />
                   </ListSubheader>
                 }
               >
@@ -383,7 +399,7 @@ export function AvanceVoyageView() {
                     component="div"
                     id="nested-list-subheader"
                   >
-                    Expenses
+                    <FormattedMessage id={messages.expensesHeader.id} />
                   </ListSubheader>
                 }
               >
@@ -396,7 +412,32 @@ export function AvanceVoyageView() {
             </Box>
           </AccordionDetails>
         </Accordion>
+      </Box> */}
+
+      {/* Trips */}
+
+      <Typography level="title-lg" textAlign="center" marginBottom={2}>
+        <FormattedMessage id={messages.tripsHeader.id} />
+      </Typography>
+      <Box display="flex" justifyContent="center" marginBottom={5}>
+        <TripsTable tripsData={avanceVoyageDetails?.trips} />
       </Box>
+
+      {/* Expenses */}
+
+      <Typography level="title-lg" textAlign="center" marginBottom={2}>
+        {avanceVoyageDetails?.expenses.length > 0 ? (
+          <FormattedMessage id={messages.expensesHeader.id} />
+        ) : (
+          <FormattedMessage id={messages.noExpensesHeader.id} />
+        )}
+      </Typography>
+      {avanceVoyageDetails?.expenses.length > 0 && (
+        <Box display="flex" justifyContent="center" marginBottom={5}>
+          <ExpensesTable expensesData={avanceVoyageDetails?.expenses} />
+        </Box>
+      )}
+
       {/* DIVIDER */}
       <Box
         display="flex"
@@ -413,7 +454,8 @@ export function AvanceVoyageView() {
           <Box display="flex" flexDirection="column">
             <Box display="flex" justifyContent="space-between" gap={5}>
               <Typography variant="h6" align="left" display="flex">
-                Requested Amount:&nbsp; &nbsp;
+                <FormattedMessage id={messages.requestedAmountHeader.id} />
+                :&nbsp; &nbsp;
                 <Typography
                   variant="h6"
                   sx={{ color: 'success.main', fontWeight: 'bold' }}
@@ -456,7 +498,7 @@ export function AvanceVoyageView() {
           color="primary"
           onClick={handleOnReturnButtonClick}
         >
-          Return
+          <FormattedMessage id={messages.returnButton.id} />
         </Button>
       </Stack>
 
@@ -466,9 +508,11 @@ export function AvanceVoyageView() {
         onClose={() => setStatusHistoryDialogVisibility(false)}
         width="80px"
       >
-        <DialogTitle>Status History</DialogTitle>
+        <DialogTitle>
+          <FormattedMessage id={messages.dialogTitle.id} />
+        </DialogTitle>
         <DialogContent dividers>
-          <Timeline position="alternate">
+          <Timeline>
             {avanceVoyageDetails?.statusHistory?.map((sh, i, arr) => (
               <CustomizedTimeLine
                 statusHistory={sh}
@@ -482,7 +526,7 @@ export function AvanceVoyageView() {
             variant="contained"
             onClick={() => setStatusHistoryDialogVisibility(false)}
           >
-            Close
+            <FormattedMessage id={messages.closeButton.id} />
           </Button>
         </DialogActions>
       </Dialog>

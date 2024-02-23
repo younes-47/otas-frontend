@@ -9,6 +9,6 @@ import styled from 'styled-components';
 
 export const StyledMenuItem = styled(MenuItem)`
   && {
-    /* color: black; */
+    color: black;
   }
 `;

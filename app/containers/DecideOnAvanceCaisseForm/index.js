@@ -519,7 +519,7 @@ export function DecideOnAvanceCaisseForm({ state }) {
         <DialogTitle>{modalHeader}</DialogTitle>
         <DialogContent dividers>
           {modalHeader === 'Status History' ? (
-            <Timeline position="alternate">
+            <Timeline>
               {avanceCaisseDetails?.statusHistory?.map((sh, i, arr) => (
                 <CustomizedTimeLine
                   statusHistory={sh}

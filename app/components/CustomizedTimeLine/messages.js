@@ -8,9 +8,4 @@ import { defineMessages } from 'react-intl';
 
 export const scope = 'app.components.CustomizedTimeLine';
 
-export default defineMessages({
-  header: {
-    id: `${scope}.header`,
-    defaultMessage: 'This is the CustomizedTimeLine component!',
-  },
-});
+export default defineMessages({});

@@ -8,11 +8,12 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import PropTypes from 'prop-types';
-import { Typography } from '@mui/joy';
+import Typography from '@mui/joy/Typography';
 import { NumericFormat } from 'react-number-format';
 import Input from '@mui/joy/Input';
-import { FormattedDate } from 'react-intl';
+import { FormattedDate, FormattedMessage } from 'react-intl';
 import { DateTimeFormater } from 'utils/Custom/stringManipulation';
+import messages from './messages';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -46,20 +47,38 @@ export default function TripsTable({
       <Table sx={{ minWidth: 700 }} size="small">
         <TableHead>
           <TableRow>
-            <StyledTableCell align="left">Departure</StyledTableCell>
-            <StyledTableCell align="left">Destination</StyledTableCell>
-            <StyledTableCell align="left">Departure&nbsp;Date</StyledTableCell>
-            <StyledTableCell align="left">Arrival&nbsp;Date</StyledTableCell>
-            <StyledTableCell align="left">With</StyledTableCell>
-            <StyledTableCell align="left">Unit</StyledTableCell>
-            <StyledTableCell align="left">Value</StyledTableCell>
-            <StyledTableCell align="left">Highway&nbsp;Fee</StyledTableCell>
-            <StyledTableCell align="left">Amount</StyledTableCell>
+            <StyledTableCell align="left">
+              <FormattedMessage id={messages.tripDeparture.id} />
+            </StyledTableCell>
+            <StyledTableCell align="left">
+              <FormattedMessage id={messages.tripDestination.id} />
+            </StyledTableCell>
+            <StyledTableCell align="left">
+              <FormattedMessage id={messages.tripDepartureDate.id} />
+            </StyledTableCell>
+            <StyledTableCell align="left">
+              <FormattedMessage id={messages.tripArrivalDate.id} />
+            </StyledTableCell>
+            <StyledTableCell align="left">
+              <FormattedMessage id={messages.tripTransportation.id} />
+            </StyledTableCell>
+            <StyledTableCell align="left">
+              <FormattedMessage id={messages.tripUnit.id} />
+            </StyledTableCell>
+            <StyledTableCell align="left">
+              <FormattedMessage id={messages.tripUnit.id} />
+            </StyledTableCell>
+            <StyledTableCell align="left">
+              <FormattedMessage id={messages.tripHighwayFee.id} />
+            </StyledTableCell>
+            <StyledTableCell align="left">
+              <FormattedMessage id={messages.tripTotal.id} />
+            </StyledTableCell>
             {((updateTripsToLiquidate !== undefined &&
               getActualFee !== undefined) ||
               isLiquidationView === true) && (
               <StyledTableCell align="left" color="danger">
-                Actual&nbsp;amount&nbsp;spent*
+                <FormattedMessage id={messages.actualAmountSpent.id} />
               </StyledTableCell>
             )}
           </TableRow>

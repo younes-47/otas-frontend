@@ -15,7 +15,6 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-
 import CloseIcon from '@mui/icons-material/Close';
 import Tables from 'components/Tables';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -28,7 +27,8 @@ import {
   setOrdreMissionIdentityAction,
 } from 'pages/OrdreMission/actions';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
-import { Snackbar } from '@mui/joy';
+import Snackbar from '@mui/joy/Snackbar';
+import { FormattedMessage, useIntl } from 'react-intl';
 import saga from './saga';
 import reducer from './reducer';
 import {
@@ -45,6 +45,7 @@ import {
   nullifyErrorDeletingOrdreMissionAction,
   setOrdreMissionStatusAction,
 } from './actions';
+import messages from './messages';
 
 const mapStateToProps = createStructuredSelector({
   loadingOrdreMissions: makeSelectLoadingOrdreMissions(),
@@ -131,6 +132,30 @@ export function OrdreMissionTable() {
     dispatch(deleteOrdreMissionAction(id));
   };
 
+  const intl = useIntl();
+  const tableDescription = intl.formatMessage({
+    id: messages.tableDescription.id,
+  });
+  const tableAbroad = intl.formatMessage({
+    id: messages.tableAbroad.id,
+  });
+
+  const tableLatestStatus = intl.formatMessage({
+    id: messages.tableLatestStatus.id,
+  });
+
+  const tableOnBehalf = intl.formatMessage({
+    id: messages.tableOnBehalf.id,
+  });
+
+  const tableCreatedOn = intl.formatMessage({
+    id: messages.tableCreatedOn.id,
+  });
+
+  const tableActions = intl.formatMessage({
+    id: messages.tableActions.id,
+  });
+
   const ordreMissionColumns = [
     {
       field: 'id',
@@ -151,7 +176,7 @@ export function OrdreMissionTable() {
     {
       field: 'description',
       hide: false,
-      headerName: 'Description',
+      headerName: tableDescription,
       flex: 1,
       renderCell: (params) => {
         const { description } = params.row;
@@ -167,8 +192,8 @@ export function OrdreMissionTable() {
     {
       field: 'latestStatus',
       hide: false,
-      headerName: 'Latest Status',
-      flex: 1,
+      headerName: tableLatestStatus,
+      width: 300,
       renderCell: (params) => {
         const { latestStatus } = params.row;
         if (
@@ -247,21 +272,21 @@ export function OrdreMissionTable() {
       field: 'onBehalf',
       hide: false,
       type: 'boolean',
-      headerName: 'onBehalf',
-      flex: 1,
+      headerName: tableOnBehalf,
+      width: 150,
     },
     {
       field: 'abroad',
       hide: false,
       type: 'boolean',
-      headerName: 'Abroad',
-      flex: 1,
+      headerName: tableAbroad,
+      width: 150,
     },
     {
       field: 'createDate',
       hide: false,
-      headerName: 'Created On',
-      flex: 1,
+      headerName: tableCreatedOn,
+      width: 200,
       renderCell: (params) => {
         const { createDate } = params.row;
         return (
@@ -275,8 +300,8 @@ export function OrdreMissionTable() {
     {
       field: '',
       hide: false,
-      headerName: 'Actions',
-      flex: 1,
+      headerName: tableActions,
+      width: 300,
       renderCell: (params) => {
         const { id, latestStatus } = params.row;
         if (latestStatus === 'Draft') {
@@ -291,7 +316,7 @@ export function OrdreMissionTable() {
                   handleOnEditButtonClick(id);
                 }}
               >
-                Edit
+                <FormattedMessage id={messages.tableEditButton.id} />
               </Button>
               <Button
                 variant="contained"
@@ -302,7 +327,7 @@ export function OrdreMissionTable() {
                   setModalVisibility(true);
                 }}
               >
-                Delete
+                <FormattedMessage id={messages.tableDeleteButton.id} />
               </Button>
             </Box>
           );
@@ -322,7 +347,7 @@ export function OrdreMissionTable() {
                   handleOnModifyButtonClick(id);
                 }}
               >
-                Modify
+                <FormattedMessage id={messages.tableModifyButton.id} />
               </Button>
             </Box>
           );
@@ -336,7 +361,7 @@ export function OrdreMissionTable() {
               handleOnViewButtonClick(id);
             }}
           >
-            View
+            <FormattedMessage id={messages.tableViewButton.id} />
           </Button>
         );
       },
@@ -377,7 +402,9 @@ export function OrdreMissionTable() {
             fontSize="large"
             sx={{ color: 'green' }}
           ></AddCircleIcon>
-          <h1 style={{ color: 'green', fontSize: '20px' }}>Request</h1>
+          <h1 style={{ color: 'green', fontSize: '20px' }}>
+            <FormattedMessage id={messages.requestButton.id} />
+          </h1>
         </IconButton>
       </Box>
       {!errorLoadingOrdreMissions ? (
@@ -405,13 +432,12 @@ export function OrdreMissionTable() {
         aria-describedby="alert-dialog-slide-description"
       >
         <DialogTitle color="error">
-          Are you sure you want to delete this request!
+          <FormattedMessage id={messages.dialogHeader.id} />
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
             <Alert severity="error">
-              This will delete all information related to it. This can&apos;t be
-              undone.
+              <FormattedMessage id={messages.dialogDeletionAlert.id} />
             </Alert>
           </DialogContentText>
         </DialogContent>
@@ -424,14 +450,14 @@ export function OrdreMissionTable() {
             variant="outlined"
             color="error"
           >
-            Confirm
+            <FormattedMessage id={messages.dialogConfirmButton.id} />
           </Button>
           <Button
             onClick={() => setModalVisibility(false)}
             variant="outlined"
             color="primary"
           >
-            Close
+            <FormattedMessage id={messages.dialogCloseButton.id} />
           </Button>
         </DialogActions>
       </Dialog>

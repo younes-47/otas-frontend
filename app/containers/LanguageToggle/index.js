@@ -17,8 +17,8 @@ import { StyledFormControl } from 'components/GlobalComponents/StyledFormControl
 import { StyledInputLabel } from 'components/GlobalComponents/StyledInputLabel';
 import { StyledSelect } from 'components/GlobalComponents/StyledSelect';
 import { StyledMenuItem } from 'components/GlobalComponents/StyledMenuItem';
+import GTranslateIcon from '@mui/icons-material/GTranslate';
 import messages from './messages';
-
 const mapStateToProps = createStructuredSelector({
   locale: makeSelectLocale(),
 });
@@ -31,6 +31,7 @@ export function LanguageToggle() {
 
   return (
     <Box alignItems="center" justifyContent="center" display="flex" right={0}>
+      <GTranslateIcon />
       <StyledFormControl sx={{ m: 2, minWidth: 10 }}>
         <StyledInputLabel id="language toggle">
           <FormattedMessage id={messages.Label.id} />

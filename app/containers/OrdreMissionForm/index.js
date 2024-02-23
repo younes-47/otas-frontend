@@ -52,8 +52,9 @@ import CustomizedTimeLine from 'components/CustomizedTimeLine';
 import { makeSelectOrdreMissionIdentity } from 'pages/OrdreMission/selectors';
 import ActualRequesterInputs from 'components/ActualRequesterInputs';
 import { ValidateInputs } from 'utils/Custom/ValidateInputs';
-
 import { NumericFormat } from 'react-number-format';
+import { FormattedMessage } from 'react-intl';
+import messages from './messages';
 import saga from './saga';
 import reducer from './reducer';
 import {
@@ -399,7 +400,9 @@ export function OrdreMissionForm({ state }) {
       if (tripToUpdate.unit === 'KM') {
         setTrips((prevTrips) =>
           prevTrips.map((trip) =>
-            trip.id === tripId ? { ...trip, unit: 'MAD' } : trip,
+            trip.id === tripId
+              ? { ...trip, unit: 'MAD', highwayFee: 0.0, value: 0.0 }
+              : trip,
           ),
         );
       }
@@ -517,10 +520,8 @@ export function OrdreMissionForm({ state }) {
   };
 
   const handleOnSubmitButtonClick = () => {
-    setModalHeader('Submit');
-    setModalBody(
-      "Please Review your information before confirming your changes. You won't be able to modify your request afterwards!",
-    );
+    setModalHeader('submitHeader');
+    setModalBody('onSubmit');
     setModalSevirity('info');
     setModalVisibility(true);
   };
@@ -531,10 +532,8 @@ export function OrdreMissionForm({ state }) {
   };
 
   const handleOnSubmitModificationsButtonClick = () => {
-    setModalHeader('Confirmation');
-    setModalBody(
-      "Please Review your information before confirming your changes. You won't be able to modify your request afterwards!",
-    );
+    setModalHeader('confirmation');
+    setModalBody('onSubmitModifications');
     setModalSevirity('warning');
     setModalVisibility(true);
   };
@@ -586,27 +585,32 @@ export function OrdreMissionForm({ state }) {
           marginBottom={1}
         >
           {state === 'ADD' && (
-            <h1 style={{ fontSize: '30px' }}>New Ordre Mission Request</h1>
+            <h1 style={{ fontSize: '30px' }}>
+              <FormattedMessage id={messages.pageTitleAdd.id} />
+            </h1>
           )}
           {state === 'EDIT' && (
             <h1 style={{ fontSize: '30px' }}>
-              Editing Ordre Mission #{ordreMissionDetails?.id}
+              <FormattedMessage id={messages.pageTitleEdit.id} /> #
+              {ordreMissionDetails?.id}
             </h1>
           )}
           {state === 'MODIFY' && (
             <h1 style={{ fontSize: '30px' }}>
-              Modifying Ordre Mission #{ordreMissionDetails?.id}
+              <FormattedMessage id={messages.pageTitleModify.id} /> #
+              {ordreMissionDetails?.id}
             </h1>
           )}
           {state === 'VIEW' && (
             <h1 style={{ fontSize: '30px' }}>
-              View Ordre Mission #{ordreMissionDetails?.id}
+              <FormattedMessage id={messages.pageTitleView.id} /> #
+              {ordreMissionDetails?.id}
             </h1>
           )}
           {state === 'CONFIRM' && (
             <Box>
               <Typography variant="h4" marginTop={3} gutterBottom>
-                Please Review your information before submitting
+                <FormattedMessage id={messages.pageTitleConfirm.id} />
               </Typography>
             </Box>
           )}
@@ -619,9 +623,7 @@ export function OrdreMissionForm({ state }) {
             marginBottom={1}
           >
             <Typography variant="caption">
-              *This request has been saved as a draft. You can still modify it
-              if you don&apos;t submit it. <br /> Please note: your request
-              cannot be edited once it is submitted.
+              <FormattedMessage id={messages.pageSubtitleConfirm.id} />
             </Typography>
           </Box>
         )}
@@ -634,7 +636,7 @@ export function OrdreMissionForm({ state }) {
               marginBottom={1}
             >
               <JoyTypography color="neutral" level="title-lg" variant="plain">
-                Current Status:{' '}
+                <FormattedMessage id={messages.currentStatus.id} />:{' '}
                 <JoyTypography color="primary" level="title-lg" variant="plain">
                   {ordreMissionDetails?.latestStatus}
                 </JoyTypography>
@@ -652,11 +654,11 @@ export function OrdreMissionForm({ state }) {
                 color="warning"
                 onClick={() => {
                   setModalVisibility(true);
-                  setModalHeader('Status History');
+                  setModalHeader('statusHistory');
                 }}
                 startIcon={<HistoryIcon />}
               >
-                Status History
+                <FormattedMessage id={messages.statusHistoryButton.id} />
               </Button>
               {ordreMissionDetails?.latestStatus !== 'Returned' &&
                 ordreMissionDetails?.latestStatus !== 'Rejected' &&
@@ -677,9 +679,15 @@ export function OrdreMissionForm({ state }) {
                     disabled={loadingButton}
                   >
                     {!loadingButton ? (
-                      <>Download Document</>
+                      <>
+                        <FormattedMessage
+                          id={messages.downloadDocumentButton.id}
+                        />
+                      </>
                     ) : (
-                      <>Generating...</>
+                      <>
+                        <FormattedMessage id={messages.generating.id} />
+                      </>
                     )}
                   </Button>
                 )}
@@ -696,8 +704,7 @@ export function OrdreMissionForm({ state }) {
           >
             <Card color="warning" variant="soft" icon={false}>
               <CardContent sx={{ textAlign: 'center', marginBottom: '1em' }}>
-                This request has been returned. <br /> Please refer to the
-                comment below and apply the necessary changes.
+                <FormattedMessage id={messages.requestReturned.id} />
               </CardContent>
               <Card variant="outlined">
                 {ordreMissionDetails?.deciderComment}
@@ -715,8 +722,7 @@ export function OrdreMissionForm({ state }) {
             >
               <Card color="danger" variant="soft" icon={false}>
                 <CardContent sx={{ textAlign: 'center', marginBottom: '1em' }}>
-                  This request has been rejected. <br /> Please refer to the
-                  comment below to know why.
+                  <FormattedMessage id={messages.requestRejected.id} />
                 </CardContent>
                 <Card variant="outlined">
                   {ordreMissionDetails?.deciderComment}
@@ -761,7 +767,7 @@ export function OrdreMissionForm({ state }) {
             </Box>
             <Box textAlign="center">
               <Typography variant="subtitle1">
-                Are you filling this form on behalf of someone else?
+                <FormattedMessage id={messages.onBehalfOfSomeoneElse.id} />
               </Typography>
             </Box>
             <RadioGroup
@@ -808,7 +814,7 @@ export function OrdreMissionForm({ state }) {
           <>
             <Box textAlign="center">
               <Typography variant="subtitle1">
-                Is this mission abroad?
+                <FormattedMessage id={messages.chooseAbroad.id} />
               </Typography>
             </Box>
             <RadioGroup
@@ -836,9 +842,14 @@ export function OrdreMissionForm({ state }) {
             marginBottom={3}
           >
             <Typography variant="subtitle1" display="flex">
-              This Mission is set to be:&nbsp;
+              <FormattedMessage id={messages.requestAbroadPhrase.id} />
+              :&nbsp;
               <Box sx={{ fontWeight: 'bold' }}>
-                {ordreMissionDetails?.abroad === true ? 'Abroad' : 'NOT Abroad'}
+                {ordreMissionDetails?.abroad === true ? (
+                  <FormattedMessage id={messages.requestsAbroadSet.id} />
+                ) : (
+                  <FormattedMessage id={messages.requestNotAbroadSet.id} />
+                )}
               </Box>
             </Typography>
           </Box>
@@ -866,7 +877,7 @@ export function OrdreMissionForm({ state }) {
             variant={readOnly ? 'filled' : 'outlined'}
             multiline
             minRows={3}
-            label="Mission description"
+            label="Description"
             value={description}
             onChange={(e) => updateDescriptionData(e.target.value)}
             required
@@ -898,7 +909,9 @@ export function OrdreMissionForm({ state }) {
           textAlign="center"
           marginBottom={2}
         >
-          <h1 style={{ fontSize: '25px' }}>Trajectories</h1>
+          <h1 style={{ fontSize: '25px' }}>
+            <FormattedMessage id={messages.tripsHeader.id} />
+          </h1>
           {!readOnly && (
             <IconButton onClick={addTrip}>
               <AddCircleIcon
@@ -939,12 +952,18 @@ export function OrdreMissionForm({ state }) {
           <Box display="flex" justifyContent="flex-start" width="40rem">
             <h1 style={{ fontSize: '18px' }}>
               {readOnly && expenses.length === 0 ? (
-                <>No Expenses</>
+                <>
+                  <FormattedMessage id={messages.noExpensesHeader.id} />
+                </>
               ) : (
-                <>Other expenses&nbsp;</>
+                <>
+                  <FormattedMessage id={messages.otherExpensesHeader.id} />{' '}
+                </>
               )}
               {!readOnly && (
-                <Typography variant="caption">(optional)</Typography>
+                <Typography variant="caption">
+                  <FormattedMessage id={messages.optionalExpensesHeader.id} />
+                </Typography>
               )}
             </h1>
             {!readOnly && (
@@ -990,7 +1009,9 @@ export function OrdreMissionForm({ state }) {
           <Box display="flex" justifyContent="flex-end" width="60%">
             <Box display="flex" flexDirection="column">
               <Box display="flex" justifyContent="space-between" gap={5}>
-                <h1 style={{ fontSize: '1.1rem' }}>Estimated Total in MAD:</h1>
+                <h1 style={{ fontSize: '1.1rem' }}>
+                  <FormattedMessage id={messages.estimatedTotalInMAD.id} />:
+                </h1>
                 <h1 style={{ fontSize: '1.1rem', color: 'green' }}>
                   <NumericFormat
                     displayType="text"
@@ -1015,7 +1036,7 @@ export function OrdreMissionForm({ state }) {
               {abroadSelection === 'true' && (
                 <Box display="flex" justifyContent="space-between" gap={5}>
                   <h1 style={{ fontSize: '1.1rem' }}>
-                    Estimated Total in EUR:
+                    <FormattedMessage id={messages.estimatedTotalInEUR.id} />:
                   </h1>
                   <h1 style={{ fontSize: '1.1rem', color: 'green' }}>
                     <NumericFormat
@@ -1055,7 +1076,7 @@ export function OrdreMissionForm({ state }) {
             color="primary"
             onClick={handleOnReturnButtonClick}
           >
-            Return
+            <FormattedMessage id={messages.returnButton.id} />
           </Button>
           {(state === 'EDIT' || state === 'ADD') && (
             <>
@@ -1064,14 +1085,14 @@ export function OrdreMissionForm({ state }) {
                 color="warning"
                 onClick={handleOnSaveAsDraftClick}
               >
-                Save as Draft
+                <FormattedMessage id={messages.saveAsDraftButton.id} />
               </Button>
               <Button
                 variant="contained"
                 color="success"
                 onClick={handleOnConfirmButtonClick}
               >
-                Confirm
+                <FormattedMessage id={messages.confirmButton.id} />
               </Button>
             </>
           )}
@@ -1081,7 +1102,7 @@ export function OrdreMissionForm({ state }) {
               color="success"
               onClick={handleOnSubmitModificationsButtonClick}
             >
-              Submit Modifications
+              <FormattedMessage id={messages.submitModificationsButton.id} />
             </Button>
           )}
           {state === 'CONFIRM' && (
@@ -1090,7 +1111,7 @@ export function OrdreMissionForm({ state }) {
               color="success"
               onClick={handleOnSubmitButtonClick}
             >
-              Submit
+              <FormattedMessage id={messages.submitButton.id} />
             </Button>
           )}
         </Stack>
@@ -1102,10 +1123,12 @@ export function OrdreMissionForm({ state }) {
           onClose={() => setModalVisibility(false)}
           aria-describedby="alert-dialog-slide-description"
         >
-          <DialogTitle>{modalHeader}</DialogTitle>
+          <DialogTitle>
+            {modalHeader && <FormattedMessage id={messages[modalHeader].id} />}
+          </DialogTitle>
           <DialogContent dividers>
-            {modalHeader === 'Status History' ? (
-              <Timeline position="alternate">
+            {modalHeader === 'statusHistory' ? (
+              <Timeline>
                 {ordreMissionDetails?.statusHistory?.map((sh, i, arr) => (
                   <CustomizedTimeLine
                     statusHistory={sh}
@@ -1115,28 +1138,32 @@ export function OrdreMissionForm({ state }) {
               </Timeline>
             ) : (
               <DialogContentText id="alert-dialog-slide-description">
-                <Alert severity={modalSevirity}>{modalBody}</Alert>
+                <Alert severity={modalSevirity}>
+                  {modalBody && (
+                    <FormattedMessage id={messages[modalBody].id} />
+                  )}
+                </Alert>
               </DialogContentText>
             )}
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setModalVisibility(false)}>Close</Button>
-            {modalHeader === 'Confirmation' && (
+            {modalHeader === 'confirmation' && (
               <Button
                 color="success"
                 onClick={handleOnSubmitModificationsConfirmationButtonClick}
                 variant="contained"
               >
-                Resubmit
+                <FormattedMessage id={messages.resubmitButton.id} />
               </Button>
             )}
-            {modalHeader === 'Submit' && (
+            {modalHeader === 'submitHeader' && (
               <Button
                 color="success"
                 onClick={handleOnSubmitConfirmationButtonClick}
                 variant="contained"
               >
-                Submit
+                <FormattedMessage id={messages.submitButton.id} />
               </Button>
             )}
           </DialogActions>
@@ -1176,8 +1203,7 @@ export function OrdreMissionForm({ state }) {
                 >
                   <WarningIcon color="warning" fontSize="large" />
                   <Typography variant="h6" color="warning">
-                    By submitting this request, you acknowledge that all
-                    provided information is correct.
+                    <FormattedMessage id={messages.fullpageModalHeader.id} />
                   </Typography>
                 </Box>
               </Alert>
@@ -1226,7 +1252,7 @@ export function OrdreMissionForm({ state }) {
           color="primary"
           variant="solid"
         >
-          Request has been saved!
+          <FormattedMessage id={messages.requestHasBeenSaved.id} />
         </Snackbar>
       </LocalizationProvider>
     </Box>

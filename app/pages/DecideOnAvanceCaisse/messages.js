@@ -8,9 +8,4 @@ import { defineMessages } from 'react-intl';
 
 export const scope = 'app.containers.DecideOnAvanceCaisse';
 
-export default defineMessages({
-  header: {
-    id: `${scope}.header`,
-    defaultMessage: 'This is the DecideOnAvanceCaisse container!',
-  },
-});
+export default defineMessages({});

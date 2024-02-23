@@ -1,15 +1,17 @@
 // Trips.js
 import React from 'react';
 import PropTypes from 'prop-types';
-import { IconButton, TextField } from '@mui/material';
-import { Box } from '@mui/system';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import IconButton from '@mui/material/IconButton';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/system/Box';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { NumericFormat } from 'react-number-format';
-
+import { useIntl } from 'react-intl';
+import messages from './messages';
 // import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 const Expenses = ({
@@ -26,6 +28,8 @@ const Expenses = ({
     const noOffsetDate = new Date(e.$d - tzoffset).toISOString().slice(0, -1);
     updateExpenseData(expenseId, 'expenseDate', noOffsetDate);
   };
+
+  const intl = useIntl();
 
   return (
     <Box key={id}>
@@ -50,7 +54,7 @@ const Expenses = ({
           variant={isExpenseModifiabale ? 'outlined' : 'filled'}
           required
           id="outlined-basic"
-          label="Description"
+          label={intl.formatMessage({ id: messages.expenseDescription.id })}
           value={description}
           onChange={(e) => updateExpenseData(id, 'description', e.target.value)}
           sx={{ minWidth: 320 }}
@@ -58,7 +62,7 @@ const Expenses = ({
             readOnly: !isExpenseModifiabale,
           }}
         />
-        <LocalizationProvider reuired dateAdapter={AdapterDayjs}>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
             readOnly={!isExpenseModifiabale}
             variant={isExpenseModifiabale ? 'outlined' : 'filled'}
@@ -66,14 +70,14 @@ const Expenses = ({
             value={expenseDate}
             onChange={(e) => handleExpenseDate(e, id)}
             required
-            label="Expense Date"
+            label={intl.formatMessage({ id: messages.expenseDate.id })}
             disablePast={isExpenseModifiabale}
             format="DD/MM/YYYY"
           />
         </LocalizationProvider>
         <NumericFormat
           required
-          label="Fee"
+          label={intl.formatMessage({ id: messages.expenseFee.id })}
           value={estimatedFee}
           variant={isExpenseModifiabale ? 'outlined' : 'filled'}
           sx={{ maxWidth: 120 }}

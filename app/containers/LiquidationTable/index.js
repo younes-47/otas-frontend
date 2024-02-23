@@ -47,6 +47,8 @@ import {
   setAvanceCaisseIdentityAction,
 } from 'pages/AvanceCaisse/actions';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { FormattedMessage, useIntl } from 'react-intl';
+import messages from './messages';
 import {
   makeSelectErrorDeletingLiquidation,
   makeSelectErrorDownloadingLiquidationReceiptsFile,
@@ -174,6 +176,8 @@ export function LiquidationTable() {
     [],
   );
 
+  const intl = useIntl();
+
   const liquidationColumns = [
     {
       field: 'id',
@@ -195,14 +199,17 @@ export function LiquidationTable() {
       field: 'requestType',
       hide: false,
       headerName: 'Request Type',
-      flex: 1,
+      width: 250,
       renderCell: (params) => {
         const { requestType, requestId } = params.row;
         return requestType === 'AV' ? (
           <Typography level="title-md" variant="plain">
-            Avance Voyage&nbsp;-&nbsp;
+            <FormattedMessage id={messages.tableAvanceVoyage.id} />
+            &nbsp;-&nbsp;
             <Tooltip
-              title="Navigate to the related Avance Voyage"
+              title={intl.formatMessage({
+                id: messages.tableAvanceVoyageNavigationTitle.id,
+              })}
               placement="bottom-start"
             >
               <Typography level="title-md" variant="plain">
@@ -220,9 +227,12 @@ export function LiquidationTable() {
           </Typography>
         ) : (
           <Typography level="title-md" variant="plain">
-            Avance Caisse&nbsp;-&nbsp;
+            <FormattedMessage id={messages.tableAvanceCaisse.id} />
+            &nbsp;-&nbsp;
             <Tooltip
-              title="Navigate to the related Avance Caisse"
+              title={intl.formatMessage({
+                id: messages.tableAvanceCaisseNavigationTitle.id,
+              })}
               placement="bottom-start"
             >
               <Typography level="title-md" variant="plain">
@@ -245,7 +255,7 @@ export function LiquidationTable() {
       field: 'requestDescription',
       hide: false,
       headerName: 'Description',
-      flex: 1,
+      width: 200,
       renderCell: (params) => {
         const { description } = params.row;
         return (
@@ -261,7 +271,7 @@ export function LiquidationTable() {
       field: 'actualTotal',
       hide: false,
       width: 120,
-      headerName: 'Actual Total',
+      headerName: intl.formatMessage({ id: messages.tableActualTotal.id }),
       renderCell: (params) => {
         const { actualTotal } = params.row;
         return (
@@ -287,7 +297,7 @@ export function LiquidationTable() {
     {
       field: 'currency',
       hide: false,
-      headerName: 'Currency',
+      headerName: intl.formatMessage({ id: messages.tableCurrency.id }),
       width: 120,
       renderCell: (params) => {
         const { currency } = params.row;
@@ -301,7 +311,7 @@ export function LiquidationTable() {
     {
       field: 'latestStatus',
       hide: false,
-      headerName: 'Latest Status',
+      headerName: intl.formatMessage({ id: messages.tableLatestStatus.id }),
       flex: 1,
       renderCell: (params) => {
         const { latestStatus } = params.row;
@@ -381,13 +391,13 @@ export function LiquidationTable() {
       field: 'onBehalf',
       hide: false,
       type: 'boolean',
-      headerName: 'onBehalf',
+      headerName: intl.formatMessage({ id: messages.tableOnBehalf.id }),
       width: 120,
     },
     {
       field: 'receiptsFileName',
       hide: false,
-      headerName: 'Receipts File',
+      headerName: intl.formatMessage({ id: messages.tableReceipstsFile.id }),
       width: 120,
       renderCell: (params) => {
         const { receiptsFileName } = params.row;
@@ -401,8 +411,8 @@ export function LiquidationTable() {
     {
       field: 'createDate',
       hide: false,
-      headerName: 'Created On',
-      flex: 1,
+      headerName: intl.formatMessage({ id: messages.tableCreateOn.id }),
+      width: 150,
       renderCell: (params) => {
         const { createDate } = params.row;
         return (
@@ -415,7 +425,7 @@ export function LiquidationTable() {
     {
       field: '',
       hide: false,
-      headerName: 'Actions',
+      headerName: intl.formatMessage({ id: messages.tableActions.id }),
       flex: 1,
       renderCell: (params) => {
         const { id, latestStatus } = params.row;
@@ -431,7 +441,7 @@ export function LiquidationTable() {
                   handleOnEditButtonClick(id);
                 }}
               >
-                Edit
+                <FormattedMessage id={messages.tableEditButton.id} />
               </Button>
               <Button
                 variant="contained"
@@ -442,7 +452,7 @@ export function LiquidationTable() {
                   setModalVisibility(true);
                 }}
               >
-                Delete
+                <FormattedMessage id={messages.tableDeleteButton.id} />
               </Button>
             </Box>
           );
@@ -462,7 +472,7 @@ export function LiquidationTable() {
                   handleOnModifyButtonClick(id);
                 }}
               >
-                Modify
+                <FormattedMessage id={messages.tableModifyButton.id} />
               </Button>
             </Box>
           );
@@ -476,7 +486,7 @@ export function LiquidationTable() {
               handleOnViewButtonClick(id);
             }}
           >
-            View
+            <FormattedMessage id={messages.tableViewButton.id} />
           </Button>
         );
       },
@@ -584,13 +594,12 @@ export function LiquidationTable() {
         aria-describedby="alert-dialog-slide-description"
       >
         <DialogTitle color="error">
-          Are you sure you want to delete this request!
+          <FormattedMessage id={messages.dialogHeader.id} />
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
             <Alert severity="error">
-              This will delete all information you previously filled. This
-              can&apos;t be undone.
+              <FormattedMessage id={messages.dialogDeletionAlert.id} />
             </Alert>
           </DialogContentText>
         </DialogContent>
@@ -603,14 +612,14 @@ export function LiquidationTable() {
             variant="outlined"
             color="error"
           >
-            Confirm
+            <FormattedMessage id={messages.dialogConfirmButton.id} />
           </Button>
           <Button
             onClick={() => setModalVisibility(false)}
             variant="outlined"
             color="primary"
           >
-            Close
+            <FormattedMessage id={messages.dialogCloseButton.id} />
           </Button>
         </DialogActions>
       </Dialog>

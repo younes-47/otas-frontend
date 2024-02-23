@@ -6,7 +6,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import FormattedMessage from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
@@ -30,14 +30,13 @@ function DisplayUserinfo({ userData = null, isActualRequester = true }) {
       {(userData === null && isActualRequester === true) ||
         (userData !== null && isActualRequester === false && (
           <Typography variant="h6" align="left" gutterBottom>
-            Requester Information
+            <FormattedMessage id={messages.header.id} />
           </Typography>
         ))}
 
       {userData !== null && isActualRequester === true && (
         <Typography variant="caption" align="left" gutterBottom>
-          *This request has been created on behalf of someone whose information
-          is specified below
+          <FormattedMessage id={messages.requestOnBehalf.id} />
         </Typography>
       )}
       <Paper elevation={2}>
@@ -55,7 +54,9 @@ function DisplayUserinfo({ userData = null, isActualRequester = true }) {
           gap={3}
         >
           <Box minWidth={150}>
-            <Typography variant="overline">First Name</Typography>
+            <Typography variant="overline">
+              <FormattedMessage id={messages.firstName.id} />
+            </Typography>
             <Box
               sx={{
                 bgcolor: 'grey.200',
@@ -77,7 +78,9 @@ function DisplayUserinfo({ userData = null, isActualRequester = true }) {
             </Box>
           </Box>
           <Box>
-            <Typography variant="overline">Last Name</Typography>
+            <Typography variant="overline">
+              <FormattedMessage id={messages.lastName.id} />
+            </Typography>
             <Box
               sx={{
                 bgcolor: 'grey.200',
@@ -100,7 +103,9 @@ function DisplayUserinfo({ userData = null, isActualRequester = true }) {
             </Box>
           </Box>
           <Box>
-            <Typography variant="overline">Employee ID</Typography>
+            <Typography variant="overline">
+              <FormattedMessage id={messages.employeeId.id} />
+            </Typography>
             <Box
               sx={{
                 bgcolor: 'grey.200',
@@ -123,7 +128,9 @@ function DisplayUserinfo({ userData = null, isActualRequester = true }) {
             </Box>
           </Box>
           <Box>
-            <Typography variant="overline">Title</Typography>
+            <Typography variant="overline">
+              <FormattedMessage id={messages.title.id} />
+            </Typography>
             <Box
               sx={{
                 bgcolor: 'grey.200',
@@ -146,7 +153,9 @@ function DisplayUserinfo({ userData = null, isActualRequester = true }) {
             </Box>
           </Box>
           <Box>
-            <Typography variant="overline">Department</Typography>
+            <Typography variant="overline">
+              <FormattedMessage id={messages.department.id} />
+            </Typography>
             <Box
               sx={{
                 bgcolor: 'grey.200',
@@ -169,7 +178,9 @@ function DisplayUserinfo({ userData = null, isActualRequester = true }) {
             </Box>
           </Box>
           <Box>
-            <Typography variant="overline">Manager</Typography>
+            <Typography variant="overline">
+              <FormattedMessage id={messages.manager.id} />
+            </Typography>
             <Box
               sx={{
                 bgcolor: 'grey.200',

@@ -8,18 +8,15 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 // import styled from 'styled-components';
 
-import { FormattedMessage } from 'react-intl';
-import {
-  Autocomplete,
-  Box,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Paper,
-  Select,
-  TextField,
-} from '@mui/material';
-import { Typography } from '@mui/joy';
+import { FormattedMessage, useIntl } from 'react-intl';
+import Autocomplete from '@mui/material/Autocomplete';
+import Box from '@mui/material/Box';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Paper from '@mui/material/Paper';
+import Select from '@mui/material/Select';
+import TextField from '@mui/material/TextField';
 import messages from './messages';
 
 function ActualRequesterInputs({
@@ -39,6 +36,8 @@ function ActualRequesterInputs({
     // eslint-disable-next-line react/jsx-props-no-spreading
     <Paper ref={ref} {...props} sx={{ textAlign: 'left' }} />
   ));
+
+  const intl = useIntl();
   return (
     <>
       <Box
@@ -48,7 +47,7 @@ function ActualRequesterInputs({
         marginBottom={2}
       >
         <h1 style={{ fontSize: '18px' }}>
-          Please fill the actual requester information*
+          <FormattedMessage id={messages.title.id} />
         </h1>
       </Box>
 
@@ -56,7 +55,7 @@ function ActualRequesterInputs({
         <Box display="flex" justifyContent="center" gap={2} marginBottom={2}>
           <TextField
             id="outlined-basic"
-            label="First Name"
+            label={intl.formatMessage({ id: messages.firstName.id })}
             variant="outlined"
             value={actualRequester.firstName}
             onChange={(e) =>
@@ -66,7 +65,7 @@ function ActualRequesterInputs({
           />
           <TextField
             id="outlined-basic"
-            label="Last Name"
+            label={intl.formatMessage({ id: messages.lastName.id })}
             variant="outlined"
             value={actualRequester.lastName}
             onChange={(e) =>
@@ -76,7 +75,7 @@ function ActualRequesterInputs({
           />
           <TextField
             id="outlined-basic"
-            label="Employee ID"
+            label={intl.formatMessage({ id: messages.employeeId.id })}
             variant="outlined"
             value={actualRequester.registrationNumber}
             onChange={(e) =>
@@ -106,7 +105,7 @@ function ActualRequesterInputs({
               <TextField
                 // eslint-disable-next-line react/jsx-props-no-spreading
                 {...params}
-                label="Job Title*"
+                label={intl.formatMessage({ id: messages.jobTitle.id })}
                 onChange={(e) =>
                   updateActualRequesterData('jobTitle', e.target.value)
                 }
@@ -127,15 +126,18 @@ function ActualRequesterInputs({
             PaperComponent={CustomPaper}
             required
             renderInput={(params) => (
-              // eslint-disable-next-line react/jsx-props-no-spreading
-              <TextField {...params} label="Department*" />
+              <TextField
+                // eslint-disable-next-line react/jsx-props-no-spreading
+                {...params}
+                label={intl.formatMessage({ id: messages.department.id })}
+              />
             )}
           />
           <Box sx={{ width: 224 }}>
             <FormControl fullWidth>
               <InputLabel required>Manager</InputLabel>
               <Select
-                label="Manager"
+                label={intl.formatMessage({ id: messages.manager.id })}
                 value={actualRequester.managerUserName}
                 onChange={(e) =>
                   updateActualRequesterData('managerUserName', e.target.value)
@@ -160,31 +162,6 @@ function ActualRequesterInputs({
               </Select>
             </FormControl>
           </Box>
-
-          {/* <Autocomplete
-            disablePortal
-            id="combo-box-demo"
-            options={staticData.managers}
-            sx={{ width: 224 }}
-            value={actualRequester.managerUserName}
-            PaperComponent={CustomPaper}
-            onChange={(e, newValue) =>
-              updateActualRequesterData('managerUserName', newValue.username)
-            }
-            // isOptionEqualToValue={(option, value) => option.username === value}
-            getOptionLabel={(option) => option.username}
-            renderOption={(props, option) => (
-              // eslint-disable-next-line react/jsx-props-no-spreading
-              <li {...props}>
-                <Typography level="body-md">{`${option.firstName} ${option.lastName}`}</Typography>
-              </li>
-            )}
-            required
-            renderInput={(params) => (
-              // eslint-disable-next-line react/jsx-props-no-spreading
-              <TextField {...params} label="Manager*" />
-            )}
-          /> */}
         </Box>
       </Box>
     </>

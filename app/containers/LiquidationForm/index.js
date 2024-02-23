@@ -58,6 +58,7 @@ import {
 import { ValidateLiquidationInputs } from 'utils/Custom/ValidateInputs';
 import { setLiquidationStatusAction } from 'containers/LiquidationTable/actions';
 import WarningIcon from '@mui/icons-material/Warning';
+import { FormattedMessage } from 'react-intl';
 import reducer from './reducer';
 import saga from './saga';
 import {
@@ -86,6 +87,7 @@ import {
   submitLiquidationAction,
 } from './actions';
 import AdditionalTrips from './AdditionalTrips';
+import messages from './messages';
 
 const mapStateToProps = createStructuredSelector({
   isSideBarVisible: makeSelectIsSideBarVisible(),
@@ -124,12 +126,12 @@ export function LiquidationForm({ state }) {
   } = useSelector(mapStateToProps);
   const avanceVoyageLabel = (
     <Typography color="primary" level="title-lg">
-      Avance Voyage
+      <FormattedMessage id={messages.avanceVoyageLabel.id} />
     </Typography>
   );
   const avanceCaisseLabel = (
     <Typography color="primary" level="title-lg">
-      Avance Caisse
+      <FormattedMessage id={messages.avanceCaisseLabel.id} />
     </Typography>
   );
 
@@ -719,7 +721,7 @@ export function LiquidationForm({ state }) {
               marginBottom={3}
             >
               <Typography level="h2">
-                Please choose a Request Type to liquidate:
+                <FormattedMessage id={messages.chooseRequestType.id} />
               </Typography>
             </Box>
             <Box
@@ -780,7 +782,7 @@ export function LiquidationForm({ state }) {
                 marginBottom={3}
               >
                 <Typography level="title-lg">
-                  Please choose a Request:
+                  <FormattedMessage id={messages.chooseRequeste.id} />
                 </Typography>
                 <Select
                   key={0}
@@ -852,26 +854,28 @@ export function LiquidationForm({ state }) {
               >
                 <Box>
                   <Typography level="h1" marginTop={3} gutterBottom>
-                    Please Review your information before submitting
+                    <FormattedMessage id={messages.confirmationAlert.id} />
                   </Typography>
                 </Box>
               </Box>
             )}
             {state === 'ADD' ? (
               <Typography level="h3" textAlign="center">
-                {`Liquidating ${
-                  requestTypeToLiquidate === 'AC'
-                    ? 'Avance Caisse'
-                    : 'Avance Voyage'
-                } #${requestToLiquidateDetails?.id}`}
+                {requestTypeToLiquidate === 'AC' ? (
+                  <FormattedMessage id={messages.liquidatingAvanceCaisse.id} />
+                ) : (
+                  <FormattedMessage id={messages.liquidatingAvanceVoyage.id} />
+                )}{' '}
+                #{requestToLiquidateDetails?.id}
               </Typography>
             ) : (
               <Typography level="h3" textAlign="center">
-                {`Liquidating ${
-                  liquidationDetails?.requestType === 'AC'
-                    ? 'Avance Caisse'
-                    : 'Avance Voyage'
-                } #${liquidationDetails?.requestId}`}
+                {liquidationDetails?.requestType === 'AC' ? (
+                  <FormattedMessage id={messages.liquidatingAvanceCaisse.id} />
+                ) : (
+                  <FormattedMessage id={messages.liquidatingAvanceVoyage.id} />
+                )}{' '}
+                #{liquidationDetails?.requestId}
               </Typography>
             )}
             {/* ACTUAL REQUESTER INFO */}
@@ -896,7 +900,8 @@ export function LiquidationForm({ state }) {
               marginBottom={3}
             >
               <Typography color="success" level="title-md" display="flex">
-                This Request&apos;s currency is set to be:&nbsp;
+                <FormattedMessage id={messages.requestCurrencySet.id} />
+                &nbsp;
                 <Box sx={{ fontWeight: 'bold' }}>
                   {state === 'ADD' && requestToLiquidateDetails?.currency}
                   {state !== 'ADD' &&
@@ -914,7 +919,7 @@ export function LiquidationForm({ state }) {
                   marginBottom={1}
                 >
                   <Typography color="neutral" level="title-lg" variant="plain">
-                    Current Status:{' '}
+                    <FormattedMessage id={messages.currentStatus.id} />:{' '}
                     <Typography
                       color="primary"
                       level="title-lg"
@@ -940,7 +945,7 @@ export function LiquidationForm({ state }) {
                     }}
                     startIcon={<HistoryIcon />}
                   >
-                    Status History
+                    <FormattedMessage id={messages.statusHistoryButton.id} />
                   </Button>
                   {liquidationDetails?.latestStatus !== 'Returned' &&
                     liquidationDetails?.latestStatus !== 'Rejected' &&
@@ -961,9 +966,11 @@ export function LiquidationForm({ state }) {
                         disabled={loadingButton}
                       >
                         {!loadingButton ? (
-                          <>Download Document</>
+                          <FormattedMessage
+                            id={messages.downloadDocumentButton.id}
+                          />
                         ) : (
-                          <>Generating...</>
+                          <FormattedMessage id={messages.generating.id} />
                         )}
                       </Button>
                     )}
@@ -997,7 +1004,7 @@ export function LiquidationForm({ state }) {
                   textAlign="center"
                   marginBottom={2}
                 >
-                  Trajectories
+                  <FormattedMessage id={messages.tripsHeader.id} />
                 </Typography>
                 <Box display="flex" justifyContent="center" marginBottom={5}>
                   <TripsTable
@@ -1024,7 +1031,7 @@ export function LiquidationForm({ state }) {
                         textAlign="center"
                         marginBottom={2}
                       >
-                        Made additional trajectories? (optional)
+                        <FormattedMessage id={messages.moreTripsHeader.id} />
                         <IconButton onClick={addTrip}>
                           <AddCircleIcon
                             sx={{ color: 'green' }}
@@ -1066,9 +1073,11 @@ export function LiquidationForm({ state }) {
 
             {/* Expenses */}
             <Typography level="title-lg" textAlign="center" marginBottom={2}>
-              {expensesToLiquidate.length > 0
-                ? 'Expenses'
-                : 'No Expenses to Liquidate'}
+              {expensesToLiquidate.length > 0 ? (
+                <FormattedMessage id={messages.expensesHeader.id} />
+              ) : (
+                <FormattedMessage id={messages.noExpensesHeader.id} />
+              )}
             </Typography>
             <Box display="flex" justifyContent="center" marginBottom={3}>
               {requestToLiquidateDetails !== null &&
@@ -1104,7 +1113,7 @@ export function LiquidationForm({ state }) {
                     textAlign="center"
                     marginBottom={2}
                   >
-                    Spent additional expenses? (optional)
+                    <FormattedMessage id={messages.moreExpensesHeader.id} />
                     <IconButton onClick={addExpense}>
                       <AddCircleIcon
                         sx={{ color: 'chocolate' }}
@@ -1156,7 +1165,8 @@ export function LiquidationForm({ state }) {
                 >
                   <Box alignItems="flex-start" width="40rem">
                     <Typography level="title-md">
-                      {state !== 'CONFIRM' && 'Old'} Receipts File:
+                      {state !== 'CONFIRM' && 'Old'}{' '}
+                      <FormattedMessage id={messages.receiptsFileHeader.id} />
                     </Typography>
 
                     <Button
@@ -1183,7 +1193,7 @@ export function LiquidationForm({ state }) {
                     textAlign="center"
                     marginBottom={2}
                   >
-                    Your Receipts*
+                    <FormattedMessage id={messages.yourReceiptsHeader.id} />
                   </Typography>
                 ) : (
                   <>
@@ -1192,8 +1202,13 @@ export function LiquidationForm({ state }) {
                       textAlign="center"
                       marginBottom={2}
                     >
-                      Update your receipts&nbsp;
-                      <Typography level="body-sm">(optional)</Typography>
+                      <FormattedMessage
+                        id={messages.updateYourReceiptsHeader.id}
+                      />
+                      &nbsp;
+                      <Typography level="body-sm">
+                        <FormattedMessage id={messages.optionalHeader.id} />
+                      </Typography>
                     </Typography>
                     <Box
                       display="flex"
@@ -1209,11 +1224,14 @@ export function LiquidationForm({ state }) {
                         <Alert severity="warning" textAlign="left">
                           <Typography level="body-md">
                             <Typography level="title-md">
-                              Please note:&nbsp;
+                              <FormattedMessage
+                                id={messages.pleaseNoteHeader.id}
+                              />
+                              &nbsp;
                             </Typography>
-                            uploading a new file will override the old one. You
-                            may want to attach your previously uploaded receipts
-                            in case you still want to include them.
+                            <FormattedMessage
+                              id={messages.updatingFileNote.id}
+                            />
                           </Typography>
                         </Alert>
                       </Box>
@@ -1228,7 +1246,7 @@ export function LiquidationForm({ state }) {
                     width="40rem"
                   >
                     <Typography level="body-sm" color="danger">
-                      Please upload your receipts in a single pdf file*
+                      <FormattedMessage id={messages.signlePdfFileHeader.id} />
                     </Typography>
                     <Button
                       component="label"
@@ -1244,7 +1262,11 @@ export function LiquidationForm({ state }) {
                       fullWidth
                       disabled={loadingButton}
                     >
-                      {!loadingButton ? <>Upload file</> : <>Uploading...</>}
+                      {!loadingButton ? (
+                        <FormattedMessage id={messages.uploadButton.id} />
+                      ) : (
+                        <FormattedMessage id={messages.uploading.id} />
+                      )}
 
                       <input
                         type="file"
@@ -1255,7 +1277,8 @@ export function LiquidationForm({ state }) {
                     </Button>
                     {receiptsFileName && (
                       <Typography level="title-sm" color="neutral">
-                        Selected file: {receiptsFileName}
+                        <FormattedMessage id={messages.selectedFile.id} />{' '}
+                        {receiptsFileName}
                       </Typography>
                     )}
                   </Box>
@@ -1276,7 +1299,8 @@ export function LiquidationForm({ state }) {
             <Box display="flex" justifyContent="center" marginBottom={3}>
               <Box width="60%" display="flex" justifyContent="flex-end">
                 <Typography level="h4">
-                  Estimated Total:&nbsp;
+                  <FormattedMessage id={messages.estimatedTotal.id} />
+                  &nbsp;
                   <Typography color="success">
                     <NumericFormat
                       prefix={
@@ -1312,7 +1336,8 @@ export function LiquidationForm({ state }) {
             <Box display="flex" justifyContent="center" marginBottom={3}>
               <Box width="60%" display="flex" justifyContent="flex-end">
                 <Typography level="h4">
-                  Actual Amount Spent:&nbsp;
+                  <FormattedMessage id={messages.actualAmountSpent.id} />
+                  &nbsp;
                   <Typography color="success">
                     <NumericFormat
                       prefix={
@@ -1353,7 +1378,8 @@ export function LiquidationForm({ state }) {
             <Box display="flex" justifyContent="center" marginBottom={3}>
               <Box width="60%" display="flex" justifyContent="flex-end">
                 <Typography level="h4">
-                  You owe:&nbsp;
+                  <FormattedMessage id={messages.youOwe.id} />
+                  &nbsp;
                   <Typography color={result < 0 ? 'danger' : 'success'}>
                     <NumericFormat
                       prefix={getResultPrefix()}
@@ -1392,7 +1418,7 @@ export function LiquidationForm({ state }) {
                     textColor="inherit"
                     sx={{ textTransform: 'capitalize' }}
                   >
-                    Decision:
+                    <FormattedMessage id={messages.decision.id} />
                   </Typography>
                   <Typography
                     level="title-md"
@@ -1401,7 +1427,7 @@ export function LiquidationForm({ state }) {
                   >
                     {result < 0 && (
                       <>
-                        You must hand over an amount of{' '}
+                        <FormattedMessage id={messages.mustHandOverPhrase.id} />{' '}
                         {requestToLiquidateDetails !== null
                           ? requestToLiquidateDetails?.currency
                           : liquidationDetails?.requestDetails?.currency}{' '}
@@ -1427,7 +1453,7 @@ export function LiquidationForm({ state }) {
                     )}
                     {result >= 0 && (
                       <>
-                        An amount of{' '}
+                        <FormattedMessage id={messages.anAmountOf.id} />{' '}
                         {requestToLiquidateDetails !== null
                           ? requestToLiquidateDetails?.currency
                           : liquidationDetails?.requestDetails?.currency}{' '}
@@ -1449,7 +1475,9 @@ export function LiquidationForm({ state }) {
                               : ','
                           }
                         />{' '}
-                        must be refunded to you.
+                        <FormattedMessage
+                          id={messages.mustBeRefundedToYou.id}
+                        />
                       </>
                     )}
                   </Typography>
@@ -1521,7 +1549,7 @@ export function LiquidationForm({ state }) {
           <DialogTitle>{modalHeader}</DialogTitle>
           <DialogContent dividers>
             {modalHeader === 'Status History' ? (
-              <Timeline position="alternate">
+              <Timeline>
                 {liquidationDetails?.statusHistory?.map((sh, i, arr) => (
                   <CustomizedTimeLine
                     statusHistory={sh}

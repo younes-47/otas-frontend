@@ -9,17 +9,17 @@ import styled from 'styled-components';
 
 export const StyledSelect = styled(Select)({
   '& label.Mui-focused': {
-    color: 'black',
+    color: 'white',
   },
   '& .MuiOutlinedInput-root': {
     '& fieldset': {
       borderColor: '#C0C0C0',
     },
     '&:hover fieldset': {
-      borderColor: 'black',
+      borderColor: 'white',
     },
     '&.Mui-focused fieldset': {
-      borderColor: 'black',
+      borderColor: 'white',
     },
   },
 });

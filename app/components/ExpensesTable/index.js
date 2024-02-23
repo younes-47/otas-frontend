@@ -11,8 +11,8 @@ import PropTypes from 'prop-types';
 import { Typography } from '@mui/joy';
 import { NumericFormat } from 'react-number-format';
 import Input from '@mui/joy/Input';
-import { FormattedDate } from 'react-intl';
-
+import { FormattedDate, FormattedMessage } from 'react-intl';
+import messages from './messages';
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: '#e9c99b',
@@ -45,15 +45,23 @@ export default function ExpensesTable({
       <Table sx={{ minWidth: 700 }} size="small">
         <TableHead>
           <TableRow>
-            <StyledTableCell align="left">Description</StyledTableCell>
-            <StyledTableCell align="left">Expense&nbsp;Date</StyledTableCell>
-            <StyledTableCell align="left">Currency</StyledTableCell>
-            <StyledTableCell align="left">Amount</StyledTableCell>
+            <StyledTableCell align="left">
+              <FormattedMessage id={messages.description.id} />
+            </StyledTableCell>
+            <StyledTableCell align="left">
+              <FormattedMessage id={messages.date.id} />
+            </StyledTableCell>
+            <StyledTableCell align="left">
+              <FormattedMessage id={messages.currency.id} />
+            </StyledTableCell>
+            <StyledTableCell align="left">
+              <FormattedMessage id={messages.amount.id} />
+            </StyledTableCell>
             {((updateExpenseToLiquidate !== undefined &&
               getActualFee !== undefined) ||
               isLiquidationView === true) && (
               <StyledTableCell align="left" color="danger">
-                Actual&nbsp;amount&nbsp;spent*
+                <FormattedMessage id={messages.actualAmountSpent.id} />
               </StyledTableCell>
             )}
           </TableRow>
