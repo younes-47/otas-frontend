@@ -14,6 +14,9 @@ export const StyledFormControl = styled(FormControl)`
     }
     & .MuiOutlinedInput-root {
       & fieldset {
+        border-width: 0px;
+      }
+      & fieldset {
         border-color: white;
       }
       &:hover fieldset {

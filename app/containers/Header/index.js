@@ -26,9 +26,11 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { changeIsSideBarVisibleAction } from 'containers/SideBar/actions';
 import AccessController from 'utils/Custom/checkLogin';
 import { FormattedMessage, useIntl } from 'react-intl';
-import LanguageToggle from 'containers/LanguageToggle';
+import { useInjectSaga } from 'utils/injectSaga';
 import reducer from './reducer';
 import messages from '../SideBar/messages';
+import LanguageSelector from './LanguageSelector';
+import saga from './saga';
 
 const mapStateToProps = createStructuredSelector({
   selectedMenu: makeSelectSelectedMenu(),
@@ -36,6 +38,7 @@ const mapStateToProps = createStructuredSelector({
 });
 export function Header() {
   useInjectReducer({ key: 'header', reducer });
+  useInjectSaga({ key: 'header', saga });
 
   const intl = useIntl();
   const history = useHistory();
@@ -89,7 +92,8 @@ export function Header() {
               >
                 {Title}
               </Typography>
-              <LanguageToggle />
+              {/* <LanguageToggle /> */}
+              <LanguageSelector />
               <Button color="inherit" onClick={onLogOutButtonClick}>
                 <FormattedMessage id={messages.logout.id} />
               </Button>

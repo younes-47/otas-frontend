@@ -18,5 +18,23 @@ const selectHeaderDomain = (state) => state.header || initialState;
 const makeSelectHeader = () =>
   createSelector(selectHeaderDomain, (substate) => substate);
 
+const makeSelectPreferredLanguage = () =>
+  createSelector(selectHeaderDomain, (substate) => substate.preferredLanguage);
+const makeSelectChangingPreferredLanguage = () =>
+  createSelector(
+    selectHeaderDomain,
+    (substate) => substate.changingPreferredLanguage,
+  );
+const makeSelectErrorPreferredLanguage = () =>
+  createSelector(
+    selectHeaderDomain,
+    (substate) => substate.errorPreferredLanguage,
+  );
+
 export default makeSelectHeader;
-export { selectHeaderDomain };
+export {
+  selectHeaderDomain,
+  makeSelectPreferredLanguage,
+  makeSelectChangingPreferredLanguage,
+  makeSelectErrorPreferredLanguage,
+};

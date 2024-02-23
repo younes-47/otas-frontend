@@ -6,8 +6,7 @@
 
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { connect, useDispatch, useSelector } from 'react-redux';
-import { compose } from 'redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Box from '@mui/material/Box';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
@@ -30,6 +29,7 @@ import {
 } from 'utils/Custom/stringManipulation';
 import DropDownMenu from 'components/DropDownMenu';
 import { FormattedMessage } from 'react-intl';
+import { changeLocale } from 'containers/LanguageProvider/actions';
 import messages from './messages';
 import saga from './saga';
 import reducer from './reducer';
@@ -184,6 +184,11 @@ export default function MyRequests() {
       localStorage.setItem('department', userInfo.department);
       localStorage.setItem('preferredLanguage', userInfo.preferredLanguage);
       localStorage.setItem('managerUserName', userInfo.managerUserName);
+      dispatch(
+        changeLocale(
+          userInfo.preferredLanguage ? userInfo.preferredLanguage : 'en',
+        ),
+      );
     }
   }, [userInfo]);
 
