@@ -283,9 +283,13 @@ export function AvanceCaisseForm({ state }) {
   };
 
   const updateExpenseData = (expenseId, field, value) => {
+    let newValue = value;
+    if (field === 'description') {
+      newValue = value.slice(0, 500);
+    }
     setExpenses((prevExpenses) =>
       prevExpenses.map((expense) =>
-        expense.id === expenseId ? { ...expense, [field]: value } : expense,
+        expense.id === expenseId ? { ...expense, [field]: newValue } : expense,
       ),
     );
   };

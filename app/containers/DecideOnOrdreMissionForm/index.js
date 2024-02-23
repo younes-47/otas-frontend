@@ -400,10 +400,9 @@ export function DecideOnOrdreMissionForm({ state }) {
       >
         <Divider style={{ width: '60%', opacity: 0.7 }} />
       </Box>
-
-      <Box display="flex" justifyContent="center" marginBottom={3}>
-        <Box width="60%" display="flex" justifyContent="flex-end">
-          {ordreMissionDetails?.avanceVoyagesDetails.map((av) => (
+      {ordreMissionDetails?.avanceVoyagesDetails.map((av) => (
+        <Box display="flex" justifyContent="center" marginBottom={3}>
+          <Box width="60%" display="flex" justifyContent="flex-end">
             <Typography level="h4">
               Total {av?.currency}:&nbsp;
               <Typography color="success">
@@ -427,9 +426,9 @@ export function DecideOnOrdreMissionForm({ state }) {
                 />
               </Typography>
             </Typography>
-          ))}
+          </Box>
         </Box>
-      </Box>
+      ))}
 
       {/* Buttons */}
       <Stack
