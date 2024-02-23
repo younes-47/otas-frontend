@@ -27,7 +27,7 @@ import Container from '@mui/joy/Container';
 import Grid from '@mui/joy/Grid';
 import { PieChart } from '@mui/x-charts/PieChart';
 import CountUp from 'react-countup';
-import { Divider } from '@mui/material';
+import { Divider, List, ListItem, ListItemText } from '@mui/material';
 import reducer from './reducer';
 import saga from './saga';
 import { cleanupStoreAction, loadDeciderStatsAction } from './actions';
@@ -169,277 +169,515 @@ export function DecideOnRequests() {
         </Stack>
       </Box>
 
-      <Container maxWidth="sm">
+      <Box
+        display="flex"
+        justifyItems="center"
+        flexDirection="column"
+        gap={3}
+        marginBottom={10}
+      >
         <Typography level="h3" textAlign="center">
           Statistics <TrendingUpIcon />
         </Typography>
-        <Grid
-          container
-          spacing={4}
-          alignItems="center"
-          justifyContent="center"
-          marginTop={0.5}
-        >
-          <Grow in>
-            <Grid xs={6}>
+        <Box display="flex" justifyContent="center" alignItems="center" gap={3}>
+          <Box gap={3}>
+            <Grow in>
               <Card variant="outlined">
                 <CardContent>
-                  <Typography level="h1" variant="plain" color="primary">
-                    {deciderStats?.requestsStats?.allOngoingRequestsCount}
+                  <Typography level="h4">
+                    Requests awaiting your approval:
                   </Typography>
-                  <Typography level="title-md">
-                    Requests are in the process of approval.
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          </Grow>
-          <Grow in timeout={1200}>
-            <Grid xs={6}>
-              <Card variant="outlined">
-                <CardContent>
-                  {deciderStats?.requestsStats?.hoursPassedSinceLastRequest ===
-                  null ? (
-                    <>
+                  <List>
+                    <ListItem
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                      }}
+                    >
+                      <Typography level="body-md">Mission Orders:</Typography>
                       <Typography
-                        level="title-md"
-                        marginTop={3}
-                        marginBottom={3}
+                        variant="soft"
+                        color="warning"
+                        level="title-lg"
                       >
-                        You have never decider upon a request before.
+                        {deciderStats?.pendingOrdreMissionsCount}
                       </Typography>
-                    </>
-                  ) : (
-                    <>
-                      <Typography level="h1" variant="plain" color="warning">
-                        {Math.floor(
-                          deciderStats?.requestsStats
-                            ?.hoursPassedSinceLastRequest / 24,
-                        )}
-                      </Typography>
-                      <Typography level="title-md">
-                        Days Have been passed since the last time you decided
-                        upon a request.
-                      </Typography>
-                    </>
-                  )}
-                </CardContent>
-              </Card>
-            </Grid>
-          </Grow>
-          <Grow in timeout={2200}>
-            <Grid xs={6}>
-              <Card variant="outlined">
-                <CardContent>
-                  <Typography level="h1" variant="plain" color="success">
-                    <CountUp
-                      delay={0}
-                      start={0}
-                      end={deciderStats?.requestsStats?.allTimeCount}
-                      duration={3.2}
-                    />
-                  </Typography>
-                  <Typography level="title-md">
-                    requests have been decided upon so far!
-                  </Typography>
-                  {deciderStats?.requestsStats && (
-                    <PieChart
-                      slotProps={{ legend: { hidden: true } }}
-                      sx={{
+                    </ListItem>
+                    <Divider variant="middle" component="li" />
+                    <ListItem
+                      style={{
                         display: 'flex',
-                        alignItems: 'center',
-                        margin: '0',
+                        justifyContent: 'space-between',
                       }}
-                      series={[
-                        {
-                          data: [
-                            {
-                              id: 0,
-                              value:
-                                deciderStats?.requestsStats
-                                  ?.ordreMissionsAllTimeCount,
-                              label: 'Ordre Mission',
-                              color: '#ef7765',
-                            },
-                            {
-                              id: 1,
-                              value:
-                                deciderStats?.requestsStats
-                                  ?.avanceVoyagesAllTimeCount,
-                              label: 'Avance Voyage',
-                              color: '#00a697',
-                            },
-                            {
-                              id: 2,
-                              value:
-                                deciderStats?.requestsStats
-                                  ?.avanceCaissesAllTimeCount,
-                              label: 'Avance Caisse',
-                              color: '#f3bc00',
-                            },
-                            {
-                              id: 3,
-                              value:
-                                deciderStats?.requestsStats
-                                  ?.depenseCaissesAllTimeCount,
-                              label: 'Depense Caisse',
-                              color: '#0075a4',
-                            },
-                          ],
-                        },
-                      ]}
-                      width={226.3}
-                      height={200}
-                    />
-                  )}
-                </CardContent>
-              </Card>
-            </Grid>
-          </Grow>
-          <Grow in timeout={3200}>
-            <Grid xs={6}>
-              <Card variant="outlined">
-                <CardContent>
-                  <Typography level="h3" variant="plain" color="success">
-                    <CountUp
-                      delay={0}
-                      start={0}
-                      end={deciderStats?.moneyStats?.allTimeAmountMAD}
-                      separator={
-                        localStorage.getItem('preferredLanguage') === 'en'
-                          ? ','
-                          : ' '
-                      }
-                      decimal={
-                        localStorage.getItem('preferredLanguage') === 'en'
-                          ? '.'
-                          : ','
-                      }
-                      decimals={2}
-                      duration={3.2}
-                    />
-                    &nbsp;MAD
-                  </Typography>
-                  <Typography level="h3" variant="plain" color="success">
-                    <CountUp
-                      delay={0}
-                      start={0}
-                      end={deciderStats?.moneyStats?.allTimeAmountEUR}
-                      separator={
-                        localStorage.getItem('preferredLanguage') === 'en'
-                          ? ','
-                          : ' '
-                      }
-                      decimal={
-                        localStorage.getItem('preferredLanguage') === 'en'
-                          ? '.'
-                          : ','
-                      }
-                      decimals={2}
-                      duration={3.2}
-                    />
-                    &nbsp;EUR
-                  </Typography>
-                  <Typography level="title-md">
-                    have been decided upon so far!
-                  </Typography>
-                  {deciderStats?.moneyStats && (
-                    <PieChart
-                      slotProps={{ legend: { hidden: true } }}
-                      height={200}
-                      width={226.3}
-                      sx={{
+                    >
+                      <Typography level="body-md">Travel Advances:</Typography>
+                      <Typography
+                        variant="soft"
+                        color="warning"
+                        level="title-lg"
+                      >
+                        {deciderStats?.pendingAvanceVoyagesCount}
+                      </Typography>
+                    </ListItem>
+                    <Divider variant="middle" component="li" />
+                    <ListItem
+                      style={{
                         display: 'flex',
-                        alignItems: 'center',
+                        justifyContent: 'space-between',
                       }}
-                      series={[
-                        {
-                          data: [
-                            {
-                              id: 0,
-                              value:
-                                deciderStats?.moneyStats
-                                  ?.avanceVoyagesAllTimeAmountMAD,
-
-                              label: 'Avance Voyage MAD',
-                              color: '#00a697',
-                            },
-                            {
-                              id: 1,
-                              value:
-                                deciderStats?.moneyStats
-                                  ?.avanceCaissesAllTimeAmountMAD,
-
-                              label: 'Avance Caisse MAD',
-                              color: '#f3bc00',
-                            },
-                            {
-                              id: 2,
-                              value:
-                                deciderStats?.moneyStats
-                                  ?.depenseCaissesAllTimeAmountMAD,
-
-                              label: 'Depense Caisse MAD',
-                              color: '#0075a4',
-                            },
-                          ],
-                          outerRadius: 50,
-                        },
-                        {
-                          data: [
-                            {
-                              id: 0,
-                              value:
-                                deciderStats?.moneyStats
-                                  ?.avanceVoyagesAllTimeAmountEUR,
-
-                              label: 'Avance Voyage EUR',
-                              color: '#00a697',
-                            },
-                            {
-                              id: 1,
-                              value:
-                                deciderStats?.moneyStats
-                                  ?.avanceCaissesAllTimeAmountEUR,
-
-                              label: 'Avance Caisse EUR',
-                              color: '#f3bc00',
-                            },
-                            {
-                              id: 2,
-                              value:
-                                deciderStats?.moneyStats
-                                  ?.depenseCaissesAllTimeAmountEUR,
-
-                              label: 'Depense Caisse EUR',
-                              color: '#0075a4',
-                            },
-                          ],
-                          innerRadius: 40,
-                        },
-                      ]}
-                    />
-                  )}
+                    >
+                      <Typography level="body-md">Cash Advances:</Typography>
+                      <Typography
+                        variant="soft"
+                        color="warning"
+                        level="title-lg"
+                      >
+                        {deciderStats?.pendingAvanceCaissesCount}
+                      </Typography>
+                    </ListItem>
+                    <Divider variant="middle" component="li" />
+                    <ListItem
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                      }}
+                    >
+                      <Typography level="body-md">Cash Expenses:</Typography>
+                      <Typography
+                        variant="soft"
+                        color="warning"
+                        level="title-lg"
+                      >
+                        {deciderStats?.pendingDepenseCaissesCount}
+                      </Typography>
+                    </ListItem>
+                    <Divider variant="middle" component="li" />
+                    <ListItem
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                      }}
+                    >
+                      <Typography level="body-md">Liquidations:</Typography>
+                      <Typography
+                        variant="soft"
+                        color="warning"
+                        level="title-lg"
+                      >
+                        {deciderStats?.pendingLiquidationsCount}
+                      </Typography>
+                    </ListItem>
+                  </List>
                 </CardContent>
               </Card>
-            </Grid>
-          </Grow>
-        </Grid>
-      </Container>
+            </Grow>
+            <Grow in timeout={1200}>
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                marginTop={3}
+              >
+                <Card variant="outlined">
+                  <CardContent>
+                    <Typography level="h4">
+                      Requests you have already approved:
+                    </Typography>
 
-      <Card sx={{ minWidth: 275 }}>
-        <Grow in>
-          <CardContent>
-            <Typography level="h4">
-              Pending requests awaiting your approval:
-            </Typography>
-            <Typography level="title-md" color="primary">
-              Mission Order: 5
-            </Typography>
-            <Divider variant="middle" />
-          </CardContent>
-        </Grow>
-      </Card>
+                    <Box
+                      display="flex"
+                      justifyContent="space-between"
+                      marginTop={3}
+                      gap={1}
+                    >
+                      <Card
+                        color="neutral"
+                        variant="soft"
+                        sx={{ width: '100%' }}
+                      >
+                        <Typography level="title-md">
+                          Travel Advances
+                        </Typography>
+                        <Typography
+                          level="title-lg"
+                          color="primary"
+                          textAlign="center"
+                        >
+                          <CountUp
+                            end={deciderStats?.finalizedAvanceVoyagesCount}
+                            duration={3.2}
+                            delay={0}
+                            start={0}
+                          />
+                        </Typography>
+                        <Typography level="title-sm" color="success">
+                          <CountUp
+                            end={deciderStats?.finalizedAvanceVoyagesMADCount}
+                            duration={3.2}
+                            decimals={2}
+                            separator={
+                              localStorage.getItem('preferredLanguage') === 'en'
+                                ? ','
+                                : ' '
+                            }
+                            decimal={
+                              localStorage.getItem('preferredLanguage') === 'en'
+                                ? '.'
+                                : ','
+                            }
+                            delay={0}
+                            start={0}
+                            suffix=" MAD"
+                          />
+                        </Typography>
+                        <Typography level="title-sm" color="success">
+                          <CountUp
+                            end={deciderStats?.finalizedAvanceVoyagesEURCount}
+                            duration={3.2}
+                            decimals={2}
+                            separator={
+                              localStorage.getItem('preferredLanguage') === 'en'
+                                ? ','
+                                : ' '
+                            }
+                            decimal={
+                              localStorage.getItem('preferredLanguage') === 'en'
+                                ? '.'
+                                : ','
+                            }
+                            delay={0}
+                            start={0}
+                            suffix=" EUR"
+                          />
+                        </Typography>
+                      </Card>
+
+                      <Card
+                        color="neutral"
+                        variant="soft"
+                        sx={{ width: '100%' }}
+                      >
+                        <Typography level="title-md">Cash Advances</Typography>
+                        <Typography
+                          level="title-lg"
+                          color="primary"
+                          textAlign="center"
+                        >
+                          <CountUp
+                            end={deciderStats?.finalizedAvanceCaissesCount}
+                            duration={3.2}
+                            delay={0}
+                            start={0}
+                          />
+                        </Typography>
+                        <Typography level="title-sm" color="success">
+                          <CountUp
+                            end={deciderStats?.finalizedAvanceCaissesMADCount}
+                            duration={3.2}
+                            decimals={2}
+                            separator={
+                              localStorage.getItem('preferredLanguage') === 'en'
+                                ? ','
+                                : ' '
+                            }
+                            decimal={
+                              localStorage.getItem('preferredLanguage') === 'en'
+                                ? '.'
+                                : ','
+                            }
+                            delay={0}
+                            start={0}
+                            suffix=" MAD"
+                          />
+                        </Typography>
+                        <Typography level="title-sm" color="success">
+                          <CountUp
+                            end={deciderStats?.finalizedAvanceCaissesEURCount}
+                            duration={3.2}
+                            decimals={2}
+                            separator={
+                              localStorage.getItem('preferredLanguage') === 'en'
+                                ? ','
+                                : ' '
+                            }
+                            decimal={
+                              localStorage.getItem('preferredLanguage') === 'en'
+                                ? '.'
+                                : ','
+                            }
+                            delay={0}
+                            start={0}
+                            suffix=" EUR"
+                          />
+                        </Typography>
+                      </Card>
+
+                      <Card
+                        color="neutral"
+                        variant="soft"
+                        sx={{ width: '100%' }}
+                      >
+                        <Typography level="title-md">Cash Expenses</Typography>
+                        <Typography
+                          level="title-lg"
+                          color="primary"
+                          textAlign="center"
+                        >
+                          <CountUp
+                            end={deciderStats?.finalizedDepenseCaissesCount}
+                            duration={3.2}
+                            delay={0}
+                            start={0}
+                          />
+                        </Typography>
+                        <Typography level="title-sm" color="success">
+                          <CountUp
+                            end={deciderStats?.finalizedDepenseCaissesMADCount}
+                            duration={3.2}
+                            decimals={2}
+                            separator={
+                              localStorage.getItem('preferredLanguage') === 'en'
+                                ? ','
+                                : ' '
+                            }
+                            decimal={
+                              localStorage.getItem('preferredLanguage') === 'en'
+                                ? '.'
+                                : ','
+                            }
+                            delay={0}
+                            start={0}
+                            suffix=" MAD"
+                          />
+                        </Typography>
+                        <Typography level="title-sm" color="success">
+                          <CountUp
+                            end={deciderStats?.finalizedDepenseCaissesEURCount}
+                            duration={3.2}
+                            decimals={2}
+                            separator={
+                              localStorage.getItem('preferredLanguage') === 'en'
+                                ? ','
+                                : ' '
+                            }
+                            decimal={
+                              localStorage.getItem('preferredLanguage') === 'en'
+                                ? '.'
+                                : ','
+                            }
+                            delay={0}
+                            start={0}
+                            suffix=" EUR"
+                          />
+                        </Typography>
+                      </Card>
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Box>
+            </Grow>
+          </Box>
+          <Box>
+            <Grow in timeout={1200}>
+              <Box display="flex" justifyContent="center" alignItems="center">
+                <Card variant="outlined">
+                  <CardContent>
+                    <Typography level="h4">Liquidations:</Typography>
+                    <Box
+                      display="flex"
+                      justifyContent="space-between"
+                      marginTop={3}
+                      gap={0.5}
+                    >
+                      <Card
+                        color="neutral"
+                        variant="soft"
+                        sx={{ width: '100%' }}
+                      >
+                        <Typography level="title-md">
+                          Not initiated yet
+                        </Typography>
+                        <Typography
+                          level="title-lg"
+                          color="primary"
+                          textAlign="center"
+                        >
+                          <CountUp
+                            end={deciderStats?.toLiquidateRequestsCount}
+                            duration={3.2}
+                            delay={0}
+                            start={0}
+                          />
+                        </Typography>
+                        <Typography level="title-sm" color="success">
+                          <CountUp
+                            end={deciderStats?.toLiquidateRequestsMADCount}
+                            duration={3.2}
+                            decimals={2}
+                            separator={
+                              localStorage.getItem('preferredLanguage') === 'en'
+                                ? ','
+                                : ' '
+                            }
+                            decimal={
+                              localStorage.getItem('preferredLanguage') === 'en'
+                                ? '.'
+                                : ','
+                            }
+                            delay={0}
+                            start={0}
+                            suffix=" MAD"
+                          />
+                        </Typography>
+                        <Typography level="title-sm" color="success">
+                          <CountUp
+                            end={deciderStats?.toLiquidateRequestsEURCount}
+                            duration={3.2}
+                            decimals={2}
+                            separator={
+                              localStorage.getItem('preferredLanguage') === 'en'
+                                ? ','
+                                : ' '
+                            }
+                            decimal={
+                              localStorage.getItem('preferredLanguage') === 'en'
+                                ? '.'
+                                : ','
+                            }
+                            delay={0}
+                            start={0}
+                            suffix=" EUR"
+                          />
+                        </Typography>
+                      </Card>
+
+                      <Card
+                        color="neutral"
+                        variant="soft"
+                        sx={{ width: '100%' }}
+                      >
+                        <Typography level="title-md">Ongoing</Typography>
+                        <Typography
+                          level="title-lg"
+                          color="primary"
+                          textAlign="center"
+                        >
+                          <CountUp
+                            end={deciderStats?.ongoingLiquidationsCount}
+                            duration={3.2}
+                            delay={0}
+                            start={0}
+                          />
+                        </Typography>
+                        <Typography level="title-sm" color="success">
+                          <CountUp
+                            end={deciderStats?.ongoingLiquidationsMADCount}
+                            duration={3.2}
+                            decimals={2}
+                            separator={
+                              localStorage.getItem('preferredLanguage') === 'en'
+                                ? ','
+                                : ' '
+                            }
+                            decimal={
+                              localStorage.getItem('preferredLanguage') === 'en'
+                                ? '.'
+                                : ','
+                            }
+                            delay={0}
+                            start={0}
+                            suffix=" MAD"
+                          />
+                        </Typography>
+                        <Typography level="title-sm" color="success">
+                          <CountUp
+                            end={deciderStats?.ongoingLiquidationsEURCount}
+                            duration={3.2}
+                            decimals={2}
+                            separator={
+                              localStorage.getItem('preferredLanguage') === 'en'
+                                ? ','
+                                : ' '
+                            }
+                            decimal={
+                              localStorage.getItem('preferredLanguage') === 'en'
+                                ? '.'
+                                : ','
+                            }
+                            delay={0}
+                            start={0}
+                            suffix=" EUR"
+                          />
+                        </Typography>
+                      </Card>
+
+                      <Card
+                        color="neutral"
+                        variant="soft"
+                        sx={{ width: '100%' }}
+                      >
+                        <Typography level="title-md">Finalized</Typography>
+                        <Typography
+                          level="title-lg"
+                          color="primary"
+                          textAlign="center"
+                        >
+                          <CountUp
+                            end={deciderStats?.finalizedLiquidationsCount}
+                            duration={3.2}
+                            delay={0}
+                            start={0}
+                          />
+                        </Typography>
+                        <Typography level="title-sm" color="success">
+                          <CountUp
+                            end={deciderStats?.finalizedLiquidationsMADCount}
+                            duration={3.2}
+                            decimals={2}
+                            separator={
+                              localStorage.getItem('preferredLanguage') === 'en'
+                                ? ','
+                                : ' '
+                            }
+                            decimal={
+                              localStorage.getItem('preferredLanguage') === 'en'
+                                ? '.'
+                                : ','
+                            }
+                            delay={0}
+                            start={0}
+                            suffix=" MAD"
+                          />
+                        </Typography>
+                        <Typography level="title-sm" color="success">
+                          <CountUp
+                            end={deciderStats?.FinalizedLiquidationsEURCount}
+                            duration={3.2}
+                            decimals={2}
+                            separator={
+                              localStorage.getItem('preferredLanguage') === 'en'
+                                ? ','
+                                : ' '
+                            }
+                            decimal={
+                              localStorage.getItem('preferredLanguage') === 'en'
+                                ? '.'
+                                : ','
+                            }
+                            delay={0}
+                            start={0}
+                            suffix=" EUR"
+                          />
+                        </Typography>
+                      </Card>
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Box>
+            </Grow>
+          </Box>
+        </Box>
+      </Box>
     </Box>
   );
 }

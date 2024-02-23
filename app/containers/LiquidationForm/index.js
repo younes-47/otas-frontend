@@ -782,7 +782,7 @@ export function LiquidationForm({ state }) {
                 marginBottom={3}
               >
                 <Typography level="title-lg">
-                  <FormattedMessage id={messages.chooseRequeste.id} />
+                  <FormattedMessage id={messages.chooseRequest.id} />
                 </Typography>
                 <Select
                   key={0}
