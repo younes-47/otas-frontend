@@ -215,4 +215,70 @@ export default defineMessages({
     id: `${scope}.mustBeRefundedToYou`,
     defaultMessage: 'must Be Refunded To You.',
   },
+
+  submitHeader: {
+    id: `${scope}.modal.submitHeader`,
+    defaultMessage: 'Submit',
+  },
+  confirmation: {
+    id: `${scope}.modal.confirmation`,
+    defaultMessage: 'Confirmation',
+  },
+  statusHistory: {
+    id: `${scope}.modal.statusHistory`,
+    defaultMessage: 'Status History',
+  },
+
+  fullpageModalHeader: {
+    id: `${scope}.fullpageModalHeader`,
+    defaultMessage:
+      'By submitting this request, you acknowledge that all provided information is correct.',
+  },
+
+  returnButton: {
+    id: `${scope}.page.returnButton`,
+    defaultMessage: 'Return',
+  },
+  closeButton: {
+    id: `${scope}.page.closeButton`,
+    defaultMessage: 'Close',
+  },
+  saveAsDraftButton: {
+    id: `${scope}.page.saveAsDraftButton`,
+    defaultMessage: 'Save as Draft',
+  },
+
+  confirmButton: {
+    id: `${scope}.page.confirmButton`,
+    defaultMessage: 'Confirm',
+  },
+  submitModificationsButton: {
+    id: `${scope}.page.submitModificationsButton`,
+    defaultMessage: 'Submit Modifications',
+  },
+
+  submitButton: {
+    id: `${scope}.page.submitButton`,
+    defaultMessage: 'Submit',
+  },
+
+  resubmitButton: {
+    id: `${scope}.page.resubmitButton`,
+    defaultMessage: 'Resubmit',
+  },
+
+  requestHasBeenSaved: {
+    id: `${scope}.page.requestHasBeenSaved`,
+    defaultMessage: 'Request has been saved!',
+  },
+  onSubmit: {
+    id: `${scope}.modal.onSubmit`,
+    defaultMessage:
+      "Please Review your information before confirming your changes. You won't be able to modify your request afterwards!",
+  },
+  onSubmitModifications: {
+    id: `${scope}.modal.onSubmitModifications`,
+    defaultMessage:
+      "Please Review your information before confirming your changes. You won't be able to modify your request afterwards!",
+  },
 });

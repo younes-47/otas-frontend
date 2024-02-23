@@ -628,10 +628,8 @@ export function LiquidationForm({ state }) {
   };
 
   const handleOnSubmitButtonClick = () => {
-    setModalHeader('Submit');
-    setModalBody(
-      "Please Review your information before confirming your changes. You won't be able to modify your request afterwards!",
-    );
+    setModalHeader('submitHeader');
+    setModalBody('onSubmit');
     setModalSevirity('warning');
     setModalVisibility(true);
   };
@@ -642,10 +640,8 @@ export function LiquidationForm({ state }) {
   };
 
   const handleOnSubmitModificationsButtonClick = () => {
-    setModalHeader('Confirmation');
-    setModalBody(
-      "Please Review your information before confirming your changes. You won't be able to modify your request afterwards!",
-    );
+    setModalHeader('confirmation');
+    setModalBody('onSubmitModifications');
     setModalSevirity('warning');
     setModalVisibility(true);
   };
@@ -941,7 +937,7 @@ export function LiquidationForm({ state }) {
                     color="warning"
                     onClick={() => {
                       setModalVisibility(true);
-                      setModalHeader('Status History');
+                      setModalHeader('statusHistory');
                     }}
                     startIcon={<HistoryIcon />}
                   >
@@ -1497,7 +1493,7 @@ export function LiquidationForm({ state }) {
                 color="primary"
                 onClick={handleOnReturnButtonClick}
               >
-                Return
+                <FormattedMessage id={messages.returnButton.id} />
               </Button>
               {(state === 'EDIT' || state === 'ADD') && (
                 <>
@@ -1506,14 +1502,14 @@ export function LiquidationForm({ state }) {
                     color="warning"
                     onClick={handleOnSaveAsDraftClick}
                   >
-                    Save as Draft
+                    <FormattedMessage id={messages.saveAsDraftButton.id} />
                   </Button>
                   <Button
                     variant="contained"
                     color="success"
                     onClick={handleOnConfirmButtonClick}
                   >
-                    Confirm
+                    <FormattedMessage id={messages.confirmButton.id} />
                   </Button>
                 </>
               )}
@@ -1523,7 +1519,9 @@ export function LiquidationForm({ state }) {
                   color="success"
                   onClick={handleOnSubmitModificationsButtonClick}
                 >
-                  Submit Modifications
+                  <FormattedMessage
+                    id={messages.submitModificationsButton.id}
+                  />
                 </Button>
               )}
               {state === 'CONFIRM' && (
@@ -1532,7 +1530,7 @@ export function LiquidationForm({ state }) {
                   color="success"
                   onClick={handleOnSubmitButtonClick}
                 >
-                  Submit
+                  <FormattedMessage id={messages.submitButton.id} />
                 </Button>
               )}
             </Stack>
@@ -1548,7 +1546,7 @@ export function LiquidationForm({ state }) {
         >
           <DialogTitle>{modalHeader}</DialogTitle>
           <DialogContent dividers>
-            {modalHeader === 'Status History' ? (
+            {modalHeader === 'statusHistory' ? (
               <Timeline>
                 {liquidationDetails?.statusHistory?.map((sh, i, arr) => (
                   <CustomizedTimeLine
@@ -1559,28 +1557,34 @@ export function LiquidationForm({ state }) {
               </Timeline>
             ) : (
               <DialogContentText id="alert-dialog-slide-description">
-                <Alert severity={modalSevirity}>{modalBody}</Alert>
+                <Alert severity={modalSevirity}>
+                  {modalBody && (
+                    <FormattedMessage id={messages[modalBody].id} />
+                  )}
+                </Alert>
               </DialogContentText>
             )}
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setModalVisibility(false)}>Close</Button>
-            {modalHeader === 'Confirmation' && (
+            <Button onClick={() => setModalVisibility(false)}>
+              <FormattedMessage id={messages.closeButton.id} />
+            </Button>
+            {modalHeader === 'confirmation' && (
               <Button
                 color="success"
                 onClick={handleOnSubmitModificationsConfirmationButtonClick}
                 variant="contained"
               >
-                Submit
+                <FormattedMessage id={messages.resubmitButton.id} />
               </Button>
             )}
-            {modalHeader === 'Submit' && (
+            {modalHeader === 'submitHeader' && (
               <Button
                 color="success"
                 onClick={handleOnSubmitConfirmationButtonClick}
                 variant="contained"
               >
-                Submit
+                <FormattedMessage id={messages.submitButton.id} />
               </Button>
             )}
           </DialogActions>
@@ -1620,8 +1624,7 @@ export function LiquidationForm({ state }) {
                 >
                   <WarningIcon color="warning" fontSize="large" />
                   <Typography level="h4" color="warning">
-                    By submitting this request, you acknowledge that all
-                    provided information is correct.
+                    <FormattedMessage id={messages.fullpageModalHeader.id} />
                   </Typography>
                 </Box>
               </Alert>
@@ -1669,7 +1672,7 @@ export function LiquidationForm({ state }) {
           }
           color="primary"
         >
-          Request has been saved!
+          <FormattedMessage id={messages.requestHasBeenSaved.id} />
         </Snackbar>
       </LocalizationProvider>
     </Box>

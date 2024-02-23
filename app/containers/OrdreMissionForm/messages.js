@@ -143,6 +143,10 @@ export default defineMessages({
     id: `${scope}.page.resubmitButton`,
     defaultMessage: 'Resubmit',
   },
+  closeButton: {
+    id: `${scope}.page.closeButton`,
+    defaultMessage: 'Close',
+  },
 
   //
 

@@ -1147,7 +1147,9 @@ export function OrdreMissionForm({ state }) {
             )}
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setModalVisibility(false)}>Close</Button>
+            <Button onClick={() => setModalVisibility(false)}>
+              <FormattedMessage id={messages.closeButton.id} />
+            </Button>
             {modalHeader === 'confirmation' && (
               <Button
                 color="success"
