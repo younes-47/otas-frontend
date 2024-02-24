@@ -24,7 +24,6 @@ import AutorenewIcon from '@mui/icons-material/Autorenew';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import Tables from 'components/Tables';
-
 import { DateTimeFormater } from 'utils/Custom/stringManipulation';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
@@ -42,6 +41,7 @@ import {
   changeDecideOnLiquidationParentPageContent,
   setLiquidationIdentityAction,
 } from 'pages/DecideOnLiquidation/actions';
+import { FormattedMessage, useIntl } from 'react-intl';
 import {
   makeSelectErrorDownloadingLiquidationReceiptsFile,
   makeSelectErrorLoadingLiquidations,
@@ -57,6 +57,7 @@ import {
   downloadLiquidationReceiptsFileAction,
   loadLiquidationAction,
 } from './actions';
+import messages from './messages';
 
 const mapStateToProps = createStructuredSelector({
   liquidations: makeSelectLiquidations(),
@@ -88,6 +89,7 @@ export function DecideOnLiquidationTable() {
   const [snackbarVisibility, setSnackbarVisibility] = useState(false);
   const [snackbarAlertSeverity, setSnackbarAlertSeverity] = useState('');
   const history = useHistory();
+  const intl = useIntl();
 
   // Download file
   useEffect(() => {
@@ -178,9 +180,12 @@ export function DecideOnLiquidationTable() {
         const { requestType, requestId } = params.row;
         return requestType === 'AV' ? (
           <Typography level="title-md" variant="plain">
-            Avance Voyage&nbsp;-&nbsp;
+            <FormattedMessage id={messages.tableAvanceVoyage.id} />
+            &nbsp;-&nbsp;
             <Tooltip
-              title="Navigate to the related Avance Voyage"
+              title={intl.formatMessage({
+                id: messages.tableAvanceVoyageNavigationTitle.id,
+              })}
               placement="bottom-start"
             >
               <Typography level="title-md" variant="plain">
@@ -198,7 +203,8 @@ export function DecideOnLiquidationTable() {
           </Typography>
         ) : (
           <Typography level="title-md" variant="plain">
-            Avance Caisse&nbsp;-&nbsp;
+            <FormattedMessage id={messages.tableAvanceCaisse.id} />
+            &nbsp;-&nbsp;
             <Tooltip
               title="Navigate to the related Avance Caisse"
               placement="bottom-start"
@@ -238,7 +244,7 @@ export function DecideOnLiquidationTable() {
     {
       field: 'actualTotal',
       hide: false,
-      headerName: 'Actual Total',
+      headerName: intl.formatMessage({ id: messages.tableActualTotal.id }),
       width: 120,
       renderCell: (params) => {
         const { actualTotal } = params.row;
@@ -265,7 +271,7 @@ export function DecideOnLiquidationTable() {
     {
       field: 'currency',
       hide: false,
-      headerName: 'Currency',
+      headerName: intl.formatMessage({ id: messages.tableCurrency.id }),
       width: 120,
       renderCell: (params) => {
         const { currency } = params.row;
@@ -279,7 +285,7 @@ export function DecideOnLiquidationTable() {
     {
       field: 'status',
       hide: false,
-      headerName: 'Status',
+      headerName: intl.formatMessage({ id: messages.tableStatus.id }),
       flex: 1,
       renderCell: (params) => {
         const { isDecidable } = params.row;
@@ -295,7 +301,8 @@ export function DecideOnLiquidationTable() {
                 borderRadius: '40px',
               }}
             >
-              <AutorenewIcon fontSize="small" /> Pending
+              <AutorenewIcon fontSize="small" />{' '}
+              <FormattedMessage id={messages.tablePending.id} />
             </Alert>
           );
         }
@@ -311,7 +318,8 @@ export function DecideOnLiquidationTable() {
               borderRadius: '40px',
             }}
           >
-            <BeenhereIcon fontSize="small" /> Decided Upon
+            <BeenhereIcon fontSize="small" />{' '}
+            <FormattedMessage id={messages.tableDecidedUpon.id} />
           </Alert>
         );
       },
@@ -320,13 +328,13 @@ export function DecideOnLiquidationTable() {
       field: 'onBehalf',
       hide: false,
       type: 'boolean',
-      headerName: 'onBehalf',
+      headerName: intl.formatMessage({ id: messages.tableOnBehalf.id }),
       width: 120,
     },
     {
       field: 'receiptsFileName',
       hide: false,
-      headerName: 'Receipts File',
+      headerName: intl.formatMessage({ id: messages.tableReceipstsFile.id }),
       width: 120,
       renderCell: (params) => {
         const { receiptsFileName } = params.row;
@@ -340,7 +348,7 @@ export function DecideOnLiquidationTable() {
     {
       field: 'createDate',
       hide: false,
-      headerName: 'Created On',
+      headerName: intl.formatMessage({ id: messages.tableCreateOn.id }),
       flex: 1,
       renderCell: (params) => {
         const { createDate } = params.row;
@@ -354,7 +362,7 @@ export function DecideOnLiquidationTable() {
     {
       field: '',
       hide: false,
-      headerName: 'Actions',
+      headerName: intl.formatMessage({ id: messages.tableActions.id }),
       flex: 1,
       renderCell: (params) => {
         const { id, isDecidable } = params.row;
@@ -369,7 +377,7 @@ export function DecideOnLiquidationTable() {
                 handleOnDecideButtonClick(id);
               }}
             >
-              Decide
+              <FormattedMessage id={messages.tableDecideButton.id} />
             </Button>
           );
         }
@@ -383,7 +391,7 @@ export function DecideOnLiquidationTable() {
               handleOnViewButtonClick(id);
             }}
           >
-            View
+            <FormattedMessage id={messages.tableViewButton.id} />
           </Button>
         );
       },

@@ -29,6 +29,7 @@ import {
   setAvanceCaisseIdentityAction,
 } from 'pages/DecideOnAvanceCaisse/actions';
 import { NumericFormat } from 'react-number-format';
+import { FormattedMessage, useIntl } from 'react-intl';
 import {
   cleanupDecideOnAvanceCaisseTableStoreAction,
   loadAvanceCaisseAction,
@@ -41,6 +42,7 @@ import {
   makeSelectLoadingAvanceCaisses,
   makeSelectStatusAvanceCaisse,
 } from './selectors';
+import messages from './messages';
 
 const mapStateToProps = createStructuredSelector({
   avanceCaisses: makeSelectAvanceCaisses(),
@@ -65,6 +67,8 @@ export function DecideOnAvanceCaisseTable() {
   const [snackbarVisibility, setSnackbarVisibility] = useState(false);
   const [snackbarAlertSeverity, setSnackbarAlertSeverity] = useState('');
 
+  const intl = useIntl();
+
   const avanceCaisseColumns = [
     {
       field: 'id',
@@ -85,7 +89,9 @@ export function DecideOnAvanceCaisseTable() {
     {
       field: 'description',
       hide: false,
-      headerName: 'Description',
+      headerName: intl.formatMessage({
+        id: messages.tableDescription.id,
+      }),
       flex: 1,
       renderCell: (params) => {
         const { description } = params.row;
@@ -101,7 +107,9 @@ export function DecideOnAvanceCaisseTable() {
     {
       field: 'estimatedTotal',
       hide: false,
-      headerName: 'Estimated Total',
+      headerName: intl.formatMessage({
+        id: messages.tableEstimatedTotal.id,
+      }),
       flex: 1,
       renderCell: (params) => {
         const { estimatedTotal } = params.row;
@@ -128,7 +136,9 @@ export function DecideOnAvanceCaisseTable() {
     {
       field: 'currency',
       hide: false,
-      headerName: 'Currency',
+      headerName: intl.formatMessage({
+        id: messages.tableCurrency.id,
+      }),
       flex: 1,
       renderCell: (params) => {
         const { currency } = params.row;
@@ -143,7 +153,9 @@ export function DecideOnAvanceCaisseTable() {
     {
       field: 'status',
       hide: false,
-      headerName: 'Status',
+      headerName: intl.formatMessage({
+        id: messages.tableStatus.id,
+      }),
       flex: 1,
       renderCell: (params) => {
         const { isDecidable } = params.row;
@@ -159,7 +171,8 @@ export function DecideOnAvanceCaisseTable() {
                 borderRadius: '40px',
               }}
             >
-              <AutorenewIcon fontSize="small" /> Pending
+              <AutorenewIcon fontSize="small" />{' '}
+              <FormattedMessage id={messages.tablePending.id} />
             </Alert>
           );
         }
@@ -175,7 +188,8 @@ export function DecideOnAvanceCaisseTable() {
               borderRadius: '40px',
             }}
           >
-            <BeenhereIcon fontSize="small" /> Decided Upon
+            <BeenhereIcon fontSize="small" />{' '}
+            <FormattedMessage id={messages.tableDecidedUpon.id} />
           </Alert>
         );
       },
@@ -184,13 +198,17 @@ export function DecideOnAvanceCaisseTable() {
       field: 'onBehalf',
       hide: false,
       type: 'boolean',
-      headerName: 'onBehalf',
+      headerName: intl.formatMessage({
+        id: messages.tableOnBehalf.id,
+      }),
       flex: 1,
     },
     {
       field: 'createDate',
       hide: false,
-      headerName: 'Created On',
+      headerName: intl.formatMessage({
+        id: messages.tableCreatedOn.id,
+      }),
       flex: 1,
       renderCell: (params) => {
         const { createDate } = params.row;
@@ -204,10 +222,12 @@ export function DecideOnAvanceCaisseTable() {
     {
       field: '',
       hide: false,
-      headerName: 'Actions',
+      headerName: intl.formatMessage({
+        id: messages.tableActions.id,
+      }),
       flex: 1,
       renderCell: (params) => {
-        const { id, nextDeciderUserName, isDecidable } = params.row;
+        const { id, isDecidable } = params.row;
         if (isDecidable) {
           return (
             <Button
@@ -219,7 +239,7 @@ export function DecideOnAvanceCaisseTable() {
                 handleOnDecideButtonClick(id);
               }}
             >
-              Decide
+              <FormattedMessage id={messages.tableDecidedUpon.id} />
             </Button>
           );
         }

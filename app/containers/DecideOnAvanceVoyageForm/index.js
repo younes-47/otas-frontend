@@ -57,6 +57,7 @@ import {
 import TripsTable from 'components/TripsTable';
 import ExpensesTable from 'components/ExpensesTable';
 import { ValidateDeciderComment } from 'utils/Custom/ValidateInputs';
+import { FormattedMessage, useIntl } from 'react-intl';
 import reducer from './reducer';
 import saga from './saga';
 import {
@@ -74,6 +75,7 @@ import {
   loadAvanceVoyageDetailsAction,
   markAvanceVoyageFundsAsPreparedAction,
 } from './actions';
+import messages from './messages';
 
 const mapStateToProps = createStructuredSelector({
   isSideBarVisible: makeSelectIsSideBarVisible(),
@@ -122,6 +124,7 @@ export function DecideOnAvanceVoyageForm({ state }) {
   const [modalSevirity, setModalSevirity] = useState('');
 
   const readOnly = state === 'VIEW';
+  const intl = useIntl();
 
   const data = {
     requestId: avanceVoyageDetails !== null && avanceVoyageDetails?.id,
@@ -211,42 +214,36 @@ export function DecideOnAvanceVoyageForm({ state }) {
   };
 
   const handleOnApproveRequestButtonClick = () => {
-    setModalHeader('Approve the request?');
-    setModalBody(
-      'By Approving the request, you sign it digitally and forward it to the next decider',
-    );
+    setModalHeader('approveRequest');
+    setModalBody('approveRequestBody');
     setModalSevirity('primary');
     setModalVisibility(true);
   };
   const handleOnRejectRequestButtonClick = () => {
-    setModalHeader('Reject the request?');
-    setModalBody(
-      'Are you sure you want to reject this request? This will set the request in an unmodifiable status and it will not continue the approval process',
-    );
+    setModalHeader('rejectRequest');
+    setModalBody('rejectRequestBody');
     setModalSevirity('danger');
     setModalVisibility(true);
   };
 
   const handleOnReturnRequestButtonClick = () => {
-    setModalHeader('Return the request?');
-    setModalBody(
-      'Are you sure you want to return this request? This will return it to the requester to modify it, and the process of approval will start all over.',
-    );
+    setModalHeader('returnRequest');
+    setModalBody('returnRequestBody');
     setModalSevirity('warning');
     setModalVisibility(true);
   };
 
   // TR buttons
   const handleOnMarkFundsAsPreparedButtonClick = () => {
-    setModalHeader('Mark funds as prepared?');
-    setModalBody('Please choose method of delivery.');
+    setModalHeader('markFundsAsPrepared');
+    setModalBody('markFundsAsPreparedBody');
     setModalSevirity('success');
     setModalVisibility(true);
   };
 
   const handleOnConfirmFundsDeliveryButtonClick = () => {
-    setModalHeader('Confirm funds delivery?');
-    setModalBody('Please enter the confirmation number below.');
+    setModalHeader('confirmFundsDelivery');
+    setModalBody('confirmFundsDeliveryBody');
     setModalSevirity('warning');
     setModalVisibility(true);
   };
@@ -295,7 +292,8 @@ export function DecideOnAvanceVoyageForm({ state }) {
     >
       <Box display="flex" justifyContent="center" textAlign="center" margin={3}>
         <Typography level="h2">
-          Avance Voyage #{avanceVoyageDetails?.id}
+          <FormattedMessage id={messages.avanceVoyageTitle.id} /> #
+          {avanceVoyageDetails?.id}
         </Typography>
       </Box>
 
@@ -306,7 +304,7 @@ export function DecideOnAvanceVoyageForm({ state }) {
         marginBottom={1}
       >
         <Typography color="neutral" level="title-lg" variant="plain">
-          Current Status:{' '}
+          <FormattedMessage id={messages.currentStatus.id} />:{' '}
           <Typography color="primary" level="title-lg" variant="plain">
             {avanceVoyageDetails?.latestStatus}
           </Typography>
@@ -324,11 +322,11 @@ export function DecideOnAvanceVoyageForm({ state }) {
           color="warning"
           onClick={() => {
             setModalVisibility(true);
-            setModalHeader('Status History');
+            setModalHeader('statusHistory');
           }}
           startIcon={<HistoryIcon />}
         >
-          Status History
+          <FormattedMessage id={messages.statusHistoryButton.id} />
         </Button>
       </Box>
 
@@ -384,7 +382,7 @@ export function DecideOnAvanceVoyageForm({ state }) {
           >
             <Alert severity="info">
               <Typography level="title-md" color="neutral">
-                This Avance Voyage is Linked to
+                <FormattedMessage id={messages.thisAvanceVoyageIsLinkedTo.id} />
               </Typography>
               {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
               <Link
@@ -392,7 +390,8 @@ export function DecideOnAvanceVoyageForm({ state }) {
                 underline="always"
                 onClick={() => handleOnOrdreMissionLinkClick()}
               >
-                Ordre Mission #{avanceVoyageDetails?.ordreMissionId}&nbsp;
+                <FormattedMessage id={messages.ordreMission.id} />#
+                {avanceVoyageDetails?.ordreMissionId}&nbsp;
                 <InsertLinkIcon fontSize="small" />
               </Link>
             </Alert>
@@ -436,7 +435,7 @@ export function DecideOnAvanceVoyageForm({ state }) {
       </Box>
 
       <Typography level="title-lg" textAlign="center" marginBottom={2}>
-        Trajectories
+        <FormattedMessage id={messages.tripsHeader.id} />
       </Typography>
       <Box display="flex" justifyContent="center" marginBottom={5}>
         <TripsTable
@@ -454,7 +453,7 @@ export function DecideOnAvanceVoyageForm({ state }) {
             marginBottom={2}
           >
             <Typography level="title-lg" textAlign="center" marginBottom={2}>
-              Expenses
+              <FormattedMessage id={messages.expensesHeader.id} />
             </Typography>
           </Box>
           <Box display="flex" justifyContent="center" marginBottom={3}>
@@ -472,7 +471,7 @@ export function DecideOnAvanceVoyageForm({ state }) {
           marginBottom={2}
         >
           <Typography level="title-lg" textAlign="center" marginBottom={2}>
-            No Expenses
+            <FormattedMessage id={messages.noExpensesHeader.id} />
           </Typography>
         </Box>
       )}
@@ -490,7 +489,8 @@ export function DecideOnAvanceVoyageForm({ state }) {
       <Box display="flex" justifyContent="center" marginBottom={3}>
         <Box width="60%" display="flex" justifyContent="flex-end">
           <Typography level="h4">
-            Total {avanceVoyageDetails?.currency}:&nbsp;
+            <FormattedMessage id={messages.total.id} />
+            {avanceVoyageDetails?.currency}:&nbsp;
             <Typography color="success">
               <NumericFormat
                 displayType="text"
@@ -524,7 +524,7 @@ export function DecideOnAvanceVoyageForm({ state }) {
           color="primary"
           onClick={handleOnReturnButtonClick}
         >
-          Return
+          <FormattedMessage id={messages.returnButton.id} />
         </Button>
         {!readOnly && !deciderLevels?.includes('TR') && (
           <>
@@ -533,21 +533,21 @@ export function DecideOnAvanceVoyageForm({ state }) {
               color="error"
               onClick={handleOnRejectRequestButtonClick}
             >
-              Reject
+              <FormattedMessage id={messages.rejectButton.id} />
             </Button>
             <Button
               variant="contained"
               color="warning"
               onClick={handleOnReturnRequestButtonClick}
             >
-              Return the request
+              <FormattedMessage id={messages.returnRequestButton.id} />
             </Button>
             <Button
               variant="contained"
               color="success"
               onClick={handleOnApproveRequestButtonClick}
             >
-              Sign & Approve
+              <FormattedMessage id={messages.signAndApproveButton.id} />
             </Button>
           </>
         )}
@@ -559,7 +559,7 @@ export function DecideOnAvanceVoyageForm({ state }) {
               color="success"
               onClick={handleOnMarkFundsAsPreparedButtonClick}
             >
-              Mark funds as prepared
+              <FormattedMessage id={messages.markFundsAsPreparedButton.id} />
             </Button>
           )}
         {!readOnly &&
@@ -570,7 +570,7 @@ export function DecideOnAvanceVoyageForm({ state }) {
               color="success"
               onClick={handleOnConfirmFundsDeliveryButtonClick}
             >
-              Confirm Funds Delivery
+              <FormattedMessage id={messages.confirmFundsDeliveryButton.id} />
             </Button>
           )}
       </Stack>
@@ -579,12 +579,17 @@ export function DecideOnAvanceVoyageForm({ state }) {
       <Dialog
         open={modalVisibility}
         keepMounted
-        onClose={() => setModalVisibility(false)}
+        onClose={() => {
+          setModalVisibility(false);
+          setDeciderComment(null);
+        }}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>{modalHeader}</DialogTitle>
+        <DialogTitle>
+          {modalHeader && <FormattedMessage id={messages[modalHeader].id} />}
+        </DialogTitle>
         <DialogContent dividers>
-          {modalHeader === 'Status History' ? (
+          {modalHeader === 'statusHistory' ? (
             <Timeline>
               {avanceVoyageDetails?.statusHistory?.map((sh, i, arr) => (
                 <CustomizedTimeLine
@@ -596,10 +601,10 @@ export function DecideOnAvanceVoyageForm({ state }) {
           ) : (
             <DialogContentText id="alert-dialog-slide-description">
               <Alert color={modalSevirity} size="lg" variant="soft">
-                {modalBody}
+                {modalBody && <FormattedMessage id={messages[modalBody].id} />}
               </Alert>
-              {(modalHeader === 'Return the request?' ||
-                modalHeader === 'Reject the request?') && (
+              {(modalHeader === 'returnRequest' ||
+                modalHeader === 'rejectRequest') && (
                 <>
                   <Typography
                     level="title-md"
@@ -607,22 +612,31 @@ export function DecideOnAvanceVoyageForm({ state }) {
                     marginTop={3}
                     marginBottom={2}
                   >
-                    *Please provide a comment on why you are returning this
-                    request (required)
+                    {modalHeader === 'rejectRequest' ? (
+                      <FormattedMessage
+                        id={messages.rejectingRequestComment.id}
+                      />
+                    ) : (
+                      <FormattedMessage
+                        id={messages.returningRequestComment.id}
+                      />
+                    )}
                   </Typography>
                   <TextField
                     sx={{ width: '100%' }}
                     id="outlined-multiline-static"
                     multiline
                     rows={5}
-                    placeholder="Your Comment (255 characters: ~35 to 50 words)..."
+                    placeholder={intl.formatMessage({
+                      id: messages.deciderCommentPlaceholder.id,
+                    })}
                     variant="outlined"
                     onChange={(e) => setDeciderComment(e.target.value)}
                     inputProps={{ maxLength: 255 }}
                   />
                 </>
               )}
-              {modalHeader === 'Mark funds as prepared?' && (
+              {modalHeader === 'markFundsAsPrepared' && (
                 <RadioGroup
                   name="delivery-method"
                   sx={{ margin: '1em' }}
@@ -649,7 +663,9 @@ export function DecideOnAvanceVoyageForm({ state }) {
                       <Radio
                         overlay
                         value="CASH"
-                        label="Cash"
+                        label={intl.formatMessage({
+                          id: messages.cash.id,
+                        })}
                         sx={{ flexGrow: 1, flexDirection: 'row-reverse' }}
                         slotProps={{
                           action: ({ checked }) => ({
@@ -676,7 +692,9 @@ export function DecideOnAvanceVoyageForm({ state }) {
                       <Radio
                         overlay
                         value="PROVISION"
-                        label="Provision"
+                        label={intl.formatMessage({
+                          id: messages.provision.id,
+                        })}
                         sx={{ flexGrow: 1, flexDirection: 'row-reverse' }}
                         slotProps={{
                           action: ({ checked }) => ({
@@ -695,10 +713,12 @@ export function DecideOnAvanceVoyageForm({ state }) {
                   </List>
                 </RadioGroup>
               )}
-              {modalHeader === 'Confirm funds delivery?' && (
+              {modalHeader === 'confirmFundsDelivery' && (
                 <>
                   <FormControl sx={{ marginTop: '2em' }}>
-                    <FormLabel>Confirmation Number</FormLabel>
+                    <FormLabel>
+                      <FormattedMessage id={messages.confirmationNumber.id} />
+                    </FormLabel>
                     <PatternFormat
                       displayType="input"
                       placeholder="##-##-##-##"
@@ -719,12 +739,16 @@ export function DecideOnAvanceVoyageForm({ state }) {
                       error={confirmationNumber?.toString().length !== 8}
                     />
                     <FormHelperText>
-                      Consists of 8 digits (no letters or special charachters).
+                      <FormattedMessage
+                        id={messages.confirmationNumberExplainer.id}
+                      />
                     </FormHelperText>
                   </FormControl>
                   {errorConfirmingAvanceVoyageFundsDelivery === true && (
                     <Alert color="danger" size="md" variant="soft">
-                      Wrong Confirmation Number. Please try again.
+                      <FormattedMessage
+                        id={messages.wrongConfirmationNumberMessage.id}
+                      />
                     </Alert>
                   )}
                 </>
@@ -734,9 +758,9 @@ export function DecideOnAvanceVoyageForm({ state }) {
         </DialogContent>
         <DialogActions>
           <Button variant="outlined" onClick={() => setModalVisibility(false)}>
-            Close
+            <FormattedMessage id={messages.closeButton.id} />
           </Button>
-          {modalHeader === 'Approve the request?' && (
+          {modalHeader === 'approveRequest' && (
             <Button
               color="success"
               onClick={handleOnApproveRequestConfirmationButtonClick}
@@ -745,41 +769,41 @@ export function DecideOnAvanceVoyageForm({ state }) {
               {!deciderLevels?.includes('FM') ? 'Sign and Approve' : 'Approve'}
             </Button>
           )}
-          {modalHeader === 'Reject the request?' && (
+          {modalHeader === 'rejectRequest' && (
             <Button
               color="error"
               onClick={handleOnRejectRequestConfirmationButtonClick}
               variant="contained"
             >
-              Reject
+              <FormattedMessage id={messages.rejectButton.id} />
             </Button>
           )}
-          {modalHeader === 'Return the request?' && (
+          {modalHeader === 'returnRequest' && (
             <Button
               color="warning"
               onClick={handleOnReturnRequestConfirmationButtonClick}
               variant="contained"
             >
-              Return the request
+              <FormattedMessage id={messages.returnRequestButton.id} />
             </Button>
           )}
-          {modalHeader === 'Mark funds as prepared?' && (
+          {modalHeader === 'markFundsDelivery' && (
             <Button
               color="success"
               onClick={handleOnMethodOfDeliveryConfirmationButtonClick}
               variant="contained"
             >
-              Confirm
+              <FormattedMessage id={messages.confirmButton.id} />
             </Button>
           )}
-          {modalHeader === 'Confirm funds delivery?' && (
+          {modalHeader === 'confirmFundsDelivery' && (
             <Button
               color="success"
               onClick={handleOnConfirmFundsDeliveryConfirmationButtonClick}
               variant="contained"
               disabled={confirmingAvanceVoyageFundsDelivery === true}
             >
-              Confirm
+              <FormattedMessage id={messages.confirmButton.id} />
             </Button>
           )}
         </DialogActions>

@@ -30,7 +30,7 @@ const DEFAULT_LOCALE =
   appLocales.includes(localStorage.getItem('preferredLanguage'))
     ? localStorage.getItem('preferredLanguage')
     : 'en';
-//   LSlocale && ap
+// LSlocale && ap
 const formatTranslationMessages = (locale, messages) => {
   const defaultFormattedMessages =
     locale !== DEFAULT_LOCALE

@@ -43,6 +43,7 @@ import { List, ListItem, ListItemDecorator, Radio, RadioGroup } from '@mui/joy';
 import ExpensesTable from 'components/ExpensesTable';
 import TripsTable from 'components/TripsTable';
 import { ValidateDeciderComment } from 'utils/Custom/ValidateInputs';
+import { FormattedMessage, useIntl } from 'react-intl';
 import {
   makeSelectLiquidationDetails,
   makeSelectErrorDecidingOnLiquidation,
@@ -55,6 +56,7 @@ import {
   decideOnLiquidationAction,
   loadLiquidationDetailsAction,
 } from './actions';
+import messages from './messages';
 
 const mapStateToProps = createStructuredSelector({
   isSideBarVisible: makeSelectIsSideBarVisible(),
@@ -70,6 +72,7 @@ export function DecideOnLiquidationForm({ state }) {
   useInjectSaga({ key: 'decideOnLiquidationForm', saga });
 
   const dispatch = useDispatch();
+  const intl = useIntl();
 
   const {
     isSideBarVisible,
@@ -215,32 +218,24 @@ export function DecideOnLiquidationForm({ state }) {
   };
 
   const handleOnApproveRequestButtonClick = () => {
-    setModalHeader('Approve the request?');
+    setModalHeader('approveRequest');
     if (liquidationDetails?.latestStatus === "Pending Treasury's Validation") {
-      setModalBody(
-        'By Approving the request, you acknowledge that all information is correct and you start preparing the funds',
-      );
+      setModalBody('approveRequestTRBody');
     } else {
-      setModalBody(
-        'By Approving the request, you sign it digitally and forward it to the next decider',
-      );
+      setModalBody('approveRequestFMBody');
     }
     setModalSevirity('primary');
     setModalVisibility(true);
   };
   const handleOnRejectRequestButtonClick = () => {
-    setModalHeader('Reject the request?');
-    setModalBody(
-      'Are you sure you want to reject this request? This will set the request in an unmodifiable status and it will not continue the approval process',
-    );
+    setModalHeader('rejectRequest');
+    setModalBody('rejectRequestBody');
     setModalSevirity('danger');
     setModalVisibility(true);
   };
   const handleOnReturnRequestButtonClick = () => {
-    setModalHeader('Return the request?');
-    setModalBody(
-      'Are you sure you want to return this request? This will return it to the requester to modify it, and the process of approval will start all over.',
-    );
+    setModalHeader('returnRequest');
+    setModalBody('returnRequestBody');
     setModalSevirity('warning');
     setModalVisibility(true);
   };
@@ -248,10 +243,8 @@ export function DecideOnLiquidationForm({ state }) {
   // FM Button
 
   const handleOnConfirmByFMAfterReturnByTRButtonClick = () => {
-    setModalHeader('Confirm the request?');
-    setModalBody(
-      'By confirming the request again, you acknowledge that all the information are correct. The request will be forwarded to the Treasurer for further inspection.',
-    );
+    setModalHeader('confirmRequest');
+    setModalBody('confirmRequestBody');
     setModalSevirity('success');
     setModalVisibility(true);
   };
@@ -263,17 +256,15 @@ export function DecideOnLiquidationForm({ state }) {
 
   // TR buttons
   const handleOnFinalizeButtonClick = () => {
-    setModalHeader('Finalize the request?');
-    setModalBody(
-      'By finalizing the request, you acknowledge that everything is settled and no further actions are required. All information will still be accessible afterwards.',
-    );
+    setModalHeader('finalizeRequest');
+    setModalBody('finalizeRequestBody');
     setModalSevirity('success');
     setModalVisibility(true);
   };
 
   const handleOnReturnRequestByTreasuryButtonClick = () => {
-    setModalHeader('Return the request?');
-    setModalBody('Please choose to whom you want to return the request.');
+    setModalHeader('returnRequest');
+    setModalBody('returnRequestBodyTR');
     setModalSevirity('warning');
     setModalVisibility(true);
   };
@@ -284,10 +275,8 @@ export function DecideOnLiquidationForm({ state }) {
 
   const handleOnReturnRequestByTreasuryConfirmationButtonClick = () => {
     if (isReturnedToRequesterByTR === '') {
-      setModalHeader('Invalid choice!');
-      setModalBody(
-        'If you are returning this request, you should specify to whom!',
-      );
+      setModalHeader('invalidChoice');
+      setModalBody('invalidChoiceBody');
       setModalSevirity('danger');
       setModalVisibility(true);
     } else {
@@ -322,7 +311,8 @@ export function DecideOnLiquidationForm({ state }) {
     >
       <Box display="flex" justifyContent="center" textAlign="center" margin={3}>
         <Typography level="h2">
-          Decide On Liquidation #{liquidationDetails?.id}
+          <FormattedMessage id={messages.decideOnLQHeader.id} /> #
+          {liquidationDetails?.id}
         </Typography>
       </Box>
 
@@ -333,7 +323,7 @@ export function DecideOnLiquidationForm({ state }) {
         marginBottom={1}
       >
         <Typography color="neutral" level="title-lg" variant="plain">
-          Current Status:{' '}
+          <FormattedMessage id={messages.currentStatus.id} />:{' '}
           <Typography color="primary" level="title-lg" variant="plain">
             {liquidationDetails?.latestStatus}
           </Typography>
@@ -351,11 +341,11 @@ export function DecideOnLiquidationForm({ state }) {
           color="warning"
           onClick={() => {
             setModalVisibility(true);
-            setModalHeader('Status History');
+            setModalHeader('statusHistory');
           }}
           startIcon={<HistoryIcon />}
         >
-          Status History
+          <FormattedMessage id={messages.statusHistoryButton.id} />
         </Button>
       </Box>
 
@@ -375,8 +365,7 @@ export function DecideOnLiquidationForm({ state }) {
               sx={{ maxWidth: '60%' }}
             >
               <CardContent sx={{ textAlign: 'center', marginBottom: '1em' }}>
-                This request has been returned by the treasurer. <br /> Please
-                refer to the comment below.
+                <FormattedMessage id={messages.returnedByTRAlert.id} />
               </CardContent>
               <Card variant="outlined">
                 {liquidationDetails?.deciderComment}
@@ -457,7 +446,7 @@ export function DecideOnLiquidationForm({ state }) {
       {trips.length > 0 && (
         <>
           <Typography level="title-lg" textAlign="center" marginBottom={2}>
-            Trajectories
+            <FormattedMessage id={messages.tripsHeader.id} />
           </Typography>
           <Box display="flex" justifyContent="center" marginBottom={5}>
             <TripsTable
@@ -487,7 +476,7 @@ export function DecideOnLiquidationForm({ state }) {
             marginBottom={2}
           >
             <Typography level="title-lg" textAlign="center" marginBottom={2}>
-              Expenses
+              <FormattedMessage id={messages.expensesHeader.id} />
             </Typography>
           </Box>
           <Box display="flex" justifyContent="center" marginBottom={3}>
@@ -519,7 +508,7 @@ export function DecideOnLiquidationForm({ state }) {
       >
         <Box alignItems="flex-start" width="40rem">
           <Typography level="title-lg" textAlign="center" marginBottom={2}>
-            Receipts File:
+            <FormattedMessage id={messages.receiptsFileHeader.id} />:
           </Typography>
           <Button
             color="secondary"
@@ -545,7 +534,8 @@ export function DecideOnLiquidationForm({ state }) {
       <Box display="flex" justifyContent="center" marginBottom={3}>
         <Box width="60%" display="flex" justifyContent="flex-end">
           <Typography level="h4">
-            Estimated Total:&nbsp;
+            <FormattedMessage id={messages.estimatedTotal.id} />
+            :&nbsp;
             <Typography color="success">
               <NumericFormat
                 prefix={`${liquidationDetails?.requestDetails?.currency} `}
@@ -569,7 +559,8 @@ export function DecideOnLiquidationForm({ state }) {
       <Box display="flex" justifyContent="center" marginBottom={3}>
         <Box width="60%" display="flex" justifyContent="flex-end">
           <Typography level="h4">
-            Actual Amount Spent:&nbsp;
+            <FormattedMessage id={messages.actualAmountSpent.id} />
+            :&nbsp;
             <Typography color="success">
               <NumericFormat
                 prefix={`${liquidationDetails?.requestDetails?.currency} `}
@@ -602,7 +593,8 @@ export function DecideOnLiquidationForm({ state }) {
       <Box display="flex" justifyContent="center" marginBottom={3}>
         <Box width="60%" display="flex" justifyContent="flex-end">
           <Typography level="h4">
-            Requester owes:&nbsp;
+            <FormattedMessage id={messages.requesterOwes.id} />
+            :&nbsp;
             <Typography
               color={liquidationDetails?.result < 0 ? 'danger' : 'success'}
             >
@@ -642,19 +634,31 @@ export function DecideOnLiquidationForm({ state }) {
               textColor="inherit"
               sx={{ textTransform: 'capitalize' }}
             >
-              Decision:
+              <FormattedMessage id={messages.decisionHeader.id} />:
             </Typography>
             <Typography
               level="title-md"
               textColor="inherit"
               sx={{ textTransform: 'capitalize' }}
             >
-              {liquidationDetails?.result < 0 &&
-                `An amount of ${
-                  liquidationDetails?.requestDetails?.currency
-                } ${Math.abs(liquidationDetails?.result)} must be handed over`}
-              {liquidationDetails?.result >= 0 &&
-                `An amount of ${liquidationDetails?.requestDetails?.currency} ${liquidationDetails?.result} must be refunded to the requester.`}
+              {liquidationDetails?.result < 0 && (
+                <>
+                  <FormattedMessage id={messages.anAmountOf.id} />{' '}
+                  {liquidationDetails?.requestDetails?.currency}{' '}
+                  {Math.abs(liquidationDetails?.result)}{' '}
+                  <FormattedMessage id={messages.mustBeHandedOver.id} />
+                </>
+              )}
+              {liquidationDetails?.result >= 0 && (
+                <>
+                  <FormattedMessage id={messages.anAmountOf.id} />{' '}
+                  {liquidationDetails?.requestDetails?.currency}{' '}
+                  {liquidationDetails?.result}
+                  <FormattedMessage
+                    id={messages.mustBeRefundedToTheRequester.id}
+                  />
+                </>
+              )}
             </Typography>
           </Card>
         </Box>
@@ -673,7 +677,7 @@ export function DecideOnLiquidationForm({ state }) {
           color="primary"
           onClick={handleOnReturnButtonClick}
         >
-          Return
+          <FormattedMessage id={messages.returnButton.id} />
         </Button>
         {!readOnly && !deciderLevels?.includes('TR') && (
           <>
@@ -684,7 +688,7 @@ export function DecideOnLiquidationForm({ state }) {
                 color="error"
                 onClick={handleOnRejectRequestButtonClick}
               >
-                Reject
+                <FormattedMessage id={messages.rejectButton.id} />
               </Button>
             )}
             <Button
@@ -692,7 +696,7 @@ export function DecideOnLiquidationForm({ state }) {
               color="warning"
               onClick={handleOnReturnRequestButtonClick}
             >
-              Return the request
+              <FormattedMessage id={messages.returnRequestButton.id} />
             </Button>
             {liquidationDetails?.latestStatus ===
               'Returned To Finance Department for missing Information' && (
@@ -701,7 +705,7 @@ export function DecideOnLiquidationForm({ state }) {
                 color="success"
                 onClick={handleOnConfirmByFMAfterReturnByTRButtonClick}
               >
-                Confirm
+                <FormattedMessage id={messages.confirmButton.id} />
               </Button>
             )}
             {liquidationDetails?.latestStatus !==
@@ -712,9 +716,11 @@ export function DecideOnLiquidationForm({ state }) {
                 onClick={handleOnApproveRequestButtonClick}
               >
                 {liquidationDetails?.latestStatus ===
-                "Pending Treasury's Validation"
-                  ? 'Approve'
-                  : 'Sign and Approve'}
+                "Pending Treasury's Validation" ? (
+                  <FormattedMessage id={messages.approveButton.id} />
+                ) : (
+                  <FormattedMessage id={messages.signAndApproveButton.id} />
+                )}
               </Button>
             )}
           </>
@@ -725,7 +731,7 @@ export function DecideOnLiquidationForm({ state }) {
             color="warning"
             onClick={handleOnReturnRequestByTreasuryButtonClick}
           >
-            Return the request
+            <FormattedMessage id={messages.returnRequestButton.id} />
           </Button>
         )}
         {!readOnly && deciderLevels?.includes('TR') && (
@@ -734,7 +740,7 @@ export function DecideOnLiquidationForm({ state }) {
             color="success"
             onClick={handleOnFinalizeButtonClick}
           >
-            Finalize
+            <FormattedMessage id={messages.finalizeButton.id} />
           </Button>
         )}
       </Stack>
@@ -743,12 +749,17 @@ export function DecideOnLiquidationForm({ state }) {
       <Dialog
         open={modalVisibility}
         keepMounted
-        onClose={() => setModalVisibility(false)}
+        onClose={() => {
+          setModalVisibility(false);
+          setDeciderComment(null);
+        }}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>{modalHeader}</DialogTitle>
+        <DialogTitle>
+          {modalHeader && <FormattedMessage id={messages[modalHeader].id} />}
+        </DialogTitle>
         <DialogContent dividers>
-          {modalHeader === 'Status History' ? (
+          {modalHeader === 'statusHistory' ? (
             <Timeline>
               {liquidationDetails?.statusHistory?.map((sh, i, arr) => (
                 <CustomizedTimeLine
@@ -762,8 +773,8 @@ export function DecideOnLiquidationForm({ state }) {
               <Alert color={modalSevirity} size="lg" variant="soft">
                 {modalBody}
               </Alert>
-              {(modalHeader === 'Return the request?' ||
-                modalHeader === 'Reject the request?') &&
+              {(modalHeader === 'returnRequest' ||
+                modalHeader === 'rejectRequest') &&
                 !deciderLevels?.includes('TR') && (
                   <>
                     <Typography
@@ -772,22 +783,31 @@ export function DecideOnLiquidationForm({ state }) {
                       marginTop={3}
                       marginBottom={2}
                     >
-                      *Please provide a comment on why you are returning this
-                      request (required)
+                      {modalHeader === 'rejectRequest' ? (
+                        <FormattedMessage
+                          id={messages.rejectingRequestComment.id}
+                        />
+                      ) : (
+                        <FormattedMessage
+                          id={messages.returningRequestComment.id}
+                        />
+                      )}
                     </Typography>
                     <TextField
                       sx={{ width: '100%' }}
                       id="outlined-multiline-static"
                       multiline
                       rows={5}
-                      placeholder="Your Comment (255 characters: ~35 to 50 words)..."
+                      placeholder={intl.formatMessage({
+                        id: messages.deciderCommentPlaceholder.id,
+                      })}
                       variant="outlined"
                       onChange={(e) => setDeciderComment(e.target.value)}
                       inputProps={{ maxLength: 255 }}
                     />
                   </>
                 )}
-              {modalHeader === 'Return the request?' &&
+              {modalHeader === 'returnRequest' &&
                 deciderLevels?.includes('TR') && (
                   <>
                     <RadioGroup
@@ -818,7 +838,9 @@ export function DecideOnLiquidationForm({ state }) {
                           <Radio
                             overlay
                             value="returnedToRequester"
-                            label="Return it to the requester for missing evidences"
+                            label={intl.formatMessage({
+                              id: messages.returnToRequesterLabel.id,
+                            })}
                             sx={{ flexGrow: 1, flexDirection: 'row-reverse' }}
                             slotProps={{
                               action: ({ checked }) => ({
@@ -846,7 +868,9 @@ export function DecideOnLiquidationForm({ state }) {
                           <Radio
                             overlay
                             value="notReturnedToRequester"
-                            label="Return it to Finance Manager for wrong information"
+                            label={intl.formatMessage({
+                              id: messages.returnToFMLabel.id,
+                            })}
                             sx={{ flexGrow: 1, flexDirection: 'row-reverse' }}
                             slotProps={{
                               action: ({ checked }) => ({
@@ -871,15 +895,18 @@ export function DecideOnLiquidationForm({ state }) {
                       marginTop={3}
                       marginBottom={2}
                     >
-                      *Please provide a comment on why you are returning this
-                      request (required)
+                      <FormattedMessage
+                        id={messages.returningRequestComment.id}
+                      />
                     </Typography>
                     <TextField
                       sx={{ width: '100%' }}
                       id="outlined-multiline-static"
                       multiline
                       rows={5}
-                      placeholder="Your Comment (255 characters: ~35 to 50 words)..."
+                      placeholder={intl.formatMessage({
+                        id: messages.deciderCommentPlaceholder.id,
+                      })}
                       variant="outlined"
                       onChange={(e) => setDeciderComment(e.target.value)}
                       inputProps={{ maxLength: 255 }}
@@ -891,43 +918,45 @@ export function DecideOnLiquidationForm({ state }) {
         </DialogContent>
         <DialogActions>
           <Button variant="outlined" onClick={() => setModalVisibility(false)}>
-            Close
+            <FormattedMessage id={messages.closeButton.id} />
           </Button>
           {/* Normal deciders actions */}
-          {modalHeader === 'Approve the request?' && (
+          {modalHeader === 'approveRequest' && (
             <Button
               color="success"
               onClick={handleOnApproveRequestConfirmationButtonClick}
               variant="contained"
             >
               {liquidationDetails?.latestStatus ===
-              "Pending Treasury's Validation"
-                ? 'Approve'
-                : 'Sign and Approve'}
+              "Pending Treasury's Validation" ? (
+                <FormattedMessage id={messages.approveButton.id} />
+              ) : (
+                <FormattedMessage id={messages.signAndApproveButton.id} />
+              )}
             </Button>
           )}
-          {modalHeader === 'Reject the request?' && (
+          {modalHeader === 'rejectRequest' && (
             <Button
               color="error"
               onClick={handleOnRejectRequestConfirmationButtonClick}
               variant="contained"
             >
-              Reject
+              <FormattedMessage id={messages.rejectButton.id} />
             </Button>
           )}
-          {modalHeader === 'Return the request?' &&
+          {modalHeader === 'returnRequest' &&
             !deciderLevels?.includes('TR') && (
               <Button
                 color="warning"
                 onClick={handleOnReturnRequestConfirmationButtonClick}
                 variant="contained"
               >
-                Return the request
+                <FormattedMessage id={messages.returnRequestButton.id} />
               </Button>
             )}
 
           {/* FM Special action  */}
-          {modalHeader === 'Confirm the request?' && (
+          {modalHeader === 'confirmRequest' && (
             <Button
               color="success"
               onClick={
@@ -935,30 +964,29 @@ export function DecideOnLiquidationForm({ state }) {
               }
               variant="contained"
             >
-              Confirm
+              <FormattedMessage id={messages.confirmButton.id} />
             </Button>
           )}
 
           {/* TR actions */}
-          {modalHeader === 'Finalize the request?' && (
+          {modalHeader === 'finalizeRequest' && (
             <Button
               color="success"
               onClick={handleOnFinalizeConfirmationButtonClick}
               variant="contained"
             >
-              Finalize the request
+              <FormattedMessage id={messages.finalizeButton.id} />
             </Button>
           )}
-          {modalHeader === 'Return the request?' &&
-            deciderLevels?.includes('TR') && (
-              <Button
-                color="warning"
-                onClick={handleOnReturnRequestByTreasuryConfirmationButtonClick}
-                variant="contained"
-              >
-                Return the request
-              </Button>
-            )}
+          {modalHeader === 'returnRequest' && deciderLevels?.includes('TR') && (
+            <Button
+              color="warning"
+              onClick={handleOnReturnRequestByTreasuryConfirmationButtonClick}
+              variant="contained"
+            >
+              <FormattedMessage id={messages.returnRequestButton.id} />
+            </Button>
+          )}
         </DialogActions>
       </Dialog>
     </Box>

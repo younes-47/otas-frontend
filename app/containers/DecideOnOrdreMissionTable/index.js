@@ -31,6 +31,7 @@ import {
   setOrdreMissionIdentityAction,
 } from 'pages/DecideOnOrdreMission/actions';
 import { NumericFormat } from 'react-number-format';
+import { FormattedMessage, useIntl } from 'react-intl';
 import makeSelectDecideOnOrdreMissionTable, {
   makeSelectErrorLoadingOrdreMissions,
   makeSelectLoadingOrdreMissions,
@@ -43,6 +44,7 @@ import {
   cleanupDecideOnOrdreMissionTableStoreAction,
   loadOrdreMissionAction,
 } from './actions';
+import messages from './messages';
 
 const mapStateToProps = createStructuredSelector({
   isSideBarVisible: makeSelectIsSideBarVisible(),
@@ -67,6 +69,8 @@ export function DecideOnOrdreMissionTable() {
   const [snackbarVisibility, setSnackbarVisibility] = useState(false);
   const [snackbarAlertSeverity, setSnackbarAlertSeverity] = useState('');
 
+  const intl = useIntl();
+
   const ordreMissionColumns = [
     {
       field: 'id',
@@ -87,7 +91,9 @@ export function DecideOnOrdreMissionTable() {
     {
       field: 'description',
       hide: false,
-      headerName: 'Description',
+      headerName: intl.formatMessage({
+        id: messages.tableDescription.id,
+      }),
       flex: 1,
       renderCell: (params) => {
         const { description } = params.row;
@@ -103,7 +109,9 @@ export function DecideOnOrdreMissionTable() {
     {
       field: 'estimatedTotal',
       hide: false,
-      headerName: 'Requested Amount',
+      headerName: intl.formatMessage({
+        id: messages.tableRequestedAmount.id,
+      }),
       flex: 1,
       renderCell: (params) => {
         const { requestedAmountMAD, requestedAmountEUR } = params.row;
@@ -197,7 +205,9 @@ export function DecideOnOrdreMissionTable() {
     {
       field: 'missionDuration',
       hide: false,
-      headerName: 'Mission Duration',
+      headerName: intl.formatMessage({
+        id: messages.tableMissionDuration.id,
+      }),
       flex: 1,
       renderCell: (params) => {
         const { departureDate, returnDate } = params.row;
@@ -209,7 +219,7 @@ export function DecideOnOrdreMissionTable() {
         );
         return (
           <Typography variant="plain" level="title-md" color="warning">
-            {durationInDays} Days
+            {durationInDays} <FormattedMessage id={messages.tableDays.id} />
           </Typography>
         );
       },
@@ -218,7 +228,9 @@ export function DecideOnOrdreMissionTable() {
     {
       field: 'status',
       hide: false,
-      headerName: 'Status',
+      headerName: intl.formatMessage({
+        id: messages.tableStatus.id,
+      }),
       flex: 1,
       renderCell: (params) => {
         const { isDecidable } = params.row;
@@ -234,7 +246,8 @@ export function DecideOnOrdreMissionTable() {
                 borderRadius: '40px',
               }}
             >
-              <AutorenewIcon fontSize="small" /> Pending
+              <AutorenewIcon fontSize="small" />{' '}
+              <FormattedMessage id={messages.tablePending.id} />
             </Alert>
           );
         }
@@ -250,7 +263,8 @@ export function DecideOnOrdreMissionTable() {
               borderRadius: '40px',
             }}
           >
-            <BeenhereIcon fontSize="small" /> Decided Upon
+            <BeenhereIcon fontSize="small" />{' '}
+            <FormattedMessage id={messages.tableDecidedUpon.id} />
           </Alert>
         );
       },
@@ -258,14 +272,18 @@ export function DecideOnOrdreMissionTable() {
     {
       field: 'abroad',
       hide: false,
-      headerName: 'Abroad',
+      headerName: intl.formatMessage({
+        id: messages.tableAbroad.id,
+      }),
       type: 'boolean',
       flex: 1,
     },
     {
       field: 'createDate',
       hide: false,
-      headerName: 'Created On',
+      headerName: intl.formatMessage({
+        id: messages.tableCreatedOn.id,
+      }),
       flex: 1,
       renderCell: (params) => {
         const { createDate } = params.row;
@@ -279,7 +297,9 @@ export function DecideOnOrdreMissionTable() {
     {
       field: '',
       hide: false,
-      headerName: 'Actions',
+      headerName: intl.formatMessage({
+        id: messages.tableActions.id,
+      }),
       flex: 1,
       renderCell: (params) => {
         const { id, isDecidable } = params.row;
@@ -294,7 +314,7 @@ export function DecideOnOrdreMissionTable() {
                 handleOnDecideButtonClick(id);
               }}
             >
-              Decide
+              <FormattedMessage id={messages.tableDecideButton.id} />
             </Button>
           );
         }
@@ -308,7 +328,7 @@ export function DecideOnOrdreMissionTable() {
               handleOnViewButtonClick(id);
             }}
           >
-            View
+            <FormattedMessage id={messages.tableViewButton.id} />
           </Button>
         );
       },

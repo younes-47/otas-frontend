@@ -9,8 +9,52 @@ import { defineMessages } from 'react-intl';
 export const scope = 'app.containers.DecideOnOrdreMissionTable';
 
 export default defineMessages({
-  header: {
-    id: `${scope}.header`,
-    defaultMessage: 'This is the DecideOnOrdreMissionTable container!',
+  tableDescription: {
+    id: `${scope}.tableDescription`,
+    defaultMessage: 'Description',
+  },
+  tableRequestedAmount: {
+    id: `${scope}.tableRequestedAmount`,
+    defaultMessage: 'Requested Amount',
+  },
+  tableMissionDuration: {
+    id: `${scope}.tableMissionDuration`,
+    defaultMessage: 'Mission Duration',
+  },
+  tableDays: {
+    id: `${scope}.tableDays`,
+    defaultMessage: 'Days',
+  },
+  tableStatus: {
+    id: `${scope}.tableStatus`,
+    defaultMessage: 'Status',
+  },
+  tablePending: {
+    id: `${scope}.tablePending`,
+    defaultMessage: 'Pending',
+  },
+  tableDecidedUpon: {
+    id: `${scope}.tableDecidedUpon`,
+    defaultMessage: 'Decided Upon',
+  },
+  tableAbroad: {
+    id: `${scope}.tableAbroad`,
+    defaultMessage: 'Abroad',
+  },
+  tableCreatedOn: {
+    id: `${scope}.tableCreatedOn`,
+    defaultMessage: 'Created On',
+  },
+  tableActions: {
+    id: `${scope}.tableActions`,
+    defaultMessage: 'Actions',
+  },
+  tableDecideButton: {
+    id: `${scope}.tableDecideButton`,
+    defaultMessage: 'Decide',
+  },
+  tableViewButton: {
+    id: `${scope}.tableViewButton`,
+    defaultMessage: 'View',
   },
 });

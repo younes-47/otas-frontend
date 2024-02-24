@@ -252,6 +252,12 @@ export default defineMessages({
   },
 
   // modal body
+  invalidAbroadSelection: {
+    id: `${scope}.modal.invalidAbroadSelection`,
+    defaultMessage:
+      'Could not figure out whether this request is abroad or not! Please select "Yes" or "No".',
+  },
+
   // validate expenses
   onSubmit: {
     id: `${scope}.modal.onSubmit`,

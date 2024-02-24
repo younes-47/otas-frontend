@@ -28,6 +28,7 @@ import Grid from '@mui/joy/Grid';
 import { PieChart } from '@mui/x-charts/PieChart';
 import CountUp from 'react-countup';
 import { Divider, List, ListItem, ListItemText } from '@mui/material';
+import { FormattedMessage } from 'react-intl';
 import reducer from './reducer';
 import saga from './saga';
 import { cleanupStoreAction, loadDeciderStatsAction } from './actions';
@@ -35,6 +36,7 @@ import {
   makeSelectDeciderStats,
   makeSelectErrorLoadingDeciderStats,
 } from './selectors';
+import messages from './messages';
 
 const mapStateToProps = createStructuredSelector({
   isSideBarVisible: makeSelectIsSideBarVisible(),
@@ -152,7 +154,8 @@ export function DecideOnRequests() {
             level="h1"
             sx={{ fontSize: '50px', marginBottom: '10px', marginTop: '20px' }}
           >
-            Welcome&nbsp;{localStorage.getItem('firstName')}&nbsp;
+            <FormattedMessage id={messages.welcome.id} />
+            &nbsp;{localStorage.getItem('firstName')}&nbsp;
             {localStorage.getItem('lastName')}
           </Typography>
           <Alert
@@ -163,8 +166,7 @@ export function DecideOnRequests() {
               textAlign: 'center',
             }}
           >
-            This is the section where you can access and decide upon requests of
-            others as {levelsString}.
+            <FormattedMessage id={messages.sectionInfo.id} /> {levelsString}.
           </Alert>
         </Stack>
       </Box>
@@ -177,7 +179,7 @@ export function DecideOnRequests() {
         marginBottom={10}
       >
         <Typography level="h3" textAlign="center">
-          Statistics <TrendingUpIcon />
+          <FormattedMessage id={messages.statsHeader.id} /> <TrendingUpIcon />
         </Typography>
         <Box display="flex" justifyContent="center" alignItems="center" gap={3}>
           <Box gap={3}>
@@ -185,7 +187,9 @@ export function DecideOnRequests() {
               <Card variant="outlined">
                 <CardContent>
                   <Typography level="h4">
-                    Requests awaiting your approval:
+                    <FormattedMessage
+                      id={messages.requestsAwaitingApprovalHeader.id}
+                    />
                   </Typography>
                   <List>
                     <ListItem
@@ -194,7 +198,9 @@ export function DecideOnRequests() {
                         justifyContent: 'space-between',
                       }}
                     >
-                      <Typography level="body-md">Mission Orders:</Typography>
+                      <Typography level="body-md">
+                        <FormattedMessage id={messages.ordreMissionHeader.id} />
+                      </Typography>
                       <Typography
                         variant="soft"
                         color="warning"
@@ -210,7 +216,9 @@ export function DecideOnRequests() {
                         justifyContent: 'space-between',
                       }}
                     >
-                      <Typography level="body-md">Travel Advances:</Typography>
+                      <Typography level="body-md">
+                        <FormattedMessage id={messages.avanceVoyageHeader.id} />
+                      </Typography>
                       <Typography
                         variant="soft"
                         color="warning"
@@ -226,7 +234,9 @@ export function DecideOnRequests() {
                         justifyContent: 'space-between',
                       }}
                     >
-                      <Typography level="body-md">Cash Advances:</Typography>
+                      <Typography level="body-md">
+                        <FormattedMessage id={messages.avanceCaisseHeader.id} />
+                      </Typography>
                       <Typography
                         variant="soft"
                         color="warning"
@@ -242,7 +252,11 @@ export function DecideOnRequests() {
                         justifyContent: 'space-between',
                       }}
                     >
-                      <Typography level="body-md">Cash Expenses:</Typography>
+                      <Typography level="body-md">
+                        <FormattedMessage
+                          id={messages.depenseCaisseHeader.id}
+                        />
+                      </Typography>
                       <Typography
                         variant="soft"
                         color="warning"
@@ -258,7 +272,9 @@ export function DecideOnRequests() {
                         justifyContent: 'space-between',
                       }}
                     >
-                      <Typography level="body-md">Liquidations:</Typography>
+                      <Typography level="body-md">
+                        <FormattedMessage id={messages.liquidationsHeader.id} />
+                      </Typography>
                       <Typography
                         variant="soft"
                         color="warning"
@@ -281,7 +297,9 @@ export function DecideOnRequests() {
                 <Card variant="outlined">
                   <CardContent>
                     <Typography level="h4">
-                      Requests you have already approved:
+                      <FormattedMessage
+                        id={messages.approvedRequestsHeader.id}
+                      />
                     </Typography>
 
                     <Box
@@ -296,7 +314,9 @@ export function DecideOnRequests() {
                         sx={{ width: '100%' }}
                       >
                         <Typography level="title-md">
-                          Travel Advances
+                          <FormattedMessage
+                            id={messages.avanceVoyageHeader.id}
+                          />
                         </Typography>
                         <Typography
                           level="title-lg"
@@ -357,7 +377,11 @@ export function DecideOnRequests() {
                         variant="soft"
                         sx={{ width: '100%' }}
                       >
-                        <Typography level="title-md">Cash Advances</Typography>
+                        <Typography level="title-md">
+                          <FormattedMessage
+                            id={messages.avanceCaisseHeader.id}
+                          />
+                        </Typography>
                         <Typography
                           level="title-lg"
                           color="primary"
@@ -417,7 +441,11 @@ export function DecideOnRequests() {
                         variant="soft"
                         sx={{ width: '100%' }}
                       >
-                        <Typography level="title-md">Cash Expenses</Typography>
+                        <Typography level="title-md">
+                          <FormattedMessage
+                            id={messages.depenseCaisseHeader.id}
+                          />
+                        </Typography>
                         <Typography
                           level="title-lg"
                           color="primary"
@@ -482,7 +510,9 @@ export function DecideOnRequests() {
               <Box display="flex" justifyContent="center" alignItems="center">
                 <Card variant="outlined">
                   <CardContent>
-                    <Typography level="h4">Liquidations:</Typography>
+                    <Typography level="h4">
+                      <FormattedMessage id={messages.liquidationsHeader.id} />
+                    </Typography>
                     <Box
                       display="flex"
                       justifyContent="space-between"
@@ -495,7 +525,9 @@ export function DecideOnRequests() {
                         sx={{ width: '100%' }}
                       >
                         <Typography level="title-md">
-                          Not initiated yet
+                          <FormattedMessage
+                            id={messages.notInitiatedYetHeader.id}
+                          />
                         </Typography>
                         <Typography
                           level="title-lg"
@@ -556,7 +588,9 @@ export function DecideOnRequests() {
                         variant="soft"
                         sx={{ width: '100%' }}
                       >
-                        <Typography level="title-md">Ongoing</Typography>
+                        <Typography level="title-md">
+                          <FormattedMessage id={messages.ongoingHeader.id} />
+                        </Typography>
                         <Typography
                           level="title-lg"
                           color="primary"
@@ -616,7 +650,9 @@ export function DecideOnRequests() {
                         variant="soft"
                         sx={{ width: '100%' }}
                       >
-                        <Typography level="title-md">Finalized</Typography>
+                        <Typography level="title-md">
+                          <FormattedMessage id={messages.finalizedHeader.id} />
+                        </Typography>
                         <Typography
                           level="title-lg"
                           color="primary"

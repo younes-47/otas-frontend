@@ -37,6 +37,7 @@ import {
   setAvanceVoyageIdentityAction,
 } from 'pages/DecideOnAvanceVoyage/actions';
 import { NumericFormat } from 'react-number-format';
+import { FormattedMessage, useIntl } from 'react-intl';
 import reducer from './reducer';
 import saga from './saga';
 import {
@@ -49,6 +50,7 @@ import {
   makeSelectLoadingAvanceVoyages,
   makeSelectStatusAvanceVoyage,
 } from './selectors';
+import messages from './messages';
 
 const mapStateToProps = createStructuredSelector({
   avanceVoyages: makeSelectAvanceVoyages(),
@@ -74,6 +76,8 @@ export function DecideOnAvanceVoyageTable() {
   const [snackbarVisibility, setSnackbarVisibility] = useState(false);
   const [snackbarAlertSeverity, setSnackbarAlertSeverity] = useState('');
 
+  const intl = useIntl();
+
   const avanceVoyageColumns = [
     {
       field: 'id',
@@ -95,7 +99,9 @@ export function DecideOnAvanceVoyageTable() {
       field: 'ordreMissionId',
       hide: false,
       flex: 1,
-      headerName: '#Mission Order',
+      headerName: intl.formatMessage({
+        id: messages.tableOrdreMissionId.id,
+      }),
       renderCell: (params) => {
         const { ordreMissionId } = params.row;
         return (
@@ -122,7 +128,9 @@ export function DecideOnAvanceVoyageTable() {
       field: 'ordreMissionDescription',
       hide: false,
       flex: 1,
-      headerName: 'Description',
+      headerName: intl.formatMessage({
+        id: messages.tableDescription.id,
+      }),
       renderCell: (params) => {
         const { ordreMissionDescription } = params.row;
         return (
@@ -137,7 +145,9 @@ export function DecideOnAvanceVoyageTable() {
     {
       field: 'estimatedTotal',
       hide: false,
-      headerName: 'Requested Amount',
+      headerName: intl.formatMessage({
+        id: messages.tableRequestedAmount.id,
+      }),
       flex: 1,
       renderCell: (params) => {
         const { estimatedTotal } = params.row;
@@ -164,7 +174,9 @@ export function DecideOnAvanceVoyageTable() {
     {
       field: 'currency',
       hide: false,
-      headerName: 'Currency',
+      headerName: intl.formatMessage({
+        id: messages.tableCurrency.id,
+      }),
       flex: 1,
       renderCell: (params) => {
         const { currency } = params.row;
@@ -178,7 +190,9 @@ export function DecideOnAvanceVoyageTable() {
     {
       field: 'status',
       hide: false,
-      headerName: 'Status',
+      headerName: intl.formatMessage({
+        id: messages.tableStatus.id,
+      }),
       flex: 1,
       renderCell: (params) => {
         const { isDecidable } = params.row;
@@ -194,7 +208,8 @@ export function DecideOnAvanceVoyageTable() {
                 borderRadius: '40px',
               }}
             >
-              <AutorenewIcon fontSize="small" /> Pending
+              <AutorenewIcon fontSize="small" />{' '}
+              <FormattedMessage id={messages.tablePending.id} />
             </Alert>
           );
         }
@@ -210,7 +225,8 @@ export function DecideOnAvanceVoyageTable() {
               borderRadius: '40px',
             }}
           >
-            <BeenhereIcon fontSize="small" /> Decided Upon
+            <BeenhereIcon fontSize="small" />{' '}
+            <FormattedMessage id={messages.tableDecidedUpon.id} />
           </Alert>
         );
       },
@@ -219,13 +235,17 @@ export function DecideOnAvanceVoyageTable() {
       field: 'onBehalf',
       hide: false,
       type: 'boolean',
-      headerName: 'onBehalf',
+      headerName: intl.formatMessage({
+        id: messages.tableOnBehalf.id,
+      }),
       flex: 1,
     },
     {
       field: 'createDate',
       hide: false,
-      headerName: 'Created On',
+      headerName: intl.formatMessage({
+        id: messages.tableCreatedOn.id,
+      }),
       flex: 1,
       renderCell: (params) => {
         const { createDate } = params.row;
@@ -239,7 +259,9 @@ export function DecideOnAvanceVoyageTable() {
     {
       field: '',
       hide: false,
-      headerName: 'Actions',
+      headerName: intl.formatMessage({
+        id: messages.tableActions.id,
+      }),
       flex: 1,
       renderCell: (params) => {
         const { id, isDecidable } = params.row;
@@ -254,7 +276,7 @@ export function DecideOnAvanceVoyageTable() {
                 handleOnDecideButtonClick(id);
               }}
             >
-              Decide
+              <FormattedMessage id={messages.tableDecideButton.id} />
             </Button>
           );
         }

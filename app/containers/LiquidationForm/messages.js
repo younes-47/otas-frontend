@@ -216,6 +216,7 @@ export default defineMessages({
     defaultMessage: 'must Be Refunded To You.',
   },
 
+  // modal headers
   submitHeader: {
     id: `${scope}.modal.submitHeader`,
     defaultMessage: 'Submit',
@@ -235,6 +236,77 @@ export default defineMessages({
       'By submitting this request, you acknowledge that all provided information is correct.',
   },
 
+  invalidAbroadSelection: {
+    id: `${scope}.modal.invalidAbroadSelection`,
+    defaultMessage:
+      'Could not figure out whether this request is abroad or not! Please select "Yes" or "No".',
+  },
+  invalidExpensesActualFee: {
+    id: `${scope}.modal.invalidExpensesActualFee`,
+    defaultMessage:
+      'You must provide a valid number for the actual amount spent for ALL of your expenses! Please review your expenses information and try again.',
+  },
+  invalidTripsActualFee: {
+    id: `${scope}.modal.invalidTripsActualFee`,
+    defaultMessage:
+      'You must provide a valid spent amount for all of your trajectories! Please review your trajectories information and try again.',
+  },
+  missingTripsInfo: {
+    id: `${scope}.modal.missingTripsInfo`,
+    defaultMessage:
+      "One of the trajectories' required information is missing! Please review your trajectories and fill all necessary information.",
+  },
+  invalidTripValue: {
+    id: `${scope}.modal.invalidTripValue`,
+    defaultMessage:
+      "A trajectory's fee or mileage cannot be 0 or negative! Please review your trajectories information and try again.",
+  },
+  blankTripsValue: {
+    id: `${scope}.modal.blankTripsValue`,
+    defaultMessage:
+      'Invalid Total value! Please review your trajectories and/or expenses fee/Mileage values and try again.',
+  },
+  invalidTripsDates: {
+    id: `${scope}.modal.invalidTripsDates`,
+    defaultMessage:
+      'Arrival date cannot be earlier than the departure date! Please review your trajectories information and try again.',
+  },
+  nonsenseTripsDates: {
+    id: `${scope}.modal.nonsenseTripsDates`,
+    defaultMessage:
+      'Trips dates do not make sense! You cannot start another trip before you arrive from the previous one.',
+  },
+  invalidExpenseDescription: {
+    id: `${scope}.modal.invalidExpenseDescription`,
+    defaultMessage:
+      'One of the expenses description is not specified! Please review your expenses and fill all necessary information.',
+  },
+  invalidExpenseCurrency: {
+    id: `${scope}.modal.invalidExpenseCurrency`,
+    defaultMessage:
+      'One of the expenses currency is not specified! Please review your expenses and fill all necessary information.',
+  },
+  invalidExpenseValue: {
+    id: `${scope}.modal.invalidExpenseValue`,
+    defaultMessage:
+      'Expense fee cannot be 0 or negative! Please review your expenses information and try again.',
+  },
+  blankExpenseValue: {
+    id: `${scope}.modal.blankExpenseValue`,
+    defaultMessage:
+      'Invalid Total value! Please review your trajectories and/or expenses fee/Mileage values and try again.',
+  },
+  invalidExpenseDate: {
+    id: `${scope}.modal.invalidExpenseDate`,
+    defaultMessage:
+      "One of the expenses' date is not set yet! Please review your expenses information and try again.",
+  },
+  invalidReceiptsFile: {
+    id: `${scope}.modal.invalidReceiptsFile`,
+    defaultMessage:
+      'Please upload your receipts file! Or wait for it while it is being uploaded.',
+  },
+  //
   returnButton: {
     id: `${scope}.page.returnButton`,
     defaultMessage: 'Return',

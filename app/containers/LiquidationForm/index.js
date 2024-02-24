@@ -1548,7 +1548,9 @@ export function LiquidationForm({ state }) {
           onClose={() => setModalVisibility(false)}
           aria-describedby="alert-dialog-slide-description"
         >
-          <DialogTitle>{modalHeader}</DialogTitle>
+          <DialogTitle>
+            {modalHeader && <FormattedMessage id={messages[modalHeader].id} />}
+          </DialogTitle>
           <DialogContent dividers>
             {modalHeader === 'statusHistory' ? (
               <Timeline>

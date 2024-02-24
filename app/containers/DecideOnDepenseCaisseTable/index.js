@@ -7,7 +7,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect, useDispatch, useSelector } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { createStructuredSelector } from 'reselect';
 import { compose } from 'redux';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -48,6 +48,7 @@ import {
   downloadDepenseCaisseReceiptsFileAction,
   loadDepenseCaisseAction,
 } from './actions';
+import messages from './messages';
 
 const mapStateToProps = createStructuredSelector({
   depenseCaisses: makeSelectDepenseCaisses(),
@@ -78,6 +79,8 @@ export function DecideOnDepenseCaisseTable() {
 
   const [snackbarVisibility, setSnackbarVisibility] = useState(false);
   const [snackbarAlertSeverity, setSnackbarAlertSeverity] = useState('');
+
+  const intl = useIntl();
 
   // Download file
   useEffect(() => {
@@ -157,7 +160,9 @@ export function DecideOnDepenseCaisseTable() {
     {
       field: 'description',
       hide: false,
-      headerName: 'Description',
+      headerName: intl.formatMessage({
+        id: messages.tableDescription.id,
+      }),
       flex: 1,
       renderCell: (params) => {
         const { description } = params.row;
@@ -173,7 +178,9 @@ export function DecideOnDepenseCaisseTable() {
     {
       field: 'total',
       hide: false,
-      headerName: 'Total',
+      headerName: intl.formatMessage({
+        id: messages.tableTotal.id,
+      }),
       flex: 1,
       renderCell: (params) => {
         const { total } = params.row;
@@ -200,7 +207,9 @@ export function DecideOnDepenseCaisseTable() {
     {
       field: 'currency',
       hide: false,
-      headerName: 'Currency',
+      headerName: intl.formatMessage({
+        id: messages.tableCurrency.id,
+      }),
       flex: 1,
       renderCell: (params) => {
         const { currency } = params.row;
@@ -214,7 +223,9 @@ export function DecideOnDepenseCaisseTable() {
     {
       field: 'status',
       hide: false,
-      headerName: 'Status',
+      headerName: intl.formatMessage({
+        id: messages.tableStatus.id,
+      }),
       flex: 1,
       renderCell: (params) => {
         const { isDecidable } = params.row;
@@ -230,7 +241,8 @@ export function DecideOnDepenseCaisseTable() {
                 borderRadius: '40px',
               }}
             >
-              <AutorenewIcon fontSize="small" /> Pending
+              <AutorenewIcon fontSize="small" />{' '}
+              <FormattedMessage id={messages.tablePending.id} />
             </Alert>
           );
         }
@@ -246,7 +258,8 @@ export function DecideOnDepenseCaisseTable() {
               borderRadius: '40px',
             }}
           >
-            <BeenhereIcon fontSize="small" /> Decided Upon
+            <BeenhereIcon fontSize="small" />{' '}
+            <FormattedMessage id={messages.tableDecidedUpon.id} />
           </Alert>
         );
       },
@@ -255,13 +268,17 @@ export function DecideOnDepenseCaisseTable() {
       field: 'onBehalf',
       hide: false,
       type: 'boolean',
-      headerName: 'onBehalf',
+      headerName: intl.formatMessage({
+        id: messages.tableOnBehalf.id,
+      }),
       flex: 1,
     },
     {
       field: 'receiptsFileName',
       hide: false,
-      headerName: 'Receipts File',
+      headerName: intl.formatMessage({
+        id: messages.tableRceiptsFile.id,
+      }),
       width: 150,
       renderCell: (params) => {
         const { receiptsFileName } = params.row;
@@ -275,7 +292,9 @@ export function DecideOnDepenseCaisseTable() {
     {
       field: 'createDate',
       hide: false,
-      headerName: 'Created On',
+      headerName: intl.formatMessage({
+        id: messages.tableCreateOn.id,
+      }),
       flex: 1,
       renderCell: (params) => {
         const { createDate } = params.row;
@@ -289,7 +308,9 @@ export function DecideOnDepenseCaisseTable() {
     {
       field: '',
       hide: false,
-      headerName: 'Actions',
+      headerName: intl.formatMessage({
+        id: messages.tableActions.id,
+      }),
       flex: 1,
       renderCell: (params) => {
         const { id, isDecidable } = params.row;
@@ -304,7 +325,7 @@ export function DecideOnDepenseCaisseTable() {
                 handleOnDecideButtonClick(id);
               }}
             >
-              Decide
+              <FormattedMessage id={messages.tableDecideButton.id} />
             </Button>
           );
         }
