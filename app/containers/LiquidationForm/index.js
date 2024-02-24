@@ -496,11 +496,15 @@ export function LiquidationForm({ state }) {
     );
 
     if (expenseIndex !== -1) {
+      let newValue = value;
+      if (field === 'description') {
+        newValue = value.slice(0, 500);
+      }
       setNewExpenses((prevExpenses) => {
         const updatedExpenses = [...prevExpenses];
         updatedExpenses[expenseIndex] = {
           ...updatedExpenses[expenseIndex],
-          [field]: value,
+          [field]: newValue,
         };
         return updatedExpenses;
       });
