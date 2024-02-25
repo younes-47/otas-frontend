@@ -8,9 +8,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 // import styled from 'styled-components';
 import './fileUploadRaw.css';
-import { Box } from '@mui/system';
-import { CircularProgress, Input } from '@mui/material';
-import { Typography } from '@mui/joy';
+import Box from '@mui/system/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+import Typography from '@mui/joy/Typography';
 
 function FileUploadForm({ loading, updateFunction }) {
   return (

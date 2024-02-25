@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import styled from 'styled-components';
 import Tables from 'components/Tables';
-import { CircularProgress } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 import { StyledButton } from 'components/GlobalComponents/StyledButton';
 import { StyledLabel } from 'components/GlobalComponents/StyledLabel';
 import { createStructuredSelector } from 'reselect';

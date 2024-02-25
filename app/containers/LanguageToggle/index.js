@@ -12,7 +12,7 @@ import { FormattedMessage } from 'react-intl';
 import { changeLocale } from 'containers/LanguageProvider/actions';
 import { makeSelectLocale } from 'containers/LanguageProvider/selectors';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box } from '@mui/material';
+import Box from '@mui/material/Box';
 import { StyledFormControl } from 'components/GlobalComponents/StyledFormControl';
 import { StyledInputLabel } from 'components/GlobalComponents/StyledInputLabel';
 import { StyledSelect } from 'components/GlobalComponents/StyledSelect';

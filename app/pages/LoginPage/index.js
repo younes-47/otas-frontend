@@ -17,7 +17,8 @@ import './loginPageRaw.css';
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
 import { StyledBox } from 'components/GlobalComponents/StyledBox';
-import { Alert, Button } from '@mui/material';
+import Alert from '@mui/material/Alert';
+import Button from '@mui/material/Button';
 import makeSelectLoginPage, {
   makeSelectToken,
   makeSelectUsername,
