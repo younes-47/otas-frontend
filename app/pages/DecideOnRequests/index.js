@@ -23,11 +23,7 @@ import Alert from '@mui/material/Alert';
 import Grow from '@mui/material/Grow';
 import Card from '@mui/joy/Card';
 import CardContent from '@mui/joy/CardContent';
-import Container from '@mui/joy/Container';
-import Grid from '@mui/joy/Grid';
-import { PieChart } from '@mui/x-charts/PieChart';
 import CountUp from 'react-countup';
-import { Divider, List, ListItem, ListItemText } from '@mui/material';
 import { FormattedMessage } from 'react-intl';
 import reducer from './reducer';
 import saga from './saga';
@@ -181,8 +177,14 @@ export function DecideOnRequests() {
         <Typography level="h3" textAlign="center">
           <FormattedMessage id={messages.statsHeader.id} /> <TrendingUpIcon />
         </Typography>
-        <Box display="flex" justifyContent="center" alignItems="center" gap={3}>
-          <Box gap={3}>
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          flexDirection="column"
+          gap={3}
+        >
+          <Box gap={3} width="80%">
             <Grow in>
               <Card variant="outlined">
                 <CardContent>
@@ -191,129 +193,178 @@ export function DecideOnRequests() {
                       id={messages.requestsAwaitingApprovalHeader.id}
                     />
                   </Typography>
-                  <List>
-                    <ListItem
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                      }}
+                  <Box
+                    display="flex"
+                    justifyContent="space-around"
+                    marginTop={3}
+                    flexDirection="row"
+                  >
+                    <Card
+                      variant="outlined"
+                      sx={{ background: '#ef7765', width: '180px' }}
                     >
-                      <Typography level="body-md">
-                        <FormattedMessage id={messages.ordreMissionHeader.id} />
-                      </Typography>
                       <Typography
-                        variant="soft"
-                        color="warning"
                         level="title-lg"
+                        display="flex"
+                        justifyContent="center"
+                        fontSize="40px"
+                        fontWeight="600"
+                        sx={{ color: 'white' }}
                       >
                         {deciderStats?.pendingOrdreMissionsCount}
                       </Typography>
-                    </ListItem>
-                    <Divider variant="middle" component="li" />
-                    <ListItem
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                      }}
-                    >
-                      <Typography level="body-md">
-                        <FormattedMessage id={messages.avanceVoyageHeader.id} />
-                      </Typography>
                       <Typography
-                        variant="soft"
-                        color="warning"
+                        level="body-md"
+                        fontSize="20px"
+                        display="flex"
+                        justifyContent="center"
+                        fontWeight="400"
+                        sx={{ color: 'white' }}
+                      >
+                        <FormattedMessage id={messages.ordreMissionHeader.id} />
+                      </Typography>
+                    </Card>
+                    <Card
+                      variant="outlined"
+                      sx={{ background: '#00a697', width: '180px' }}
+                    >
+                      <Typography
                         level="title-lg"
+                        display="flex"
+                        justifyContent="center"
+                        fontSize="40px"
+                        fontWeight="600"
+                        sx={{ color: 'white' }}
                       >
                         {deciderStats?.pendingAvanceVoyagesCount}
                       </Typography>
-                    </ListItem>
-                    <Divider variant="middle" component="li" />
-                    <ListItem
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                      }}
-                    >
-                      <Typography level="body-md">
-                        <FormattedMessage id={messages.avanceCaisseHeader.id} />
-                      </Typography>
                       <Typography
-                        variant="soft"
-                        color="warning"
+                        level="body-md"
+                        fontSize="20px"
+                        display="flex"
+                        justifyContent="center"
+                        fontWeight="400"
+                        sx={{ color: 'white' }}
+                      >
+                        <FormattedMessage id={messages.avanceVoyageHeader.id} />
+                      </Typography>
+                    </Card>
+                    <Card
+                      variant="outlined"
+                      sx={{ background: '#f3bc00', width: '180px' }}
+                    >
+                      <Typography
                         level="title-lg"
+                        display="flex"
+                        justifyContent="center"
+                        fontSize="40px"
+                        fontWeight="600"
+                        sx={{ color: 'white' }}
                       >
                         {deciderStats?.pendingAvanceCaissesCount}
                       </Typography>
-                    </ListItem>
-                    <Divider variant="middle" component="li" />
-                    <ListItem
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                      }}
+                      <Typography
+                        level="body-md"
+                        fontSize="20px"
+                        display="flex"
+                        justifyContent="center"
+                        fontWeight="400"
+                        sx={{ color: 'white' }}
+                      >
+                        <FormattedMessage id={messages.avanceCaisseHeader.id} />
+                      </Typography>
+                    </Card>
+                    <Card
+                      variant="outlined"
+                      sx={{ background: '#0075a4', width: '180px' }}
                     >
-                      <Typography level="body-md">
+                      <Typography
+                        level="title-lg"
+                        display="flex"
+                        justifyContent="center"
+                        fontSize="40px"
+                        fontWeight="600"
+                        sx={{ color: 'white' }}
+                      >
+                        {deciderStats?.pendingDepenseCaissesCount}
+                      </Typography>
+                      <Typography
+                        level="body-md"
+                        fontSize="20px"
+                        display="flex"
+                        justifyContent="center"
+                        fontWeight="400"
+                        sx={{ color: 'white' }}
+                      >
                         <FormattedMessage
                           id={messages.depenseCaisseHeader.id}
                         />
                       </Typography>
-                      <Typography
-                        variant="soft"
-                        color="warning"
-                        level="title-lg"
-                      >
-                        {deciderStats?.pendingDepenseCaissesCount}
-                      </Typography>
-                    </ListItem>
-                    <Divider variant="middle" component="li" />
-                    <ListItem
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                      }}
+                    </Card>
+                    <Card
+                      variant="outlined"
+                      sx={{ background: 'purple', width: '180px' }}
                     >
-                      <Typography level="body-md">
-                        <FormattedMessage id={messages.liquidationsHeader.id} />
-                      </Typography>
                       <Typography
-                        variant="soft"
-                        color="warning"
                         level="title-lg"
+                        display="flex"
+                        justifyContent="center"
+                        fontSize="40px"
+                        fontWeight="600"
+                        sx={{ color: 'white' }}
                       >
                         {deciderStats?.pendingLiquidationsCount}
                       </Typography>
-                    </ListItem>
-                  </List>
+                      <Typography
+                        level="body-md"
+                        fontSize="20px"
+                        display="flex"
+                        justifyContent="center"
+                        fontWeight="400"
+                        sx={{ color: 'white' }}
+                      >
+                        <FormattedMessage id={messages.liquidationsHeader.id} />
+                      </Typography>
+                    </Card>
+                  </Box>
                 </CardContent>
               </Card>
             </Grow>
-            <Grow in timeout={1200}>
+          </Box>
+          <Box display="flex" flexDirection="row" width="80%" gap={3}>
+            <Grow in timeout={1200} sx={{ flexGrow: 1 }}>
               <Box
                 display="flex"
                 justifyContent="center"
                 alignItems="center"
                 marginTop={3}
               >
-                <Card variant="outlined">
+                <Card variant="outlined" sx={{ width: '100%' }}>
                   <CardContent>
                     <Typography level="h4">
                       <FormattedMessage
                         id={messages.approvedRequestsHeader.id}
                       />
                     </Typography>
-
                     <Box
                       display="flex"
                       justifyContent="space-between"
+                      flexDirection="column"
                       marginTop={3}
                       gap={1}
                     >
                       <Card
                         color="neutral"
                         variant="soft"
-                        sx={{ width: '100%' }}
+                        sx={{
+                          width: '100%',
+                          display: 'flex',
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                        }}
                       >
-                        <Typography level="title-md">
+                        <Typography level="title-md" sx={{ width: '120px' }}>
                           <FormattedMessage
                             id={messages.avanceVoyageHeader.id}
                           />
@@ -322,18 +373,27 @@ export function DecideOnRequests() {
                           level="title-lg"
                           color="primary"
                           textAlign="center"
+                          sx={{ width: '31px' }}
                         >
                           <CountUp
                             end={deciderStats?.finalizedAvanceVoyagesCount}
-                            duration={3.2}
+                            duration={2}
                             delay={0}
                             start={0}
                           />
                         </Typography>
-                        <Typography level="title-sm" color="success">
+                        <Typography
+                          level="title-sm"
+                          color="success"
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'flex-end',
+                            width: '111px',
+                          }}
+                        >
                           <CountUp
                             end={deciderStats?.finalizedAvanceVoyagesMADCount}
-                            duration={3.2}
+                            duration={2}
                             decimals={2}
                             separator={
                               localStorage.getItem('preferredLanguage') === 'en'
@@ -350,10 +410,18 @@ export function DecideOnRequests() {
                             suffix=" MAD"
                           />
                         </Typography>
-                        <Typography level="title-sm" color="success">
+                        <Typography
+                          level="title-sm"
+                          color="success"
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'flex-end',
+                            width: '111px',
+                          }}
+                        >
                           <CountUp
                             end={deciderStats?.finalizedAvanceVoyagesEURCount}
-                            duration={3.2}
+                            duration={2}
                             decimals={2}
                             separator={
                               localStorage.getItem('preferredLanguage') === 'en'
@@ -371,13 +439,18 @@ export function DecideOnRequests() {
                           />
                         </Typography>
                       </Card>
-
                       <Card
                         color="neutral"
                         variant="soft"
-                        sx={{ width: '100%' }}
+                        sx={{
+                          width: '100%',
+                          display: 'flex',
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                        }}
                       >
-                        <Typography level="title-md">
+                        <Typography level="title-md" sx={{ width: '120px' }}>
                           <FormattedMessage
                             id={messages.avanceCaisseHeader.id}
                           />
@@ -386,18 +459,27 @@ export function DecideOnRequests() {
                           level="title-lg"
                           color="primary"
                           textAlign="center"
+                          sx={{ width: '31px' }}
                         >
                           <CountUp
                             end={deciderStats?.finalizedAvanceCaissesCount}
-                            duration={3.2}
+                            duration={2}
                             delay={0}
                             start={0}
                           />
                         </Typography>
-                        <Typography level="title-sm" color="success">
+                        <Typography
+                          level="title-sm"
+                          color="success"
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'flex-end',
+                            width: '111px',
+                          }}
+                        >
                           <CountUp
                             end={deciderStats?.finalizedAvanceCaissesMADCount}
-                            duration={3.2}
+                            duration={2}
                             decimals={2}
                             separator={
                               localStorage.getItem('preferredLanguage') === 'en'
@@ -414,10 +496,18 @@ export function DecideOnRequests() {
                             suffix=" MAD"
                           />
                         </Typography>
-                        <Typography level="title-sm" color="success">
+                        <Typography
+                          level="title-sm"
+                          color="success"
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'flex-end',
+                            width: '111px',
+                          }}
+                        >
                           <CountUp
                             end={deciderStats?.finalizedAvanceCaissesEURCount}
-                            duration={3.2}
+                            duration={2}
                             decimals={2}
                             separator={
                               localStorage.getItem('preferredLanguage') === 'en'
@@ -435,13 +525,18 @@ export function DecideOnRequests() {
                           />
                         </Typography>
                       </Card>
-
                       <Card
                         color="neutral"
                         variant="soft"
-                        sx={{ width: '100%' }}
+                        sx={{
+                          width: '100%',
+                          display: 'flex',
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                        }}
                       >
-                        <Typography level="title-md">
+                        <Typography level="title-md" sx={{ width: '120px' }}>
                           <FormattedMessage
                             id={messages.depenseCaisseHeader.id}
                           />
@@ -450,18 +545,27 @@ export function DecideOnRequests() {
                           level="title-lg"
                           color="primary"
                           textAlign="center"
+                          sx={{ width: '31px' }}
                         >
                           <CountUp
                             end={deciderStats?.finalizedDepenseCaissesCount}
-                            duration={3.2}
+                            duration={2}
                             delay={0}
                             start={0}
                           />
                         </Typography>
-                        <Typography level="title-sm" color="success">
+                        <Typography
+                          level="title-sm"
+                          color="success"
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'flex-end',
+                            width: '111px',
+                          }}
+                        >
                           <CountUp
                             end={deciderStats?.finalizedDepenseCaissesMADCount}
-                            duration={3.2}
+                            duration={2}
                             decimals={2}
                             separator={
                               localStorage.getItem('preferredLanguage') === 'en'
@@ -478,10 +582,18 @@ export function DecideOnRequests() {
                             suffix=" MAD"
                           />
                         </Typography>
-                        <Typography level="title-sm" color="success">
+                        <Typography
+                          level="title-sm"
+                          color="success"
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'flex-end',
+                            width: '111px',
+                          }}
+                        >
                           <CountUp
                             end={deciderStats?.finalizedDepenseCaissesEURCount}
-                            duration={3.2}
+                            duration={2}
                             decimals={2}
                             separator={
                               localStorage.getItem('preferredLanguage') === 'en'
@@ -504,11 +616,14 @@ export function DecideOnRequests() {
                 </Card>
               </Box>
             </Grow>
-          </Box>
-          <Box>
-            <Grow in timeout={1200}>
-              <Box display="flex" justifyContent="center" alignItems="center">
-                <Card variant="outlined">
+            <Grow in timeout={1200} sx={{ flexGrow: 1 }}>
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                marginTop={3}
+              >
+                <Card variant="outlined" sx={{ width: '100%' }}>
                   <CardContent>
                     <Typography level="h4">
                       <FormattedMessage id={messages.liquidationsHeader.id} />
@@ -516,15 +631,22 @@ export function DecideOnRequests() {
                     <Box
                       display="flex"
                       justifyContent="space-between"
+                      flexDirection="column"
                       marginTop={3}
-                      gap={0.5}
+                      gap={1}
                     >
                       <Card
                         color="neutral"
                         variant="soft"
-                        sx={{ width: '100%' }}
+                        sx={{
+                          width: '100%',
+                          display: 'flex',
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                        }}
                       >
-                        <Typography level="title-md">
+                        <Typography level="title-md" sx={{ width: '120px' }}>
                           <FormattedMessage
                             id={messages.notInitiatedYetHeader.id}
                           />
@@ -533,18 +655,27 @@ export function DecideOnRequests() {
                           level="title-lg"
                           color="primary"
                           textAlign="center"
+                          sx={{ width: '31px' }}
                         >
                           <CountUp
                             end={deciderStats?.toLiquidateRequestsCount}
-                            duration={3.2}
+                            duration={2}
                             delay={0}
                             start={0}
                           />
                         </Typography>
-                        <Typography level="title-sm" color="success">
+                        <Typography
+                          level="title-sm"
+                          color="success"
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'flex-end',
+                            width: '111px',
+                          }}
+                        >
                           <CountUp
                             end={deciderStats?.toLiquidateRequestsMADCount}
-                            duration={3.2}
+                            duration={2}
                             decimals={2}
                             separator={
                               localStorage.getItem('preferredLanguage') === 'en'
@@ -561,10 +692,18 @@ export function DecideOnRequests() {
                             suffix=" MAD"
                           />
                         </Typography>
-                        <Typography level="title-sm" color="success">
+                        <Typography
+                          level="title-sm"
+                          color="success"
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'flex-end',
+                            width: '111px',
+                          }}
+                        >
                           <CountUp
                             end={deciderStats?.toLiquidateRequestsEURCount}
-                            duration={3.2}
+                            duration={2}
                             decimals={2}
                             separator={
                               localStorage.getItem('preferredLanguage') === 'en'
@@ -586,27 +725,42 @@ export function DecideOnRequests() {
                       <Card
                         color="neutral"
                         variant="soft"
-                        sx={{ width: '100%' }}
+                        sx={{
+                          width: '100%',
+                          display: 'flex',
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                        }}
                       >
-                        <Typography level="title-md">
+                        <Typography level="title-md" sx={{ width: '120px' }}>
                           <FormattedMessage id={messages.ongoingHeader.id} />
                         </Typography>
                         <Typography
                           level="title-lg"
                           color="primary"
                           textAlign="center"
+                          sx={{ width: '31px' }}
                         >
                           <CountUp
                             end={deciderStats?.ongoingLiquidationsCount}
-                            duration={3.2}
+                            duration={2}
                             delay={0}
                             start={0}
                           />
                         </Typography>
-                        <Typography level="title-sm" color="success">
+                        <Typography
+                          level="title-sm"
+                          color="success"
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'flex-end',
+                            width: '111px',
+                          }}
+                        >
                           <CountUp
                             end={deciderStats?.ongoingLiquidationsMADCount}
-                            duration={3.2}
+                            duration={2}
                             decimals={2}
                             separator={
                               localStorage.getItem('preferredLanguage') === 'en'
@@ -623,10 +777,18 @@ export function DecideOnRequests() {
                             suffix=" MAD"
                           />
                         </Typography>
-                        <Typography level="title-sm" color="success">
+                        <Typography
+                          level="title-sm"
+                          color="success"
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'flex-end',
+                            width: '111px',
+                          }}
+                        >
                           <CountUp
                             end={deciderStats?.ongoingLiquidationsEURCount}
-                            duration={3.2}
+                            duration={2}
                             decimals={2}
                             separator={
                               localStorage.getItem('preferredLanguage') === 'en'
@@ -648,27 +810,42 @@ export function DecideOnRequests() {
                       <Card
                         color="neutral"
                         variant="soft"
-                        sx={{ width: '100%' }}
+                        sx={{
+                          width: '100%',
+                          display: 'flex',
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                        }}
                       >
-                        <Typography level="title-md">
+                        <Typography level="title-md" sx={{ width: '120px' }}>
                           <FormattedMessage id={messages.finalizedHeader.id} />
                         </Typography>
                         <Typography
                           level="title-lg"
                           color="primary"
                           textAlign="center"
+                          sx={{ width: '31px' }}
                         >
                           <CountUp
                             end={deciderStats?.finalizedLiquidationsCount}
-                            duration={3.2}
+                            duration={2}
                             delay={0}
                             start={0}
                           />
                         </Typography>
-                        <Typography level="title-sm" color="success">
+                        <Typography
+                          level="title-sm"
+                          color="success"
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'flex-end',
+                            width: '111px',
+                          }}
+                        >
                           <CountUp
                             end={deciderStats?.finalizedLiquidationsMADCount}
-                            duration={3.2}
+                            duration={2}
                             decimals={2}
                             separator={
                               localStorage.getItem('preferredLanguage') === 'en'
@@ -685,10 +862,18 @@ export function DecideOnRequests() {
                             suffix=" MAD"
                           />
                         </Typography>
-                        <Typography level="title-sm" color="success">
+                        <Typography
+                          level="title-sm"
+                          color="success"
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'flex-end',
+                            width: '111px',
+                          }}
+                        >
                           <CountUp
                             end={deciderStats?.FinalizedLiquidationsEURCount}
-                            duration={3.2}
+                            duration={2}
                             decimals={2}
                             separator={
                               localStorage.getItem('preferredLanguage') === 'en'
