@@ -410,7 +410,7 @@ export function OrdreMissionForm({ state }) {
 
     let newValue = value;
     if (field === 'destination' || field === 'departurePlace') {
-      newValue = value.slice(0, 500);
+      newValue = value.slice(0, 50);
     }
 
     setTrips((prevTrips) =>
@@ -567,7 +567,7 @@ export function OrdreMissionForm({ state }) {
 
   const handleOnDownloadDocumentClick = () => {
     setLoadingButton(true);
-    downloadOrdreMissionDocumentFileAction(ordreMissionDetails.id);
+    dispatch(downloadOrdreMissionDocumentFileAction(ordreMissionDetails.id));
   };
 
   return (

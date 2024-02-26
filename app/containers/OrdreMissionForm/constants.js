@@ -59,5 +59,5 @@ export const webService = {
   UPDATE_ORDRE_MISSION: '/OrdreMission/Modify',
   SUBMIT_ORDRE_MISSION: '/OrdreMission/Submit',
   LOAD_ORDRE_MISSION_DETAILS: '/OrdreMission/View',
-  DOWNLOAD_ORDRE_MISSION_DOCUMENT: '/AvanceVoyage/Document/Download',
+  DOWNLOAD_ORDRE_MISSION_DOCUMENT: '/OrdreMission/Document/Download',
 };

@@ -19,6 +19,8 @@ import { useInjectReducer } from 'utils/injectReducer';
 import { StyledBox } from 'components/GlobalComponents/StyledBox';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
+import { AppBar, Toolbar } from '@mui/material';
+import { Typography } from '@mui/joy';
 import makeSelectLoginPage, {
   makeSelectToken,
   makeSelectUsername,
@@ -97,49 +99,62 @@ export function LoginPage() {
     }
   };
   return (
-    <div className="parent">
-      <div className="form">
-        <StyledBox loading={loading}>
-          <div className="content">
-            <img src={otasLoginImage} alt="OTAS" border="0"></img>
-            <div className="form_front">
-              <input
-                type="text"
-                placeholder="Username"
-                className="input"
-                id="username_input"
-                value={username}
-                disabled={loading}
-                onChange={onChangeUsername}
-                onKeyUp={handleKeypress}
-              ></input>
-              <input
-                value={password}
-                disabled={loading}
-                onChange={onChangePassword}
-                onKeyUp={handleKeypress}
-                type="password"
-                placeholder="Password"
-                className="input"
-                id="password_input"
-              ></input>
+    <>
+      <AppBar
+        position="fixed"
+        color="inherit"
+        sx={{ boxShadow: '5px -3px 54px -22px rgba(200,15,23,0.72)' }}
+      >
+        <Toolbar>
+          <Typography level="h3" color="inherit">
+            OTAS
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <div className="parent">
+        <div className="form">
+          <StyledBox loading={loading}>
+            <div className="content">
+              <img src={otasLoginImage} alt="OTAS" border="0"></img>
+              <div className="form_front">
+                <input
+                  type="text"
+                  placeholder="Username"
+                  className="input"
+                  id="username_input"
+                  value={username}
+                  disabled={loading}
+                  onChange={onChangeUsername}
+                  onKeyUp={handleKeypress}
+                ></input>
+                <input
+                  value={password}
+                  disabled={loading}
+                  onChange={onChangePassword}
+                  onKeyUp={handleKeypress}
+                  type="password"
+                  placeholder="Password"
+                  className="input"
+                  id="password_input"
+                ></input>
+              </div>
+              {error !== true && error && (
+                <Alert severity="error">Wrong credentials</Alert>
+              )}
+              <Button
+                variant="outlined"
+                type="submit"
+                className="btn"
+                disabled={!(username && password) || loading}
+                onClick={onSubmitForm}
+              >
+                Login
+              </Button>
             </div>
-            {error !== true && error && (
-              <Alert severity="error">Wrong credentials</Alert>
-            )}
-            <Button
-              variant="outlined"
-              type="submit"
-              className="btn"
-              disabled={!(username && password) || loading}
-              onClick={onSubmitForm}
-            >
-              Login
-            </Button>
-          </div>
-        </StyledBox>
+          </StyledBox>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

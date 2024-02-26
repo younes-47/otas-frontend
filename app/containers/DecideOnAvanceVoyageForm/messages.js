@@ -41,6 +41,10 @@ export default defineMessages({
     id: `${scope}.noExpensesHeader`,
     defaultMessage: 'No Expenses',
   },
+  noTripsHeader: {
+    id: `${scope}.noTripsHeader`,
+    defaultMessage: 'No Trajectories',
+  },
   total: {
     id: `${scope}.total`,
     defaultMessage: 'Total',

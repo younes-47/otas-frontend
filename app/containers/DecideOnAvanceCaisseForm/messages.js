@@ -9,6 +9,14 @@ import { defineMessages } from 'react-intl';
 export const scope = 'app.containers.DecideOnAvanceCaisseForm';
 
 export default defineMessages({
+  avanceCaisseTitle: {
+    id: `${scope}.avanceCaisseTitle`,
+    defaultMessage: 'Travel Advance',
+  },
+  currentStatus: {
+    id: `${scope}.currentStatus`,
+    defaultMessage: 'Current Status',
+  },
   statusHistoryButton: {
     id: `${scope}.statusHistoryButton`,
     defaultMessage: 'Status History',

@@ -336,6 +336,20 @@ export function LiquidationForm({ state }) {
     }
   }, [errorAddingLiquidation, errorUpdatingLiquidation]);
 
+  // Listen to Submit/Resubmit
+  useEffect(() => {
+    if (errorSubmittingLiquidation === false) {
+      if (buttonClicked === 'SUBMIT') {
+        dispatch(setLiquidationStatusAction('SUBMITTED'));
+      }
+      if (buttonClicked === 'SUBMIT-MODIFICATIONS') {
+        dispatch(setLiquidationStatusAction('RESUBMITTED'));
+      }
+
+      dispatch(cleanupliquidationParentPageStoreAction());
+    }
+  }, [errorSubmittingLiquidation]);
+
   // Change PAGE CONTENT TO CONFIRMATION PAGE when the object is loaded and the button clicked is CONFIRM
   useEffect(() => {
     if (
@@ -562,13 +576,18 @@ export function LiquidationForm({ state }) {
       }
     }
 
+    let newValue = value;
+    if (field === 'destination' || field === 'departurePlace') {
+      newValue = value.slice(0, 50);
+    }
+
     if (tripIndex !== -1) {
       // Check if trip exists
       setNewTrips((prevTrips) => {
         const updatedTrips = [...prevTrips];
         updatedTrips[tripIndex] = {
           ...updatedTrips[tripIndex],
-          [field]: value,
+          [field]: newValue,
         };
         return updatedTrips;
       });
@@ -1081,7 +1100,8 @@ export function LiquidationForm({ state }) {
             </Typography>
             <Box display="flex" justifyContent="center" marginBottom={3}>
               {requestToLiquidateDetails !== null &&
-                expensesToLiquidate.length > 0 && (
+                expensesToLiquidate.length > 0 &&
+                !readOnly && (
                   <ExpensesTable
                     expensesData={requestToLiquidateDetails?.expenses}
                     updateExpenseToLiquidate={updateExpenseToLiquidate}
@@ -1165,7 +1185,6 @@ export function LiquidationForm({ state }) {
                 >
                   <Box alignItems="flex-start" width="40rem">
                     <Typography level="title-md">
-                      {state !== 'CONFIRM' && 'Old'}{' '}
                       <FormattedMessage id={messages.receiptsFileHeader.id} />
                     </Typography>
 

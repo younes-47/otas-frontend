@@ -460,7 +460,7 @@ export function DepenseCaisseForm({ state }) {
 
   const handleOnDownloadDocumentClick = () => {
     setLoadingButton(true);
-    downloadDepenseCaisseDocumentFileAction(depenseCaisseDetails.id);
+    dispatch(downloadDepenseCaisseDocumentFileAction(depenseCaisseDetails.id));
   };
 
   const data = {
@@ -862,7 +862,6 @@ export function DepenseCaisseForm({ state }) {
           >
             <Box alignItems="flex-start" width="40rem">
               <Typography variant="h6">
-                {state !== 'CONFIRM' && 'Old'}{' '}
                 <FormattedMessage id={messages.receiptsFileHeader.id} />:
               </Typography>
 

@@ -129,8 +129,6 @@ export function DecideOnLiquidationForm({ state }) {
       liquidationDetails?.requestDetails?.trips?.forEach((trip) => {
         const formattedDateTrip = {
           ...trip,
-          departureDate: DateTimeFormater(new Date(trip.departureDate)),
-          arrivalDate: DateTimeFormater(new Date(trip.arrivalDate)),
         };
         setTrips((prevTrips) => [...prevTrips, formattedDateTrip]);
       });
@@ -454,15 +452,6 @@ export function DecideOnLiquidationForm({ state }) {
               isTripModifiable={false}
               isLiquidationView
             />
-          </Box>
-          {/* DIVIDER */}
-          <Box
-            display="flex"
-            justifyContent="center"
-            textAlign="center"
-            marginBottom={3}
-          >
-            <Divider style={{ width: '60%', opacity: 0.7 }} />
           </Box>
         </>
       )}

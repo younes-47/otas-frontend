@@ -17,6 +17,10 @@ export default defineMessages({
     id: `${scope}.table.onBehalf`,
     defaultMessage: 'On Behalf',
   },
+  tableCurrency: {
+    id: `${scope}.table.currency`,
+    defaultMessage: 'Currency',
+  },
   tableStatus: {
     id: `${scope}.table.Status`,
     defaultMessage: 'Status',
@@ -34,15 +38,19 @@ export default defineMessages({
     defaultMessage: 'Estimated Total',
   },
   tableDecideButton: {
-    id: `${scope}.tableDecideButton`,
+    id: `${scope}.table.decideButton`,
     defaultMessage: 'Decide',
   },
   tableDecidedUpon: {
-    id: `${scope}.tableDecidedUpon`,
+    id: `${scope}.table.decidedUpon`,
     defaultMessage: 'Decided Upon',
   },
   tablePending: {
-    id: `${scope}.tablePending`,
+    id: `${scope}.table.pending`,
     defaultMessage: 'Pending',
+  },
+  tableViewButton: {
+    id: `${scope}.table.viewButton`,
+    defaultMessage: 'View',
   },
 });

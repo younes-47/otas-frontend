@@ -67,7 +67,7 @@ export default defineMessages({
   },
   signAndApproveWithRelatedAvanceVoyageButton: {
     id: `${scope}.signAndApproveWithRelatedAvanceVoyageButton`,
-    defaultMessage: 'Sign and Approve with Related Avance Voyage',
+    defaultMessage: 'Sign and Approve with Related Travel Advance(s)',
   },
   rejectingRequestComment: {
     id: `${scope}.rejectingRequestComment`,

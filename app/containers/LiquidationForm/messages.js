@@ -236,6 +236,11 @@ export default defineMessages({
       'By submitting this request, you acknowledge that all provided information is correct.',
   },
 
+  invalidInformationHeader: {
+    id: `${scope}.modal.invalidInformationHeader`,
+    defaultMessage: 'Invalid Information!',
+  },
+
   invalidAbroadSelection: {
     id: `${scope}.modal.invalidAbroadSelection`,
     defaultMessage:

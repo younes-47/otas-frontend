@@ -239,7 +239,7 @@ export function DecideOnAvanceCaisseTable() {
                 handleOnDecideButtonClick(id);
               }}
             >
-              <FormattedMessage id={messages.tableDecidedUpon.id} />
+              <FormattedMessage id={messages.tableDecideButton.id} />
             </Button>
           );
         }
@@ -253,7 +253,7 @@ export function DecideOnAvanceCaisseTable() {
               handleOnViewButtonClick(id);
             }}
           >
-            View
+            <FormattedMessage id={messages.tableViewButton.id} />
           </Button>
         );
       },

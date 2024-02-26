@@ -30,6 +30,8 @@ margin-bottom: 30px;
   align-items: center;
   justify-content: center;
   height: 100vh;
+  background-image: url(../../images/bg-2.jpg);
+  background-size: cover;
 }
 
 

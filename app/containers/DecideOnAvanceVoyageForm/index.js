@@ -434,15 +434,23 @@ export function DecideOnAvanceVoyageForm({ state }) {
         <Divider style={{ width: '60%', opacity: 0.7 }} />
       </Box>
 
-      <Typography level="title-lg" textAlign="center" marginBottom={2}>
-        <FormattedMessage id={messages.tripsHeader.id} />
-      </Typography>
-      <Box display="flex" justifyContent="center" marginBottom={5}>
-        <TripsTable
-          tripsData={avanceVoyageDetails?.trips}
-          isTripModifiable={false}
-        />
-      </Box>
+      {avanceVoyageDetails?.trips.length > 0 ? (
+        <>
+          <Typography level="title-lg" textAlign="center" marginBottom={2}>
+            <FormattedMessage id={messages.tripsHeader.id} />
+          </Typography>
+          <Box display="flex" justifyContent="center" marginBottom={5}>
+            <TripsTable
+              tripsData={avanceVoyageDetails?.trips}
+              isTripModifiable={false}
+            />
+          </Box>
+        </>
+      ) : (
+        <Typography level="title-lg" textAlign="center" marginBottom={2}>
+          <FormattedMessage id={messages.noTripsHeader.id} />{' '}
+        </Typography>
+      )}
 
       {avanceVoyageDetails?.expenses?.length > 0 ? (
         <>
@@ -787,7 +795,7 @@ export function DecideOnAvanceVoyageForm({ state }) {
               <FormattedMessage id={messages.returnRequestButton.id} />
             </Button>
           )}
-          {modalHeader === 'markFundsDelivery' && (
+          {modalHeader === 'markFundsAsPrepared' && (
             <Button
               color="success"
               onClick={handleOnMethodOfDeliveryConfirmationButtonClick}

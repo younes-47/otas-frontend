@@ -21,6 +21,10 @@ export default defineMessages({
     id: `${scope}.statusHistoryButton`,
     defaultMessage: 'Status History',
   },
+  statusHistory: {
+    id: `${scope}.statusHistory`,
+    defaultMessage: 'Status History',
+  },
   returnedByTRAlert: {
     id: `${scope}.returnedByTRAlert`,
     defaultMessage:

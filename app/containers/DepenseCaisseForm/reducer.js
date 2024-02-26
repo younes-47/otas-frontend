@@ -44,7 +44,7 @@ export const initialState = {
   depenseCaisseDetails: null,
   downloadingDepenseCaisseDocumentFile: false,
   errorDownloadingDepenseCaisseDocumentFile: null,
-  depesneCaisseDocumentFile: null,
+  depenseCaisseDocumentFile: null,
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -60,7 +60,7 @@ const depenseCaisseFormReducer = (state = initialState, action) =>
       case DOWNLOAD_DEPENSE_CAISSE_DOCUMENT_SUCCESS:
         draft.downloadingDepenseCaisseDocumentFile = false;
         draft.errorDownloadingDepenseCaisseDocumentFile = false;
-        draft.depesneCaisseDocumentFile = action.data;
+        draft.depenseCaisseDocumentFile = action.data;
         break;
       case DOWNLOAD_DEPENSE_CAISSE_DOCUMENT_ERROR:
         draft.downloadingDepenseCaisseDocumentFile = false;
@@ -147,7 +147,7 @@ const depenseCaisseFormReducer = (state = initialState, action) =>
         draft.depenseCaisseDetails = null;
         draft.downloadingDepenseCaisseDocumentFile = false;
         draft.errorDownloadingDepenseCaisseDocumentFile = null;
-        draft.depesneCaisseDocumentFile = null;
+        draft.depenseCaisseDocumentFile = null;
         break;
     }
   });

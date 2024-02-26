@@ -470,7 +470,7 @@ export function DecideOnOrdreMissionForm({ state }) {
               color="success"
               onClick={handleOnApproveRequestButtonClick}
             >
-              {!deciderLevels?.includes('FM') ? 'Sign and Approve' : 'Approve'}
+              <FormattedMessage id={messages.signAndApproveButton.id} />
             </Button>
           </>
         )}

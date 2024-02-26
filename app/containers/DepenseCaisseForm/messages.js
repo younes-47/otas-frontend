@@ -71,7 +71,7 @@ export default defineMessages({
   },
   requestCurrencySet: {
     id: `${scope}.requestCurrencySet`,
-    defaultMessage: "This request's currency has been set to",
+    defaultMessage: "This request's currency has been set to: ",
   },
   expenses: {
     id: `${scope}.expenses`,
