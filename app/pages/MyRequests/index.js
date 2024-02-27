@@ -246,148 +246,219 @@ export default function MyRequests() {
           </Alert>
         </Stack>
       </Box>
-      <Container maxWidth="sm">
-        <Typography level="h3" textAlign="center">
-          <FormattedMessage id={messages.statisticsHeader.id} />{' '}
-          <TrendingUpIcon />
-        </Typography>
-        <Grid
-          container
-          spacing={4}
-          alignItems="center"
-          justifyContent="center"
-          marginTop={0.5}
-        >
-          {requesterStats?.requestsStats?.hoursPassedSinceLastRequest ===
-          null ? (
-            <>
-              <Grow in>
-                <Grid xs={12}>
-                  <Card variant="outlined">
-                    <CardContent>
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        flexDirection="column"
+        gap={3}
+      >
+        <Box gap={3} width="80%">
+          <Grow in>
+            <Card variant="outlined">
+              <CardContent>
+                <Typography level="h4">
+                  <FormattedMessage
+                    id={messages.requestsAwaitingApprovalHeader.id}
+                  />
+                </Typography>
+                <Box
+                  display="flex"
+                  justifyContent="space-around"
+                  marginTop={3}
+                  flexDirection="row"
+                >
+                  <Card
+                    variant="outlined"
+                    sx={{ background: '#ef7765', width: '180px' }}
+                  >
+                    <Typography
+                      level="title-lg"
+                      display="flex"
+                      justifyContent="center"
+                      fontSize="40px"
+                      fontWeight="600"
+                      sx={{ color: 'white' }}
+                    >
+                      {requesterStats?.pendingOrdreMissionsCount}
+                    </Typography>
+                    <Typography
+                      level="body-md"
+                      fontSize="20px"
+                      display="flex"
+                      justifyContent="center"
+                      fontWeight="400"
+                      sx={{ color: 'white' }}
+                    >
+                      <FormattedMessage id={messages.ordreMissionHeader.id} />
+                    </Typography>
+                  </Card>
+
+                  <Card
+                    variant="outlined"
+                    sx={{ background: '#00a697', width: '180px' }}
+                  >
+                    <Typography
+                      level="title-lg"
+                      display="flex"
+                      justifyContent="center"
+                      fontSize="40px"
+                      fontWeight="600"
+                      sx={{ color: 'white' }}
+                    >
+                      {requesterStats?.pendingAvanceVoyagesCount}
+                    </Typography>
+                    <Typography
+                      level="body-md"
+                      fontSize="20px"
+                      display="flex"
+                      justifyContent="center"
+                      fontWeight="400"
+                      sx={{ color: 'white' }}
+                    >
+                      <FormattedMessage id={messages.avanceVoyageHeader.id} />
+                    </Typography>
+                  </Card>
+                  <Card
+                    variant="outlined"
+                    sx={{ background: '#f3bc00', width: '180px' }}
+                  >
+                    <Typography
+                      level="title-lg"
+                      display="flex"
+                      justifyContent="center"
+                      fontSize="40px"
+                      fontWeight="600"
+                      sx={{ color: 'white' }}
+                    >
+                      {requesterStats?.pendingAvanceCaissesCount}
+                    </Typography>
+                    <Typography
+                      level="body-md"
+                      fontSize="20px"
+                      display="flex"
+                      justifyContent="center"
+                      fontWeight="400"
+                      sx={{ color: 'white' }}
+                    >
+                      <FormattedMessage id={messages.avanceCaisseHeader.id} />
+                    </Typography>
+                  </Card>
+                  <Card
+                    variant="outlined"
+                    sx={{ background: '#0075a4', width: '180px' }}
+                  >
+                    <Typography
+                      level="title-lg"
+                      display="flex"
+                      justifyContent="center"
+                      fontSize="40px"
+                      fontWeight="600"
+                      sx={{ color: 'white' }}
+                    >
+                      {requesterStats?.pendingDepenseCaissesCount}
+                    </Typography>
+                    <Typography
+                      level="body-md"
+                      fontSize="20px"
+                      display="flex"
+                      justifyContent="center"
+                      fontWeight="400"
+                      sx={{ color: 'white' }}
+                    >
+                      <FormattedMessage id={messages.depenseCaisseHeader.id} />
+                    </Typography>
+                  </Card>
+                  <Card
+                    variant="outlined"
+                    sx={{ background: '#b865ef', width: '180px' }}
+                  >
+                    <Typography
+                      level="title-lg"
+                      display="flex"
+                      justifyContent="center"
+                      fontSize="40px"
+                      fontWeight="600"
+                      sx={{ color: 'white' }}
+                    >
+                      {requesterStats?.pendingLiquidationsCount}
+                    </Typography>
+                    <Typography
+                      level="body-md"
+                      fontSize="20px"
+                      display="flex"
+                      justifyContent="center"
+                      fontWeight="400"
+                      sx={{ color: 'white' }}
+                    >
+                      <FormattedMessage id={messages.liquidationsHeader.id} />
+                    </Typography>
+                  </Card>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grow>
+        </Box>
+        <Box display="flex" flexDirection="row" width="80%" gap={3}>
+          <Grow in timeout={1200} sx={{ flexGrow: 1 }}>
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              marginTop={3}
+            >
+              <Card variant="outlined" sx={{ width: '100%' }}>
+                <CardContent>
+                  <Typography level="h4">
+                    <FormattedMessage id={messages.approvedRequestsHeader.id} />
+                  </Typography>
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    flexDirection="column"
+                    marginTop={3}
+                    gap={1}
+                  >
+                    <Card
+                      color="neutral"
+                      variant="soft"
+                      sx={{
+                        width: '100%',
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <Typography level="title-md" sx={{ width: '153px' }}>
+                        <FormattedMessage id={messages.avanceVoyageHeader.id} />
+                      </Typography>
                       <Typography
-                        level="title-md"
-                        variant="plain"
-                        color="warning"
+                        level="title-lg"
+                        color="primary"
+                        textAlign="center"
+                        sx={{ width: '31px' }}
                       >
-                        <FormattedMessage id={messages.noRequestsAlert.id} />
-                      </Typography>
-                    </CardContent>
-                  </Card>
-                </Grid>
-              </Grow>
-            </>
-          ) : (
-            <>
-              <Grow in>
-                <Grid xs={6}>
-                  <Card variant="outlined">
-                    <CardContent>
-                      <Typography level="h1" variant="plain" color="primary">
-                        {requesterStats?.requestsStats?.allOngoingRequestsCount}
-                      </Typography>
-                      <Typography level="title-md">
-                        Requests are in the process of approval.
-                      </Typography>
-                    </CardContent>
-                  </Card>
-                </Grid>
-              </Grow>
-              <Grow in timeout={1200}>
-                <Grid xs={6}>
-                  <Card variant="outlined">
-                    <CardContent>
-                      <Typography level="h1" variant="plain" color="warning">
-                        {Math.floor(
-                          requesterStats?.requestsStats
-                            ?.hoursPassedSinceLastRequest / 24,
-                        )}
-                      </Typography>
-                      <Typography level="title-md">
-                        Days Have been passed since your last request.
-                      </Typography>
-                    </CardContent>
-                  </Card>
-                </Grid>
-              </Grow>
-              <Grow in timeout={2200}>
-                <Grid xs={6}>
-                  <Card variant="outlined">
-                    <CardContent>
-                      <Typography level="h1" variant="plain" color="success">
                         <CountUp
+                          end={requesterStats?.finalizedAvanceVoyagesCount}
+                          duration={2}
                           delay={0}
                           start={0}
-                          end={requesterStats?.requestsStats?.allTimeCount}
-                          duration={3.2}
                         />
                       </Typography>
-                      <Typography level="title-md">
-                        requests have been created so far!
-                      </Typography>
-                      {requesterStats?.requestsStats && (
-                        <PieChart
-                          slotProps={{ legend: { hidden: true } }}
-                          sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            margin: '0',
-                          }}
-                          series={[
-                            {
-                              data: [
-                                {
-                                  id: 0,
-                                  value:
-                                    requesterStats?.requestsStats
-                                      ?.ordreMissionsAllTimeCount,
-                                  label: 'Ordre Mission',
-                                  color: '#ef7765',
-                                },
-                                {
-                                  id: 1,
-                                  value:
-                                    requesterStats?.requestsStats
-                                      ?.avanceVoyagesAllTimeCount,
-                                  label: 'Avance Voyage',
-                                  color: '#00a697',
-                                },
-                                {
-                                  id: 2,
-                                  value:
-                                    requesterStats?.requestsStats
-                                      ?.avanceCaissesAllTimeCount,
-                                  label: 'Avance Caisse',
-                                  color: '#f3bc00',
-                                },
-                                {
-                                  id: 3,
-                                  value:
-                                    requesterStats?.requestsStats
-                                      ?.depenseCaissesAllTimeCount,
-                                  label: 'Depense Caisse',
-                                  color: '#0075a4',
-                                },
-                              ],
-                            },
-                          ]}
-                          width={226.3}
-                          height={200}
-                        />
-                      )}
-                    </CardContent>
-                  </Card>
-                </Grid>
-              </Grow>
-              <Grow in timeout={3200}>
-                <Grid xs={6}>
-                  <Card variant="outlined">
-                    <CardContent>
-                      <Typography level="h3" variant="plain" color="success">
+                      <Typography
+                        level="title-sm"
+                        color="success"
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'flex-end',
+                          width: '111px',
+                        }}
+                      >
                         <CountUp
-                          delay={0}
-                          start={0}
-                          end={requesterStats?.moneyStats?.allTimeAmountMAD}
+                          end={requesterStats?.finalizedAvanceVoyagesMADCount}
+                          duration={2}
+                          decimals={2}
                           separator={
                             localStorage.getItem('preferredLanguage') === 'en'
                               ? ','
@@ -398,16 +469,24 @@ export default function MyRequests() {
                               ? '.'
                               : ','
                           }
-                          decimals={2}
-                          duration={3.2}
-                        />
-                        &nbsp;MAD
-                      </Typography>
-                      <Typography level="h3" variant="plain" color="success">
-                        <CountUp
                           delay={0}
                           start={0}
-                          end={requesterStats?.moneyStats?.allTimeAmountEUR}
+                          suffix=" MAD"
+                        />
+                      </Typography>
+                      <Typography
+                        level="title-sm"
+                        color="success"
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'flex-end',
+                          width: '111px',
+                        }}
+                      >
+                        <CountUp
+                          end={requesterStats?.finalizedAvanceVoyagesEURCount}
+                          duration={2}
+                          decimals={2}
                           separator={
                             localStorage.getItem('preferredLanguage') === 'en'
                               ? ','
@@ -418,99 +497,469 @@ export default function MyRequests() {
                               ? '.'
                               : ','
                           }
+                          delay={0}
+                          start={0}
+                          suffix=" EUR"
+                        />
+                      </Typography>
+                    </Card>
+                    <Card
+                      color="neutral"
+                      variant="soft"
+                      sx={{
+                        width: '100%',
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <Typography level="title-md" sx={{ width: '153px' }}>
+                        <FormattedMessage id={messages.avanceCaisseHeader.id} />
+                      </Typography>
+                      <Typography
+                        level="title-lg"
+                        color="primary"
+                        textAlign="center"
+                        sx={{ width: '31px' }}
+                      >
+                        <CountUp
+                          end={requesterStats?.finalizedAvanceCaissesCount}
+                          duration={2}
+                          delay={0}
+                          start={0}
+                        />
+                      </Typography>
+                      <Typography
+                        level="title-sm"
+                        color="success"
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'flex-end',
+                          width: '111px',
+                        }}
+                      >
+                        <CountUp
+                          end={requesterStats?.finalizedAvanceCaissesMADCount}
+                          duration={2}
                           decimals={2}
-                          duration={3.2}
+                          separator={
+                            localStorage.getItem('preferredLanguage') === 'en'
+                              ? ','
+                              : ' '
+                          }
+                          decimal={
+                            localStorage.getItem('preferredLanguage') === 'en'
+                              ? '.'
+                              : ','
+                          }
+                          delay={0}
+                          start={0}
+                          suffix=" MAD"
                         />
-                        &nbsp;EUR
                       </Typography>
-                      <Typography level="title-md">
-                        have been requested so far!
-                      </Typography>
-                      {requesterStats?.moneyStats && (
-                        <PieChart
-                          slotProps={{ legend: { hidden: true } }}
-                          height={200}
-                          width={226.3}
-                          sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                          }}
-                          series={[
-                            {
-                              data: [
-                                {
-                                  id: 0,
-                                  value:
-                                    requesterStats?.moneyStats
-                                      ?.avanceVoyagesAllTimeAmountMAD,
-
-                                  label: 'Avance Voyage MAD',
-                                  color: '#00a697',
-                                },
-                                {
-                                  id: 1,
-                                  value:
-                                    requesterStats?.moneyStats
-                                      ?.avanceCaissesAllTimeAmountMAD,
-
-                                  label: 'Avance Caisse MAD',
-                                  color: '#f3bc00',
-                                },
-                                {
-                                  id: 2,
-                                  value:
-                                    requesterStats?.moneyStats
-                                      ?.depenseCaissesAllTimeAmountMAD,
-
-                                  label: 'Depense Caisse MAD',
-                                  color: '#0075a4',
-                                },
-                              ],
-                              outerRadius: 50,
-                            },
-                            {
-                              data: [
-                                {
-                                  id: 0,
-                                  value:
-                                    requesterStats?.moneyStats
-                                      ?.avanceVoyagesAllTimeAmountEUR,
-
-                                  label: 'Avance Voyage EUR',
-                                  color: '#00a697',
-                                },
-                                {
-                                  id: 1,
-                                  value:
-                                    requesterStats?.moneyStats
-                                      ?.avanceCaissesAllTimeAmountEUR,
-
-                                  label: 'Avance Caisse EUR',
-                                  color: '#f3bc00',
-                                },
-                                {
-                                  id: 2,
-                                  value:
-                                    requesterStats?.moneyStats
-                                      ?.depenseCaissesAllTimeAmountEUR,
-
-                                  label: 'Depense Caisse EUR',
-                                  color: '#0075a4',
-                                },
-                              ],
-                              innerRadius: 40,
-                            },
-                          ]}
+                      <Typography
+                        level="title-sm"
+                        color="success"
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'flex-end',
+                          width: '111px',
+                        }}
+                      >
+                        <CountUp
+                          end={requesterStats?.finalizedAvanceCaissesEURCount}
+                          duration={2}
+                          decimals={2}
+                          separator={
+                            localStorage.getItem('preferredLanguage') === 'en'
+                              ? ','
+                              : ' '
+                          }
+                          decimal={
+                            localStorage.getItem('preferredLanguage') === 'en'
+                              ? '.'
+                              : ','
+                          }
+                          delay={0}
+                          start={0}
+                          suffix=" EUR"
                         />
-                      )}
-                    </CardContent>
-                  </Card>
-                </Grid>
-              </Grow>
-            </>
-          )}
-        </Grid>
-      </Container>
+                      </Typography>
+                    </Card>
+                    <Card
+                      color="neutral"
+                      variant="soft"
+                      sx={{
+                        width: '100%',
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <Typography level="title-md" sx={{ width: '153px' }}>
+                        <FormattedMessage
+                          id={messages.depenseCaisseHeader.id}
+                        />
+                      </Typography>
+                      <Typography
+                        level="title-lg"
+                        color="primary"
+                        textAlign="center"
+                        sx={{ width: '31px' }}
+                      >
+                        <CountUp
+                          end={requesterStats?.finalizedDepenseCaissesCount}
+                          duration={2}
+                          delay={0}
+                          start={0}
+                        />
+                      </Typography>
+                      <Typography
+                        level="title-sm"
+                        color="success"
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'flex-end',
+                          width: '111px',
+                        }}
+                      >
+                        <CountUp
+                          end={requesterStats?.finalizedDepenseCaissesMADCount}
+                          duration={2}
+                          decimals={2}
+                          separator={
+                            localStorage.getItem('preferredLanguage') === 'en'
+                              ? ','
+                              : ' '
+                          }
+                          decimal={
+                            localStorage.getItem('preferredLanguage') === 'en'
+                              ? '.'
+                              : ','
+                          }
+                          delay={0}
+                          start={0}
+                          suffix=" MAD"
+                        />
+                      </Typography>
+                      <Typography
+                        level="title-sm"
+                        color="success"
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'flex-end',
+                          width: '111px',
+                        }}
+                      >
+                        <CountUp
+                          end={requesterStats?.finalizedDepenseCaissesEURCount}
+                          duration={2}
+                          decimals={2}
+                          separator={
+                            localStorage.getItem('preferredLanguage') === 'en'
+                              ? ','
+                              : ' '
+                          }
+                          decimal={
+                            localStorage.getItem('preferredLanguage') === 'en'
+                              ? '.'
+                              : ','
+                          }
+                          delay={0}
+                          start={0}
+                          suffix=" EUR"
+                        />
+                      </Typography>
+                    </Card>
+                  </Box>
+                </CardContent>
+              </Card>
+            </Box>
+          </Grow>
+          <Grow in timeout={1200} sx={{ flexGrow: 1 }}>
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              marginTop={3}
+            >
+              <Card variant="outlined" sx={{ width: '100%' }}>
+                <CardContent>
+                  <Typography level="h4">
+                    <FormattedMessage id={messages.liquidationsHeader.id} />
+                  </Typography>
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    flexDirection="column"
+                    marginTop={3}
+                    gap={1}
+                  >
+                    <Card
+                      color="neutral"
+                      variant="soft"
+                      sx={{
+                        width: '100%',
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <Typography level="title-md" sx={{ width: '153px' }}>
+                        <FormattedMessage
+                          id={messages.notInitiatedYetHeader.id}
+                        />
+                      </Typography>
+                      <Typography
+                        level="title-lg"
+                        color="primary"
+                        textAlign="center"
+                        sx={{ width: '31px' }}
+                      >
+                        <CountUp
+                          end={requesterStats?.toLiquidateRequestsCount}
+                          duration={2}
+                          delay={0}
+                          start={0}
+                        />
+                      </Typography>
+                      <Typography
+                        level="title-sm"
+                        color="success"
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'flex-end',
+                          width: '111px',
+                        }}
+                      >
+                        <CountUp
+                          end={requesterStats?.toLiquidateRequestsMADCount}
+                          duration={2}
+                          decimals={2}
+                          separator={
+                            localStorage.getItem('preferredLanguage') === 'en'
+                              ? ','
+                              : ' '
+                          }
+                          decimal={
+                            localStorage.getItem('preferredLanguage') === 'en'
+                              ? '.'
+                              : ','
+                          }
+                          delay={0}
+                          start={0}
+                          suffix=" MAD"
+                        />
+                      </Typography>
+                      <Typography
+                        level="title-sm"
+                        color="success"
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'flex-end',
+                          width: '111px',
+                        }}
+                      >
+                        <CountUp
+                          end={requesterStats?.toLiquidateRequestsEURCount}
+                          duration={2}
+                          decimals={2}
+                          separator={
+                            localStorage.getItem('preferredLanguage') === 'en'
+                              ? ','
+                              : ' '
+                          }
+                          decimal={
+                            localStorage.getItem('preferredLanguage') === 'en'
+                              ? '.'
+                              : ','
+                          }
+                          delay={0}
+                          start={0}
+                          suffix=" EUR"
+                        />
+                      </Typography>
+                    </Card>
+
+                    <Card
+                      color="neutral"
+                      variant="soft"
+                      sx={{
+                        width: '100%',
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <Typography level="title-md" sx={{ width: '153px' }}>
+                        <FormattedMessage id={messages.ongoingHeader.id} />
+                      </Typography>
+                      <Typography
+                        level="title-lg"
+                        color="primary"
+                        textAlign="center"
+                        sx={{ width: '31px' }}
+                      >
+                        <CountUp
+                          end={requesterStats?.ongoingLiquidationsCount}
+                          duration={2}
+                          delay={0}
+                          start={0}
+                        />
+                      </Typography>
+                      <Typography
+                        level="title-sm"
+                        color="success"
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'flex-end',
+                          width: '111px',
+                        }}
+                      >
+                        <CountUp
+                          end={requesterStats?.ongoingLiquidationsMADCount}
+                          duration={2}
+                          decimals={2}
+                          separator={
+                            localStorage.getItem('preferredLanguage') === 'en'
+                              ? ','
+                              : ' '
+                          }
+                          decimal={
+                            localStorage.getItem('preferredLanguage') === 'en'
+                              ? '.'
+                              : ','
+                          }
+                          delay={0}
+                          start={0}
+                          suffix=" MAD"
+                        />
+                      </Typography>
+                      <Typography
+                        level="title-sm"
+                        color="success"
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'flex-end',
+                          width: '111px',
+                        }}
+                      >
+                        <CountUp
+                          end={requesterStats?.ongoingLiquidationsEURCount}
+                          duration={2}
+                          decimals={2}
+                          separator={
+                            localStorage.getItem('preferredLanguage') === 'en'
+                              ? ','
+                              : ' '
+                          }
+                          decimal={
+                            localStorage.getItem('preferredLanguage') === 'en'
+                              ? '.'
+                              : ','
+                          }
+                          delay={0}
+                          start={0}
+                          suffix=" EUR"
+                        />
+                      </Typography>
+                    </Card>
+
+                    <Card
+                      color="neutral"
+                      variant="soft"
+                      sx={{
+                        width: '100%',
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <Typography level="title-md" sx={{ width: '153px' }}>
+                        <FormattedMessage id={messages.finalizedHeader.id} />
+                      </Typography>
+                      <Typography
+                        level="title-lg"
+                        color="primary"
+                        textAlign="center"
+                        sx={{ width: '31px' }}
+                      >
+                        <CountUp
+                          end={requesterStats?.finalizedLiquidationsCount}
+                          duration={2}
+                          delay={0}
+                          start={0}
+                        />
+                      </Typography>
+                      <Typography
+                        level="title-sm"
+                        color="success"
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'flex-end',
+                          width: '111px',
+                        }}
+                      >
+                        <CountUp
+                          end={requesterStats?.finalizedLiquidationsMADCount}
+                          duration={2}
+                          decimals={2}
+                          separator={
+                            localStorage.getItem('preferredLanguage') === 'en'
+                              ? ','
+                              : ' '
+                          }
+                          decimal={
+                            localStorage.getItem('preferredLanguage') === 'en'
+                              ? '.'
+                              : ','
+                          }
+                          delay={0}
+                          start={0}
+                          suffix=" MAD"
+                        />
+                      </Typography>
+                      <Typography
+                        level="title-sm"
+                        color="success"
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'flex-end',
+                          width: '111px',
+                        }}
+                      >
+                        <CountUp
+                          end={requesterStats?.FinalizedLiquidationsEURCount}
+                          duration={2}
+                          decimals={2}
+                          separator={
+                            localStorage.getItem('preferredLanguage') === 'en'
+                              ? ','
+                              : ' '
+                          }
+                          decimal={
+                            localStorage.getItem('preferredLanguage') === 'en'
+                              ? '.'
+                              : ','
+                          }
+                          delay={0}
+                          start={0}
+                          suffix=" EUR"
+                        />
+                      </Typography>
+                    </Card>
+                  </Box>
+                </CardContent>
+              </Card>
+            </Box>
+          </Grow>
+        </Box>
+      </Box>
     </Box>
   );
 }

@@ -14,8 +14,8 @@ import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import SideBarButtonIcon from './SideBarButtonIcon';
-// import styled from 'styled-components';
 
+/* eslint-disable no-nested-ternary */
 function SideBarButton({
   displayName,
   name,
@@ -24,15 +24,6 @@ function SideBarButton({
   isCollapsable,
   onSidebarButtonClick,
 }) {
-  console.log(
-    'SideBarButton',
-    displayName,
-    name,
-    selected,
-    isChild,
-    isCollapsable,
-    onSidebarButtonClick,
-  );
   if (isCollapsable) {
     return (
       <>
@@ -56,6 +47,7 @@ function SideBarButton({
       </>
     );
   }
+
   const color = !selected
     ? '#202123'
     : name === 'ordreMission' || name === 'decideOnOrdreMission'
@@ -80,7 +72,7 @@ function SideBarButton({
       )}
       <Stack direction="row">
         <Box flex={isChild ? 2 : 0} sx={{ backgroundColor: `${color}` }}></Box>
-        <Box flex={24}>
+        <Box flex={24} sx={{ backgroundColor: '#3e4044' }}>
           <ListItemButton
             selected={selected}
             onClick={onSidebarButtonClick}

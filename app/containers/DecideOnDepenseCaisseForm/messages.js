@@ -148,6 +148,10 @@ export default defineMessages({
     defaultMessage:
       'By finalizing the request, you acknowledge that everything is settled and no further actions are required. All information will still be accessible afterwards.',
   },
+  finalizeRequest: {
+    id: `${scope}.finalizeRequest`,
+    defaultMessage: 'Finalize the request?',
+  },
   returnRequestBodyTR: {
     id: `${scope}.returnRequestBodyTR`,
     defaultMessage: 'Please choose to whom you want to return the request.',
