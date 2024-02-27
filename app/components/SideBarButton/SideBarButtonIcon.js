@@ -10,18 +10,18 @@ import CashStackIcon from 'components/CashStackIcon';
 import DocSignatureIcon from 'components/DocSignatureIcon';
 import UserIcon from 'components/UserIcon';
 
-const SideBarButtonIcon = ({ ButtonIconName }) => {
+const SideBarButtonIcon = ({ ButtonIconName, color = '#fff' }) => {
   switch (ButtonIconName) {
     case 'myRequests':
       return <UserIcon />;
     case 'ordreMission':
       return <CardTravelIcon />;
     case 'avanceCaisse':
-      return <CashHandIcon />;
+      return <CashHandIcon Color={color} />;
     case 'avanceVoyage':
-      return <CashHandIcon />;
+      return <CashHandIcon Color={color} />;
     case 'depenseCaisse':
-      return <CashStackIcon />;
+      return <CashStackIcon Color={color} />;
     case 'liquidation':
       return <CurrencyExchangeIcon />;
     case 'decideOnRequests':
@@ -43,5 +43,6 @@ const SideBarButtonIcon = ({ ButtonIconName }) => {
 
 SideBarButtonIcon.propTypes = {
   ButtonIconName: PropTypes.string.isRequired,
+  color: PropTypes.string,
 };
 export default SideBarButtonIcon;

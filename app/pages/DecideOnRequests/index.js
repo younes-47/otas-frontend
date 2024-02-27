@@ -24,7 +24,8 @@ import Grow from '@mui/material/Grow';
 import Card from '@mui/joy/Card';
 import CardContent from '@mui/joy/CardContent';
 import CountUp from 'react-countup';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
+import { CardActionArea } from '@mui/material';
 import reducer from './reducer';
 import saga from './saga';
 import { cleanupStoreAction, loadDeciderStatsAction } from './actions';
@@ -69,6 +70,8 @@ export function DecideOnRequests() {
     [],
   );
 
+  const intl = useIntl();
+
   useEffect(() => {
     if (errorLoadingDeciderLevels === false) {
       let string = '';
@@ -77,48 +80,50 @@ export function DecideOnRequests() {
         switch (level) {
           case 'MG':
             if (index === 0) {
-              string += 'a Manager of your department';
+              string += intl.formatMessage({ id: messages.managerFirst.id });
+            } else if (index === arr.length - 1) {
+              string += intl.formatMessage({ id: messages.managerLast.id });
             } else {
-              string += ' and Manager of your department';
+              string += intl.formatMessage({ id: messages.managerMiddle.id });
             }
             break;
           case 'FM':
             if (index === 0) {
-              string += 'a Finance Manager';
+              string += intl.formatMessage({ id: messages.financeFirst.id });
             } else {
-              string += ' and Finance Manager';
+              string += intl.formatMessage({ id: messages.financeLast.id });
             }
             break;
           case 'HR':
             if (index === 0) {
-              string += 'an HR Manager';
+              string += intl.formatMessage({ id: messages.hrFirst.id });
             } else {
-              string += ' and HR Manager';
+              string += intl.formatMessage({ id: messages.hrLast.id });
             }
             break;
           case 'TR':
             if (index === 0) {
-              string += 'a Treasurer';
+              string += intl.formatMessage({ id: messages.trFirst.id });
             } else {
-              string += ' and Treasurer';
+              string += intl.formatMessage({ id: messages.trLast.id });
             }
             break;
-          case 'DG':
+          case 'GD':
             if (index === 0) {
-              string += 'a General Director';
-            } else if (index === arr.length) {
-              string += ' and a General Director';
+              string += intl.formatMessage({ id: messages.gdFirst.id });
+            } else if (index === arr.length - 1) {
+              string += intl.formatMessage({ id: messages.gdLast.id });
             } else {
-              string += ', General Director';
+              string += intl.formatMessage({ id: messages.gdMiddle.id });
             }
             break;
           case 'VP':
             if (index === 0) {
-              string += 'a Vice President';
-            } else if (index === arr.length) {
-              string += ' and a Vice President';
+              string += intl.formatMessage({ id: messages.vpFirst.id });
+            } else if (index === arr.length - 1) {
+              string += intl.formatMessage({ id: messages.vpLast.id });
             } else {
-              string += ', Vice President';
+              string += intl.formatMessage({ id: messages.vpMiddle.id });
             }
             break;
           default:
@@ -224,6 +229,7 @@ export function DecideOnRequests() {
                         <FormattedMessage id={messages.ordreMissionHeader.id} />
                       </Typography>
                     </Card>
+
                     <Card
                       variant="outlined"
                       sx={{ background: '#00a697', width: '180px' }}
@@ -303,7 +309,7 @@ export function DecideOnRequests() {
                     </Card>
                     <Card
                       variant="outlined"
-                      sx={{ background: 'purple', width: '180px' }}
+                      sx={{ background: '#b865ef', width: '180px' }}
                     >
                       <Typography
                         level="title-lg"
@@ -364,7 +370,7 @@ export function DecideOnRequests() {
                           alignItems: 'center',
                         }}
                       >
-                        <Typography level="title-md" sx={{ width: '120px' }}>
+                        <Typography level="title-md" sx={{ width: '153px' }}>
                           <FormattedMessage
                             id={messages.avanceVoyageHeader.id}
                           />
@@ -450,7 +456,7 @@ export function DecideOnRequests() {
                           alignItems: 'center',
                         }}
                       >
-                        <Typography level="title-md" sx={{ width: '120px' }}>
+                        <Typography level="title-md" sx={{ width: '153px' }}>
                           <FormattedMessage
                             id={messages.avanceCaisseHeader.id}
                           />
@@ -536,7 +542,7 @@ export function DecideOnRequests() {
                           alignItems: 'center',
                         }}
                       >
-                        <Typography level="title-md" sx={{ width: '120px' }}>
+                        <Typography level="title-md" sx={{ width: '153px' }}>
                           <FormattedMessage
                             id={messages.depenseCaisseHeader.id}
                           />
@@ -646,7 +652,7 @@ export function DecideOnRequests() {
                           alignItems: 'center',
                         }}
                       >
-                        <Typography level="title-md" sx={{ width: '120px' }}>
+                        <Typography level="title-md" sx={{ width: '153px' }}>
                           <FormattedMessage
                             id={messages.notInitiatedYetHeader.id}
                           />
@@ -733,7 +739,7 @@ export function DecideOnRequests() {
                           alignItems: 'center',
                         }}
                       >
-                        <Typography level="title-md" sx={{ width: '120px' }}>
+                        <Typography level="title-md" sx={{ width: '153px' }}>
                           <FormattedMessage id={messages.ongoingHeader.id} />
                         </Typography>
                         <Typography
@@ -818,7 +824,7 @@ export function DecideOnRequests() {
                           alignItems: 'center',
                         }}
                       >
-                        <Typography level="title-md" sx={{ width: '120px' }}>
+                        <Typography level="title-md" sx={{ width: '153px' }}>
                           <FormattedMessage id={messages.finalizedHeader.id} />
                         </Typography>
                         <Typography

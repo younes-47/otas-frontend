@@ -5,15 +5,15 @@
  */
 
 import React from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 // import styled from 'styled-components';
 
 import SvgIcon from '@mui/material/SvgIcon';
-function CashStackIcon() {
+function CashStackIcon({ Color = '#fff' }) {
   return (
     <SvgIcon>
       <svg
-        fill="#ffffff"
+        fill={Color}
         width="800px"
         height="800px"
         viewBox="0 0 1024 1024"
@@ -51,6 +51,8 @@ function CashStackIcon() {
   );
 }
 
-CashStackIcon.propTypes = {};
+CashStackIcon.propTypes = {
+  Color: PropTypes.string,
+};
 
 export default CashStackIcon;

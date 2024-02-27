@@ -498,6 +498,7 @@ export function DecideOnAvanceVoyageForm({ state }) {
         <Box width="60%" display="flex" justifyContent="flex-end">
           <Typography level="h4">
             <FormattedMessage id={messages.total.id} />
+            &nbsp;
             {avanceVoyageDetails?.currency}:&nbsp;
             <Typography color="success">
               <NumericFormat

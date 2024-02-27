@@ -201,13 +201,7 @@ export function DecideOnLiquidationForm({ state }) {
 
     const blobUrl = window.URL.createObjectURL(blob);
 
-    const link = document.createElement('a');
-    link.href = blobUrl;
-    link.download = liquidationDetails?.receiptsFileName;
-
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    window.open(blobUrl, '_blank');
   };
 
   const handleOnReturnButtonClick = () => {
@@ -642,7 +636,7 @@ export function DecideOnLiquidationForm({ state }) {
                 <>
                   <FormattedMessage id={messages.anAmountOf.id} />{' '}
                   {liquidationDetails?.requestDetails?.currency}{' '}
-                  {liquidationDetails?.result}
+                  {liquidationDetails?.result}{' '}
                   <FormattedMessage
                     id={messages.mustBeRefundedToTheRequester.id}
                   />
@@ -760,7 +754,7 @@ export function DecideOnLiquidationForm({ state }) {
           ) : (
             <DialogContentText id="alert-dialog-slide-description">
               <Alert color={modalSevirity} size="lg" variant="soft">
-                {modalBody}
+                {modalBody && <FormattedMessage id={messages[modalBody].id} />}
               </Alert>
               {(modalHeader === 'returnRequest' ||
                 modalHeader === 'rejectRequest') &&

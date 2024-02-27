@@ -19,8 +19,9 @@ import { useInjectReducer } from 'utils/injectReducer';
 import { StyledBox } from 'components/GlobalComponents/StyledBox';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
-import { AppBar, Toolbar } from '@mui/material';
-import { Typography } from '@mui/joy';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/joy/Typography';
 import makeSelectLoginPage, {
   makeSelectToken,
   makeSelectUsername,
@@ -100,7 +101,7 @@ export function LoginPage() {
   };
   return (
     <>
-      <AppBar
+      {/* <AppBar
         position="fixed"
         color="inherit"
         sx={{ boxShadow: '5px -3px 54px -22px rgba(200,15,23,0.72)' }}
@@ -110,7 +111,7 @@ export function LoginPage() {
             OTAS
           </Typography>
         </Toolbar>
-      </AppBar>
+      </AppBar> */}
       <div className="parent">
         <div className="form">
           <StyledBox loading={loading}>

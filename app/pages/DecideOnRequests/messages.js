@@ -9,6 +9,75 @@ import { defineMessages } from 'react-intl';
 export const scope = 'app.containers.DecideOnRequests';
 
 export default defineMessages({
+  // decider levels
+  managerFirst: {
+    id: `${scope}.managerFirst`,
+    defaultMessage: 'a Manager of your department',
+  },
+  managerMiddle: {
+    id: `${scope}.managerMiddle`,
+    defaultMessage: ', Manager of your department',
+  },
+  managerLast: {
+    id: `${scope}.managerLast`,
+    defaultMessage: ' and Manager of your department',
+  },
+
+  gdFirst: {
+    id: `${scope}.gdFirst`,
+    defaultMessage: 'a General Director',
+  },
+  gdMiddle: {
+    id: `${scope}.gdMiddle`,
+    defaultMessage: ', General Director',
+  },
+  gdLast: {
+    id: `${scope}.gdLast`,
+    defaultMessage: ' and a General Director',
+  },
+
+  vpFirst: {
+    id: `${scope}.vpFirst`,
+    defaultMessage: 'a Vice President',
+  },
+  vpMiddle: {
+    id: `${scope}.vpMiddle`,
+    defaultMessage: ', Vice President',
+  },
+  vpLast: {
+    id: `${scope}.vpLast`,
+    defaultMessage: ' and a Vice President',
+  },
+
+  financeFirst: {
+    id: `${scope}.financeFirst`,
+    defaultMessage: 'a Finance Manager',
+  },
+  financeLast: {
+    id: `${scope}.financeLast`,
+    defaultMessage: ' and Finance Manager',
+  },
+
+  hrFirst: {
+    id: `${scope}.hrFirst`,
+    defaultMessage: 'an HR Manager',
+  },
+  hrLast: {
+    id: `${scope}.hrLast`,
+    defaultMessage: ' and HR Manager',
+  },
+
+  trFirst: {
+    id: `${scope}.trFirst`,
+    defaultMessage: 'a Treasurer',
+  },
+  trLast: {
+    id: `${scope}.trLast`,
+    defaultMessage: ' and Treasurer',
+  },
+
+  //
+
   welcome: {
     id: `${scope}.welcome`,
     defaultMessage: 'Welcome',

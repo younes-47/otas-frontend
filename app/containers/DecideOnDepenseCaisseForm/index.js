@@ -196,13 +196,7 @@ export function DecideOnDepenseCaisseForm({ state }) {
 
     const blobUrl = window.URL.createObjectURL(blob);
 
-    const link = document.createElement('a');
-    link.href = blobUrl;
-    link.download = depenseCaisseDetails?.receiptsFileName;
-
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    window.open(blobUrl, '_blank');
   };
 
   const handleOnReturnButtonClick = () => {
@@ -499,6 +493,7 @@ export function DecideOnDepenseCaisseForm({ state }) {
         <Box width="60%" display="flex" justifyContent="flex-end">
           <Typography level="h4">
             <FormattedMessage id={messages.total.id} />
+            &nbsp;
             {depenseCaisseDetails?.currency}:&nbsp;
             <Typography color="success">
               <NumericFormat

@@ -422,6 +422,7 @@ export function DecideOnAvanceCaisseForm({ state }) {
         <Box width="60%" display="flex" justifyContent="flex-end">
           <Typography level="h4">
             <FormattedMessage id={messages.total.id} />
+            &nbsp;
             {avanceCaisseDetails?.currency}:&nbsp;
             <Typography color="success">
               <NumericFormat

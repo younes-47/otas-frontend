@@ -100,14 +100,7 @@ export function DecideOnDepenseCaisseTable() {
 
       const blobUrl = window.URL.createObjectURL(blob);
 
-      const link = document.createElement('a');
-      link.href = blobUrl;
-      link.download =
-        downloadDepenseCaisseReceiptsFileResponse.fileDownloadName;
-
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      window.open(blobUrl, '_blank');
     }
   }, [errorDownloadingDepenseCaisseReceiptsFile]);
 

@@ -48,6 +48,7 @@ import {
 } from 'pages/AvanceCaisse/actions';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { FormattedMessage, useIntl } from 'react-intl';
+import avanceVoyageTableReducer from 'containers/AvanceVoyageTable/reducer';
 import messages from './messages';
 import {
   makeSelectErrorDeletingLiquidation,
@@ -85,6 +86,7 @@ const mapStateToProps = createStructuredSelector({
 export function LiquidationTable() {
   useInjectReducer({ key: 'liquidationTable', reducer });
   useInjectSaga({ key: 'liquidationTable', saga });
+  // useInjectReducer({ key: 'avanceVoyageTable', avanceVoyageTableReducer });
 
   const dispatch = useDispatch();
   const {
@@ -121,13 +123,7 @@ export function LiquidationTable() {
 
       const blobUrl = window.URL.createObjectURL(blob);
 
-      const link = document.createElement('a');
-      link.href = blobUrl;
-      link.download = downloadLiquidationReceiptsFileResponse.fileDownloadName;
-
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      window.open(blobUrl, '_blank');
     }
   }, [errorDownloadingLiquidationReceiptsFile]);
 

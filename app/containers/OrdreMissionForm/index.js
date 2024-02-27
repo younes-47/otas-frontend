@@ -321,13 +321,7 @@ export function OrdreMissionForm({ state }) {
 
       const blobUrl = window.URL.createObjectURL(blob);
 
-      const link = document.createElement('a');
-      link.href = blobUrl;
-      link.download = ordreMissionDocumentFile.fileDownloadName;
-
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      window.open(blobUrl, '_blank');
       setLoadingButton(false);
     }
   }, [errorDownloadingOrdreMissionDocumentFile]);

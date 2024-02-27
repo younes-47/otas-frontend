@@ -5,12 +5,12 @@
  */
 
 import React from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 // import styled from 'styled-components';
 
 import SvgIcon from '@mui/material/SvgIcon';
 
-function CashHandIcon() {
+function CashHandIcon({ Color = '#fff' }) {
   return (
     <SvgIcon>
       <svg
@@ -20,9 +20,7 @@ function CashHandIcon() {
         x="0px"
         y="0px"
         viewBox="0 0 490.766 490.766"
-        style={{
-          enableBackground: 'new 0 0 490.766 490.766',
-        }}
+        fill={Color}
         xmlSpace="preserve"
       >
         <g>
@@ -33,6 +31,8 @@ function CashHandIcon() {
   );
 }
 
-CashHandIcon.propTypes = {};
+CashHandIcon.propTypes = {
+  Color: PropTypes.string,
+};
 
 export default CashHandIcon;

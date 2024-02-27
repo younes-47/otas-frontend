@@ -110,7 +110,7 @@ export default function TripsTable({
               <StyledTableCell align="left">
                 <Typography level="body-md">{trip.unit}</Typography>
               </StyledTableCell>
-              <StyledTableCell align="left">
+              <StyledTableCell align="left" sx={{ whiteSpace: 'nowrap' }}>
                 {trip.unit !== 'KM' ? (
                   <Typography level="body-md">
                     <NumericFormat
@@ -136,7 +136,7 @@ export default function TripsTable({
                   <Typography level="body-md">{trip.value}</Typography>
                 )}
               </StyledTableCell>
-              <StyledTableCell align="left">
+              <StyledTableCell align="left" sx={{ whiteSpace: 'nowrap' }}>
                 <Typography level="body-md">
                   <NumericFormat
                     displayType="text"
@@ -158,7 +158,7 @@ export default function TripsTable({
                   />
                 </Typography>
               </StyledTableCell>
-              <StyledTableCell align="left">
+              <StyledTableCell align="left" sx={{ whiteSpace: 'nowrap' }}>
                 <Typography level="title-md" color="success">
                   <NumericFormat
                     displayType="text"
@@ -183,7 +183,7 @@ export default function TripsTable({
               {((updateTripsToLiquidate !== undefined &&
                 getActualFee !== undefined) ||
                 isLiquidationView === true) && (
-                <StyledTableCell align="left">
+                <StyledTableCell align="left" sx={{ whiteSpace: 'nowrap' }}>
                   <Typography
                     level="title-md"
                     color={isLiquidationView ? 'success' : 'neutral'}

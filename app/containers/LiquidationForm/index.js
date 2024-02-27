@@ -379,13 +379,7 @@ export function LiquidationForm({ state }) {
 
       const blobUrl = window.URL.createObjectURL(blob);
 
-      const link = document.createElement('a');
-      link.href = blobUrl;
-      link.download = liquidationDocumentFile.fileDownloadName;
-
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      window.open(blobUrl, '_blank');
       setLoadingButton(false);
     }
   }, [errorDownloadingLiquidationDocumentFile]);
@@ -699,13 +693,7 @@ export function LiquidationForm({ state }) {
 
     const blobUrl = window.URL.createObjectURL(blob);
 
-    const link = document.createElement('a');
-    link.href = blobUrl;
-    link.download = liquidationDetails?.receiptsFileName;
-
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    window.open(blobUrl, '_blank');
   };
 
   const handleOnDownloadDocumentClick = () => {

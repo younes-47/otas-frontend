@@ -252,13 +252,7 @@ export function DepenseCaisseForm({ state }) {
 
       const blobUrl = window.URL.createObjectURL(blob);
 
-      const link = document.createElement('a');
-      link.href = blobUrl;
-      link.download = depenseCaisseDocumentFile.fileDownloadName;
-
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      window.open(blobUrl, '_blank');
       setLoadingButton(false);
     }
   }, [errorDownloadingDepenseCaisseDocumentFile]);
@@ -449,13 +443,7 @@ export function DepenseCaisseForm({ state }) {
 
     const blobUrl = window.URL.createObjectURL(blob);
 
-    const link = document.createElement('a');
-    link.href = blobUrl;
-    link.download = depenseCaisseDetails?.receiptsFileName;
-
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    window.open(blobUrl, '_blank');
   };
 
   const handleOnDownloadDocumentClick = () => {

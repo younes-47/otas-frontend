@@ -80,7 +80,7 @@ export default function ExpensesTable({
               <StyledTableCell align="left">
                 <Typography level="body-md">{expense.currency}</Typography>
               </StyledTableCell>
-              <StyledTableCell align="left">
+              <StyledTableCell align="left" sx={{ whiteSpace: 'nowrap' }}>
                 <Typography level="title-md" color="success">
                   <NumericFormat
                     displayType="text"

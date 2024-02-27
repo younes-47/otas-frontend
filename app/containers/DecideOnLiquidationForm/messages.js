@@ -11,7 +11,7 @@ export const scope = 'app.containers.DecideOnLiquidationForm';
 export default defineMessages({
   decideOnLQHeader: {
     id: `${scope}.decideOnLQHeader`,
-    defaultMessage: 'Decide On Lquidation',
+    defaultMessage: 'Decide On Liquidation',
   },
   currentStatus: {
     id: `${scope}.currentStatus`,
@@ -100,11 +100,13 @@ export default defineMessages({
   },
   returningRequestComment: {
     id: `${scope}.returningRequestComment`,
-    defaultMessage: 'Returning Request Comment',
+    defaultMessage:
+      '*Please provide a comment on why you are returning this request (required)',
   },
   rejectingRequestComment: {
     id: `${scope}.rejectingRequestComment`,
-    defaultMessage: 'Rejecting Request Comment',
+    defaultMessage:
+      '*Please provide a comment on why you are rejecting this request (required)',
   },
   mustBeRefundedToTheRequester: {
     id: `${scope}.mustBeRefundedToTheRequester`,
@@ -190,5 +192,9 @@ export default defineMessages({
     id: `${scope}.longComment`,
     defaultMessage:
       'Comment is too long! Maximum characters are 255 (~35 to 50 words)',
+  },
+  deciderCommentPlaceholder: {
+    id: `${scope}.deciderCommentPlaceholder`,
+    defaultMessage: 'Your Comment (255 characters: ~35 to 50 words)...',
   },
 });

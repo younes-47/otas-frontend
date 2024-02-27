@@ -24,6 +24,15 @@ function SideBarButton({
   isCollapsable,
   onSidebarButtonClick,
 }) {
+  console.log(
+    'SideBarButton',
+    displayName,
+    name,
+    selected,
+    isChild,
+    isCollapsable,
+    onSidebarButtonClick,
+  );
   if (isCollapsable) {
     return (
       <>
@@ -47,34 +56,45 @@ function SideBarButton({
       </>
     );
   }
+  const color = !selected
+    ? '#202123'
+    : name === 'ordreMission' || name === 'decideOnOrdreMission'
+    ? '#ef7765'
+    : name === 'avanceCaisse' || name === 'decideOnAvanceCaisse'
+    ? '#f3bc00'
+    : name === 'avanceVoyage' || name === 'decideOnAvanceVoyage'
+    ? '#00a697'
+    : name === 'depenseCaisse' || name === 'decideOnDepenseCaisse'
+    ? '#0075a4'
+    : name === 'liquidation' || name === 'decideOnLiquidation'
+    ? '#b865ef'
+    : '#ffffff';
+  const IconColor = color === '#202123' ? '#ffffff' : color;
   const selectedColor = selected ? '#ffffff' : '#202123';
   return (
     <>
       {selected ? (
-        <Divider sx={{ borderColor: '#ffffff' }} />
+        <Divider sx={{ borderColor: color }} />
       ) : (
         <Divider sx={{ borderColor: '#000000' }} />
       )}
       <Stack direction="row">
-        <Box
-          flex={isChild ? 2 : 0}
-          sx={{ backgroundColor: `${selectedColor}` }}
-        ></Box>
+        <Box flex={isChild ? 2 : 0} sx={{ backgroundColor: `${color}` }}></Box>
         <Box flex={24}>
           <ListItemButton
             selected={selected}
             onClick={onSidebarButtonClick}
             // sx={{ pl: padding }}
           >
-            <ListItemIcon sx={{ color: '#ffffff' }}>
-              <SideBarButtonIcon ButtonIconName={name} />
+            <ListItemIcon sx={{ color: IconColor }}>
+              <SideBarButtonIcon ButtonIconName={name} color={IconColor} />
             </ListItemIcon>
             <ListItemText primary={displayName} sx={{ color: 'white' }} />
           </ListItemButton>
         </Box>
       </Stack>
       {selected ? (
-        <Divider sx={{ borderColor: '#ffffff' }} />
+        <Divider sx={{ borderColor: color }} />
       ) : (
         <Divider sx={{ borderColor: '#000000' }} />
       )}

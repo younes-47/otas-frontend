@@ -258,14 +258,7 @@ export function AvanceCaisseForm({ state }) {
       });
 
       const blobUrl = window.URL.createObjectURL(blob);
-
-      const link = document.createElement('a');
-      link.href = blobUrl;
-      link.download = avanceCaisseDocumentFile.fileDownloadName;
-
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      window.open(blobUrl, '_blank');
       setLoadingButton(false);
     }
   }, [errorDownloadingAvanceCaisseDocumentFile]);
