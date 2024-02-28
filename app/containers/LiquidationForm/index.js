@@ -956,33 +956,31 @@ export function LiquidationForm({ state }) {
                   >
                     <FormattedMessage id={messages.statusHistoryButton.id} />
                   </Button>
-                  {liquidationDetails?.latestStatus !== 'Returned' &&
-                    liquidationDetails?.latestStatus !== 'Rejected' &&
-                    liquidationDetails?.latestStatus !==
-                      'Returned for missing evidences' && (
-                      <Button
-                        variant="contained"
-                        color="secondary"
-                        size="medium"
-                        startIcon={
-                          loadingButton ? (
-                            <CircularProgress size={20} color="inherit" />
-                          ) : (
-                            <DescriptionIcon />
-                          )
-                        }
-                        onClick={() => handleOnDownloadDocumentClick()}
-                        disabled={loadingButton}
-                      >
-                        {!loadingButton ? (
-                          <FormattedMessage
-                            id={messages.downloadDocumentButton.id}
-                          />
+                  {liquidationDetails?.latestStatus !==
+                    "Pending Treasury's Validation" && (
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      size="medium"
+                      startIcon={
+                        loadingButton ? (
+                          <CircularProgress size={20} color="inherit" />
                         ) : (
-                          <FormattedMessage id={messages.generating.id} />
-                        )}
-                      </Button>
-                    )}
+                          <DescriptionIcon />
+                        )
+                      }
+                      onClick={() => handleOnDownloadDocumentClick()}
+                      disabled={loadingButton}
+                    >
+                      {!loadingButton ? (
+                        <FormattedMessage
+                          id={messages.downloadDocumentButton.id}
+                        />
+                      ) : (
+                        <FormattedMessage id={messages.generating.id} />
+                      )}
+                    </Button>
+                  )}
                 </Box>
               </>
             )}

@@ -537,6 +537,21 @@ export function DecideOnOrdreMissionForm({ state }) {
                   />
                 </>
               )}
+              {modalHeader === 'approveRequest' &&
+                ordreMissionDetails.latestStatus !==
+                  "Pending HR's Approval" && (
+                  <Button
+                    color="success"
+                    onClick={handleOnApproveAllConfirmationButtonClick}
+                    variant="contained"
+                  >
+                    <FormattedMessage
+                      id={
+                        messages.signAndApproveWithRelatedAvanceVoyageButton.id
+                      }
+                    />
+                  </Button>
+                )}
             </DialogContentText>
           )}
         </DialogContent>

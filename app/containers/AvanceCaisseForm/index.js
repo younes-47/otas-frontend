@@ -197,6 +197,10 @@ export function AvanceCaisseForm({ state }) {
         dispatch(cleanupAvanceCaisseParentPageStoreAction());
         dispatch(setAvanceCaisseStatusAction('updated'));
       }
+      if (buttonClicked === 'SUBMIT-MODIFICATIONS') {
+        dispatch(setAvanceCaisseStatusAction('resubmitted'));
+        dispatch(cleanupAvanceCaisseParentPageStoreAction());
+      }
       if (buttonClicked === 'CONFIRM') {
         dispatch(loadAvanceCaisseDetailsAction(avanceCaisseIdentity));
       }
@@ -520,31 +524,28 @@ export function AvanceCaisseForm({ state }) {
             >
               <FormattedMessage id={messages.statusHistoryButton.id} />
             </Button>
-            {avanceCaisseDetails?.latestStatus !== 'Returned' &&
-              avanceCaisseDetails?.latestStatus !== 'Rejected' &&
-              avanceCaisseDetails?.latestStatus !==
-                'Returned for missing evidences' && (
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  size="medium"
-                  startIcon={
-                    loadingButton ? (
-                      <CircularProgress size={20} color="inherit" />
-                    ) : (
-                      <DescriptionIcon />
-                    )
-                  }
-                  onClick={() => handleOnDownloadDocumentClick()}
-                  disabled={loadingButton}
-                >
-                  {!loadingButton ? (
-                    <FormattedMessage id={messages.downloadDocumentButton.id} />
+            {avanceCaisseDetails?.latestStatus === 'Funds Prepared' && (
+              <Button
+                variant="contained"
+                color="secondary"
+                size="medium"
+                startIcon={
+                  loadingButton ? (
+                    <CircularProgress size={20} color="inherit" />
                   ) : (
-                    <FormattedMessage id={messages.generating.id} />
-                  )}
-                </Button>
-              )}
+                    <DescriptionIcon />
+                  )
+                }
+                onClick={() => handleOnDownloadDocumentClick()}
+                disabled={loadingButton}
+              >
+                {!loadingButton ? (
+                  <FormattedMessage id={messages.downloadDocumentButton.id} />
+                ) : (
+                  <FormattedMessage id={messages.generating.id} />
+                )}
+              </Button>
+            )}
           </Box>
         </>
       )}

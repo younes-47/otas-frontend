@@ -173,7 +173,7 @@ export default function MyRequests() {
     if (errorLoadingRequesterStats === null) {
       dispatch(loadRequesterStatsAction());
     }
-  }, []);
+  }, [requesterStats]);
 
   useEffect(() => {
     if (userInfo !== null) {

@@ -61,7 +61,7 @@ export function DecideOnRequests() {
     if (errorLoadingDeciderStats === null) {
       dispatch(loadDeciderStatsAction());
     }
-  }, []);
+  }, [deciderStats]);
 
   useEffect(
     () => () => {

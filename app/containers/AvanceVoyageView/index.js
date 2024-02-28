@@ -210,31 +210,28 @@ export function AvanceVoyageView() {
         >
           <FormattedMessage id={messages.statusHistoryButton.id} />
         </Button>
-        {avanceVoyageDetails?.latestStatus !== 'Returned' &&
-          avanceVoyageDetails?.latestStatus !== 'Rejected' &&
-          avanceVoyageDetails?.latestStatus !==
-            'Returned for missing evidences' && (
-            <Button
-              variant="contained"
-              color="secondary"
-              size="medium"
-              startIcon={
-                loadingButton ? (
-                  <CircularProgress size={20} color="inherit" />
-                ) : (
-                  <DescriptionIcon />
-                )
-              }
-              onClick={() => handleOnDownloadDocumentClick()}
-              disabled={loadingButton}
-            >
-              {!loadingButton ? (
-                <FormattedMessage id={messages.downloadDocumentButton.id} />
+        {avanceVoyageDetails?.latestStatus === 'Funds Prepared' && (
+          <Button
+            variant="contained"
+            color="secondary"
+            size="medium"
+            startIcon={
+              loadingButton ? (
+                <CircularProgress size={20} color="inherit" />
               ) : (
-                <FormattedMessage id={messages.generating.id} />
-              )}
-            </Button>
-          )}
+                <DescriptionIcon />
+              )
+            }
+            onClick={() => handleOnDownloadDocumentClick()}
+            disabled={loadingButton}
+          >
+            {!loadingButton ? (
+              <FormattedMessage id={messages.downloadDocumentButton.id} />
+            ) : (
+              <FormattedMessage id={messages.generating.id} />
+            )}
+          </Button>
+        )}
       </Box>
 
       {avanceVoyageDetails?.latestStatus === 'Returned' && (

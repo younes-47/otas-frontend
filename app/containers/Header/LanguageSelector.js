@@ -19,12 +19,18 @@ import GTranslate from '@mui/icons-material/GTranslate';
 import { StyledFormControl } from 'components/GlobalComponents/StyledFormControl';
 import { StyledSelect } from 'components/GlobalComponents/StyledSelect';
 import { StyledMenuItem } from 'components/GlobalComponents/StyledMenuItem';
-import { makeSelectPreferredLanguage } from './selectors';
+import {
+  makeSelectChangingPreferredLanguage,
+  makeSelectErrorPreferredLanguage,
+  makeSelectPreferredLanguage,
+} from './selectors';
 import { changePreferredLanguageAction } from './actions';
 
 const mapStateToProps = createStructuredSelector({
   locale: makeSelectLocale(),
   preferredLanguage: makeSelectPreferredLanguage(),
+  errorPreferredLanguage: makeSelectErrorPreferredLanguage(),
+  changingPreferredLanguage: makeSelectChangingPreferredLanguage(),
 });
 export function LanguageSelector() {
   const dispatch = useDispatch();

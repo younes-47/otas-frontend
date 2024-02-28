@@ -699,11 +699,7 @@ export function DecideOnAvanceCaisseForm({ state }) {
               onClick={handleOnApproveRequestConfirmationButtonClick}
               variant="contained"
             >
-              {!deciderLevels?.includes('FM') ? (
-                <FormattedMessage id={messages.signAndApproveButton.id} />
-              ) : (
-                <FormattedMessage id={messages.approveButton.id} />
-              )}
+              <FormattedMessage id={messages.signAndApproveButton.id} />
             </Button>
           )}
           {modalHeader === 'rejectRequest' && (
@@ -724,7 +720,7 @@ export function DecideOnAvanceCaisseForm({ state }) {
               <FormattedMessage id={messages.returnRequestButton.id} />
             </Button>
           )}
-          {modalHeader === 'markFundsDelivery' && (
+          {modalHeader === 'markFundsAsPrepared' && (
             <Button
               color="success"
               onClick={handleOnMethodOfDeliveryConfirmationButtonClick}
