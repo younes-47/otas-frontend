@@ -277,7 +277,7 @@ export function DepenseCaisseTable() {
       field: 'latestStatus',
       hide: false,
       headerName: tableLatestStatus,
-      width: 150,
+      flex: 1,
       renderCell: (params) => {
         const { latestStatus } = params.row;
         if (
@@ -377,7 +377,7 @@ export function DepenseCaisseTable() {
       field: 'createDate',
       hide: false,
       headerName: tableCreatedOn,
-      flex: 1,
+      width: 200,
       renderCell: (params) => {
         const { createDate } = params.row;
         return (

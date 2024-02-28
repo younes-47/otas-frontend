@@ -53,6 +53,7 @@ import { makeSelectDepenseCaisseIdentity } from 'pages/DepenseCaisse/selectors';
 import ActualRequesterInputs from 'components/ActualRequesterInputs';
 import { ValidateInputs } from 'utils/Custom/ValidateInputs';
 import { FormattedMessage } from 'react-intl';
+import { NumericFormat } from 'react-number-format';
 import Expenses from './Expenses';
 import messages from './messages';
 import {
@@ -979,7 +980,26 @@ export function DepenseCaisseForm({ state }) {
                 <FormattedMessage id={messages.total.id} />{' '}
                 {currency === 'MAD' ? 'MAD' : 'EUR'}
               </h1>
-              <h1 style={{ fontSize: '1.1rem', color: 'green' }}>{total}</h1>
+              <h1 style={{ fontSize: '1.1rem', color: 'green' }}>
+                <NumericFormat
+                  displayType="text"
+                  value={total}
+                  fixedDecimalScale
+                  decimalScale={2}
+                  defaultValue="0"
+                  allowNegative={false}
+                  thousandSeparator={
+                    localStorage.getItem('preferredLanguage') === 'en'
+                      ? ','
+                      : ' '
+                  }
+                  decimalSeparator={
+                    localStorage.getItem('preferredLanguage') === 'en'
+                      ? '.'
+                      : ','
+                  }
+                />
+              </h1>
             </Box>
           </Box>
         </Box>

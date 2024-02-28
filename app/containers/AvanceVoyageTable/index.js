@@ -121,7 +121,7 @@ export function AvanceVoyageTable() {
     {
       field: 'ordreMissionDescription',
       hide: false,
-      width: 250,
+      flex: 1,
       headerName: tableDescription,
       renderCell: (params) => {
         const { ordreMissionDescription } = params.row;
@@ -165,7 +165,7 @@ export function AvanceVoyageTable() {
       field: 'estimatedTotal',
       hide: false,
       headerName: tableEstimatedTotal,
-      flex: 1,
+      width: 150,
       renderCell: (params) => {
         const { estimatedTotal } = params.row;
         return (
@@ -192,7 +192,7 @@ export function AvanceVoyageTable() {
       field: 'currency',
       hide: false,
       headerName: tableCurrency,
-      flex: 1,
+      width: 150,
       renderCell: (params) => {
         const { currency } = params.row;
         return (
@@ -286,13 +286,13 @@ export function AvanceVoyageTable() {
       hide: false,
       type: 'boolean',
       headerName: tableOnBehalf,
-      flex: 1,
+      width: 150,
     },
     {
       field: 'createDate',
       hide: false,
       headerName: tableCreatedOn,
-      flex: 1,
+      width: 200,
       renderCell: (params) => {
         const { createDate } = params.row;
         return (

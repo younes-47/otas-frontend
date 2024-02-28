@@ -196,7 +196,7 @@ export function AvanceCaisseTable() {
       field: 'estimatedTotal',
       hide: false,
       headerName: tableEstimatedTotal,
-      flex: 1,
+      width: 150,
       renderCell: (params) => {
         const { estimatedTotal } = params.row;
         return (
