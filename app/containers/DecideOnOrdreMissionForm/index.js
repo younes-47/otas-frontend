@@ -41,6 +41,7 @@ import TripsTable from 'components/TripsTable';
 import ExpensesTable from 'components/ExpensesTable';
 import { ValidateDeciderComment } from 'utils/Custom/ValidateInputs';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { Checkbox, FormControl, FormHelperText } from '@mui/joy';
 import {
   makeSelectErrorDecidingOnOrdreMission,
   makeSelectErrorLoadingOrdreMissionDetails,
@@ -77,6 +78,10 @@ export function DecideOnOrdreMissionForm({ state }) {
     errorDecidingOnOrdreMission,
     deciderLevels,
   } = useSelector(mapStateToProps);
+
+  // control decision
+  const [isApprovedWithAvanceVoyage, setIsApprovedWithAvanceVoyage] =
+    useState(false);
 
   // Control data
   const [deciderComment, setDeciderComment] = useState(null);
@@ -154,7 +159,7 @@ export function DecideOnOrdreMissionForm({ state }) {
   // Set request status for snakcbar message in table
   useEffect(() => {
     if (errorDecidingOnOrdreMission === false) {
-      if (decisionString === 'aprrove')
+      if (decisionString === 'apptove')
         dispatch(setOrdreMissionStatusAction('signedAndApproved'));
       if (decisionString === 'return')
         dispatch(setOrdreMissionStatusAction('returned'));
@@ -200,7 +205,11 @@ export function DecideOnOrdreMissionForm({ state }) {
   };
 
   const handleOnApproveRequestConfirmationButtonClick = () => {
-    setDecisionString('approve');
+    if (isApprovedWithAvanceVoyage) {
+      setDecisionString('approveAll');
+    } else {
+      setDecisionString('approve');
+    }
   };
   const handleOnApproveAllConfirmationButtonClick = () => {
     setDecisionString('approveAll');
@@ -540,17 +549,27 @@ export function DecideOnOrdreMissionForm({ state }) {
               {modalHeader === 'approveRequest' &&
                 ordreMissionDetails.latestStatus !==
                   "Pending HR's Approval" && (
-                  <Button
-                    color="success"
-                    onClick={handleOnApproveAllConfirmationButtonClick}
-                    variant="contained"
-                  >
-                    <FormattedMessage
-                      id={
-                        messages.signAndApproveWithRelatedAvanceVoyageButton.id
+                  <FormControl sx={{ marginTop: 3 }}>
+                    <Checkbox
+                      color="danger"
+                      value={isApprovedWithAvanceVoyage}
+                      onChange={() =>
+                        setIsApprovedWithAvanceVoyage(
+                          !isApprovedWithAvanceVoyage,
+                        )
+                      }
+                      label={
+                        <Typography level="title-md" color="danger">
+                          <FormattedMessage
+                            id={
+                              messages
+                                .signAndApproveWithRelatedAvanceVoyageButton.id
+                            }
+                          />
+                        </Typography>
                       }
                     />
-                  </Button>
+                  </FormControl>
                 )}
             </DialogContentText>
           )}
@@ -568,7 +587,7 @@ export function DecideOnOrdreMissionForm({ state }) {
               <FormattedMessage id={messages.signAndApproveButton.id} />
             </Button>
           )}
-          {modalHeader === 'approveRequest' &&
+          {/* {modalHeader === 'approveRequest' &&
             ordreMissionDetails.latestStatus !== "Pending HR's Approval" && (
               <Button
                 color="success"
@@ -579,7 +598,7 @@ export function DecideOnOrdreMissionForm({ state }) {
                   id={messages.signAndApproveWithRelatedAvanceVoyageButton.id}
                 />
               </Button>
-            )}
+            )} */}
           {modalHeader === 'rejectRequest' && (
             <Button
               color="error"
