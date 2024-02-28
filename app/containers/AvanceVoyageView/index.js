@@ -408,11 +408,17 @@ export function AvanceVoyageView() {
       {/* Trips */}
 
       <Typography level="title-lg" textAlign="center" marginBottom={2}>
-        <FormattedMessage id={messages.tripsHeader.id} />
+        {avanceVoyageDetails?.trips.length > 0 ? (
+          <FormattedMessage id={messages.tripsHeader.id} />
+        ) : (
+          <FormattedMessage id={messages.noTripsHeader.id} />
+        )}
       </Typography>
-      <Box display="flex" justifyContent="center" marginBottom={5}>
-        <TripsTable tripsData={avanceVoyageDetails?.trips} />
-      </Box>
+      {avanceVoyageDetails?.trips.length > 0 && (
+        <Box display="flex" justifyContent="center" marginBottom={5}>
+          <TripsTable tripsData={avanceVoyageDetails?.trips} />
+        </Box>
+      )}
 
       {/* Expenses */}
 

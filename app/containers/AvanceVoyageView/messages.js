@@ -145,6 +145,11 @@ export default defineMessages({
     defaultMessage: 'No Expenses',
   },
 
+  noTripsHeader: {
+    id: `${scope}.page.noTripsHeader`,
+    defaultMessage: 'No Trajectories',
+  },
+
   requestedAmountHeader: {
     id: `${scope}.page.requestedAmountHeader`,
     defaultMessage: 'Requested Amount',

@@ -113,6 +113,7 @@
   "app.containers.AvanceVoyageView.page.missionOrderTitle": "Mission Order #",
   "app.containers.AvanceVoyageView.page.moreDetails": "More Details",
   "app.containers.AvanceVoyageView.page.noExpensesHeader": "(No Expenses)",
+  "app.containers.AvanceVoyageView.page.noTripsHeader": "(No Trajectories)",
   "app.containers.AvanceVoyageView.page.requestLinkedTo": "This request is linked to:",
   "app.containers.AvanceVoyageView.page.requestRejected": "This request has been rejected. Please refer to the comment below to know why.",
   "app.containers.AvanceVoyageView.page.requestReturned": "This request has been returned. Please refer to the comment below and apply the necessary changes.",

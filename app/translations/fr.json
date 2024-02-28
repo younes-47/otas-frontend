@@ -113,6 +113,7 @@
   "app.containers.AvanceVoyageView.page.missionOrderTitle": "Ordre de mission n°",
   "app.containers.AvanceVoyageView.page.moreDetails": "Plus de détails",
   "app.containers.AvanceVoyageView.page.noExpensesHeader": "(Aucune dépense)",
+  "app.containers.AvanceVoyageView.page.noTripsHeader": "(Aucune trajet)",
   "app.containers.AvanceVoyageView.page.requestLinkedTo": "Cette demande est liée à :",
   "app.containers.AvanceVoyageView.page.requestRejected": "Cette demande a été rejetée. Veuillez vous référer au commentaire ci-dessous pour connaître la raison.",
   "app.containers.AvanceVoyageView.page.requestReturned": "Cette demande a été renvoyée. Veuillez vous référer au commentaire ci-dessous et apporter les modifications nécessaires.",
