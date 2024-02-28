@@ -9,6 +9,26 @@ import { defineMessages } from 'react-intl';
 export const scope = 'app.containers.DecideOnDepenseCaisseTable';
 
 export default defineMessages({
+  // snakcbar messages
+  signedAndApproved: {
+    id: `${scope}.snackbar.signedAndApproved`,
+    defaultMessage: 'Request has been signed and approved successfully!',
+  },
+  approved: {
+    id: `${scope}.snackbar.approved`,
+    defaultMessage: 'Request has been approved successfully!',
+  },
+  returned: {
+    id: `${scope}.snackbar.returned`,
+    defaultMessage: 'Request has been returned successfully!',
+  },
+  rejected: {
+    id: `${scope}.snackbar.rejected`,
+    defaultMessage: 'Request has been rejected successfully!',
+  },
+
+  //
+
   tableDescription: {
     id: `${scope}.tableDescription`,
     defaultMessage: 'Description',

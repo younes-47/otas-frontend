@@ -164,7 +164,7 @@ export function DecideOnLiquidationForm({ state }) {
         ) {
           dispatch(setLiquidationStatusAction('approved'));
         } else {
-          dispatch(setLiquidationStatusAction('signed and approved'));
+          dispatch(setLiquidationStatusAction('signedAndApproved'));
         }
       }
 

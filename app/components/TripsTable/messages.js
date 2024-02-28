@@ -44,9 +44,9 @@ export default defineMessages({
     defaultMessage: 'Mileage',
   },
 
-  tripFee: {
-    id: `${scope}.tripFee`,
-    defaultMessage: 'Fee',
+  tripValue: {
+    id: `${scope}.tripValue`,
+    defaultMessage: 'Value',
   },
 
   tripHighwayFee: {

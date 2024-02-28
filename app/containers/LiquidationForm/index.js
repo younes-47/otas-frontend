@@ -58,7 +58,7 @@ import {
 import { ValidateLiquidationInputs } from 'utils/Custom/ValidateInputs';
 import { setLiquidationStatusAction } from 'containers/LiquidationTable/actions';
 import WarningIcon from '@mui/icons-material/Warning';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import reducer from './reducer';
 import saga from './saga';
 import {
@@ -154,7 +154,7 @@ export function LiquidationForm({ state }) {
   const [savedSnackbarVisibility, setSavedSnackbarVisibility] = useState(false);
   const [fullPageModalVisibility, setFullPageModalVisibility] = useState(false);
   const [buttonClicked, setButtonClicked] = useState(''); // this state is used to track which button has been clicked
-
+  const intl = useIntl();
   const readOnly =
     state === 'VIEW' ||
     state === 'CONFIRM' ||
@@ -314,7 +314,7 @@ export function LiquidationForm({ state }) {
   useEffect(() => {
     if (errorAddingLiquidation === false) {
       if (buttonClicked === 'SAVE-AS-DRAFT') {
-        dispatch(setLiquidationStatusAction('SAVED'));
+        dispatch(setLiquidationStatusAction('saved'));
         dispatch(cleanupliquidationParentPageStoreAction());
       }
       if (buttonClicked === 'CONFIRM') {
@@ -323,11 +323,11 @@ export function LiquidationForm({ state }) {
     }
     if (errorUpdatingLiquidation === false) {
       if (buttonClicked === 'SAVE-AS-DRAFT') {
-        dispatch(setLiquidationStatusAction('UPDATED'));
+        dispatch(setLiquidationStatusAction('updated'));
         dispatch(cleanupliquidationParentPageStoreAction());
       }
       if (buttonClicked === 'SUBMIT-MODIFICATIONS') {
-        dispatch(setLiquidationStatusAction('RESUBMITTED'));
+        dispatch(setLiquidationStatusAction('resubmitted'));
         dispatch(cleanupliquidationParentPageStoreAction());
       }
       if (buttonClicked === 'CONFIRM') {
@@ -340,10 +340,10 @@ export function LiquidationForm({ state }) {
   useEffect(() => {
     if (errorSubmittingLiquidation === false) {
       if (buttonClicked === 'SUBMIT') {
-        dispatch(setLiquidationStatusAction('SUBMITTED'));
+        dispatch(setLiquidationStatusAction('submitted'));
       }
       if (buttonClicked === 'SUBMIT-MODIFICATIONS') {
-        dispatch(setLiquidationStatusAction('RESUBMITTED'));
+        dispatch(setLiquidationStatusAction('resubmitted'));
       }
 
       dispatch(cleanupliquidationParentPageStoreAction());
@@ -793,7 +793,9 @@ export function LiquidationForm({ state }) {
                 </Typography>
                 <Select
                   key={0}
-                  placeholder="Select Request to liquidate..."
+                  placeholder={intl.formatMessage({
+                    id: messages.selectRequestPlaceholder.id,
+                  })}
                   sx={{ width: '50%' }}
                   slotProps={{
                     listbox: {

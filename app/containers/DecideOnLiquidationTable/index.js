@@ -119,10 +119,10 @@ export function DecideOnLiquidationTable() {
       dispatch(loadLiquidationAction());
       if (statusLiquidation !== '') {
         switch (statusLiquidation) {
-          case 'SAVED':
+          case 'saved':
             setSnackbarAlertSeverity('primary');
             break;
-          case 'UPDATED':
+          case 'updated':
             setSnackbarAlertSeverity('primary');
             break;
           default:
@@ -484,7 +484,9 @@ export function DecideOnLiquidationTable() {
         }
         color={snackbarAlertSeverity !== '' ? snackbarAlertSeverity : 'primary'}
       >
-        Request has been {statusLiquidation} successfully!
+        {statusLiquidation !== '' && (
+          <FormattedMessage id={messages[statusLiquidation].id} />
+        )}
       </Snackbar>
     </Box>
   );

@@ -153,13 +153,13 @@ export function DecideOnDepenseCaisseForm({ state }) {
   // Set request status for snakcbar message in table
   useEffect(() => {
     if (errorDecidingOnDepenseCaisse === false) {
-      if (decisionString === 'aprrove') {
+      if (decisionString === 'approve') {
         if (
           depenseCaisseDetails?.latestStatus === "Pending Treasury's Validation"
         ) {
           dispatch(setDepenseCaisseStatusAction('approved'));
         } else {
-          dispatch(setDepenseCaisseStatusAction('signed and approved'));
+          dispatch(setDepenseCaisseStatusAction('signedAndApproved'));
         }
       }
 

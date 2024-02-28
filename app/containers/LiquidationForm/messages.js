@@ -78,6 +78,10 @@ export default defineMessages({
     id: `${scope}.chooseRequest`,
     defaultMessage: 'Please choose a Request:',
   },
+  selectRequestPlaceholder: {
+    id: `${scope}.selectRequestPlaceholder`,
+    defaultMessage: 'Select a Request to liquidate...',
+  },
 
   confirmationAlert: {
     id: `${scope}.confirmationAlert`,

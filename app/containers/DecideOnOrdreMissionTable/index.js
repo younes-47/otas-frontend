@@ -348,7 +348,7 @@ export function DecideOnOrdreMissionTable() {
       dispatch(loadOrdreMissionAction());
       if (statusOrdreMission !== '') {
         switch (statusOrdreMission) {
-          case 'signed and approved':
+          case 'signedAndApproved':
             setSnackbarAlertSeverity('success');
             break;
           case 'rejected':
@@ -441,7 +441,9 @@ export function DecideOnOrdreMissionTable() {
         color={snackbarAlertSeverity !== '' ? snackbarAlertSeverity : 'primary'}
         variant="solid"
       >
-        Request has been {statusOrdreMission} successfully!
+        {statusOrdreMission !== '' && (
+          <FormattedMessage id={messages[statusOrdreMission].id} />
+        )}
       </Snackbar>
     </Box>
   );

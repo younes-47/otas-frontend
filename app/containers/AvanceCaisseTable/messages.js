@@ -9,6 +9,28 @@ import { defineMessages } from 'react-intl';
 export const scope = 'app.containers.AvanceCaisseTable';
 
 export default defineMessages({
+  // snakcbar messages
+  saved: {
+    id: `${scope}.snackbar.saved`,
+    defaultMessage: 'Request has been saved successfully!',
+  },
+  submitted: {
+    id: `${scope}.snackbar.submitted`,
+    defaultMessage: 'Request has been submitted successfully!',
+  },
+  resubmitted: {
+    id: `${scope}.snackbar.resubmitted`,
+    defaultMessage: 'Request has been resubmitted successfully!',
+  },
+  updated: {
+    id: `${scope}.snackbar.updated`,
+    defaultMessage: 'Request has been updated successfully!',
+  },
+  deleted: {
+    id: `${scope}.snackbar.deleted`,
+    defaultMessage: 'Request has been deleted successfully!',
+  },
+
   dialogHeader: {
     id: `${scope}.dialog.header`,
     defaultMessage: 'Are you sure you want to delete this request!',

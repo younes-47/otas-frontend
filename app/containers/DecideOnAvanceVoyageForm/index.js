@@ -172,7 +172,7 @@ export function DecideOnAvanceVoyageForm({ state }) {
   useEffect(() => {
     if (errorDecidingOnAvanceVoyage === false) {
       if (decisionString === 'aprrove') {
-        dispatch(setAvanceVoyageStatusAction('signed and approved'));
+        dispatch(setAvanceVoyageStatusAction('signedAndApproved'));
       }
       if (decisionString === 'return')
         dispatch(setAvanceVoyageStatusAction('returned'));
@@ -183,13 +183,13 @@ export function DecideOnAvanceVoyageForm({ state }) {
       dispatch(cleanupParentDecideOnAvanceVoyageStoreAction());
     }
     if (errorMarkingFundsAsPrepared === false) {
-      dispatch(setAvanceVoyageStatusAction('signed and approved'));
+      dispatch(setAvanceVoyageStatusAction('signedAndApproved'));
       dispatch(cleanupDecideOnAvanceVoyageFormPageAction());
       dispatch(cleanupParentDecideOnAvanceVoyageStoreAction());
     }
 
     if (errorConfirmingAvanceVoyageFundsDelivery === false) {
-      dispatch(setAvanceVoyageStatusAction('confirmed its funds delivery'));
+      dispatch(setAvanceVoyageStatusAction('fundsDeliveryConfirmed'));
       dispatch(cleanupDecideOnAvanceVoyageFormPageAction());
       dispatch(cleanupParentDecideOnAvanceVoyageStoreAction());
     }

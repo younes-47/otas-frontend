@@ -155,7 +155,7 @@ export function DecideOnOrdreMissionForm({ state }) {
   useEffect(() => {
     if (errorDecidingOnOrdreMission === false) {
       if (decisionString === 'aprrove')
-        dispatch(setOrdreMissionStatusAction('signed and approved'));
+        dispatch(setOrdreMissionStatusAction('signedAndApproved'));
       if (decisionString === 'return')
         dispatch(setOrdreMissionStatusAction('returned'));
       if (decisionString === 'reject')

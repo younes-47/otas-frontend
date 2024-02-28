@@ -273,7 +273,10 @@ export function DecideOnAvanceCaisseTable() {
       dispatch(loadAvanceCaisseAction());
       if (statusAvanceCaisse !== '') {
         switch (statusAvanceCaisse) {
-          case 'signed and approved':
+          case 'signedAndApproved':
+            setSnackbarAlertSeverity('success');
+            break;
+          case 'fundsDeliveryConfirmed':
             setSnackbarAlertSeverity('success');
             break;
           case 'rejected':
@@ -364,7 +367,9 @@ export function DecideOnAvanceCaisseTable() {
         color={snackbarAlertSeverity !== '' ? snackbarAlertSeverity : 'primary'}
         variant="solid"
       >
-        Request has been {statusAvanceCaisse} successfully!
+        {statusAvanceCaisse !== '' && (
+          <FormattedMessage id={messages[statusAvanceCaisse].id} />
+        )}
       </Snackbar>
     </Box>
   );

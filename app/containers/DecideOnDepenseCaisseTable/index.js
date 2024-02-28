@@ -109,7 +109,7 @@ export function DecideOnDepenseCaisseTable() {
       dispatch(loadDepenseCaisseAction());
       if (statusDepenseCaisse !== '') {
         switch (statusDepenseCaisse) {
-          case 'signed and approved':
+          case 'signedAndApproved':
             setSnackbarAlertSeverity('success');
             break;
           case 'rejected':
@@ -419,7 +419,9 @@ export function DecideOnDepenseCaisseTable() {
         color={snackbarAlertSeverity !== '' ? snackbarAlertSeverity : 'primary'}
         variant="solid"
       >
-        Request has been {statusDepenseCaisse} successfully!
+        {statusDepenseCaisse !== '' && (
+          <FormattedMessage id={messages[statusDepenseCaisse].id} />
+        )}
       </Snackbar>
     </Box>
   );

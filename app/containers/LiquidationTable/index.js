@@ -133,10 +133,10 @@ export function LiquidationTable() {
       dispatch(loadLiquidationAction());
       if (statusLiquidation !== '') {
         switch (statusLiquidation) {
-          case 'SAVED':
+          case 'saved':
             setSnackbarAlertSeverity('primary');
             break;
-          case 'UPDATED':
+          case 'updated':
             setSnackbarAlertSeverity('primary');
             break;
           default:
@@ -150,7 +150,7 @@ export function LiquidationTable() {
   // delete action + notif
   useEffect(() => {
     if (errorDeletingLiquidation === false) {
-      dispatch(setLiquidationStatusAction('DELETED'));
+      dispatch(setLiquidationStatusAction('deleted'));
       setSnackbarAlertSeverity('danger');
       setSnackbarVisibility(true);
       dispatch(nullifyErrorDeletingLiquidationAction());
@@ -643,7 +643,9 @@ export function LiquidationTable() {
         }
         color={snackbarAlertSeverity !== '' ? snackbarAlertSeverity : 'primary'}
       >
-        Request has been {statusLiquidation} successfully!
+        {statusLiquidation !== '' && (
+          <FormattedMessage id={messages[statusLiquidation].id} />
+        )}
       </Snackbar>
     </Box>
   );

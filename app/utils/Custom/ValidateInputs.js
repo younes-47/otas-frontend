@@ -107,7 +107,7 @@ export const ValidateInputs = (
       }
 
       // ArrivalDate < DepartureDate
-      if (trip?.departureDate > trip?.arrivalDate) {
+      if (new Date(trip?.departureDate) > new Date(trip?.arrivalDate)) {
         setModalHeader('invalidInformationHeader');
         setModalBody('invalidTripDates');
         setModalSevirity('error');
@@ -117,11 +117,10 @@ export const ValidateInputs = (
 
       // Arrival date of current trip shouldn't be bigger than the departuredate of the next trip
       // Prevent out of range index exception
-      if (trip !== sortedTrips.at(sortedTrips.length - 1)) {
-        if (
-          trip.arrivalDate >
-          sortedTrips.at(sortedTrips.length - 1).departureDate
-        ) {
+
+      if (sortedTrips.indexOf(trip) < sortedTrips.length - 1) {
+        const nextTrip = sortedTrips[sortedTrips.indexOf(trip) + 1];
+        if (new Date(trip.arrivalDate) > new Date(nextTrip.departureDate)) {
           setModalHeader('invalidInformationHeader');
           setModalBody('nonsenseTripDates');
           setModalSevirity('error');

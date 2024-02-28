@@ -111,10 +111,10 @@ export function DepenseCaisseTable() {
       dispatch(loadDepenseCaisseAction());
       if (statusDepenseCaisse !== '') {
         switch (statusDepenseCaisse) {
-          case 'SAVED':
+          case 'saved':
             setSnackbarAlertSeverity('primary');
             break;
-          case 'UPDATED':
+          case 'updated':
             setSnackbarAlertSeverity('primary');
             break;
           default:
@@ -127,7 +127,7 @@ export function DepenseCaisseTable() {
 
   useEffect(() => {
     if (errorDeletingDepenseCaisse === false) {
-      dispatch(setDepenseCaisseStatusAction('DELETED'));
+      dispatch(setDepenseCaisseStatusAction('deleted'));
       setSnackbarAlertSeverity('danger');
       setSnackbarVisibility(true);
       dispatch(nullifyErrorDeletingDepenseCaisseAction());
@@ -574,7 +574,9 @@ export function DepenseCaisseTable() {
         }
         color={snackbarAlertSeverity !== '' ? snackbarAlertSeverity : 'primary'}
       >
-        Request has been {statusDepenseCaisse} successfully!
+        {statusDepenseCaisse !== '' && (
+          <FormattedMessage id={messages[statusDepenseCaisse].id} />
+        )}
       </Snackbar>
     </Box>
   );

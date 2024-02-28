@@ -79,10 +79,10 @@ export function AvanceCaisseTable() {
       dispatch(loadAvanceCaisseAction());
       if (statusAvanceCaisse !== '') {
         switch (statusAvanceCaisse) {
-          case 'SAVED':
+          case 'saved':
             setSnackbarAlertSeverity('primary');
             break;
-          case 'UPDATED':
+          case 'updated':
             setSnackbarAlertSeverity('primary');
             break;
           default:
@@ -95,7 +95,7 @@ export function AvanceCaisseTable() {
 
   useEffect(() => {
     if (errorDeletingAvanceCaisse === false) {
-      dispatch(setAvanceCaisseStatusAction('DELETED'));
+      dispatch(setAvanceCaisseStatusAction('deleted'));
       setSnackbarAlertSeverity('danger');
       setSnackbarVisibility(true);
       dispatch(nullifyErrorDeletingAvanceCaisseAction());
@@ -522,7 +522,9 @@ export function AvanceCaisseTable() {
         }
         color={snackbarAlertSeverity !== '' ? snackbarAlertSeverity : 'primary'}
       >
-        Request has been {statusAvanceCaisse} successfully!
+        {statusAvanceCaisse !== '' && (
+          <FormattedMessage id={messages[statusAvanceCaisse].id} />
+        )}
       </Snackbar>
     </Box>
   );

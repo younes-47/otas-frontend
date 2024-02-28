@@ -66,7 +66,7 @@ export default function TripsTable({
               <FormattedMessage id={messages.tripUnit.id} />
             </StyledTableCell>
             <StyledTableCell align="left">
-              <FormattedMessage id={messages.tripUnit.id} />
+              <FormattedMessage id={messages.tripValue.id} />
             </StyledTableCell>
             <StyledTableCell align="left">
               <FormattedMessage id={messages.tripHighwayFee.id} />

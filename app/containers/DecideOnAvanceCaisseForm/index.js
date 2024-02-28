@@ -181,7 +181,7 @@ export function DecideOnAvanceCaisseForm({ state }) {
   useEffect(() => {
     if (errorDecidingOnAvanceCaisse === false) {
       if (decisionString === 'aprrove') {
-        dispatch(setAvanceCaisseStatusAction('signed and approved'));
+        dispatch(setAvanceCaisseStatusAction('signedAndApproved'));
       }
       if (decisionString === 'return')
         dispatch(setAvanceCaisseStatusAction('returned'));
@@ -193,13 +193,13 @@ export function DecideOnAvanceCaisseForm({ state }) {
     }
 
     if (errorMarkingFundsAsPrepared === false) {
-      dispatch(setAvanceCaisseStatusAction('signed and approved'));
+      dispatch(setAvanceCaisseStatusAction('signedAndApproved'));
       dispatch(cleanupDecideOnAvanceCaisseFormPageAction());
       dispatch(cleanupParentDecideOnAvanceCaisseStoreAction());
     }
 
     if (errorConfirmingAvanceCaisseFundsDelivery === false) {
-      dispatch(setAvanceCaisseStatusAction('confirmed its funds delivery'));
+      dispatch(setAvanceCaisseStatusAction('fundsDeliveryConfirmed'));
       dispatch(cleanupDecideOnAvanceCaisseFormPageAction());
       dispatch(cleanupParentDecideOnAvanceCaisseStoreAction());
     }

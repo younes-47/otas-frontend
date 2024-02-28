@@ -78,10 +78,10 @@ export function OrdreMissionTable() {
       dispatch(loadOrdreMissionAction());
       if (statusOrdreMission !== '') {
         switch (statusOrdreMission) {
-          case 'SAVED':
+          case 'saved':
             setSnackbarAlertSeverity('primary');
             break;
-          case 'UPDATED':
+          case 'updated':
             setSnackbarAlertSeverity('primary');
             break;
           default:
@@ -94,7 +94,7 @@ export function OrdreMissionTable() {
 
   useEffect(() => {
     if (errorDeletingOrdreMission === false) {
-      dispatch(setOrdreMissionStatusAction('DELETED'));
+      dispatch(setOrdreMissionStatusAction('deleted'));
       setSnackbarAlertSeverity('danger');
       setSnackbarVisibility(true);
       dispatch(nullifyErrorDeletingOrdreMissionAction());
@@ -485,7 +485,9 @@ export function OrdreMissionTable() {
         }
         color={snackbarAlertSeverity !== '' ? snackbarAlertSeverity : 'primary'}
       >
-        Request has been {statusOrdreMission} successfully!
+        {statusOrdreMission !== '' && (
+          <FormattedMessage id={messages[statusOrdreMission].id} />
+        )}
       </Snackbar>
     </Box>
   );

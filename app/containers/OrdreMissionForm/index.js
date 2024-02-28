@@ -260,7 +260,7 @@ export function OrdreMissionForm({ state }) {
     if (errorAddingOrdreMission === false) {
       if (buttonClicked === 'SAVE-AS-DRAFT') {
         dispatch(cleanupParentOrdreMissionPageAction());
-        dispatch(setOrdreMissionStatusAction('SAVED'));
+        dispatch(setOrdreMissionStatusAction('saved'));
       }
       if (buttonClicked === 'CONFIRM') {
         dispatch(loadOrdreMissionDetailsAction(ordreMissionIdentity));
@@ -269,14 +269,14 @@ export function OrdreMissionForm({ state }) {
     if (errorUpdatingOrdreMission === false) {
       if (buttonClicked === 'SAVE-AS-DRAFT') {
         dispatch(cleanupParentOrdreMissionPageAction());
-        dispatch(setOrdreMissionStatusAction('UPDATED'));
+        dispatch(setOrdreMissionStatusAction('updated'));
       }
       if (buttonClicked === 'CONFIRM') {
         dispatch(loadOrdreMissionDetailsAction(ordreMissionIdentity));
       }
       if (buttonClicked === 'SUBMIT-MODIFICATIONS') {
         dispatch(cleanupParentOrdreMissionPageAction());
-        dispatch(setOrdreMissionStatusAction('RESUBMITTED'));
+        dispatch(setOrdreMissionStatusAction('resubmiited'));
       }
     }
   }, [errorAddingOrdreMission, errorUpdatingOrdreMission]);
@@ -295,10 +295,10 @@ export function OrdreMissionForm({ state }) {
   useEffect(() => {
     if (errorSubmittingOrdreMission === false) {
       if (buttonClicked === 'SUBMIT') {
-        dispatch(setOrdreMissionStatusAction('SUBMITTED'));
+        dispatch(setOrdreMissionStatusAction('submitted'));
       }
       if (buttonClicked === 'SUBMIT-MODIFICATIONS') {
-        dispatch(setOrdreMissionStatusAction('RESUBMITTED'));
+        dispatch(setOrdreMissionStatusAction('resubmitted'));
       }
 
       dispatch(cleanupParentOrdreMissionPageAction());

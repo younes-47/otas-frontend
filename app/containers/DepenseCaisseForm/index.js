@@ -190,7 +190,7 @@ export function DepenseCaisseForm({ state }) {
   useEffect(() => {
     if (errorAddingDepenseCaisse === false) {
       if (buttonClicked === 'SAVE-AS-DRAFT') {
-        dispatch(setDepenseCaisseStatusAction('SAVED'));
+        dispatch(setDepenseCaisseStatusAction('saved'));
         dispatch(cleanupDepenseCaisseParentPageStoreAction());
       }
       if (buttonClicked === 'CONFIRM') {
@@ -199,11 +199,11 @@ export function DepenseCaisseForm({ state }) {
     }
     if (errorUpdatingDepenseCaisse === false) {
       if (buttonClicked === 'SAVE-AS-DRAFT') {
-        dispatch(setDepenseCaisseStatusAction('UPDATED'));
+        dispatch(setDepenseCaisseStatusAction('updated'));
         dispatch(cleanupDepenseCaisseParentPageStoreAction());
       }
       if (buttonClicked === 'SUBMIT-MODIFICATIONS') {
-        dispatch(setDepenseCaisseStatusAction('RESUBMITTED'));
+        dispatch(setDepenseCaisseStatusAction('resubmitted'));
         dispatch(cleanupDepenseCaisseParentPageStoreAction());
       }
       if (buttonClicked === 'CONFIRM') {
@@ -226,10 +226,10 @@ export function DepenseCaisseForm({ state }) {
   useEffect(() => {
     if (errorSubmittingDepenseCaisse === false) {
       if (buttonClicked === 'SUBMIT') {
-        dispatch(setDepenseCaisseStatusAction('SUBMITTED'));
+        dispatch(setDepenseCaisseStatusAction('submitted'));
       }
       if (buttonClicked === 'SUBMIT-MODIFICATIONS') {
-        dispatch(setDepenseCaisseStatusAction('RESUBMITTED'));
+        dispatch(setDepenseCaisseStatusAction('resubmitted'));
       }
 
       dispatch(cleanupDepenseCaisseParentPageStoreAction());

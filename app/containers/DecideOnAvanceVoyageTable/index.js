@@ -317,7 +317,7 @@ export function DecideOnAvanceVoyageTable() {
       dispatch(loadAvanceVoyageAction());
       if (statusAvanceVoyage !== '') {
         switch (statusAvanceVoyage) {
-          case 'signed and approved':
+          case 'signedAndApproved':
             setSnackbarAlertSeverity('success');
             break;
           case 'rejected':
@@ -406,7 +406,9 @@ export function DecideOnAvanceVoyageTable() {
         color={snackbarAlertSeverity !== '' ? snackbarAlertSeverity : 'primary'}
         variant="solid"
       >
-        Request has been {statusAvanceVoyage} successfully!
+        {statusAvanceVoyage !== '' && (
+          <FormattedMessage id={messages[statusAvanceVoyage].id} />
+        )}
       </Snackbar>
     </Box>
   );

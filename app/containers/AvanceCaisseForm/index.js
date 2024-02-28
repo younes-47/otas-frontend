@@ -186,7 +186,7 @@ export function AvanceCaisseForm({ state }) {
     if (errorAddingAvanceCaisse === false) {
       if (buttonClicked === 'SAVE-AS-DRAFT') {
         dispatch(cleanupAvanceCaisseParentPageStoreAction());
-        dispatch(setAvanceCaisseStatusAction('SAVED'));
+        dispatch(setAvanceCaisseStatusAction('saved'));
       }
       if (buttonClicked === 'CONFIRM') {
         dispatch(loadAvanceCaisseDetailsAction(avanceCaisseIdentity));
@@ -195,7 +195,7 @@ export function AvanceCaisseForm({ state }) {
     if (errorUpdatingAvanceCaisse === false) {
       if (buttonClicked === 'SAVE-AS-DRAFT') {
         dispatch(cleanupAvanceCaisseParentPageStoreAction());
-        dispatch(setAvanceCaisseStatusAction('UPDATED'));
+        dispatch(setAvanceCaisseStatusAction('updated'));
       }
       if (buttonClicked === 'CONFIRM') {
         dispatch(loadAvanceCaisseDetailsAction(avanceCaisseIdentity));
@@ -217,10 +217,10 @@ export function AvanceCaisseForm({ state }) {
   useEffect(() => {
     if (errorSubmittingAvanceCaisse === false) {
       if (buttonClicked === 'SUBMIT') {
-        dispatch(setAvanceCaisseStatusAction('SUBMITTED'));
+        dispatch(setAvanceCaisseStatusAction('submitted'));
       }
       if (buttonClicked === 'SUBMIT-MODIFICATIONS') {
-        dispatch(setAvanceCaisseStatusAction('RESUBMITTED'));
+        dispatch(setAvanceCaisseStatusAction('resubmitted'));
       }
 
       dispatch(cleanupAvanceCaisseParentPageStoreAction());
