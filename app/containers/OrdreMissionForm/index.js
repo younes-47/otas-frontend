@@ -663,7 +663,7 @@ export function OrdreMissionForm({ state }) {
               >
                 <FormattedMessage id={messages.statusHistoryButton.id} />
               </Button>
-              {ordreMissionDetails?.latestStatus !== 'Approved' && (
+              {ordreMissionDetails?.latestStatus === 'Approved' && (
                 <Button
                   variant="contained"
                   color="secondary"
