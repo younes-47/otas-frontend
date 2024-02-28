@@ -11,6 +11,7 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { NumericFormat } from 'react-number-format';
 import { useIntl } from 'react-intl';
+import dayjs from 'dayjs';
 import messages from './messages';
 
 // import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
@@ -63,7 +64,7 @@ const Expenses = ({
             readOnly={!isExpenseModifiabale}
             variant={isExpenseModifiabale ? 'outlined' : 'filled'}
             sx={{ maxWidth: 180 }}
-            value={expenseDate}
+            value={expenseDate === null ? expenseDate : dayjs(expenseDate)}
             onChange={(e) => handleExpenseDate(e, id)}
             required
             label={intl.formatMessage({ id: messages.expenseDate.id })}
