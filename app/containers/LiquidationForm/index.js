@@ -956,7 +956,7 @@ export function LiquidationForm({ state }) {
                   >
                     <FormattedMessage id={messages.statusHistoryButton.id} />
                   </Button>
-                  {liquidationDetails?.latestStatus !==
+                  {liquidationDetails?.latestStatus ===
                     "Pending Treasury's Validation" && (
                     <Button
                       variant="contained"
