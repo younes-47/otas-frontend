@@ -70,10 +70,6 @@ export default defineMessages({
     id: `${scope}.returnButton`,
     defaultMessage: 'Return',
   },
-  rejectButton: {
-    id: `${scope}.rejectButton`,
-    defaultMessage: 'Reject',
-  },
   returnRequestButton: {
     id: `${scope}.returnRequestButton`,
     defaultMessage: 'Return Request',
@@ -103,11 +99,6 @@ export default defineMessages({
     defaultMessage:
       '*Please provide a comment on why you are returning this request (required)',
   },
-  rejectingRequestComment: {
-    id: `${scope}.rejectingRequestComment`,
-    defaultMessage:
-      '*Please provide a comment on why you are rejecting this request (required)',
-  },
   mustBeRefundedToTheRequester: {
     id: `${scope}.mustBeRefundedToTheRequester`,
     defaultMessage: 'Must Be Refunded To The Requester',
@@ -121,15 +112,6 @@ export default defineMessages({
     id: `${scope}.approveRequestBody`,
     defaultMessage:
       'By Approving the request, you sign it digitally and forward it to the next decider.',
-  },
-  rejectRequest: {
-    id: `${scope}.rejectRequest`,
-    defaultMessage: 'Reject the Request?',
-  },
-  rejectRequestBody: {
-    id: `${scope}.rejectRequestBody`,
-    defaultMessage:
-      'Are you sure you want to reject this request? This will archive the request and it will not continue the approval process',
   },
   returnRequest: {
     id: `${scope}.returnRequest`,

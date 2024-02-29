@@ -140,7 +140,7 @@ export function DecideOnLiquidationForm({ state }) {
   // Decide
   useEffect(() => {
     if (decisionString !== null) {
-      if (decisionString === 'return' || decisionString === 'reject') {
+      if (decisionString === 'return') {
         const result = ValidateDeciderComment(
           setModalVisibility,
           setModalBody,
@@ -170,8 +170,6 @@ export function DecideOnLiquidationForm({ state }) {
 
       if (decisionString === 'return')
         dispatch(setLiquidationStatusAction('returned'));
-      if (decisionString === 'reject')
-        dispatch(setLiquidationStatusAction('rejected'));
 
       dispatch(cleanupDecideOnLiquidationFormPageAction());
       dispatch(cleanupDecideOnLiquidationParentPageStoreAction());
@@ -217,12 +215,6 @@ export function DecideOnLiquidationForm({ state }) {
       setModalBody('approveRequestFMBody');
     }
     setModalSevirity('primary');
-    setModalVisibility(true);
-  };
-  const handleOnRejectRequestButtonClick = () => {
-    setModalHeader('rejectRequest');
-    setModalBody('rejectRequestBody');
-    setModalSevirity('danger');
     setModalVisibility(true);
   };
   const handleOnReturnRequestButtonClick = () => {
@@ -279,9 +271,6 @@ export function DecideOnLiquidationForm({ state }) {
   // Other deciders buttons
   const handleOnApproveRequestConfirmationButtonClick = () => {
     setDecisionString('approve');
-  };
-  const handleOnRejectRequestConfirmationButtonClick = () => {
-    setDecisionString('reject');
   };
   const handleOnReturnRequestConfirmationButtonClick = () => {
     setDecisionString('return');
@@ -664,16 +653,6 @@ export function DecideOnLiquidationForm({ state }) {
         </Button>
         {!readOnly && !deciderLevels?.includes('TR') && (
           <>
-            {liquidationDetails?.latestStatus !==
-              'Returned To Finance Department for missing Information' && (
-              <Button
-                variant="contained"
-                color="error"
-                onClick={handleOnRejectRequestButtonClick}
-              >
-                <FormattedMessage id={messages.rejectButton.id} />
-              </Button>
-            )}
             <Button
               variant="contained"
               color="warning"
@@ -734,7 +713,6 @@ export function DecideOnLiquidationForm({ state }) {
         keepMounted
         onClose={() => {
           setModalVisibility(false);
-          setDeciderComment(null);
         }}
         aria-describedby="alert-dialog-slide-description"
       >
@@ -756,8 +734,7 @@ export function DecideOnLiquidationForm({ state }) {
               <Alert color={modalSevirity} size="lg" variant="soft">
                 {modalBody && <FormattedMessage id={messages[modalBody].id} />}
               </Alert>
-              {(modalHeader === 'returnRequest' ||
-                modalHeader === 'rejectRequest') &&
+              {modalHeader === 'returnRequest' &&
                 !deciderLevels?.includes('TR') && (
                   <>
                     <Typography
@@ -766,15 +743,9 @@ export function DecideOnLiquidationForm({ state }) {
                       marginTop={3}
                       marginBottom={2}
                     >
-                      {modalHeader === 'rejectRequest' ? (
-                        <FormattedMessage
-                          id={messages.rejectingRequestComment.id}
-                        />
-                      ) : (
-                        <FormattedMessage
-                          id={messages.returningRequestComment.id}
-                        />
-                      )}
+                      <FormattedMessage
+                        id={messages.returningRequestComment.id}
+                      />
                     </Typography>
                     <TextField
                       sx={{ width: '100%' }}
@@ -916,15 +887,6 @@ export function DecideOnLiquidationForm({ state }) {
               ) : (
                 <FormattedMessage id={messages.signAndApproveButton.id} />
               )}
-            </Button>
-          )}
-          {modalHeader === 'rejectRequest' && (
-            <Button
-              color="error"
-              onClick={handleOnRejectRequestConfirmationButtonClick}
-              variant="contained"
-            >
-              <FormattedMessage id={messages.rejectButton.id} />
             </Button>
           )}
           {modalHeader === 'returnRequest' &&
