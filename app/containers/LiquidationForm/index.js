@@ -135,8 +135,7 @@ export function LiquidationForm({ state }) {
     </Typography>
   );
 
-  const [isRequestToLiquidateSelected, setRequestToLiquidateSelection] =
-    useState(0);
+  const [isRequestTypeChanged, setRequestTypeChanged] = useState(true);
   const [counter, setCounter] = useState(0); // used for uniqueness of items (trips/expenses)
   const [newExpenses, setNewExpenses] = useState([]);
   const [newTrips, setNewTrips] = useState([]);
@@ -273,7 +272,7 @@ export function LiquidationForm({ state }) {
     setExpensesToLiquidate([]);
     setNewExpenses([]);
     setNewTrips([]);
-  }, [requestTypeToLiquidate, isRequestToLiquidateSelected]);
+  }, [requestTypeToLiquidate]);
 
   // update actual total and result
   useEffect(() => {
@@ -757,7 +756,7 @@ export function LiquidationForm({ state }) {
                     boxShadow: 'sm',
                   }}
                   onChange={() => {
-                    setRequestToLiquidateSelection(0);
+                    setRequestTypeChanged(true);
                   }}
                 >
                   <React.Fragment key={0}>
@@ -809,22 +808,13 @@ export function LiquidationForm({ state }) {
                       key={req.id}
                       value={req.id}
                       onClick={() => {
-                        if (
-                          requestToLiquidateDetails == null ||
-                          requestToLiquidateDetails?.id !== req.id
-                        ) {
-                          setRequestToLiquidateSelection(() =>
-                            setRequestToLiquidateSelection(
-                              (prevValue) => prevValue + 1,
-                            ),
-                          );
-                          dispatch(
-                            loadRequestToLiquidateDetailsAction(
-                              req.id,
-                              requestTypeToLiquidate,
-                            ),
-                          );
-                        }
+                        setRequestTypeChanged(false);
+                        dispatch(
+                          loadRequestToLiquidateDetailsAction(
+                            req.id,
+                            requestTypeToLiquidate,
+                          ),
+                        );
                       }}
                     >
                       #{req.id}&nbsp;-&nbsp;{req.description}
@@ -838,7 +828,7 @@ export function LiquidationForm({ state }) {
 
         {/* Load request details to liquidate */}
         {((requestToLiquidateDetails !== null &&
-          isRequestToLiquidateSelected > 0) ||
+          isRequestTypeChanged === false) ||
           state !== 'ADD') && (
           <Box marginBottom={20} marginTop={3}>
             {/* DIVIDER */}
