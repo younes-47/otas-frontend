@@ -40,7 +40,7 @@ import {
 } from './actions';
 // import logo from '/app/images/logo-512x512.png';
 // eslint-disable-next-line import/no-unresolved
-import otasLoginImage from '/app/images/OTAS_login_image-634×360.png';
+import otasLoginImage from '/app/images/OTAS_LOGO.png';
 
 const mapStateToProps = createStructuredSelector({
   loginPage: makeSelectLoginPage(),
