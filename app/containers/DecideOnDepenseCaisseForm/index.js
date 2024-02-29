@@ -42,7 +42,11 @@ import {
 } from 'containers/SideBar/selectors';
 import { makeSelectDepenseCaisseIdentity } from 'pages/DecideOnDepenseCaisse/selectors';
 import { NumericFormat } from 'react-number-format';
-import { List, ListItem, ListItemDecorator, Radio, RadioGroup } from '@mui/joy';
+import List from '@mui/joy/List';
+import ListItem from '@mui/joy/ListItem';
+import ListItemDecorator from '@mui/joy/ListItemDecorator';
+import Radio from '@mui/joy/Radio';
+import RadioGroup from '@mui/joy/RadioGroup';
 import ExpensesTable from 'components/ExpensesTable';
 import { ValidateDeciderComment } from 'utils/Custom/ValidateInputs';
 import { FormattedMessage, useIntl } from 'react-intl';

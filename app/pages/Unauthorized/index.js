@@ -14,7 +14,7 @@ import Stack from '@mui/material/Stack';
 
 import { useInjectReducer } from 'utils/injectReducer';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
-import { Typography } from '@mui/joy';
+import Typography from '@mui/joy/Typography';
 import reducer from './reducer';
 
 const mapStateToProps = createStructuredSelector({

@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import OrdreMissionTable from 'containers/OrdreMissionTable';
 import OrdreMissionForm from 'containers/OrdreMissionForm';
 import { useInjectSaga } from 'utils/injectSaga';
-import OrdreMissionView from 'containers/OrdreMissionView';
 import reducer from './reducer';
 
 import saga from './saga';

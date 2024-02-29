@@ -8,7 +8,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import PropTypes from 'prop-types';
-import { Typography } from '@mui/joy';
+import Typography from '@mui/joy/Typography';
 import { NumericFormat } from 'react-number-format';
 import Input from '@mui/joy/Input';
 import { FormattedDate, FormattedMessage } from 'react-intl';

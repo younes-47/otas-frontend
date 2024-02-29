@@ -25,7 +25,6 @@ import Card from '@mui/joy/Card';
 import CardContent from '@mui/joy/CardContent';
 import CountUp from 'react-countup';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { CardActionArea } from '@mui/material';
 import reducer from './reducer';
 import saga from './saga';
 import { cleanupStoreAction, loadDeciderStatsAction } from './actions';

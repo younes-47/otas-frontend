@@ -27,7 +27,7 @@ import Tables from 'components/Tables';
 import { DateTimeFormater } from 'utils/Custom/stringManipulation';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
-import { Link } from '@mui/joy';
+import Link from '@mui/joy/Link';
 import { NumericFormat } from 'react-number-format';
 import {
   changeDecideOnAvanceCaissePageContentAction,

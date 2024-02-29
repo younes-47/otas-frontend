@@ -11,7 +11,8 @@ import { createStructuredSelector } from 'reselect';
 
 import { useInjectSaga } from 'utils/injectSaga';
 import { useInjectReducer } from 'utils/injectReducer';
-import { Box, Stack } from '@mui/material';
+import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
 import { makeSelectIsSideBarVisible } from 'containers/SideBar/selectors';
 import reducer from './reducer';
 import saga from './saga';

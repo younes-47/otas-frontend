@@ -20,7 +20,7 @@ import TimelineDot from '@mui/lab/TimelineDot';
 import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
 import { DateTimeFormater } from 'utils/Custom/stringManipulation';
 import { NumericFormat } from 'react-number-format';
-import { Typography } from '@mui/joy';
+import Typography from '@mui/joy/Typography';
 
 const getDotColor = (status) => {
   if (

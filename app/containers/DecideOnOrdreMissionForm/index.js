@@ -41,7 +41,8 @@ import TripsTable from 'components/TripsTable';
 import ExpensesTable from 'components/ExpensesTable';
 import { ValidateDeciderComment } from 'utils/Custom/ValidateInputs';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { Checkbox, FormControl, FormHelperText } from '@mui/joy';
+import Checkbox from '@mui/joy/Checkbox';
+import FormControl from '@mui/joy/FormControl';
 import {
   makeSelectErrorDecidingOnOrdreMission,
   makeSelectErrorLoadingOrdreMissionDetails,
@@ -548,7 +549,7 @@ export function DecideOnOrdreMissionForm({ state }) {
               )}
               {modalHeader === 'approveRequest' &&
                 ordreMissionDetails?.latestStatus !==
-                  "Pending HR's Approval" && (
+                  "Pending HR's approval" && (
                   <FormControl sx={{ marginTop: 3 }}>
                     <Checkbox
                       color="danger"
