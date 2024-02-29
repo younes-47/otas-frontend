@@ -62,7 +62,6 @@ function SideBarButton({
     ? '#b865ef'
     : '#ffffff';
   const IconColor = color === '#202123' ? '#ffffff' : color;
-  const selectedColor = selected ? '#ffffff' : '#202123';
   return (
     <>
       {selected ? (

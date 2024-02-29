@@ -5,18 +5,18 @@ const DevConfig = {
 };
 const ProdConfig = {
   BACKEND_SERVER_PROTOCOL: 'https',
-  BACKEND_SERVER_IP: 'makendika-ap01',
-  BACKEND_SERVER_PORT: '3791',
+  BACKEND_SERVER_IP: 'otas.dicastalma.com',
+  BACKEND_SERVER_PORT: '3216',
 };
 const TestConfig = {
   BACKEND_SERVER_PROTOCOL: 'https',
-  BACKEND_SERVER_IP: 'makendika-ap-test',
-  BACKEND_SERVER_PORT: '3791',
+  BACKEND_SERVER_IP: 'otastest.dicastalma.com',
+  BACKEND_SERVER_PORT: '3216',
 };
 /// //////////////////////////// ///
 /// /////Change value below///// ///
 /// //////////////////////////// ///
-const environement = 'DEV';
+const environement = 'PROD';
 /// //////////////////////////// ///
 /// /////Change value above///// ///
 /// //////////////////////////// ///
