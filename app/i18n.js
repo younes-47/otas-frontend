@@ -24,12 +24,12 @@ const appLocales = [
   'fr'
 ];
 
-const DEFAULT_LOCALE = 'en';
-// const DEFAULT_LOCALE =
-//   localStorage.getItem('preferredLanguage') &&
-//   appLocales.includes(localStorage.getItem('preferredLanguage'))
-//     ? localStorage.getItem('preferredLanguage')
-//     : 'en';
+// const DEFAULT_LOCALE = 'en';
+const DEFAULT_LOCALE =
+  localStorage.getItem('preferredLanguage') &&
+  appLocales.includes(localStorage.getItem('preferredLanguage'))
+    ? localStorage.getItem('preferredLanguage')
+    : 'en';
 // LSlocale && ap
 const formatTranslationMessages = (locale, messages) => {
   const defaultFormattedMessages =
