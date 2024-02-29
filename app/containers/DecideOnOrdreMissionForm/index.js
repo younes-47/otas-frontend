@@ -547,7 +547,7 @@ export function DecideOnOrdreMissionForm({ state }) {
                 </>
               )}
               {modalHeader === 'approveRequest' &&
-                ordreMissionDetails.latestStatus !==
+                ordreMissionDetails?.latestStatus !==
                   "Pending HR's Approval" && (
                   <FormControl sx={{ marginTop: 3 }}>
                     <Checkbox
@@ -587,18 +587,6 @@ export function DecideOnOrdreMissionForm({ state }) {
               <FormattedMessage id={messages.signAndApproveButton.id} />
             </Button>
           )}
-          {/* {modalHeader === 'approveRequest' &&
-            ordreMissionDetails.latestStatus !== "Pending HR's Approval" && (
-              <Button
-                color="success"
-                onClick={handleOnApproveAllConfirmationButtonClick}
-                variant="contained"
-              >
-                <FormattedMessage
-                  id={messages.signAndApproveWithRelatedAvanceVoyageButton.id}
-                />
-              </Button>
-            )} */}
           {modalHeader === 'rejectRequest' && (
             <Button
               color="error"

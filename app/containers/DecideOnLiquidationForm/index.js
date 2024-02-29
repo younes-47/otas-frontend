@@ -12,6 +12,8 @@ import CustomizedTimeLine from 'components/CustomizedTimeLine';
 import HistoryIcon from '@mui/icons-material/History';
 import FilePresentIcon from '@mui/icons-material/FilePresent';
 import Box from '@mui/system/Box';
+import InsertLinkIcon from '@mui/icons-material/InsertLink';
+import Link from '@mui/joy/Link';
 import Alert from '@mui/joy/Alert';
 import Card from '@mui/joy/Card';
 import CardContent from '@mui/joy/CardContent';
@@ -45,6 +47,15 @@ import TripsTable from 'components/TripsTable';
 import { ValidateDeciderComment } from 'utils/Custom/ValidateInputs';
 import { FormattedMessage, useIntl } from 'react-intl';
 import {
+  changeDecideOnAvanceVoyagePageContentAction,
+  setAvanceVoyageIdentityAction,
+} from 'pages/DecideOnAvanceVoyage/actions';
+import {
+  changeDecideOnAvanceCaissePageContentAction,
+  setAvanceCaisseIdentityAction,
+} from 'pages/DecideOnAvanceCaisse/actions';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import {
   makeSelectLiquidationDetails,
   makeSelectErrorDecidingOnLiquidation,
   makeSelectErrorLoadingLiquidationDetails,
@@ -73,6 +84,7 @@ export function DecideOnLiquidationForm({ state }) {
 
   const dispatch = useDispatch();
   const intl = useIntl();
+  const history = useHistory();
 
   const {
     isSideBarVisible,
@@ -276,6 +288,19 @@ export function DecideOnLiquidationForm({ state }) {
     setDecisionString('return');
   };
 
+  //
+  const handleOnAvanceVoyageLinkClick = (avanceVoyageId) => {
+    dispatch(setAvanceVoyageIdentityAction(avanceVoyageId));
+    dispatch(changeDecideOnAvanceVoyagePageContentAction('VIEW'));
+    history.push('/decide-on-requests/decide-on-avance-voyage');
+  };
+
+  const handleOnAvanceCaisseLinkClick = (avanceCaisseId) => {
+    dispatch(setAvanceCaisseIdentityAction(avanceCaisseId));
+    dispatch(changeDecideOnAvanceCaissePageContentAction('VIEW'));
+    history.push('/decide-on-requests/decide-on-avance-caisse');
+  };
+
   return (
     <Box
       position="fixed"
@@ -397,6 +422,46 @@ export function DecideOnLiquidationForm({ state }) {
         marginBottom={3}
       >
         <Divider style={{ width: '60%', opacity: 0.7 }} />
+      </Box>
+
+      <Box
+        display="flex"
+        justifyContent="center"
+        marginTop={3}
+        marginBottom={3}
+      >
+        <Alert severity="info">
+          <Typography variant="P">
+            <FormattedMessage id={messages.requestLinkedTo.id} />
+          </Typography>
+          {liquidationDetails?.requestType === 'AC' ? (
+            // eslint-disable-next-line jsx-a11y/anchor-is-valid
+            <Link
+              level="title-sm"
+              underline="always"
+              onClick={() =>
+                handleOnAvanceCaisseLinkClick(liquidationDetails?.requestId)
+              }
+            >
+              <FormattedMessage id={messages.avanceCaisseTitle.id} />
+              &nbsp;#{liquidationDetails?.requestId}
+              <InsertLinkIcon fontSize="small" />
+            </Link>
+          ) : (
+            // eslint-disable-next-line jsx-a11y/anchor-is-valid
+            <Link
+              level="title-sm"
+              underline="always"
+              onClick={() =>
+                handleOnAvanceVoyageLinkClick(liquidationDetails?.requestId)
+              }
+            >
+              <FormattedMessage id={messages.avanceVoyageTitle.id} />
+              &nbsp;#{liquidationDetails?.requestId}
+              <InsertLinkIcon fontSize="small" />
+            </Link>
+          )}
+        </Alert>
       </Box>
 
       <Box display="flex" justifyContent="center" marginBottom={3}>

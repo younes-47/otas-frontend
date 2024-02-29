@@ -117,6 +117,15 @@ export default defineMessages({
     id: `${scope}.returnRequest`,
     defaultMessage: 'Return the Request?',
   },
+  returnToFMLabel: {
+    id: `${scope}.returnToFMLabel`,
+    defaultMessage:
+      'Return the request to Finance Manager for missing information',
+  },
+  returnToRequesterLabel: {
+    id: `${scope}.returnToRequesterLabel`,
+    defaultMessage: 'Return the request to requester for missing evidences',
+  },
   returnRequestBody: {
     id: `${scope}.returnRequestBody`,
     defaultMessage:
@@ -182,5 +191,19 @@ export default defineMessages({
   deciderCommentPlaceholder: {
     id: `${scope}.deciderCommentPlaceholder`,
     defaultMessage: 'Your Comment (255 characters: ~35 to 50 words)...',
+  },
+
+  avanceVoyageTitle: {
+    id: `${scope}.avanceVoyageTitle`,
+    defaultMessage: 'Travel Advance',
+  },
+
+  avanceCaisseTitle: {
+    id: `${scope}.avanceCaisseTitle`,
+    defaultMessage: 'Cash Advance',
+  },
+  requestLinkedTo: {
+    id: `${scope}.requestLinkedTo`,
+    defaultMessage: 'This request is linked to:',
   },
 });

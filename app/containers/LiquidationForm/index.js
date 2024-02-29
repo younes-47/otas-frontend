@@ -272,7 +272,7 @@ export function LiquidationForm({ state }) {
     setExpensesToLiquidate([]);
     setNewExpenses([]);
     setNewTrips([]);
-  }, [requestTypeToLiquidate]);
+  }, [requestTypeToLiquidate, isRequestTypeChanged]);
 
   // update actual total and result
   useEffect(() => {
@@ -802,6 +802,12 @@ export function LiquidationForm({ state }) {
                     },
                   }}
                   size="lg"
+                  onChange={() => {
+                    setTripsToLiquidate([]);
+                    setExpensesToLiquidate([]);
+                    setNewExpenses([]);
+                    setNewTrips([]);
+                  }}
                 >
                   {requestsToLiquidate?.map((req) => (
                     <Option
