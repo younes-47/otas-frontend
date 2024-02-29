@@ -580,7 +580,7 @@
   "app.containers.LiquidationForm.updatingFileNote": "Le téléchargement d'un nouveau fichier remplacera l'ancien. Vous voudrez joindre vos reçus précédemment téléchargés au cas où vous souhaiteriez toujours les inclure.",
   "app.containers.LiquidationForm.uploadButton": "Télécharger le fichier",
   "app.containers.LiquidationForm.uploading": "Téléchargement en cours...",
-  "app.containers.LiquidationForm.youOwe": "Vous devez :",
+  "app.containers.LiquidationForm.youOwe": "On vous doit :",
   "app.containers.LiquidationForm.yourReceiptsHeader": "Vos reçus*",
   "app.containers.LiquidationTable.dialog.closeButton": "Fermer",
   "app.containers.LiquidationTable.dialog.confirmButton": "Confirmer",

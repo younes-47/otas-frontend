@@ -200,7 +200,7 @@ export default defineMessages({
 
   youOwe: {
     id: `${scope}.youOwe`,
-    defaultMessage: 'You Owe:',
+    defaultMessage: 'You are owed:',
   },
   decision: {
     id: `${scope}.decision`,

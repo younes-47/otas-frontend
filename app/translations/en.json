@@ -580,7 +580,7 @@
   "app.containers.LiquidationForm.updatingFileNote": "uploading a new file will override the old one. You may want to attach your previously uploaded receipts in case you still want to include them.",
   "app.containers.LiquidationForm.uploadButton": "Upload File",
   "app.containers.LiquidationForm.uploading": "Uploading...",
-  "app.containers.LiquidationForm.youOwe": "You Owe:",
+  "app.containers.LiquidationForm.youOwe": "You are owed:",
   "app.containers.LiquidationForm.yourReceiptsHeader": "Your Receipts*",
   "app.containers.LiquidationTable.dialog.closeButton": "Close",
   "app.containers.LiquidationTable.dialog.confirmButton": "Confirm",
