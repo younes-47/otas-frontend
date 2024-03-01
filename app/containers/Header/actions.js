@@ -9,6 +9,7 @@ import {
   CHANGE_PREFERRED_LANGUAGE,
   CHANGE_PREFERRED_LANGUAGE_ERROR,
   CHANGE_PREFERRED_LANGUAGE_SUCCESS,
+  SET_ERROR_MESSAGE,
 } from './constants';
 
 export function defaultAction() {
@@ -32,5 +33,12 @@ export function changePreferredLanguageErrorAction(error) {
   return {
     type: CHANGE_PREFERRED_LANGUAGE_ERROR,
     error,
+  };
+}
+
+export function setErrorAction(errorMessage) {
+  return {
+    type: SET_ERROR_MESSAGE,
+    errorMessage,
   };
 }

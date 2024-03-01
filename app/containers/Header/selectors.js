@@ -31,8 +31,12 @@ const makeSelectErrorPreferredLanguage = () =>
     (substate) => substate.errorPreferredLanguage,
   );
 
+const makeSelectErrorMessage = () =>
+  createSelector(selectHeaderDomain, (substate) => substate.errorMessage);
+
 export default makeSelectHeader;
 export {
+  makeSelectErrorMessage,
   selectHeaderDomain,
   makeSelectPreferredLanguage,
   makeSelectChangingPreferredLanguage,

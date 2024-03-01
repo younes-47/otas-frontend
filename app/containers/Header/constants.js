@@ -11,6 +11,7 @@ export const CHANGE_PREFERRED_LANGUAGE_SUCCESS =
   'app/Header/CHANGE_PREFERRED_LANGUAGE_SUCCESS';
 export const CHANGE_PREFERRED_LANGUAGE_ERROR =
   'app/Header/CHANGE_PREFERRED_LANGUAGE_ERROR';
+export const SET_ERROR_MESSAGE = 'app/Header/SET_ERROR_MESSAGE';
 
 export const WebService = {
   POST_PREFERED_LANGUAGE: '/user/preferredLanguage/',

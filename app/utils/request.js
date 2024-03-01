@@ -1,5 +1,6 @@
 import axios from 'axios';
 import backendAdress from './Custom/APIConfig';
+import interceptError from './Custom/interceptError';
 
 const request = axios.create({
   baseURL: backendAdress(), // the base url that u gave to ur backend in the index.js in the server folder in ur case it will probably be /api
@@ -33,6 +34,7 @@ request.interceptors.response.use(
     }
     if (error.response?.status !== 200) {
       // error handling
+      interceptError(error);
     }
     return Promise.reject(error);
   },
