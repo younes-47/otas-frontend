@@ -54,6 +54,8 @@ import ActualRequesterInputs from 'components/ActualRequesterInputs';
 import { ValidateInputs } from 'utils/Custom/ValidateInputs';
 import { FormattedMessage } from 'react-intl';
 import { NumericFormat } from 'react-number-format';
+import Fab from '@mui/material/Fab';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Expenses from './Expenses';
 import messages from './messages';
 import {
@@ -329,6 +331,14 @@ export function DepenseCaisseForm({ state }) {
       reader.readAsDataURL(file);
     });
     const response = await binaryData;
+    if (response.match(/:(.*?);/)[1] !== 'application/pdf') {
+      setModalHeader('invalidInformationHeader');
+      setModalBody('invalidFileType');
+      setModalSevirity('error');
+      setModalVisibility(true);
+      setLoadingButton(false);
+      return;
+    }
     const base64data = response.split(',')[1];
     setReceiptsFile(base64data);
     setReceiptsFileName(file.name);
@@ -479,6 +489,18 @@ export function DepenseCaisseForm({ state }) {
         overflow: 'auto',
       }}
     >
+      <Fab
+        variant="circular"
+        color="info"
+        sx={{
+          position: 'fixed',
+          top: 90,
+          left: isSideBarVisible ? 230 : 30,
+        }}
+        onClick={handleOnReturnButtonClick}
+      >
+        <ArrowBackIcon />
+      </Fab>
       {/* THE HEADER */}
       <Box
         display="flex"
