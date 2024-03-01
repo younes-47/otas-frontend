@@ -398,7 +398,7 @@ export const ValidateDeciderComment = (
     setModalVisibility(true);
     isAllGood = false;
   }
-  if (deciderComment.length > 255) {
+  if (deciderComment?.length > 255) {
     setModalHeader('invalidComment');
 
     setModalBody('longComment');
