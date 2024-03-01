@@ -120,10 +120,13 @@ export function Header() {
               <ModalClose />
               <TypographyJoy level="h4" color="danger">
                 {errorMessage?.response?.status === 500 && (
-                  <> FATAL INTERNAL ERROR - 500</>
+                  <>FATAL INTERNAL ERROR - 500</>
                 )}
                 {errorMessage?.response?.status === 400 && (
-                  <> BAD REQUEST - 400</>
+                  <>BAD REQUEST - 400</>
+                )}
+                {errorMessage?.response?.status === undefined && (
+                  <>CONNECTION IS LOST</>
                 )}
               </TypographyJoy>
               <Divider orientation="horizontal" />
@@ -141,7 +144,9 @@ export function Header() {
                   variant="solid"
                   alignSelf="center"
                 >
-                  {errorMessage?.response?.data}
+                  {errorMessage?.response?.data ?? (
+                    <>Cannot establish a connection with the server!</>
+                  )}
                 </TypographyJoy>
                 <TypographyJoy
                   sx={{ fontWeight: 'bold', marginTop: 2 }}
@@ -151,9 +156,19 @@ export function Header() {
                   What does this mean?
                 </TypographyJoy>
                 <TypographyJoy level="body-md" color="danger">
-                  An unexpected error occured while processing your request.
-                  This mostly happens due to a bad request or an unhandeled
-                  exception.
+                  {errorMessage?.response?.status !== undefined ? (
+                    <>
+                      An unexpected error occured while processing your request.
+                      This mostly happens due to a bad request or an unhandeled
+                      exception.
+                    </>
+                  ) : (
+                    <>
+                      The server is not responding, it may have been a
+                      modification in the configuration or the server is shut
+                      down.
+                    </>
+                  )}
                 </TypographyJoy>
                 <TypographyJoy
                   level="body-md"
