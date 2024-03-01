@@ -143,6 +143,10 @@ export default defineMessages({
     defaultMessage:
       'By confirming the request again, you acknowledge that all the information are correct. The request will be forwarded to the Treasurer for further inspection.',
   },
+  confirmRequest: {
+    id: `${scope}.confirmRequest`,
+    defaultMessage: 'Confirm the request?',
+  },
   finalizeRequestBody: {
     id: `${scope}.finalizeRequestBody`,
     defaultMessage:

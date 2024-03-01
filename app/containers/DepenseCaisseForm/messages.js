@@ -179,6 +179,11 @@ export default defineMessages({
     id: `${scope}.modal.invalidInformationHeader`,
     defaultMessage: 'Invalid Information!',
   },
+  invalidFileType: {
+    id: `${scope}.modal.invalidFileType`,
+    defaultMessage:
+      'Invalid File Type! Please upload your receipts in a PDF format.',
+  },
   submitHeader: {
     id: `${scope}.modal.submitHeader`,
     defaultMessage: 'Submit',

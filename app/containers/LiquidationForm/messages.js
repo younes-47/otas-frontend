@@ -83,6 +83,11 @@ export default defineMessages({
     defaultMessage: 'Select a Request to liquidate...',
   },
 
+  noRequestsToLiquidate: {
+    id: `${scope}.noRequestsToLiquidate`,
+    defaultMessage: 'No Requests to liquidate',
+  },
+
   confirmationAlert: {
     id: `${scope}.confirmationAlert`,
     defaultMessage: 'Please Review your information before submitting.',
@@ -243,6 +248,12 @@ export default defineMessages({
   invalidInformationHeader: {
     id: `${scope}.modal.invalidInformationHeader`,
     defaultMessage: 'Invalid Information!',
+  },
+
+  invalidFileType: {
+    id: `${scope}.modal.invalidFileType`,
+    defaultMessage:
+      'Invalid File Type! Please upload your receipts in a PDF format.',
   },
 
   invalidAbroadSelection: {
