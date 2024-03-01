@@ -55,6 +55,8 @@ import { NumericFormat, PatternFormat } from 'react-number-format';
 import ExpensesTable from 'components/ExpensesTable';
 import { ValidateDeciderComment } from 'utils/Custom/ValidateInputs';
 import { FormattedMessage, useIntl } from 'react-intl';
+import Fab from '@mui/material/Fab';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import messages from './messages';
 import {
   makeSelectAvanceCaisseDetails,
@@ -292,6 +294,18 @@ export function DecideOnAvanceCaisseForm({ state }) {
         overflow: 'auto',
       }}
     >
+      <Fab
+        variant="circular"
+        color="info"
+        sx={{
+          position: 'fixed',
+          top: 90,
+          left: isSideBarVisible ? 230 : 30,
+        }}
+        onClick={handleOnReturnButtonClick}
+      >
+        <ArrowBackIcon />
+      </Fab>
       <Box display="flex" justifyContent="center" textAlign="center" margin={3}>
         <Typography level="h2">
           <FormattedMessage id={messages.avanceCaisseTitle.id} /> #

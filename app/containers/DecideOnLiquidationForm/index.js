@@ -59,6 +59,8 @@ import {
   setAvanceCaisseIdentityAction,
 } from 'pages/DecideOnAvanceCaisse/actions';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import Fab from '@mui/material/Fab';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import {
   makeSelectLiquidationDetails,
   makeSelectErrorDecidingOnLiquidation,
@@ -319,6 +321,18 @@ export function DecideOnLiquidationForm({ state }) {
         overflow: 'auto',
       }}
     >
+      <Fab
+        variant="circular"
+        color="info"
+        sx={{
+          position: 'fixed',
+          top: 90,
+          left: isSideBarVisible ? 230 : 30,
+        }}
+        onClick={handleOnReturnButtonClick}
+      >
+        <ArrowBackIcon />
+      </Fab>
       <Box display="flex" justifyContent="center" textAlign="center" margin={3}>
         <Typography level="h2">
           <FormattedMessage id={messages.decideOnLQHeader.id} /> #

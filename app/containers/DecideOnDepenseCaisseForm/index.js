@@ -50,6 +50,8 @@ import RadioGroup from '@mui/joy/RadioGroup';
 import ExpensesTable from 'components/ExpensesTable';
 import { ValidateDeciderComment } from 'utils/Custom/ValidateInputs';
 import { FormattedMessage, useIntl } from 'react-intl';
+import Fab from '@mui/material/Fab';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import {
   makeSelectDepenseCaisseDetails,
   makeSelectErrorDecidingOnDepenseCaisse,
@@ -302,6 +304,18 @@ export function DecideOnDepenseCaisseForm({ state }) {
         overflow: 'auto',
       }}
     >
+      <Fab
+        variant="circular"
+        color="info"
+        sx={{
+          position: 'fixed',
+          top: 90,
+          left: isSideBarVisible ? 230 : 30,
+        }}
+        onClick={handleOnReturnButtonClick}
+      >
+        <ArrowBackIcon />
+      </Fab>
       <Box display="flex" justifyContent="center" textAlign="center" margin={3}>
         <Typography level="h2">
           <FormattedMessage id={messages.depenseCaisseTitle.id} /> #

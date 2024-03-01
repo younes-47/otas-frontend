@@ -54,6 +54,8 @@ import ActualRequesterInputs from 'components/ActualRequesterInputs';
 import { ValidateInputs } from 'utils/Custom/ValidateInputs';
 import { NumericFormat } from 'react-number-format';
 import { FormattedMessage } from 'react-intl';
+import Fab from '@mui/material/Fab';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import messages from './messages';
 import saga from './saga';
 import reducer from './reducer';
@@ -579,6 +581,18 @@ export function OrdreMissionForm({ state }) {
         overflow: 'auto',
       }}
     >
+      <Fab
+        variant="circular"
+        color="info"
+        sx={{
+          position: 'fixed',
+          top: 90,
+          left: isSideBarVisible ? 230 : 30,
+        }}
+        onClick={handleOnReturnButtonClick}
+      >
+        <ArrowBackIcon />
+      </Fab>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         {/* THE HEADER */}
         <Box

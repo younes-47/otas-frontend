@@ -58,6 +58,8 @@ import TripsTable from 'components/TripsTable';
 import ExpensesTable from 'components/ExpensesTable';
 import { ValidateDeciderComment } from 'utils/Custom/ValidateInputs';
 import { FormattedMessage, useIntl } from 'react-intl';
+import Fab from '@mui/material/Fab';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import reducer from './reducer';
 import saga from './saga';
 import {
@@ -290,6 +292,18 @@ export function DecideOnAvanceVoyageForm({ state }) {
         overflow: 'auto',
       }}
     >
+      <Fab
+        variant="circular"
+        color="info"
+        sx={{
+          position: 'fixed',
+          top: 90,
+          left: isSideBarVisible ? 230 : 30,
+        }}
+        onClick={handleOnReturnButtonClick}
+      >
+        <ArrowBackIcon />
+      </Fab>
       <Box display="flex" justifyContent="center" textAlign="center" margin={3}>
         <Typography level="h2">
           <FormattedMessage id={messages.avanceVoyageTitle.id} /> #

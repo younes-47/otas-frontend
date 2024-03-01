@@ -48,6 +48,8 @@ import { makeSelectAvanceVoyageIdentity } from 'pages/AvanceVoyage/selectors';
 import { NumericFormat } from 'react-number-format';
 import TripsTable from 'components/TripsTable';
 import ExpensesTable from 'components/ExpensesTable';
+import Fab from '@mui/material/Fab';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import messages from './messages';
 import makeSelectAvanceVoyageView, {
   makeSelectAvanceVoyageDetails,
@@ -162,6 +164,18 @@ export function AvanceVoyageView() {
         overflow: 'auto',
       }}
     >
+      <Fab
+        variant="circular"
+        color="info"
+        sx={{
+          position: 'fixed',
+          top: 90,
+          left: isSideBarVisible ? 230 : 30,
+        }}
+        onClick={handleOnReturnButtonClick}
+      >
+        <ArrowBackIcon />
+      </Fab>
       {/* THE HEADER */}
       <Box
         display="flex"
@@ -178,7 +192,6 @@ export function AvanceVoyageView() {
           <></>
         )}
       </Box>
-
       <Box
         display="flex"
         justifyContent="center"
@@ -192,7 +205,6 @@ export function AvanceVoyageView() {
           </JoyTypography>
         </JoyTypography>
       </Box>
-
       <Box
         display="flex"
         justifyContent="center"
@@ -233,7 +245,6 @@ export function AvanceVoyageView() {
           </Button>
         )}
       </Box>
-
       {avanceVoyageDetails?.latestStatus === 'Returned' && (
         <Box
           display="flex"
@@ -268,7 +279,6 @@ export function AvanceVoyageView() {
           </Card>
         </Box>
       )}
-
       {/* DIVIDER */}
       <Box
         display="flex"
@@ -278,9 +288,7 @@ export function AvanceVoyageView() {
       >
         <Divider style={{ width: '60%', opacity: 0.7 }} />
       </Box>
-
       {/* USER INFO */}
-
       <DisplayUserinfo
         userData={
           avanceVoyageDetails?.requesterInfo !== null
@@ -288,7 +296,6 @@ export function AvanceVoyageView() {
             : null
         }
       />
-
       {/* DIVIDER */}
       <Box
         display="flex"
@@ -298,7 +305,6 @@ export function AvanceVoyageView() {
       >
         <Divider style={{ width: '60%', opacity: 0.7 }} />
       </Box>
-
       <Box
         display="flex"
         justifyContent="center"
@@ -322,7 +328,6 @@ export function AvanceVoyageView() {
           </Link>
         </Alert>
       </Box>
-
       {/* Accordion */}
       {/* <Box
         key={avanceVoyageDetails?.id}
@@ -404,9 +409,7 @@ export function AvanceVoyageView() {
           </AccordionDetails>
         </Accordion>
       </Box> */}
-
       {/* Trips */}
-
       <Typography level="title-lg" textAlign="center" marginBottom={2}>
         {avanceVoyageDetails?.trips.length > 0 ? (
           <FormattedMessage id={messages.tripsHeader.id} />
@@ -419,9 +422,7 @@ export function AvanceVoyageView() {
           <TripsTable tripsData={avanceVoyageDetails?.trips} />
         </Box>
       )}
-
       {/* Expenses */}
-
       <Typography level="title-lg" textAlign="center" marginBottom={2}>
         {avanceVoyageDetails?.expenses.length > 0 ? (
           <FormattedMessage id={messages.expensesHeader.id} />
@@ -434,7 +435,6 @@ export function AvanceVoyageView() {
           <ExpensesTable expensesData={avanceVoyageDetails?.expenses} />
         </Box>
       )}
-
       {/* DIVIDER */}
       <Box
         display="flex"
@@ -444,7 +444,6 @@ export function AvanceVoyageView() {
       >
         <Divider style={{ width: '60%', opacity: 0.7 }} />
       </Box>
-
       {/* Calculated Total */}
       <Box display="flex" justifyContent="center">
         <Box display="flex" justifyContent="flex-end" width="60%">
@@ -482,7 +481,6 @@ export function AvanceVoyageView() {
           </Box>
         </Box>
       </Box>
-
       <Stack
         direction="row"
         spacing={2}
@@ -498,7 +496,6 @@ export function AvanceVoyageView() {
           <FormattedMessage id={messages.returnButton.id} />
         </Button>
       </Stack>
-
       <Dialog
         open={statusHistoryDialogVisibility}
         keepMounted
