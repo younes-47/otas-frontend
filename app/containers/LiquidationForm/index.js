@@ -59,6 +59,8 @@ import { ValidateLiquidationInputs } from 'utils/Custom/ValidateInputs';
 import { setLiquidationStatusAction } from 'containers/LiquidationTable/actions';
 import WarningIcon from '@mui/icons-material/Warning';
 import { FormattedMessage, useIntl } from 'react-intl';
+import Fab from '@mui/material/Fab';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import reducer from './reducer';
 import saga from './saga';
 import {
@@ -454,6 +456,15 @@ export function LiquidationForm({ state }) {
       reader.readAsDataURL(file);
     });
     const response = await binaryData;
+
+    if (response.match(/:(.*?);/)[1] !== 'application/pdf') {
+      setModalHeader('invalidInformationHeader');
+      setModalBody('invalidFileType');
+      setModalSevirity('error');
+      setModalVisibility(true);
+      setLoadingButton(false);
+      return;
+    }
     const base64data = response.split(',')[1];
     setReceiptsFile(base64data);
     setReceiptsFileName(file.name);
@@ -715,6 +726,18 @@ export function LiquidationForm({ state }) {
         overflow: 'auto',
       }}
     >
+      <Fab
+        variant="circular"
+        color="info"
+        sx={{
+          position: 'fixed',
+          top: 90,
+          left: isSideBarVisible ? 230 : 30,
+        }}
+        onClick={handleOnReturnButtonClick}
+      >
+        <ArrowBackIcon />
+      </Fab>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         {state === 'ADD' && (
           <>
@@ -774,61 +797,79 @@ export function LiquidationForm({ state }) {
               </RadioGroup>
             </Box>
             {/* select a request to liquidate */}
-            {(requestTypeToLiquidate === 'AV' ||
-              requestTypeToLiquidate === 'AC') && (
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 2,
-                }}
-                marginTop={3}
-                marginBottom={3}
-              >
-                <Typography level="title-lg">
-                  <FormattedMessage id={messages.chooseRequest.id} />
-                </Typography>
-                <Select
-                  key={0}
-                  placeholder={intl.formatMessage({
-                    id: messages.selectRequestPlaceholder.id,
-                  })}
-                  sx={{ width: '50%' }}
-                  slotProps={{
-                    listbox: {
-                      placement: 'bottom-start',
-                    },
+            {requestTypeToLiquidate !== null &&
+              requestsToLiquidate?.length > 0 && (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 2,
                   }}
-                  size="lg"
-                  onChange={() => {
-                    setTripsToLiquidate([]);
-                    setExpensesToLiquidate([]);
-                    setNewExpenses([]);
-                    setNewTrips([]);
-                  }}
+                  marginTop={3}
+                  marginBottom={3}
                 >
-                  {requestsToLiquidate?.map((req) => (
-                    <Option
-                      key={req.id}
-                      value={req.id}
-                      onClick={() => {
-                        setRequestTypeChanged(false);
-                        dispatch(
-                          loadRequestToLiquidateDetailsAction(
-                            req.id,
-                            requestTypeToLiquidate,
-                          ),
-                        );
-                      }}
-                    >
-                      #{req.id}&nbsp;-&nbsp;{req.description}
-                    </Option>
-                  ))}
-                </Select>
-              </Box>
-            )}
+                  <Typography level="title-lg">
+                    <FormattedMessage id={messages.chooseRequest.id} />
+                  </Typography>
+                  <Select
+                    key={0}
+                    placeholder={intl.formatMessage({
+                      id: messages.selectRequestPlaceholder.id,
+                    })}
+                    sx={{ width: '50%' }}
+                    slotProps={{
+                      listbox: {
+                        placement: 'bottom-start',
+                      },
+                    }}
+                    size="lg"
+                    onChange={() => {
+                      setTripsToLiquidate([]);
+                      setExpensesToLiquidate([]);
+                      setNewExpenses([]);
+                      setNewTrips([]);
+                    }}
+                  >
+                    {requestsToLiquidate?.map((req) => (
+                      <Option
+                        key={req.id}
+                        value={req.id}
+                        onClick={() => {
+                          setRequestTypeChanged(false);
+                          dispatch(
+                            loadRequestToLiquidateDetailsAction(
+                              req.id,
+                              requestTypeToLiquidate,
+                            ),
+                          );
+                        }}
+                      >
+                        #{req.id}&nbsp;-&nbsp;{req.description}
+                      </Option>
+                    ))}
+                  </Select>
+                </Box>
+              )}
+            {requestTypeToLiquidate !== null &&
+              requestsToLiquidate?.length === 0 && (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 2,
+                  }}
+                  marginTop={3}
+                  marginBottom={3}
+                >
+                  <Typography level="title-lg">
+                    <FormattedMessage id={messages.noRequestsToLiquidate.id} />
+                  </Typography>
+                </Box>
+              )}
           </>
         )}
 
