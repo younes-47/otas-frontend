@@ -122,6 +122,10 @@ export default defineMessages({
     id: `${scope}.page.resubmitButton`,
     defaultMessage: 'Resubmit',
   },
+  closeButton: {
+    id: `${scope}.page.closeButton`,
+    defaultMessage: 'Close',
+  },
 
   // modal header
   noteHeader: {
@@ -134,7 +138,7 @@ export default defineMessages({
   },
   submitHeader: {
     id: `${scope}.modal.submitHeader`,
-    defaultMessage: 'Invalid Information!',
+    defaultMessage: 'Submit',
   },
   confirmation: {
     id: `${scope}.modal.confirmation`,

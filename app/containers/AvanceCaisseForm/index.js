@@ -927,7 +927,9 @@ export function AvanceCaisseForm({ state }) {
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setModalVisibility(false)}>Close</Button>
+          <Button onClick={() => setModalVisibility(false)}>
+            <FormattedMessage id={messages.closeButton.id} />
+          </Button>
           {modalHeader === 'confirmation' && (
             <Button
               variant="contained"
