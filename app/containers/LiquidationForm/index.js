@@ -200,39 +200,29 @@ export function LiquidationForm({ state }) {
   useEffect(() => {
     if (liquidationDetails !== null) {
       setReceiptsFile(liquidationDetails?.receiptsFile);
-      let newAddedExpensesReq = [];
       let expensesToLiquidateReq = [];
       liquidationDetails?.requestDetails?.expenses.forEach((expense) => {
-        if (expense.estimatedFee === 0) {
-          newAddedExpensesReq = [...newAddedExpensesReq, expense];
-        } else {
-          expensesToLiquidateReq = [
-            ...expensesToLiquidateReq,
-            {
-              expenseId: expense.id,
-              actualFee: expense.actualFee,
-            },
-          ];
-        }
+        expensesToLiquidateReq = [
+          ...expensesToLiquidateReq,
+          {
+            expenseId: expense.id,
+            actualFee: expense.actualFee,
+          },
+        ];
       });
-      setNewExpenses(newAddedExpensesReq);
+      setNewExpenses(liquidationDetails?.expenses);
       setExpensesToLiquidate(expensesToLiquidateReq);
-      let newAddedTripsReq = [];
       let tripsToLiquidateReq = [];
       liquidationDetails?.requestDetails?.trips.forEach((trip) => {
-        if (trip.estimatedFee === 0) {
-          newAddedTripsReq = [...newAddedTripsReq, trip];
-        } else {
-          tripsToLiquidateReq = [
-            ...tripsToLiquidateReq,
-            {
-              tripId: trip.id,
-              actualFee: trip.actualFee,
-            },
-          ];
-        }
+        tripsToLiquidateReq = [
+          ...tripsToLiquidateReq,
+          {
+            tripId: trip.id,
+            actualFee: trip.actualFee,
+          },
+        ];
       });
-      setNewTrips(newAddedTripsReq);
+      setNewTrips(liquidationDetails?.trips);
       setTripsToLiquidate(tripsToLiquidateReq);
     }
   }, [liquidationDetails]);
