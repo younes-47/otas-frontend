@@ -1062,7 +1062,9 @@ export function LiquidationForm({ state }) {
                     isTripModifiable={!readOnly}
                   />
                 </Box>
-                {(state === 'ADD' || state === 'EDIT') && (
+                {(state === 'ADD' ||
+                  state === 'EDIT' ||
+                  state === 'MODIFY') && (
                   <>
                     <Box
                       display="flex"
@@ -1145,7 +1147,7 @@ export function LiquidationForm({ state }) {
                 )}
             </Box>
 
-            {(state === 'ADD' || state === 'EDIT') && (
+            {(state === 'ADD' || state === 'EDIT' || state === 'MODIFY') && (
               <>
                 <Box
                   display="flex"
