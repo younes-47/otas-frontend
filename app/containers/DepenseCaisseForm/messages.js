@@ -247,4 +247,9 @@ export default defineMessages({
     id: `${scope}.modal.invalidExpenseFeeValue`,
     defaultMessage: 'Invalid Fee value in one of the expenses!',
   },
+  invalidReceiptsFile: {
+    id: `${scope}.modal.invalidReceiptsFile`,
+    defaultMessage:
+      'Please upload your receipts file! Or wait for it while it is being uploaded.',
+  },
 });
