@@ -79,6 +79,10 @@ export default defineMessages({
     id: `${scope}.signAndApproveButton`,
     defaultMessage: 'Sign and Approve',
   },
+  wrongConfirmationNumberMessage: {
+    id: `${scope}.wrongConfirmationNumberMessage`,
+    defaultMessage: 'Wrong Confirmation Number!',
+  },
   markFundsAsPreparedButton: {
     id: `${scope}.markFundsAsPreparedButton`,
     defaultMessage: 'Mark Funds as Prepared',

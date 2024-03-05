@@ -228,6 +228,7 @@
   "app.containers.DecideOnAvanceVoyageForm.thisAvanceVoyageIsLinkedTo": "This Travel Advance is linked to",
   "app.containers.DecideOnAvanceVoyageForm.total": "Total",
   "app.containers.DecideOnAvanceVoyageForm.tripsHeader": "Trajectories",
+  "app.containers.DecideOnAvanceVoyageForm.wrongConfirmationNumberMessage": "Wrong Confirmation Number!",
   "app.containers.DecideOnAvanceVoyageTable.snackbar.fundsDeliveryConfirmed": "Funds has been marked as delivered successfully!",
   "app.containers.DecideOnAvanceVoyageTable.snackbar.rejected": "Request has been rejected successfully!",
   "app.containers.DecideOnAvanceVoyageTable.snackbar.returned": "Request has been returned successfully!",
